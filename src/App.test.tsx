@@ -112,17 +112,17 @@ describe('painel do Brasileirão 2026', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: /^PTS/ }))
+    await user.click(screen.getByRole('button', { name: /^Pts/ }))
     const table = screen.getByRole('region', { name: /Tabela classificatória/ })
     // Ascendente: menor pontuação primeiro (lanterna)
     const lastPlace = currentClubs[currentClubs.length - 1]!
     expect(within(table).getAllByRole('row')[1]!).toHaveTextContent(lastPlace.club)
-    expect(within(table).getByRole('columnheader', { name: /PTS/ })).toHaveAttribute('aria-sort', 'ascending')
+    expect(within(table).getByRole('columnheader', { name: /Pts/ })).toHaveAttribute('aria-sort', 'ascending')
 
-    await user.click(screen.getByRole('button', { name: /^PTS/ }))
+    await user.click(screen.getByRole('button', { name: /^Pts/ }))
     // Descendente: líder primeiro
     expect(within(table).getAllByRole('row')[1]).toHaveTextContent(currentClubs[0]!.club)
-    expect(within(table).getByRole('columnheader', { name: /PTS/ })).toHaveAttribute('aria-sort', 'descending')
+    expect(within(table).getByRole('columnheader', { name: /Pts/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
   it('mostra os 20 clubes na ordem oficial, com pontos e jogos do snapshot', () => {

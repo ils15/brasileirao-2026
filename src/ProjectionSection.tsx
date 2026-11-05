@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
-import { POINT_CURVE_LOW_SAMPLE_WIDTH, RESULT_GROUPS, SIMULATION_COUNT, SIMULATION_SEED, type ResultGroupId } from './projectionConfig'
-import type { ClubProbability, OutcomeDistribution, ProjectionResult } from './projection'
+import { SIMULATION_COUNT, SIMULATION_SEED } from './projectionConfig'
+import type { ClubProbability, ProjectionResult } from './projection'
 import { useProjection, type ProjectionStatus } from './ProjectionContext'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { useTableSort, type SortableColumn } from './useTableSort'
@@ -31,6 +31,9 @@ interface MagicRow {
   sudamericana: number
   middle: number
   relegation: number
+  relegationLower: number
+  relegationUpper: number
+  lowSample: boolean
 }
 
 /**
@@ -42,8 +45,16 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   const rows = useMemo<MagicRow[]>(() => {
     const byPoints = new Map<number, MagicRow>()
     for (const row of result.pointCurve.rows) {
-      const entry = byPoints.get(row.points) ?? { points: row.points, title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 }
+      const entry = byPoints.get(row.points) ?? {
+        points: row.points, title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0,
+        relegationLower: 0, relegationUpper: 1, lowSample: false,
+      }
       entry[row.outcome] = row.probability
+      if (row.outcome === 'relegation') {
+        entry.relegationLower = row.lower95
+        entry.relegationUpper = row.upper95
+        entry.lowSample = row.lowSample
+      }
       byPoints.set(row.points, entry)
     }
     return [...byPoints.values()].sort((left, right) => left.points - right.points)
@@ -62,7 +73,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       <h4 className="points-table-title" id="magic-points-title">A pontuação mágica: quantos pontos bastam?</h4>
       <p className="projection-table-note">
         Chance de cada destino final dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
-        Barras indicam a chance de rebaixamento naquela pontuação; IC 95% cluster-robusto por simulação.
+        Barras indicam a chance de rebaixamento naquela pontuação; IC 95% cluster-robusto por simulação, e “amostra baixa” marca intervalos largos.
       </p>
       <div className="magic-kpis" aria-label="Linhas do destino por pontuação">
         {coinFlip && (
@@ -93,9 +104,9 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       <div className="table-scroll" role="region" aria-label="Probabilidade de cada destino por pontuação exata" tabIndex={0}>
         <table className="projection-table magic-table">
           <thead><tr>
-            <th scope="col">PONTOS</th>
+            <th scope="col">Pontos</th>
             {pointCurveOutcomes.map((outcome) => <th key={outcome.id} scope="col" className="numeric">{outcome.label}</th>)}
-            <th scope="col">CHANCE DE REBAIXAMENTO</th>
+            <th scope="col" className="numeric">Chance de rebaixamento (IC 95%)</th>
           </tr></thead>
           <tbody>
             {rows.map((row) => (
@@ -107,8 +118,9 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
                 <td className="numeric games-cell">{percent.format(row.middle)}</td>
                 <td className={`numeric games-cell ${row.relegation >= 0.5 ? 'magic-danger' : ''}`}>{percent.format(row.relegation)}</td>
                 <td className="magic-bar-cell">
-                  <div className="magic-bar" role="img" aria-label={`Com ${row.points} pontos: ${percent.format(row.relegation)} de chance de rebaixamento`}>
+                  <div className="magic-bar" role="img" aria-label={`Com ${row.points} pontos: ${percent.format(row.relegation)} de chance de rebaixamento; IC 95% de ${percent.format(row.relegationLower)} a ${percent.format(row.relegationUpper)}`}>
                     <span className="magic-bar-fill" style={{ width: `${row.relegation * 100}%` }} />
+                    {row.lowSample && <span className="magic-bar-low">amostra baixa</span>}
                   </div>
                 </td>
               </tr>
@@ -121,23 +133,23 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
 }
 
 const zoneColumns: SortableColumn<ClubProbability>[] = [
-  { id: 'position', header: 'POS', accessor: ({ currentPosition }) => currentPosition, numeric: true },
-  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
-  { id: 'title', header: 'TÍTULO', accessor: ({ title }) => title, numeric: true },
-  { id: 'libertadores', header: 'LIBERTADORES', accessor: ({ libertadores }) => libertadores, numeric: true },
-  { id: 'sudamericana', header: 'SUL-AMERICANA', accessor: ({ sudamericana }) => sudamericana, numeric: true },
-  { id: 'relegation', header: 'REBAIXAMENTO', accessor: ({ relegation }) => relegation, numeric: true },
+  { id: 'position', header: 'Pos', accessor: ({ currentPosition }) => currentPosition, numeric: true },
+  { id: 'club', header: 'Clube', accessor: ({ club }) => club, numeric: false },
+  { id: 'title', header: 'Título', accessor: ({ title }) => title, numeric: true },
+  { id: 'libertadores', header: 'Libertadores', accessor: ({ libertadores }) => libertadores, numeric: true },
+  { id: 'sudamericana', header: 'Sul-Americana', accessor: ({ sudamericana }) => sudamericana, numeric: true },
+  { id: 'relegation', header: 'Rebaixamento', accessor: ({ relegation }) => relegation, numeric: true },
 ]
 
 const pointsColumns: SortableColumn<ClubProbability>[] = [
-  { id: 'position', header: 'POS', accessor: ({ currentPosition }) => currentPosition, numeric: true },
-  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
-  { id: 'currentPoints', header: 'HOJE', accessor: ({ currentPoints }) => currentPoints, numeric: true },
-  { id: 'median', header: 'MEDIANA', accessor: ({ pointsStats }) => pointsStats.median, numeric: true },
-  { id: 'p25', header: 'FAIXA TÍPICA (P25)', accessor: ({ pointsStats }) => pointsStats.p25, numeric: true },
-  { id: 'p75', header: 'FAIXA TÍPICA (P75)', accessor: ({ pointsStats }) => pointsStats.p75, numeric: true },
-  { id: 'p90', header: 'CENÁRIO ALTO (P90)', accessor: ({ pointsStats }) => pointsStats.p90, numeric: true },
-  { id: 'delta', header: 'Δ vs HOJE', accessor: ({ pointsStats, currentPoints }) => pointsStats.median - currentPoints, numeric: true },
+  { id: 'position', header: 'Pos', accessor: ({ currentPosition }) => currentPosition, numeric: true },
+  { id: 'club', header: 'Clube', accessor: ({ club }) => club, numeric: false },
+  { id: 'currentPoints', header: 'Hoje', accessor: ({ currentPoints }) => currentPoints, numeric: true },
+  { id: 'median', header: 'Mediana', accessor: ({ pointsStats }) => pointsStats.median, numeric: true },
+  { id: 'p25', header: 'Faixa típica (P25)', accessor: ({ pointsStats }) => pointsStats.p25, numeric: true },
+  { id: 'p75', header: 'Faixa típica (P75)', accessor: ({ pointsStats }) => pointsStats.p75, numeric: true },
+  { id: 'p90', header: 'Cenário alto (P90)', accessor: ({ pointsStats }) => pointsStats.p90, numeric: true },
+  { id: 'delta', header: 'Δ vs hoje', accessor: ({ pointsStats, currentPoints }) => pointsStats.median - currentPoints, numeric: true },
 ]
 
 interface ProbabilityCellProps {
@@ -249,91 +261,9 @@ function exportProjections(result: ProjectionResult, format: 'csv' | 'xlsx' | 'j
   }))
 }
 
-type PointCurveRow = ProjectionResult['pointCurve']['rows'][number]
-
-interface PointCurveCellProps {
-  row: PointCurveRow | undefined
-}
-
-function PointCurveCell({ row }: PointCurveCellProps): JSX.Element {
-  if (!row) return <td className="numeric curve-cell">—</td>
-  return (
-    <td className="numeric curve-cell">
-      <strong>{percent.format(row.probability)}</strong>
-      <span>K/N {integer.format(row.successes)}/{integer.format(row.denominator)}</span>
-      <span>IC 95% {percent.format(row.lower95)}–{percent.format(row.upper95)}</span>
-      {row.lowSample && <span className="curve-low-sample">Amostra baixa</span>}
-    </td>
-  )
-}
-
-interface PointDistributionProps {
-  distribution: OutcomeDistribution
-}
-
-function PointDistributionChart({ distribution }: PointDistributionProps): JSX.Element {
-  const maxProbability = Math.max(0, ...distribution.points.map((point) => point.probability))
-  const chartHeight = Math.max(48, distribution.points.length * 36 + 20)
-  const maxBarWidth = 150
-
-  return (
-    <figure className="point-distribution-figure">
-      <figcaption>Gráfico discreto · barra relativa ao ponto mais frequente; percentual exato ao lado</figcaption>
-      {distribution.points.length === 0 ? (
-        <p className="empty-distribution">Nenhuma observação nesta categoria nas simulações exibidas.</p>
-      ) : (
-        <svg
-          className="point-distribution-chart"
-          role="img"
-          aria-label={`Distribuição discreta de pontos para ${distribution.label}, com ${distribution.points.length} pontuações inteiras observadas. Os percentuais e contagens exatos estão na tabela acessível logo abaixo.`}
-          viewBox={`0 0 365 ${chartHeight}`}
-          preserveAspectRatio="xMinYMin meet"
-        >
-          {distribution.points.map((point, index) => {
-            const y = index * 36 + 15
-            const barWidth = maxProbability === 0 ? 0 : point.probability / maxProbability * maxBarWidth
-            return (
-              <g key={point.points}>
-                <text className="point-distribution-value" x="0" y={y + 4}>{point.points} pts</text>
-                <rect className="point-distribution-bar-track" x="66" y={y - 7} width={maxBarWidth} height="11" rx="2" />
-                <rect className="point-distribution-bar" x="66" y={y - 7} width={barWidth} height="11" rx="2" />
-                <text className="point-distribution-percent" x="227" y={y}>{percent.format(point.probability)}</text>
-                <text className="point-distribution-sample" x="227" y={y + 13}>K/N {integer.format(point.count)}/{integer.format(distribution.samples)}</text>
-              </g>
-            )
-          })}
-        </svg>
-      )}
-    </figure>
-  )
-}
-
-function PointDistributionTable({ distribution }: PointDistributionProps): JSX.Element {
-  return (
-    <div className="exact-point-table-wrap" role="region" aria-label={`Tabela acessível de pontuação exata por resultado: ${distribution.label}`}>
-      <table className="projection-table exact-point-table">
-        <thead><tr><th scope="col">PONTOS EXATOS</th><th scope="col" className="numeric">K/N NA CATEGORIA</th><th scope="col" className="numeric">P(PONTOS | RESULTADO)</th></tr></thead>
-        <tbody>
-          {distribution.points.map((point) => (
-            <tr key={point.points}>
-              <th scope="row">{point.points}</th>
-              <td className="numeric">{integer.format(point.count)}/{integer.format(distribution.samples)}</td>
-              <td className="numeric probability-cell">{percent.format(point.probability)}</td>
-            </tr>
-          ))}
-          {distribution.points.length === 0 && <tr><td className="empty-distribution-cell" colSpan={3}>Nenhuma pontuação observada para este resultado.</td></tr>}
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
 function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX.Element {
-  const [activeDistribution, setActiveDistribution] = useState<ResultGroupId>('champion')
   const [activeAnalysis, setActiveAnalysis] = useState<'por-clube' | 'por-pontuacao'>('por-clube')
   const analysisTabRefs = useRef<Array<HTMLButtonElement | null>>([])
-  const outcomeTabRefs = useRef<Array<HTMLButtonElement | null>>([])
-  const selectedDistribution = result?.pointsAnalysis.distributionByOutcome.find(({ id }) => id === activeDistribution)
   const probabilityRows = useMemo(() => result?.clubProbabilities ?? [], [result])
   const { sortedRows: sortedZones, toggleSort: toggleZoneSort, ariaSort: zoneAriaSort } = useTableSort(probabilityRows, zoneColumns, 'position')
   const { sortedRows: sortedPoints, toggleSort: togglePointsSort, ariaSort: pointsAriaSort } = useTableSort(probabilityRows, pointsColumns, 'position')
@@ -349,25 +279,6 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
     event.preventDefault()
     setActiveAnalysis(views[nextIndex]!)
     analysisTabRefs.current[nextIndex]?.focus()
-  }
-
-  function handleOutcomeTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number): void {
-    const lastIndex = RESULT_GROUPS.length - 1
-    const nextIndex = event.key === 'ArrowRight'
-      ? (index + 1) % RESULT_GROUPS.length
-      : event.key === 'ArrowLeft'
-        ? (index - 1 + RESULT_GROUPS.length) % RESULT_GROUPS.length
-        : event.key === 'Home'
-          ? 0
-          : event.key === 'End'
-            ? lastIndex
-            : -1
-    if (nextIndex < 0) return
-    event.preventDefault()
-    const nextOutcome = RESULT_GROUPS[nextIndex]
-    if (!nextOutcome) return
-    setActiveDistribution(nextOutcome.id)
-    outcomeTabRefs.current[nextIndex]?.focus()
   }
 
   return (
@@ -537,57 +448,11 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
           <div role="tabpanel" id="analise-por-pontuacao" aria-labelledby="aba-por-pontuacao" hidden={activeAnalysis !== 'por-pontuacao'}>
           <section className="projection-block" id="por-pontuacao" aria-labelledby="points-analysis-title">
             <div className="projection-block-heading">
-              <div><p className="eyebrow eyebrow-dark">PROBABILIDADE POR PONTUAÇÃO</p><h3 id="points-analysis-title">Duas leituras condicionais</h3></div>
+              <div><p className="eyebrow eyebrow-dark">Probabilidade por pontuação</p><h3 id="points-analysis-title">Quantos pontos levam a quê</h3></div>
               <span>Pontuações inteiras observadas nas mesmas {integer.format(result.simulations)} simulações.</span>
             </div>
-            <section className="point-distribution-section" aria-labelledby="distribution-title">
-              <h4 className="points-table-title" id="distribution-title">Pontuação exata dado resultado final</h4>
-              <p className="projection-table-note">P(pontuação exata | resultado). As categorias aqui são exclusivas: Campeão; Libertadores (2º–5º); Sul-Americana (6º–11º); Meio de tabela (12º–16º); Rebaixamento (17º–20º). N é o total de clubes-simulações da categoria; K/N mostra a contagem exata e o denominador.</p>
-              <div className="outcome-tabs" role="tablist" aria-label="Selecionar resultado final para distribuição de pontos">
-                {RESULT_GROUPS.map((group, index) => (
-                  <button
-                    aria-controls="point-distribution-panel"
-                    aria-selected={activeDistribution === group.id}
-                    className="outcome-tab"
-                    id={`point-tab-${group.id}`}
-                    key={group.id}
-                    onClick={() => setActiveDistribution(group.id)}
-                    onKeyDown={(event) => handleOutcomeTabKeyDown(event, index)}
-                    ref={(element) => { outcomeTabRefs.current[index] = element }}
-                    role="tab"
-                    tabIndex={activeDistribution === group.id ? 0 : -1}
-                    type="button"
-                  >{group.label}</button>
-                ))}
-              </div>
-              {selectedDistribution && (
-                <div className="point-distribution-panel" id="point-distribution-panel" role="tabpanel" aria-labelledby={`point-tab-${selectedDistribution.id}`} tabIndex={0}>
-                  <p className="distribution-sample-count">{selectedDistribution.label}: N = {integer.format(selectedDistribution.samples)} clubes-simulações.</p>
-                  <PointDistributionChart distribution={selectedDistribution} />
-                  <PointDistributionTable distribution={selectedDistribution} />
-                </div>
-              )}
-            </section>
 
             <MagicPointsPanel result={result} />
-
-            <section className="point-curve-section" aria-labelledby="point-curve-title">
-              <h4 className="points-table-title" id="point-curve-title">Resultado dado pontuação exata</h4>
-              <p className="projection-table-note">P(resultado | pontuação exata) com os cinco destinos possíveis, em K/N: clubes-simulações com o resultado ÷ total na pontuação exata. IC 95% calculado com clusters de simulações; “amostra baixa” marca largura de intervalo ≥ {percent.format(POINT_CURVE_LOW_SAMPLE_WIDTH)}. Destinos com K=0 não são estimados e aparecem como —.</p>
-              <div className="table-scroll projection-table-scroll" role="region" aria-label="Curva de resultado condicionado à pontuação exata; role para rolagem horizontal" tabIndex={0}>
-              <table className="projection-table point-curve-table">
-                <thead><tr><th scope="col">PONTOS EXATOS</th>{pointCurveOutcomes.map((outcome) => <th className="numeric" scope="col" key={outcome.id}>{outcome.label}</th>)}</tr></thead>
-                <tbody>
-                  {[...new Set(result.pointCurve.rows.map((row) => row.points))].map((points) => (
-                    <tr key={points}>
-                      <th scope="row">{points}</th>
-                      {pointCurveOutcomes.map((outcome) => <PointCurveCell key={outcome.id} row={result.pointCurve.rows.find((row) => row.points === points && row.outcome === outcome.id)} />)}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              </div>
-            </section>
           </section>
           </div>
         </>

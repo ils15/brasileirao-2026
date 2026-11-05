@@ -1,5 +1,5 @@
 import { currentSeasonResults, CURRENT_SEASON_SOURCE } from './currentSeasonResults'
-import { currentClubs, remainingFixtures } from './projectionData'
+import { currentClubs, remainingFixtures, historicalSeasons } from './projectionData'
 import { cbfOfficialSchedule } from './cbfOfficialSchedule'
 import { filterAtOrBeforeAnalyticalCutoff, ANALYTICAL_CUTOFF_LOCAL, ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
@@ -29,6 +29,15 @@ export const seasonFacts = {
   lastPlayedRound: Math.max(0, ...playedMatches.map((match) => roundByPair.get(`${match.home}:${match.away}`) ?? 0)),
   cutoffLocal: ANALYTICAL_CUTOFF_LOCAL,
   cutoffUtc: ANALYTICAL_CUTOFF_UTC,
+} as const
+
+/** Histórico empacotado (regenerável por scripts/pack-history.mjs). */
+export const historicalFacts = {
+  seasons: historicalSeasons.length,
+  firstYear: Math.min(...historicalSeasons.map((season) => season.year)),
+  lastYear: Math.max(...historicalSeasons.map((season) => season.year)),
+  totalMatches: historicalSeasons.reduce((sum, season) => sum + season.matches.length, 0),
+  verifiedRange: '2021–2025',
 } as const
 
 /** Rótulo legível do corte analítico (horário local de Brasília declarado). */

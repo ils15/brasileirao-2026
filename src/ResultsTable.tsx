@@ -19,7 +19,7 @@ const SOURCE_LABELS: Record<CurrentSeasonMatch['source'], string> = {
 type ResultRow = CurrentSeasonMatch
 
 const columns: SortableColumn<ResultRow>[] = [
-  { id: 'kickoff', header: 'Data/Hora', accessor: ({ kickoff }) => kickoff, numeric: false },
+  { id: 'kickoff', header: 'Data/hora', accessor: ({ kickoff }) => kickoff, numeric: false },
   { id: 'home', header: 'Mandante', accessor: ({ home }) => home, numeric: false },
   { id: 'goals', header: 'Placar', accessor: ({ homeGoals, awayGoals }) => homeGoals - awayGoals, numeric: true },
   { id: 'away', header: 'Visitante', accessor: ({ away }) => away, numeric: false },

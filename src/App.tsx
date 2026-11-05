@@ -111,9 +111,9 @@ function TeamBadge({ team }: { team: Standing }): JSX.Element {
 }
 
 const standingsColumns: SortableColumn<Standing>[] = [
-  { id: 'position', header: 'POS', accessor: ({ position }) => position, numeric: true },
-  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
-  { id: 'points', header: 'PTS', accessor: ({ points }) => points, numeric: true },
+  { id: 'position', header: 'Pos', accessor: ({ position }) => position, numeric: true },
+  { id: 'club', header: 'Clube', accessor: ({ club }) => club, numeric: false },
+  { id: 'points', header: 'Pts', accessor: ({ points }) => points, numeric: true },
   { id: 'played', header: 'J', accessor: ({ played }) => played, numeric: true },
 ]
 
@@ -220,8 +220,8 @@ function App(): JSX.Element {
                 <div><p>NA PONTA</p><h2>{leader.club}</h2></div>
               </div>
               <div className="leader-stats">
-                <div><strong>{leader.points}</strong><span>PONTOS</span></div>
-                <div><strong>{leader.played}</strong><span>JOGOS</span></div>
+                <div><strong>{leader.points}</strong><span>Pontos</span></div>
+                <div><strong>{leader.played}</strong><span>Jogos</span></div>
                 <span className="leader-stat-caption">Classificação oficial<br />CBF</span>
               </div>
               <span className="leader-watermark" aria-hidden="true">26</span>
@@ -353,7 +353,7 @@ function App(): JSX.Element {
                       <span className="scorer-rank">{scorer.position}</span>
                       <span className={`scorer-avatar scorer-avatar--${index + 1}`} aria-hidden="true">{scorer.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span>
                       <span className="scorer-info"><strong>{scorer.name}</strong><small>{scorer.club}</small></span>
-                      <span className="goal-count"><strong>{scorer.goals}</strong><small>GOLS</small></span>
+                      <span className="goal-count"><strong>{scorer.goals}</strong><small>gols</small></span>
                     </li>
                   ))}
                 </ol>

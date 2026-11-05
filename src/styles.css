@@ -485,6 +485,11 @@ th.numeric .sort-button { justify-content: flex-end; }
 .meeting-badge--draw { background: #7d877f; }
 .meeting-badge--loss { background: #b0604a; }
 .meeting-score { font: 700 15px var(--mono); color: var(--ink); white-space: nowrap; }
+.h2h-period-grid { display: grid; gap: 10px; }
+.h2h-period-card { display: grid; gap: 6px; padding: 14px; border: 1px solid var(--border); background: var(--surface-soft); }
+.h2h-period-card h4 { margin: 0; color: var(--text-muted); font-size: 12px; font-weight: 700; }
+.h2h-period-card strong { color: var(--ink); font: 700 15px var(--mono); }
+.h2h-period-card span { color: var(--text-secondary); font-size: 13px; }
 
 .fixture-calendar { margin-top: 28px; padding: 24px; }
 .fixture-calendar-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }

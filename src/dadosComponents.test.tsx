@@ -114,11 +114,11 @@ describe('painel de dados & auditoria', () => {
     expect(within(block).getByText('2026-11-04 16:41:42-03:00')).toBeInTheDocument()
   })
 
-  it('valida a temporada 2026 e as cinco temporadas históricas sem divergências', () => {
+  it('valida a temporada 2026 e as 14 temporadas históricas sem divergências', () => {
     render(<AuditPanel />)
     const table = screen.getByRole('region', { name: 'Status das validações de dados' })
     const rows = within(table).getAllByRole('row')
-    expect(rows).toHaveLength(7)
+    expect(rows).toHaveLength(16)
     for (const row of rows.slice(1)) {
       expect(within(row).getByText('ok')).toBeInTheDocument()
     }

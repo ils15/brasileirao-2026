@@ -1,7 +1,6 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { getHeadToHeadSummary } from './seasonStats'
-import { VenueStatsCard } from './FixtureCalendar'
 
 /**
  * Confronto direto visual entre dois clubes selecionáveis: barra proporcional
@@ -13,20 +12,27 @@ interface HeadToHeadOutcome {
   winsA: number
   draws: number
   winsB: number
+  goalsA: number
+  goalsB: number
+  matches: number
 }
 
 function outcomeOfMatches(matches: readonly { home: string; away: string; homeGoals: number; awayGoals: number }[], aId: string, bId: string): HeadToHeadOutcome {
   let winsA = 0
   let draws = 0
   let winsB = 0
+  let goalsA = 0
+  let goalsB = 0
   for (const match of matches) {
-    const goalsA = match.home === aId ? match.homeGoals : match.awayGoals
-    const goalsB = match.home === bId ? match.homeGoals : match.awayGoals
-    if (goalsA > goalsB) winsA += 1
-    else if (goalsA === goalsB) draws += 1
+    const scoredA = match.home === aId ? match.homeGoals : match.awayGoals
+    const scoredB = match.home === bId ? match.homeGoals : match.awayGoals
+    if (scoredA > scoredB) winsA += 1
+    else if (scoredA === scoredB) draws += 1
     else winsB += 1
+    goalsA += scoredA
+    goalsB += scoredB
   }
-  return { winsA, draws, winsB }
+  return { winsA, draws, winsB, goalsA, goalsB, matches: matches.length }
 }
 
 const outcomeLabels = (a: string, b: string) => [`Vitórias de ${a}`, 'Empates', `Vitórias de ${b}`] as const
@@ -46,6 +52,20 @@ function HeadToHeadBar({ outcome, aName, bName }: { outcome: HeadToHeadOutcome; 
         <span>Empates <strong>{outcome.draws}</strong></span>
         <span><strong>{outcome.winsB}</strong> {bName}</span>
       </div>
+    </div>
+  )
+}
+
+/** Card por período: V-E-D do confronto e gols agregados entre os dois clubes. */
+function PeriodCard({ title, outcome, aName, bName }: { title: string; outcome: HeadToHeadOutcome; aName: string; bName: string }): JSX.Element {
+  return (
+    <div className="h2h-period-card">
+      <h4>{title}</h4>
+      <strong>{aName} {outcome.winsA} · {outcome.draws} · {outcome.winsB} {bName}</strong>
+      <span>
+        {outcome.matches === 1 ? '1 encontro' : `${outcome.matches} encontros`}
+        {outcome.matches > 0 && ` · gols ${outcome.goalsA}–${outcome.goalsB}`}
+      </span>
     </div>
   )
 }
@@ -74,6 +94,14 @@ export function HeadToHeadPanel(): JSX.Element {
   const summary = useMemo(() => getHeadToHeadSummary(clubA.id, clubB.id), [clubA.id, clubB.id])
 
   const overall = useMemo(() => outcomeOfMatches(summary.matches, clubA.id, clubB.id), [summary, clubA.id, clubB.id])
+  const currentOutcome = useMemo(
+    () => outcomeOfMatches(summary.matches.filter((match) => match.seasonYear === 2026), clubA.id, clubB.id),
+    [summary, clubA.id, clubB.id],
+  )
+  const historicalOutcome = useMemo(
+    () => outcomeOfMatches(summary.matches.filter((match) => match.seasonYear <= 2025), clubA.id, clubB.id),
+    [summary, clubA.id, clubB.id],
+  )
   const nextMeeting = remainingFixtures.find((fixture) =>
     (fixture.home === clubA.id && fixture.away === clubB.id) || (fixture.home === clubB.id && fixture.away === clubA.id))
 
@@ -129,15 +157,13 @@ export function HeadToHeadPanel(): JSX.Element {
                   </ul>}
               <p className="table-note">Badge V/E/D é do ponto de vista de {clubA.club} (clube A).</p>
             </div>
-            <div className="h2h-venue-stats">
-              <h3>Retrospecto por mando</h3>
-              <div className="venue-stats-grid h2h-stats-grid">
-                <VenueStatsCard title={`2026 · ${clubA.club} em casa`} stats={summary.current.home} />
-                <VenueStatsCard title={`2026 · ${clubA.club} fora`} stats={summary.current.away} />
-                <VenueStatsCard title={`2021–2025 · ${clubA.club} em casa`} stats={summary.historical.home} />
-                <VenueStatsCard title={`2021–2025 · ${clubA.club} fora`} stats={summary.historical.away} />
+            <div className="h2h-periods">
+              <h3>Retrospecto por período</h3>
+              <div className="h2h-period-grid">
+                <PeriodCard title="Temporada 2026 · até o corte" outcome={currentOutcome} aName={clubA.club} bName={clubB.club} />
+                <PeriodCard title="2021–2025 · histórico do confronto" outcome={historicalOutcome} aName={clubA.club} bName={clubB.club} />
               </div>
-              <p className="table-note">Estatísticas sempre do ponto de vista de {clubA.club} (clube A). Inverta os selects para ver por {clubB.club}.</p>
+              <p className="table-note">V-E-D e gols agregados somente dos encontros entre os dois clubes.</p>
             </div>
           </div>
         </>

@@ -68,9 +68,12 @@ describe('painel de confronto direto', () => {
     expect(meeting2026).toHaveTextContent('D')
     expect(within(timeline).getAllByRole('listitem').filter((item) => item.textContent?.includes('palmeiras')).length).toBeGreaterThan(0)
 
-    // Cards por mando (4)
-    expect(screen.getByText('2026 · Flamengo em casa')).toBeInTheDocument()
-    expect(screen.getByText('2021–2025 · Flamengo fora')).toBeInTheDocument()
+    // Cards por período: V-E-D e gols agregados só dos encontros entre os dois
+    expect(screen.getByText('Temporada 2026 · até o corte')).toBeInTheDocument()
+    expect(screen.getByText('2021–2025 · histórico do confronto')).toBeInTheDocument()
+    const currentCard = screen.getByText('Temporada 2026 · até o corte').closest('div')!
+    expect(currentCard).toHaveTextContent(/1 encontro|1 encontro · gols 0–3/)
+    expect(currentCard.textContent).toContain('Flamengo 0 · 0 · 1 Palmeiras')
 
     // Próximo confronto entre os dois: rodada 36 (palmeiras × flamengo)
     expect(screen.getByText(/Próximo confronto no calendário/)).toBeInTheDocument()

@@ -11,9 +11,9 @@ import { ZONES } from './projectionConfig'
  */
 
 const FULL_COLUMNS: SortableColumn<StandingsRow>[] = [
-  { id: 'position', header: 'POS', accessor: ({ position }) => position, numeric: true },
-  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
-  { id: 'points', header: 'PTS', accessor: ({ points }) => points, numeric: true },
+  { id: 'position', header: 'Pos', accessor: ({ position }) => position, numeric: true },
+  { id: 'club', header: 'Clube', accessor: ({ club }) => club, numeric: false },
+  { id: 'points', header: 'Pts', accessor: ({ points }) => points, numeric: true },
   { id: 'played', header: 'J', accessor: ({ played }) => played, numeric: true },
   { id: 'wins', header: 'V', accessor: ({ wins }) => wins, numeric: true },
   { id: 'draws', header: 'E', accessor: ({ draws }) => draws, numeric: true },
@@ -24,9 +24,9 @@ const FULL_COLUMNS: SortableColumn<StandingsRow>[] = [
 ]
 
 const SHORT_COLUMNS: SortableColumn<StandingsRow>[] = [
-  { id: 'position', header: 'POS', accessor: ({ position }) => position, numeric: true },
-  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
-  { id: 'points', header: 'PTS', accessor: ({ points }) => points, numeric: true },
+  { id: 'position', header: 'Pos', accessor: ({ position }) => position, numeric: true },
+  { id: 'club', header: 'Clube', accessor: ({ club }) => club, numeric: false },
+  { id: 'points', header: 'Pts', accessor: ({ points }) => points, numeric: true },
   { id: 'played', header: 'J', accessor: ({ played }) => played, numeric: true },
   { id: 'goalDifference', header: 'SG', accessor: ({ goalDifference }) => goalDifference, numeric: true },
 ]

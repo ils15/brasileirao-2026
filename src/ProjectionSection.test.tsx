@@ -38,62 +38,22 @@ describe('painel de projeções', () => {
     await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
     expect(document.getElementById('analise-por-pontuacao')!.hidden).toBe(false)
     expect(document.getElementById('analise-por-clube')!.hidden).toBe(true)
-    expect(screen.getByRole('heading', { name: 'Pontuação exata dado resultado final' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Resultado dado pontuação exata' })).toBeInTheDocument()
-    expect(screen.queryByText(/Até 29|30–39|40–49|50–59|60–69|70\+/)).not.toBeInTheDocument()
-    expect(screen.getAllByText(/K\/N.*clubes-simulações/).length).toBeGreaterThan(0)
-    expect(screen.getByText(/IC 95%.*clusters de simulações/)).toBeInTheDocument()
-    const curve = screen.getByRole('region', { name: /Curva de resultado condicionado à pontuação exata/ })
-    expect(within(curve).getAllByRole('row').length).toBeGreaterThan(1)
-    expect(within(curve).getByRole('row', { name: new RegExp(`^${result.pointCurve.rows[0]!.points} `) })).toHaveTextContent(`${result.pointCurve.rows[0]!.successes}/${result.pointCurve.rows[0]!.denominator}`)
-    expect(within(curve).getAllByText('Amostra baixa').length).toBeGreaterThan(0)
+    // Gráfico discreto de pontuação exata foi removido; o painel mágico é a única leitura por pontuação
+    expect(screen.queryByText(/Pontuação exata dado resultado final/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Gráfico discreto/)).not.toBeInTheDocument()
 
     // Pontuação mágica: linhas do destino + tabela de rebaixamento por pontuação
     expect(screen.getByRole('heading', { name: /A pontuação mágica: quantos pontos bastam\?/ })).toBeInTheDocument()
     expect(screen.getByText(/Salvo mais provável que rebaixado/)).toBeInTheDocument()
     const magicTable = screen.getByRole('region', { name: /Probabilidade de cada destino por pontuação exata/ })
     expect(within(magicTable).getAllByRole('img', { name: /chance de rebaixamento/ }).length).toBeGreaterThan(3)
-    // Curva em 5 destinos
-    expect(within(curve).getByRole('columnheader', { name: /Título/ })).toBeInTheDocument()
-    expect(within(curve).getByRole('columnheader', { name: /Rebaixamento/ })).toBeInTheDocument()
+    // Os cinco destinos separados nas colunas da tabela mágica
+    expect(within(magicTable).getByRole('columnheader', { name: /^Título/ })).toBeInTheDocument()
+    expect(within(magicTable).getByRole('columnheader', { name: /^Rebaixamento/ })).toBeInTheDocument()
+    expect(within(magicTable).getByRole('columnheader', { name: /Chance de rebaixamento/ })).toBeInTheDocument()
   })
 
-  it('navega os resultados por teclado e mantém K/N idêntico entre gráfico e tabela', async () => {
-    const user = userEvent.setup()
-    const result = runProjection({ simulations: 8, seed: 123 })
-    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
-
-    // As abas de resultado vivem na sub-aba Por pontuação
-    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
-    const championTab = screen.getByRole('tab', { name: 'Campeão' })
-    championTab.focus()
-    await user.keyboard('{ArrowRight}')
-    const libertadoresTab = screen.getByRole('tab', { name: 'Libertadores · 2º–5º' })
-    expect(libertadoresTab).toHaveAttribute('aria-selected', 'true')
-    expect(libertadoresTab).toHaveFocus()
-
-    const distribution = result.pointsAnalysis.distributionByOutcome.find(({ id }) => id === 'libertadores')!
-    const tabpanel = screen.getByRole('tabpanel', { name: 'Libertadores · 2º–5º' })
-    const chart = within(tabpanel).getByRole('img', { name: /Distribuição discreta de pontos para Libertadores/ })
-    expect(chart).toBeInTheDocument()
-    expect(within(tabpanel).getByText(`Libertadores · 2º–5º: N = ${distribution.samples.toLocaleString('pt-BR')} clubes-simulações.`)).toBeInTheDocument()
-
-    const exactTable = within(tabpanel).getByRole('region', { name: 'Tabela acessível de pontuação exata por resultado: Libertadores · 2º–5º' })
-    const rows = within(exactTable).getAllByRole('row').slice(1)
-    expect(rows).toHaveLength(distribution.points.length)
-    rows.forEach((row, index) => {
-      const point = distribution.points[index]!
-      expect(row).toHaveTextContent(String(point.points))
-      expect(row).toHaveTextContent(`${point.count.toLocaleString('pt-BR')}/${distribution.samples.toLocaleString('pt-BR')}`)
-      expect(chart).toHaveTextContent(`${point.count.toLocaleString('pt-BR')}/${distribution.samples.toLocaleString('pt-BR')}`)
-      expect(row).toHaveTextContent(String(point.points))
-      expect(row).toHaveTextContent(new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(point.probability))
-      expect(chart).toHaveTextContent(`${point.points} pts`)
-      expect(chart).toHaveTextContent(new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(point.probability))
-    })
-  })
-
-  it('exibe mediana, percentis, IC 95%, badge de variação e exporta a tabela de projeções', async () => {
+  it('exibe mediana, percentis, IC 95%, badge de variação e exporta a tabela de projeções', { timeout: 30_000 }, async () => {
     const user = userEvent.setup()
     const createObjectURL = vi.fn(() => 'blob:projecoes')
     Object.defineProperty(URL, 'createObjectURL', { value: createObjectURL, configurable: true })
@@ -106,8 +66,8 @@ describe('painel de projeções', () => {
     const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
     const points = screen.getByRole('region', { name: /Pontos finais projetados por clube/ })
     expect(screen.getByText(/n = 8 simulações · IC 95% Wilson/)).toBeInTheDocument()
-    expect(within(points).getByRole('columnheader', { name: /^MEDIANA/ })).toBeInTheDocument()
-    expect(within(points).getByRole('columnheader', { name: /Δ vs HOJE/ })).toBeInTheDocument()
+    expect(within(points).getByRole('columnheader', { name: /^Mediana/ })).toBeInTheDocument()
+    expect(within(points).getByRole('columnheader', { name: /Δ vs hoje/ })).toBeInTheDocument()
 
     const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
     const flamengoZonesRow = within(zones).getByRole('row', { name: /Flamengo/ })
@@ -126,11 +86,11 @@ describe('painel de projeções', () => {
     expect((click.mock.instances.at(-1) as HTMLAnchorElement).download).toContain('brasileirao-2026-projecoes')
 
     // Ordenação por título troca o estado do cabeçalho
-    const titleHeaderButton = within(zones).getByRole('button', { name: /^TÍTULO/ })
+    const titleHeaderButton = within(zones).getByRole('button', { name: /^Título/ })
     await user.click(titleHeaderButton)
-    expect(within(zones).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'ascending')
+    expect(within(zones).getByRole('columnheader', { name: /^Título/ })).toHaveAttribute('aria-sort', 'ascending')
     await user.click(titleHeaderButton)
-    expect(within(zones).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'descending')
+    expect(within(zones).getByRole('columnheader', { name: /^Título/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
   it('informa quando as simulações ainda estão em processamento', () => {

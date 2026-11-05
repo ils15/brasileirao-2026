@@ -590,6 +590,23 @@ function addHeadToHead(
   matrix.set(club, opponents)
 }
 
+/**
+ * Classificação final derivada dos próprios placares empacotados — usada nas
+ * temporadas sem standings oficiais verificados (2012–2020) como realidade de
+ * referência do backtest de tabela. Entre empatados, a ordem pode divergir do
+ * oficial (critérios não simulados), com impacto desprezível no Brier.
+ */
+function deriveSeasonPositions(season: (typeof historicalSeasons)[number]): Map<string, number> {
+  const totals = seasonToDateTotals(historicalMatches([season]))
+  const rows = [...totals.entries()].map(([id, total]) => ({ id, ...total }))
+  rows.sort((left, right) => right.points - left.points
+    || right.wins - left.wins
+    || (right.goalsFor - right.goalsAgainst) - (left.goalsFor - left.goalsAgainst)
+    || right.goalsFor - left.goalsFor
+    || left.id.localeCompare(right.id))
+  return new Map(rows.map((row, index) => [row.id, index + 1]))
+}
+
 function historicalTableBacktest(year: number, shrinkageMatches: number): { tableBrier: number; tableBaselineBrier: number } {
   const { seasonMatches, priorMatches } = createBacktestSeason(year)
   const { training: cutoff, test } = splitWalkForwardByKickoff(seasonMatches, BACKTEST_CUTOFF)
@@ -630,7 +647,9 @@ function historicalTableBacktest(year: number, shrinkageMatches: number): { tabl
   })
 
   const currentTable = finalTable(initialTeamStates(createRandom(20_260_000 + year), clubs, headToHead))
-  const actualPosition = new Map(season.officialStandings.map(([rawId], index) => [normalizeTeamId(rawId), index + 1]))
+  const actualPosition = season.officialStandings
+    ? new Map(season.officialStandings.map(([rawId], index) => [normalizeTeamId(rawId), index + 1]))
+    : deriveSeasonPositions(season)
   const actualOutcome = new Map(clubs.map((club) => [club.id, RESULT_GROUPS.findIndex(({ id }) => id === historicalOutcomeGroup(actualPosition.get(club.id)!))]))
   const baselineOutcome = new Map(currentTable.map((club) => [club.id, RESULT_GROUPS.findIndex(({ id }) => id === historicalOutcomeGroup(club.position))]))
   const simulatedCounts = new Map(clubs.map((club) => [club.id, RESULT_GROUPS.map(() => 0)]))
@@ -704,7 +723,10 @@ export function runTemporalBacktest(): BacktestSummary {
   return cachedTemporalBacktest
 }
 
-export function validateHistoricalSeason(season: (typeof historicalSeasons)[number]): { matches: number; clubs: number; mismatchedClubs: number } {
+export function validateHistoricalSeason(season: (typeof historicalSeasons)[number]): { matches: number; clubs: number; mismatchedClubs: number; standingsVerified: boolean } {
+  if (!season.officialStandings) {
+    return { matches: season.matches.length, clubs: season.teamIds.length, mismatchedClubs: 0, standingsVerified: false }
+  }
   const totals = seasonToDateTotals(historicalMatches([season]))
   const mismatchedClubs = season.officialStandings.filter(([rawId, points, played, wins, draws, losses, goalsFor, goalsAgainst]) => {
     const actual = totals.get(normalizeTeamId(rawId))
@@ -717,7 +739,7 @@ export function validateHistoricalSeason(season: (typeof historicalSeasons)[numb
       || actual.goalsFor !== goalsFor
       || actual.goalsAgainst !== goalsAgainst
   }).length
-  return { matches: season.matches.length, clubs: season.teamIds.length, mismatchedClubs }
+  return { matches: season.matches.length, clubs: season.teamIds.length, mismatchedClubs, standingsVerified: true }
 }
 
 function createExpectedGoals(): ExpectedGoals[] {

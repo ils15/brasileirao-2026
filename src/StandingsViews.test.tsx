@@ -10,7 +10,7 @@ describe('aba classificações', () => {
     render(<StandingsViews />)
     const table = screen.getByRole('region', { name: /Classificação geral/ })
     expect(within(table).getAllByRole('row')).toHaveLength(21)
-    expect(within(table).getByRole('columnheader', { name: /^PTS/ })).toBeInTheDocument()
+    expect(within(table).getByRole('columnheader', { name: /^Pts/ })).toBeInTheDocument()
     expect(within(table).getByRole('columnheader', { name: /^GP/ })).toBeInTheDocument()
     // Líder oficial na primeira linha de dados
     expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')

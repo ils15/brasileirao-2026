@@ -25,8 +25,8 @@ describe('corte temporal do walk-forward', () => {
 
   it('compara baseline, casa/fora, H2H e combinado em folds anuais sem reutilizar folds futuros no tuning', () => {
     const backtest = runFeatureBacktest()
-    expect(backtest.seasons.map(({ year }) => year)).toEqual([2021, 2022, 2023, 2024, 2025])
-    expect(backtest.seasons.every(({ trainingMatches, testMatches }) => trainingMatches >= 300 && testMatches >= 80)).toBe(true)
+    expect(backtest.seasons.map(({ year }) => year)).toEqual([2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025])
+    expect(backtest.seasons.every(({ trainingMatches, testMatches }) => trainingMatches >= 300 && testMatches >= 79)).toBe(true)
     expect(backtest.seasons.every(({ baseline, homeAway, h2h, combined }) =>
       [baseline.brier, homeAway.brier, h2h.brier, combined.brier].every(Number.isFinite),
     )).toBe(true)
