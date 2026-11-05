@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { splitWalkForwardByKickoff } from './chronology'
+import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 import { currentSeasonResults } from './currentSeasonResults'
 import { buildProductionTrainingMatches, runFeatureBacktest } from './modelBacktest'
 import { expectedGoalsForVariant } from './matchModel'
@@ -41,14 +42,14 @@ describe('corte temporal do walk-forward', () => {
     const before = buildProductionTrainingMatches(currentSeasonResults)
     const beforeCutoff = {
       home: 'flamengo', away: 'palmeiras', homeGoals: 1, awayGoals: 0,
-      kickoff: '2026-11-03T23:59:00Z', source: 'espn' as const, sourceRef: 'pre-cutoff-test-only',
+      kickoff: new Date(Date.parse(ANALYTICAL_CUTOFF_UTC) - 60_000).toISOString(), source: 'espn' as const, sourceRef: 'pre-cutoff-test-only',
     }
     const afterCutoff = {
       home: 'flamengo',
       away: 'palmeiras',
       homeGoals: 9,
       awayGoals: 0,
-      kickoff: '2026-11-04T16:01:00Z',
+      kickoff: new Date(Date.parse(ANALYTICAL_CUTOFF_UTC) + 86_400_000).toISOString(),
       source: 'espn' as const,
       sourceRef: 'future-test-only',
     }

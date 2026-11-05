@@ -15,6 +15,7 @@
  */
 
 import { readFileSync, writeFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -82,6 +83,7 @@ function loadVerifiedStandings() {
 
 function main() {
   const csvText = readFileSync(join(root, 'data/source-snapshots/football-data-BR.csv'), 'utf8')
+  const csvSha256 = createHash('sha256').update(csvText, 'utf8').digest('hex')
   const lines = csvText.replace(/^\uFEFF/, '').split(/\r?\n/)
   const skipped = []
   const seasons = new Map()
@@ -156,11 +158,11 @@ ${standingLines}
   const file = `// Placares empacotados do CSV Football-Data (temporadas ${FIRST_YEAR}–${LAST_YEAR}, ${seasonBlocks.reduce((sum, ) => 0, 0) + ''} ${seasonBlocks.length} temporadas); gerado por scripts/pack-history.mjs.
 // Cada partida preserva kickoff e ordinal original por temporada; cortes usam kickoff, não a posição do array.
 // Validação agregada contra tabelas finais CBF: somente 2021–2025 (standingsVerified); as temporadas anteriores não foram verificadas contra fonte independente.${skippedNote}
-// mtime do CSV da coleta original: 2026-11-04T10:52:14-03:00; SHA-256 do arquivo retido em data/source-snapshots/.
+// SHA-256 do CSV da coleta em data/source-snapshots/; o pacote cobre 2012–2025 e não muda com linhas novas de 2026.
 export const HISTORICAL_SOURCE = {
   url: 'https://www.football-data.co.uk/new/BR.csv',
   localFileMtime: '2026-11-04T10:52:14-03:00',
-  sha256: 'ed5c0925007f9ae35f97558993e597d41807e3f1507fae9d7e555bbab5b02bcf',
+  sha256: '${csvSha256}',
 } as const
 
 export type HistoricalMatch = [homeIndex: number, awayIndex: number, homeGoals: number, awayGoals: number, kickoff: string, sourceOrdinal: number]

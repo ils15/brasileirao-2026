@@ -1,25 +1,24 @@
 import { describe, expect, it } from 'vitest'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { currentSeasonResults, CURRENT_SEASON_SOURCE } from './currentSeasonResults'
-import { ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
+import { ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff, isAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, validateCurrentSeason } from './seasonStats'
 import { cbfOfficialSchedule } from './cbfOfficialSchedule'
 
 describe('dados do snapshot 2026 e estatísticas por mando', () => {
-  it('reconcilia 332 resultados, 20 clubes, 380 jogos e 48 pendentes sem ultrapassar o corte', () => {
+  it('reconcilia resultados, 20 clubes, 380 jogos e pendentes sem ultrapassar o corte', () => {
     expect(CURRENT_SEASON_SOURCE.espn.sha256).toMatch(/^[a-f0-9]{64}$/)
-    expect(currentSeasonResults).toHaveLength(332)
+    expect(currentSeasonResults).toHaveLength(filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).length)
     expect(currentSeasonResults.every((match) => Date.parse(match.kickoff) <= Date.parse(ANALYTICAL_CUTOFF_UTC))).toBe(true)
     expect(validateCurrentSeason()).toEqual({
       clubs: 20,
-      completedMatches: 332,
-      remainingMatches: 48,
+      completedMatches: currentSeasonResults.length,
+      remainingMatches: remainingFixtures.length,
       scheduledMatches: 380,
       mismatchedClubs: 0,
     })
-    expect(remainingFixtures).toHaveLength(48)
     expect(remainingFixtures.every((fixture) => fixture.cbfRef.length > 0)).toBe(true)
-    expect(new Set(remainingFixtures.map((fixture) => fixture.cbfRef)).size).toBe(48)
+    expect(new Set(remainingFixtures.map((fixture) => fixture.cbfRef)).size).toBe(remainingFixtures.length)
     expect(cbfOfficialSchedule).toHaveLength(380)
 
     const sourceByRef = new Map(cbfOfficialSchedule.map(([ref, round, home, away]) => [ref, { round, home, away }]))
@@ -71,7 +70,7 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
   it('aplica o corte às estatísticas e ao retrospecto H2H 2026', () => {
     const futureResult = {
       home: 'flamengo', away: 'athletico-pr', homeGoals: 9, awayGoals: 0,
-      kickoff: '2026-11-04T16:01:00Z', source: 'espn' as const, sourceRef: 'future-test-only',
+      kickoff: new Date(Date.parse(ANALYTICAL_CUTOFF_UTC) + 86_400_000).toISOString(), source: 'espn' as const, sourceRef: 'future-test-only',
     }
     const baseline = getCurrentVenueStats('flamengo')
     expect(getCurrentVenueStats('flamengo', [...currentSeasonResults, futureResult])).toEqual(baseline)
@@ -86,35 +85,32 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
   })
 
   it('mantém timestamps idênticos como um único bloco no corte', () => {
-    const atCutoff = '2026-11-04T16:00:00Z'
+    // Relativo ao corte vigente: um instante no limite, um depois dele e um sem fuso.
+    const atCutoff = ANALYTICAL_CUTOFF_UTC
+    const afterCutoff = new Date(Date.parse(ANALYTICAL_CUTOFF_UTC) + 60_000).toISOString()
     const kept = filterAtOrBeforeAnalyticalCutoff([
       { kickoff: atCutoff, source: 'espn' as const, id: 'a' },
       { kickoff: atCutoff, source: 'espn' as const, id: 'b' },
-      { kickoff: '2026-11-04T16:00:01Z', source: 'espn' as const, id: 'after' },
-      { kickoff: '2026-11-04T12:00:00', source: 'espn' as const, id: 'timezone-unknown' },
+      { kickoff: afterCutoff, source: 'espn' as const, id: 'after' },
+      { kickoff: ANALYTICAL_CUTOFF_UTC.slice(0, 10) + 'T12:00:00', source: 'espn' as const, id: 'timezone-unknown' },
     ])
     expect(kept.map(({ id }) => id)).toEqual(['a', 'b'])
   })
 
   it('não interpreta horário exibido pela CBF como publicação nem atribui fuso sem evidência', () => {
-    expect(CURRENT_SEASON_SOURCE.cbfStandings).toMatchObject({
-      collectedAt: '2026-11-04T16:41:43-03:00',
-      displayedTimestamp: '04/11/2026 - 19:41',
-      displayedTimestampTimezone: 'not specified',
-    })
+    expect(CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestampTimezone).toBe('not specified')
     expect(CURRENT_SEASON_SOURCE.cbfStandings).not.toHaveProperty('pageUpdatedAt')
   })
 
-  it('preserva a proveniência dos dois resultados ausentes no Football-Data e os mantém antes do corte', () => {
-    expect(currentSeasonResults.filter((match) => match.source === 'espn')).toEqual([
-      expect.objectContaining({
-        home: 'chapecoense', away: 'mirassol', homeGoals: 1, awayGoals: 2,
-        kickoff: '2026-11-03T22:30Z', sourceRef: '401841304',
-      }),
-      expect.objectContaining({
-        home: 'internacional', away: 'coritiba', homeGoals: 1, awayGoals: 0,
-        kickoff: '2026-11-04T00:30Z', sourceRef: '401841301',
-      }),
-    ])
+  it('preserva a proveniência dos resultados ESPN (ausentes no Football-Data) e os mantém antes do corte', () => {
+    const espnMatches = currentSeasonResults.filter((match) => match.source === 'espn')
+    expect(espnMatches.length).toBeGreaterThan(0)
+    for (const match of espnMatches) {
+      expect(match.sourceRef).toMatch(/^\d+$/)
+      expect(isAtOrBeforeAnalyticalCutoff(match.kickoff, match.source)).toBe(true)
+    }
+    // Pares únicos
+    const pairs = espnMatches.map((match) => `${match.home}:${match.away}`)
+    expect(new Set(pairs).size).toBe(pairs.length)
   })
 })

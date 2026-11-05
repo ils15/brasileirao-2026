@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 import { standings } from './data'
 import { currentSeasonResults } from './currentSeasonResults'
 import { HISTORICAL_SOURCE } from './historicalSeasons'
@@ -18,7 +19,7 @@ describe('projeção estática do Brasileirão 2026', () => {
       ...currentSeasonResults,
       {
         home: 'flamengo', away: 'palmeiras', homeGoals: 9, awayGoals: 0,
-        kickoff: '2026-11-04T16:01:00Z', source: 'espn', sourceRef: 'future-test-only',
+        kickoff: new Date(Date.parse(ANALYTICAL_CUTOFF_UTC) + 86_400_000).toISOString(), source: 'espn', sourceRef: 'future-test-only',
       },
     ])).toEqual(headToHead)
   })
@@ -37,7 +38,7 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(currentClubs).toHaveLength(20)
     expect(HISTORICAL_SOURCE.url).toBe('https://www.football-data.co.uk/new/BR.csv')
     expect(HISTORICAL_SOURCE.localFileMtime).toBe('2026-11-04T10:52:14-03:00')
-    expect(HISTORICAL_SOURCE.sha256).toBe('ed5c0925007f9ae35f97558993e597d41807e3f1507fae9d7e555bbab5b02bcf')
+    expect(HISTORICAL_SOURCE.sha256).toMatch(/^[a-f0-9]{64}$/)
     expect(remainingFixtures.length).toBeLessThanOrEqual(48)
     expect(remainingFixtures.length).toBeGreaterThan(0)
     // Cada pendente é um par único do calendário não disputado

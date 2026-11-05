@@ -45,7 +45,7 @@ const datasets: DatasetDefinition[] = [
   },
   {
     id: 'calendario',
-    title: 'Calendário restante (48 jogos)',
+    title: `Calendário restante (${remainingFixtures.length} jogos)`,
     description: 'Jogos pendentes da tabela básica CBF, incluindo os oito adiados.',
     filename: 'brasileirao-2026-calendario-restante',
     build: () => ({

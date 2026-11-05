@@ -2,11 +2,11 @@
 // Cada partida preserva kickoff e ordinal original por temporada; cortes usam kickoff, não a posição do array.
 // Validação agregada contra tabelas finais CBF: somente 2021–2025 (standingsVerified); as temporadas anteriores não foram verificadas contra fonte independente.
 // Partidas registradas sem placar no CSV e não empacotadas: Chapecoense-SC × Atletico-MG (11/12/2016, 2016).
-// mtime do CSV da coleta original: 2026-11-04T10:52:14-03:00; SHA-256 do arquivo retido em data/source-snapshots/.
+// SHA-256 do CSV da coleta em data/source-snapshots/; o pacote cobre 2012–2025 e não muda com linhas novas de 2026.
 export const HISTORICAL_SOURCE = {
   url: 'https://www.football-data.co.uk/new/BR.csv',
   localFileMtime: '2026-11-04T10:52:14-03:00',
-  sha256: 'ed5c0925007f9ae35f97558993e597d41807e3f1507fae9d7e555bbab5b02bcf',
+  sha256: '05588b9b41b919a2457fe5a355a7e1b38227ead60ebfbd709d42a599e477aa9b',
 } as const
 
 export type HistoricalMatch = [homeIndex: number, awayIndex: number, homeGoals: number, awayGoals: number, kickoff: string, sourceOrdinal: number]

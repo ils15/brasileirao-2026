@@ -111,7 +111,9 @@ async function main() {
     : await fetchText(BR_CSV_URL)
   const espnMatches = []
   const espnSnapshots = new Map()
-  for (let date = addDays(lastCutoffDate, 1); date <= today; date = addDays(date, 1)) {
+  // Coleta a partir do próprio dia do corte: jogos da noite do corte (após o
+  // instante 16:00Z) são novos e o parse já filtra por kickoff ≤ limite.
+  for (let date = lastCutoffDate; date <= today; date = addDays(date, 1)) {
     const localJson = join(snapshotsDir, `espn-scoreboard-${date}.json`)
     let jsonText
     if (existsSync(localJson) && (dryRun || !process.env.FETCH)) {
@@ -160,7 +162,7 @@ async function main() {
   }
   const files = {
     'src/currentSeasonResults.ts': renderCurrentSeasonResults({ results: merged, metadata }),
-    'src/projectionData.ts': renderProjectionData({ standings, remaining, displayNameFor: DISPLAY_NAMES }),
+    'src/projectionData.ts': renderProjectionData({ standings, remaining, displayNameFor: DISPLAY_NAMES, espnTeamIdsJson: metadata.espnTeamIdsJson }),
     'src/sourceMetadata.ts': renderSourceMetadata({ cutoffLocal, cutoffUtc: cutoffNewUtc }),
   }
 

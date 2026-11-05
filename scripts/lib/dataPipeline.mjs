@@ -47,9 +47,39 @@ export function parseCbfSchedule(source) {
   return schedule
 }
 
+// Display names da ESPN (API scoreboard/standings) — distintos dos nomes do CSV Football-Data.
+const ESPN_NAME_SLUGS = {
+  'Flamengo': 'flamengo',
+  'Palmeiras': 'palmeiras',
+  'Cruzeiro': 'cruzeiro',
+  'Fluminense': 'fluminense',
+  'Athletico Paranaense': 'athletico-pr',
+  'Bahia': 'bahia',
+  'Atlético-MG': 'atletico-mg',
+  'Red Bull Bragantino': 'bragantino',
+  'Santos': 'santos',
+  'São Paulo': 'sao-paulo',
+  'Botafogo': 'botafogo',
+  'Coritiba': 'coritiba',
+  'Vasco da Gama': 'vasco',
+  'Mirassol': 'mirassol',
+  'Vitória': 'vitoria',
+  'Internacional': 'internacional',
+  'Corinthians': 'corinthians',
+  'Grêmio': 'gremio',
+  'Remo': 'remo',
+  'Chapecoense': 'chapecoense',
+}
+
 function csvSlug(name) {
   const slug = TEAM_SLUGS[name]
   if (!slug) throw new Error(`Nome de clube sem slug conhecido: "${name}". Atualize TEAM_SLUGS.`)
+  return slug
+}
+
+function espnSlug(name) {
+  const slug = ESPN_NAME_SLUGS[name] ?? TEAM_SLUGS[name]
+  if (!slug) throw new Error(`Nome ESPN sem slug conhecido: "${name}". Atualize ESPN_NAME_SLUGS.`)
   return slug
 }
 
@@ -106,11 +136,7 @@ export function parseEspnScoreboard(jsonText, { cutoffUtc }) {
     if (!home || !away) continue
     const kickoff = event.date
     if (kickoff > cutoffUtc) continue
-    const slugOf = (team) => {
-      const slug = TEAM_SLUGS[team.displayName ?? team.name]
-      if (!slug) throw new Error(`Nome ESPN sem slug conhecido: "${team.displayName ?? team.name}". Atualize TEAM_SLUGS.`)
-      return slug
-    }
+    const slugOf = (team) => espnSlug(team.displayName ?? team.name)
     matches.push({
       home: slugOf(home.team),
       away: slugOf(away.team),
@@ -254,8 +280,14 @@ export const CURRENT_SEASON_SOURCE = {
     url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard',
     collectedAt: '${metadata.collectedAt}',
     timezone: 'UTC (kickoff timestamps include Z)',
+    sha256: '${metadata.espnSha256}',
     file: 'data/source-snapshots/',
     completedMatches: ${metadata.espnCount},
+  },
+  historical: {
+    url: 'https://www.football-data.co.uk/new/BR.csv',
+    sha256: '${metadata.historicalSha256}',
+    sourceAcquisitionForPriorPack: 'not independently established; local mtime/hash are the earlier supplied metadata',
   },
   cbfStandings: {
     url: 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026',
@@ -274,7 +306,7 @@ ${lines.join('\n')}
 `
 }
 
-export function renderProjectionData({ standings, remaining, displayNameFor }) {
+export function renderProjectionData({ standings, remaining, displayNameFor, espnTeamIdsJson = '{}' }) {
   const clubLines = standings.map((row) => {
     const initials = displayNameFor[row.id]?.initials ?? row.id.slice(0, 3).toUpperCase()
     const name = displayNameFor[row.id]?.club ?? row.id
@@ -313,6 +345,23 @@ ${fixtureLines.join('\n')}
 ]
 
 export { historicalSeasons } from './historicalSeasons'
+
+/**
+ * IDs ESPN dos 20 clubes — base dos escudos oficiais em
+ * https://a.espncdn.com/i/teamlogos/soccer/500/{id}.png (CDN pública ESPN).
+ */
+export const ESPN_TEAM_IDS: Readonly<Record<string, number>> = ${espnTeamIdsJson}
+
+export function espnLogoUrl(clubId: string): string | undefined {
+  const id = ESPN_TEAM_IDS[clubId]
+  return id ? 'https://a.espncdn.com/i/teamlogos/soccer/500/' + id + '.png' : undefined
+}
+
+/** Escudo pelo nome de exibição (usado onde não há slug, ex. standings da Visão Geral). */
+export function espnLogoUrlByClub(clubName: string): string | undefined {
+  const club = currentClubs.find((entry) => entry.club === clubName)
+  return club ? espnLogoUrl(club.id) : undefined
+}
 `
 }
 

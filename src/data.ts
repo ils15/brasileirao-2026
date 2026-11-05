@@ -13,28 +13,13 @@ export interface Scorer {
   goals: number
 }
 
-export const standings: Standing[] = [
-  { position: 1, club: 'Flamengo', points: 73, played: 33, initials: 'FLA' },
-  { position: 2, club: 'Palmeiras', points: 70, played: 33, initials: 'PAL' },
-  { position: 3, club: 'Cruzeiro', points: 57, played: 33, initials: 'CRU' },
-  { position: 4, club: 'Fluminense', points: 54, played: 33, initials: 'FLU' },
-  { position: 5, club: 'Athletico Paranaense', points: 54, played: 33, initials: 'CAP' },
-  { position: 6, club: 'Bahia', points: 53, played: 33, initials: 'BAH' },
-  { position: 7, club: 'Atlético Mineiro', points: 50, played: 33, initials: 'CAM' },
-  { position: 8, club: 'Red Bull Bragantino', points: 47, played: 34, initials: 'RBB' },
-  { position: 9, club: 'Santos FC', points: 47, played: 34, initials: 'SAN' },
-  { position: 10, club: 'São Paulo', points: 43, played: 33, initials: 'SAO' },
-  { position: 11, club: 'Coritiba SAF', points: 42, played: 34, initials: 'CFC' },
-  { position: 12, club: 'Mirassol', points: 40, played: 34, initials: 'MIR' },
-  { position: 13, club: 'Botafogo', points: 39, played: 33, initials: 'BOT' },
-  { position: 14, club: 'Vasco da Gama SAF', points: 38, played: 32, initials: 'VAS' },
-  { position: 15, club: 'Vitória', points: 38, played: 33, initials: 'VIT' },
-  { position: 16, club: 'Internacional', points: 38, played: 34, initials: 'INT' },
-  { position: 17, club: 'Grêmio', points: 37, played: 33, initials: 'GRE' },
-  { position: 18, club: 'Corinthians', points: 36, played: 33, initials: 'COR' },
-  { position: 19, club: 'Remo', points: 29, played: 33, initials: 'REM' },
-  { position: 20, club: 'Chapecoense', points: 21, played: 33, initials: 'CHA' },
-]
+export const standings: Standing[] = currentClubs.map((club) => ({
+  position: club.position,
+  club: club.club,
+  points: club.points,
+  played: club.played,
+  initials: club.initials,
+}))
 
 export const scorers: Scorer[] = [
   { position: '1º', name: 'Kevin Viveros', club: 'Athletico Paranaense', goals: 21 },
@@ -47,6 +32,7 @@ export const scorers: Scorer[] = [
 ]
 
 import { ZONES } from './projectionConfig'
+import { currentClubs } from './projectionData'
 
 export type ClubFilter = 'all' | 'qualification' | 'middle' | 'relegation'
 

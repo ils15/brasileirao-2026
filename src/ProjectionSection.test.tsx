@@ -79,11 +79,19 @@ describe('painel de projeções', () => {
     expect(within(points).getByRole('columnheader', { name: /^Mediana/ })).toBeInTheDocument()
     expect(within(points).getByRole('columnheader', { name: /Δ vs hoje/ })).toBeInTheDocument()
 
-    const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
-    const flamengoZonesRow = within(zones).getByRole('row', { name: /Flamengo/ })
-    expect(flamengoZonesRow).toHaveTextContent(`IC ${percentFormat.format(flamengo.titleInterval.lower95)}–${percentFormat.format(flamengo.titleInterval.upper95)}`)
+    // Clube com chance intermediária exibe IC; chance 0%/100% não exibe intervalo
+    // Chance estritamente entre 0 e 1 é o caso em que o IC é exibido (rebaixamento sempre tem intermediários)
+    const withInterval = result.clubProbabilities.find((club) => club.relegation > 0 && club.relegation < 1)!
+    const withIntervalRow = within(zones).getByRole('row', { name: new RegExp(withInterval.club) })
+    expect(withIntervalRow.textContent).toContain(`IC ${percentFormat.format(withInterval.relegationInterval.lower95)}–${percentFormat.format(withInterval.relegationInterval.upper95)}`)
+    const certainClub = result.clubProbabilities.find((club) => club.title === 0 || club.title === 1)
+    if (certainClub) {
+      const certainRow = within(zones).getByRole('row', { name: new RegExp(certainClub.club) })
+      expect(certainRow.querySelector('.probability-cell--zero')).not.toBeNull()
+    }
     expect(within(zones).getByRole('img', { name: /Cenários de Flamengo/ })).toBeInTheDocument()
 
+    const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
     const flamengoPointsRow = within(points).getByRole('row', { name: /Flamengo/ })
     expect(flamengoPointsRow).toHaveTextContent(String(flamengo.pointsStats.median))
     expect(flamengoPointsRow).toHaveTextContent(`${flamengo.pointsStats.p25}–${flamengo.pointsStats.p75}`)
