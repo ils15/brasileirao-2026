@@ -9,10 +9,6 @@ function formatPointsPerMatch(value: number | null): string {
   return value === null ? '—' : pointsPerMatchFormat.format(value)
 }
 
-function formatHeadToHeadStats(club: string, venue: 'em casa' | 'fora', stats: VenueStats): string {
-  return `${club} ${venue}: N=${stats.matches} · V-E-D=${stats.wins}-${stats.draws}-${stats.losses} · ${stats.points} ${stats.points === 1 ? 'ponto' : 'pontos'}`
-}
-
 interface VenueStatsCardProps {
   title: string
   stats: VenueStats
@@ -94,12 +90,12 @@ export function FixtureCalendar(): JSX.Element {
               <small>Referência CBF {fixture.cbfRef}</small>
               <div className="head-to-head-context">
                 <p>Retrospecto H2H · informativo; sem peso na projeção. Resultados históricos, não previsão.</p>
-                <ul aria-label={`Estatísticas H2H de ${home} contra ${away}`}>
-                  <li>2021–2025 · {formatHeadToHeadStats(home, 'em casa', headToHead.historical.home)}</li>
-                  <li>2021–2025 · {formatHeadToHeadStats(home, 'fora', headToHead.historical.away)}</li>
-                  <li>2026 · {formatHeadToHeadStats(home, 'em casa', headToHead.current.home)}</li>
-                  <li>2026 · {formatHeadToHeadStats(home, 'fora', headToHead.current.away)}</li>
-                </ul>
+                <div className="h2h-mini-grid" aria-label={`Estatísticas H2H de ${home} contra ${away}`}>
+                  <span className="h2h-mini"><HomeIcon /> 2021–25 casa · N{headToHead.historical.home.matches} · {headToHead.historical.home.wins}-{headToHead.historical.home.draws}-{headToHead.historical.home.losses} · {headToHead.historical.home.points} pts</span>
+                  <span className="h2h-mini"><AwayIcon /> 2021–25 fora · N{headToHead.historical.away.matches} · {headToHead.historical.away.wins}-{headToHead.historical.away.draws}-{headToHead.historical.away.losses} · {headToHead.historical.away.points} pts</span>
+                  <span className="h2h-mini"><HomeIcon /> 2026 casa · N{headToHead.current.home.matches} · {headToHead.current.home.wins}-{headToHead.current.home.draws}-{headToHead.current.home.losses} · {headToHead.current.home.points} pts</span>
+                  <span className="h2h-mini"><AwayIcon /> 2026 fora · N{headToHead.current.away.matches} · {headToHead.current.away.wins}-{headToHead.current.away.draws}-{headToHead.current.away.losses} · {headToHead.current.away.points} pts</span>
+                </div>
                 <details>
                   <summary>Placares do retrospecto ({headToHead.matches.length})</summary>
                   {headToHead.matches.length > 0 ? (

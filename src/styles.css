@@ -850,3 +850,28 @@ th.numeric .sort-button { justify-content: flex-end; }
   .magic-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .magic-kpis .kpi-value { font-size: 22px; }
 }
+
+
+/* H2H: summary em 2 colunas + cards de mando do confronto */
+.h2h-summary-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.h2h-summary-main { display: grid; gap: 12px; min-width: 0; }
+.h2h-summary-side { display: grid; gap: 12px; min-width: 0; align-content: start; }
+.h2h-period-grid { display: grid; gap: 10px; }
+.h2h-period-card h4 { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--text-muted); font-size: 12px; font-weight: 700; }
+
+/* Retrospecto H2H por fixture: chips 2×2 com ícones */
+.h2h-mini-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 6px; }
+.h2h-mini { display: inline-flex; align-items: center; gap: 5px; padding: 7px 9px; border: 1px solid var(--border-soft); border-radius: 8px; background: var(--surface-soft); color: var(--text-secondary); font: 12px var(--mono); white-space: nowrap; }
+.h2h-mini .venue-icon { width: 13px; height: 13px; }
+
+/* Escudos nos jogos da próxima rodada */
+.next-round-teams { display: inline-flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+
+@media (max-width: 1023px) {
+  .h2h-summary-grid { grid-template-columns: minmax(0, 1fr); }
+  .h2h-mini-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .h2h-mini-grid { grid-template-columns: minmax(0, 1fr); }
+}

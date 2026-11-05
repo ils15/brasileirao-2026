@@ -1,5 +1,6 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures, espnLogoUrl } from './projectionData'
+import { HomeIcon, AwayIcon } from './icons'
 import { getHeadToHeadSummary } from './seasonStats'
 
 /**
@@ -58,6 +59,22 @@ function HeadToHeadBar({ outcome, aName, bName }: { outcome: HeadToHeadOutcome; 
   )
 }
 
+/** Card de mando dentro do confronto: como o clube A se saiu em casa / fora NESTE confronto. */
+function VenuePeriodCard({ venue, title, outcome, aName, bName }: { venue: 'home' | 'away'; title: string; outcome: HeadToHeadOutcome; aName: string; bName: string }): JSX.Element {
+  const Icon = venue === 'home' ? HomeIcon : AwayIcon
+  return (
+    <div className="h2h-period-card">
+      <h4><Icon /> {title}</h4>
+      <strong>{aName} {outcome.winsA} · {outcome.draws} · {outcome.winsB} {bName}</strong>
+      <span>
+        {outcome.matches === 0
+          ? 'sem encontros nesse mando no período'
+          : `${outcome.matches === 1 ? '1 encontro' : `${outcome.matches} encontros`} · gols ${outcome.goalsA}–${outcome.goalsB}`}
+      </span>
+    </div>
+  )
+}
+
 /** Escudo real com fallback silencioso para nada. */
 function Crest({ clubId, size = 'medium' }: { clubId: string; size?: 'medium' | 'large' }): JSX.Element | null {
   const [failed, setFailed] = useState(false)
@@ -97,6 +114,14 @@ export function HeadToHeadPanel(): JSX.Element {
   )
   const filteredOutcome = useMemo(() => outcomeOfMatches(filteredMatches, clubA.id, clubB.id), [filteredMatches, clubA.id, clubB.id])
   const overall = filteredOutcome
+  const homeOutcome = useMemo(
+    () => outcomeOfMatches(filteredMatches.filter((match) => match.home === clubA.id), clubA.id, clubB.id),
+    [filteredMatches, clubA.id, clubB.id],
+  )
+  const awayOutcome = useMemo(
+    () => outcomeOfMatches(filteredMatches.filter((match) => match.away === clubA.id), clubA.id, clubB.id),
+    [filteredMatches, clubA.id, clubB.id],
+  )
   // Lacunas de divisão: clubes que caíram/subiram não se enfrentaram em todos os anos do período.
   const yearsWithMeetings = useMemo(
     () => [...new Set(filteredMatches.map((match) => match.seasonYear))].sort((left, right) => left - right),
@@ -120,7 +145,7 @@ export function HeadToHeadPanel(): JSX.Element {
         <div><p className="eyebrow eyebrow-dark">Confronto direto</p><h2 id="head-to-head-title" className="h2h-title"><Crest clubId={clubA.id} size="large" /> {clubA.club} × {clubB.club} <Crest clubId={clubB.id} size="large" /></h2></div>
         <span className="section-index">02 <span>/ RETROSPECTO</span></span>
       </div>
-      <p className="table-note">Retrospecto dos encontros disponíveis de 2021–2026 até o corte. Histórico, não previsão; nunca altera as probabilidades.</p>
+      <p className="table-note">Retrospecto dos encontros disponíveis de 2012–2026 até o corte. Histórico, não previsão; nunca altera as probabilidades.</p>
 
       <div className="h2h-selects">
         <label className="fixture-club-select">
@@ -158,7 +183,8 @@ export function HeadToHeadPanel(): JSX.Element {
         </div>
       ) : (
         <>
-          <div className="h2h-summary">
+          <div className="h2h-summary h2h-summary-grid">
+            <div className="h2h-summary-main">
             <div className="h2h-period-presets" role="group" aria-label="Períodos rápidos do retrospecto">
               <button
                 type="button"
@@ -184,12 +210,20 @@ export function HeadToHeadPanel(): JSX.Element {
               Período {periodFrom}–{periodTo}: {overall.matches === 1 ? '1 encontro' : `${overall.matches} encontros`} · gols {overall.goalsA}–{overall.goalsB} ({clubA.club} primeiro)
                 {gapYears.length > 0 && <> · {gapsSummary}</>}
             </p>
-            {nextMeeting && (
-              <div className="h2h-next-meeting">
-                <strong>Próximo confronto no calendário</strong>
-                <p>{clubNames.get(nextMeeting.home)} × {clubNames.get(nextMeeting.away)} · Rodada {nextMeeting.round} · ref. CBF {nextMeeting.cbfRef}</p>
+            </div>
+            <div className="h2h-summary-side">
+              {nextMeeting && (
+                <div className="h2h-next-meeting">
+                  <strong>Próximo confronto no calendário</strong>
+                  <p>{clubNames.get(nextMeeting.home)} × {clubNames.get(nextMeeting.away)} · Rodada {nextMeeting.round} · ref. CBF {nextMeeting.cbfRef}</p>
+                </div>
+              )}
+              <div className="h2h-period-grid">
+                <VenuePeriodCard venue="home" title={`${clubA.club} como mandante`} outcome={homeOutcome} aName={clubA.club} bName={clubB.club} />
+                <VenuePeriodCard venue="away" title={`${clubA.club} como visitante`} outcome={awayOutcome} aName={clubA.club} bName={clubB.club} />
               </div>
-            )}
+              <p className="table-note">Mando dentro do confronto: só encontros entre os dois, no período filtrado.</p>
+            </div>
           </div>
 
           <div className="h2h-columns">
