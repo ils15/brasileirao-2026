@@ -10,6 +10,7 @@ import { StandingsViews } from './StandingsViews'
 import { NextRoundPanel } from './NextRoundPanel'
 import { TeamAnalysisPanel } from './TeamAnalysisPanel'
 import { HeadToHeadPanel } from './HeadToHeadPanel'
+import { espnLogoUrlByClub } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
 import { seasonFacts, cutoffSummaryLine } from './seasonFacts'
@@ -107,6 +108,20 @@ function BrandMark(): JSX.Element {
 }
 
 function TeamBadge({ team }: { team: Standing }): JSX.Element {
+  const logo = espnLogoUrlByClub(team.club)
+  const [failed, setFailed] = useState(false)
+  if (logo && !failed) {
+    return (
+      <img
+        className="team-badge team-badge--logo"
+        src={logo}
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        onError={() => setFailed(true)}
+      />
+    )
+  }
   return <span className="team-badge" aria-hidden="true">{team.initials}</span>
 }
 

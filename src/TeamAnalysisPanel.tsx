@@ -1,6 +1,6 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures } from './projectionData'
-import { getCurrentVenueStats, type VenueStats } from './seasonStats'
+import { getCurrentVenueStats } from './seasonStats'
 import { recentForm, currentStreaks, attackDefenseLeaders } from './rounds'
 import { useProjection } from './ProjectionContext'
 import { VenueStatsCard } from './FixtureCalendar'
@@ -56,18 +56,16 @@ function StreakCard({ clubId, clubName }: { clubId: string; clubName: string }):
 
 function VenuePair({ clubId }: { clubId: string }): JSX.Element {
   const stats = useMemo(() => getCurrentVenueStats(clubId), [clubId])
-  const card = (title: string, venueStats: VenueStats): JSX.Element => (
-    <VenueStatsCard title={title} stats={venueStats} />
-  )
+  const total = decimal.format((stats.home.pointsPerMatch ?? 0) + (stats.away.pointsPerMatch ?? 0))
   return (
-    <div className="team-kpi team-kpi--wide">
-      <strong>{decimal.format((stats.home.pointsPerMatch ?? 0) + (stats.away.pointsPerMatch ?? 0))} pts/jogo</strong>
-      <span>Casa e fora na temporada até o corte</span>
-      <div className="venue-stats-grid h2h-stats-grid">
-        {card('Casa · V-E-D · pts/j', stats.home)}
-        {card('Fora · V-E-D · pts/j', stats.away)}
+    <>
+      <div className="team-kpi team-kpi--stacked">
+        <strong>{total} pts/jogo</strong>
+        <span>Casa e fora até o corte</span>
+        <VenueStatsCard title="Como mandante" stats={stats.home} />
+        <VenueStatsCard title="Como visitante" stats={stats.away} />
       </div>
-    </div>
+    </>
   )
 }
 
@@ -118,8 +116,8 @@ function FutureFixtures({ clubId, clubName }: { clubId: string; clubName: string
           const opponent = names.get(isHome ? fixture.away : fixture.home) ?? (isHome ? fixture.away : fixture.home)
           return (
             <li className="team-future-item" key={fixture.cbfRef}>
-              <strong>{isHome ? 'Casa' : 'Fora'} × {opponent}</strong>
-              <span>Rodada {fixture.round} · ref. CBF {fixture.cbfRef}</span>
+              <strong><span className="team-future-venue">{isHome ? 'Casa' : 'Fora'}</span> × {opponent}</strong>
+              <span>R{fixture.round} · {fixture.cbfRef}</span>
             </li>
           )
         })}
@@ -157,8 +155,8 @@ export function TeamAnalysisPanel(): JSX.Element {
         </div>
         <FormStrip clubId={club.id} clubName={club.club} />
         <StreakCard clubId={club.id} clubName={club.club} />
-        <VenuePair clubId={club.id} />
         <FinalProjection clubId={club.id} clubName={club.club} />
+        <VenuePair clubId={club.id} />
         <FutureFixtures clubId={club.id} clubName={club.club} />
       </div>
       <p className="table-note">Projeções condicionais ao corte e às vagas geradas pela tabela; o retrospecto e a forma são histórico, não previsão.</p>

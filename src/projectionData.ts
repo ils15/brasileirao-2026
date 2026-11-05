@@ -44,6 +44,45 @@ export const currentClubs: ProjectionClub[] = [
   { id: 'chapecoense', club: 'Chapecoense', initials: 'CHA', position: 20, points: 21, played: 33, wins: 4, draws: 9, losses: 20, goalsFor: 33, goalsAgainst: 68 },
 ]
 
+/**
+ * IDs ESPN dos 20 clubes — base dos escudos oficiais em
+ * https://a.espncdn.com/i/teamlogos/soccer/500/{id}.png (CDN pública ESPN).
+ * Extraído de /apis/v2/sports/soccer/bra.1/standings (fonte já usada pelo updater).
+ */
+export const ESPN_TEAM_IDS: Readonly<Record<string, number>> = {
+  flamengo: 819,
+  palmeiras: 2029,
+  cruzeiro: 2022,
+  fluminense: 3445,
+  'athletico-pr': 3458,
+  bahia: 9967,
+  'atletico-mg': 7632,
+  bragantino: 6079,
+  santos: 2674,
+  'sao-paulo': 2026,
+  botafogo: 6086,
+  coritiba: 3456,
+  vasco: 3454,
+  mirassol: 9169,
+  vitoria: 3457,
+  internacional: 1936,
+  corinthians: 874,
+  gremio: 6273,
+  remo: 4936,
+  chapecoense: 9318,
+}
+
+export function espnLogoUrl(clubId: string): string | undefined {
+  const id = ESPN_TEAM_IDS[clubId]
+  return id ? `https://a.espncdn.com/i/teamlogos/soccer/500/${id}.png` : undefined
+}
+
+/** Escudo pelo nome de exibição (usado onde não há slug, ex. data.ts standings). */
+export function espnLogoUrlByClub(clubName: string): string | undefined {
+  const club = currentClubs.find((entry) => entry.club === clubName)
+  return club ? espnLogoUrl(club.id) : undefined
+}
+
 export const remainingFixtures: RemainingFixture[] = [
   { round: '35', home: 'flamengo', away: 'athletico-pr', cbfRef: '341' },
   { round: '35', home: 'vasco', away: 'internacional', cbfRef: '342' },

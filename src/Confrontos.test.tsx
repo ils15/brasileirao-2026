@@ -53,7 +53,8 @@ describe('painel da próxima rodada', () => {
 })
 
 describe('painel de confronto direto', () => {
-  it('mostra barra de retrospecto, timeline e cards por mando para Flamengo × Palmeiras', () => {
+  it('mostra barra de retrospecto, timeline e filtros de período para Flamengo × Palmeiras', async () => {
+    const user = userEvent.setup()
     render(<HeadToHeadPanel />)
     const summary = getHeadToHeadSummary('flamengo', 'palmeiras')
 
@@ -68,12 +69,16 @@ describe('painel de confronto direto', () => {
     expect(meeting2026).toHaveTextContent('D')
     expect(within(timeline).getAllByRole('listitem').filter((item) => item.textContent?.includes('palmeiras')).length).toBeGreaterThan(0)
 
-    // Cards por período: V-E-D e gols agregados só dos encontros entre os dois
-    expect(screen.getByText('Temporada 2026 · até o corte')).toBeInTheDocument()
-    expect(screen.getByText('2021–2025 · histórico do confronto')).toBeInTheDocument()
-    const currentCard = screen.getByText('Temporada 2026 · até o corte').closest('div')!
-    expect(currentCard).toHaveTextContent(/1 encontro|1 encontro · gols 0–3/)
-    expect(currentCard.textContent).toContain('Flamengo 0 · 0 · 1 Palmeiras')
+    // Presets de período: barra e resumo respondem ao filtro (default desde 2012)
+    const summaryBox = document.querySelector('.h2h-summary')!
+    expect(summaryBox.textContent).toContain('Período 2012–2026: 27 encontros')
+    await user.click(screen.getByRole('button', { name: 'Temporada 2026' }))
+    expect(document.querySelector('.h2h-summary')!.textContent).toContain('Período 2026–2026: 1 encontro · gols 0–3 (Flamengo primeiro)')
+    const bar2026 = screen.getByRole('img', { name: /Retrospecto direto: Vitórias de Flamengo 0, Empates 0, Vitórias de Palmeiras 1/ })
+    expect(bar2026).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Desde 2012' }))
+    expect(document.querySelector('.h2h-summary')!.textContent).toContain('Período 2012–2026')
+
 
     // Próximo confronto entre os dois: rodada 36 (palmeiras × flamengo)
     expect(screen.getByText(/Próximo confronto no calendário/)).toBeInTheDocument()
@@ -109,8 +114,8 @@ describe('análise por clube', () => {
     expect(screen.getByText(/Últimos 5 jogos de Grêmio/)).toBeInTheDocument()
     expect(screen.getByText(/Calendário de Grêmio/)).toBeInTheDocument()
     // Casa/fora
-    expect(screen.getByText('Casa · V-E-D · pts/j')).toBeInTheDocument()
-    expect(screen.getByText('Fora · V-E-D · pts/j')).toBeInTheDocument()
+    expect(screen.getByText('Como mandante')).toBeInTheDocument()
+    expect(screen.getByText('Como visitante')).toBeInTheDocument()
     // Card de projeção degradado (sem Worker no jsdom)
     expect(screen.getByText(/Projeção indisponível|Projeção em cálculo/)).toBeInTheDocument()
   })

@@ -18,7 +18,8 @@
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
   --ink: #17241f;
-  --deep: #101d19;
+  --deep: #0e1b33;
+  --deep-accent: #7fb0ff;
   --deep-2: #182822;
   --lime: #d6fc53;
   --paper: #f4f5f1;
@@ -677,31 +678,31 @@ th.numeric .sort-button { justify-content: flex-end; }
  */
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --ink: #edf4ef;
-  --paper: #101814;
-  --surface: #18231d;
-  --surface-soft: #202d25;
-  --surface-tint: #26372d;
-  --surface-alt: #141e18;
-  --text: #d2ddd5;
-  --text-secondary: #c0cec4;
-  --text-muted: #a7b6ac;
-  --link: #a9d7b0;
-  --rule: #34433a;
-  --border: #34433a;
-  --border-soft: #2a3930;
-  --border-strong: #46584b;
-  --thead: #202d25;
-  --zebra: #141e18;
-  --row-hover: #25332a;
-  --callout-text: #e2eee5;
-  --callout-bg: #26372d;
-  --leader-bg: #223128;
-  --leader-line: #34433a;
+  --ink: #eef3fb;
+  --paper: #0a1220;
+  --surface: #101c30;
+  --surface-soft: #16253c;
+  --surface-tint: #1a2c47;
+  --surface-alt: #0d1829;
+  --text: #ccd7ea;
+  --text-secondary: #b6c5de;
+  --text-muted: #9dabc6;
+  --link: #7fb0ff;
+  --rule: #24344f;
+  --border: #24344f;
+  --border-soft: #1d2c45;
+  --border-strong: #32456a;
+  --thead: #16253c;
+  --zebra: #0d1829;
+  --row-hover: #1c2c4a;
+  --callout-text: #dbe5f4;
+  --callout-bg: #142238;
+  --leader-bg: #132441;
+  --leader-line: #24344f;
 }
 
-:root[data-theme='dark'] .point-distribution-bar { fill: #a3c985; }
-:root[data-theme='dark'] .outcome-tab[aria-selected='true'], :root[data-theme='dark'] .subtab.is-selected { color: #fff; background: #294333; }
+:root[data-theme='dark'] .point-distribution-bar { fill: #7fb0ff; }
+:root[data-theme='dark'] .outcome-tab[aria-selected='true'], :root[data-theme='dark'] .subtab.is-selected { color: #fff; background: #1d3d6e; }
 :root[data-theme='dark'] .result-bar { background: #26372d; }
 :root[data-theme='dark'] .how-to-read { color: #dfe9e1; background: #26372d; }
 :root[data-theme='dark'] .zone-bar { background: #26372d; }
@@ -711,7 +712,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 :root[data-theme='dark'] a:focus-visible,
 :root[data-theme='dark'] input:focus-visible,
 :root[data-theme='dark'] select:focus-visible,
-:root[data-theme='dark'] [tabindex='0']:focus-visible { outline-color: #d6fc53; }
+:root[data-theme='dark'] [tabindex='0']:focus-visible { outline-color: #7fb0ff; }
 :root[data-theme='dark'] .leader-card { color: #edf4ef; }
 :root[data-theme='dark'] .leader-main .team-badge { color: #edf4ef; background: #2a3930; border-color: #46584b; }
 :root[data-theme='dark'] .projection-method summary { color: #cfe3d3; }
@@ -725,30 +726,30 @@ th.numeric .sort-button { justify-content: flex-end; }
 @media (prefers-color-scheme: dark) {
   :root[data-theme='system'] {
     color-scheme: dark;
-    --ink: #edf4ef;
-    --paper: #101814;
-    --surface: #18231d;
-    --surface-soft: #202d25;
-    --surface-tint: #26372d;
-    --surface-alt: #141e18;
-    --text: #d2ddd5;
-    --text-secondary: #c0cec4;
-    --text-muted: #a7b6ac;
-    --link: #a9d7b0;
-    --rule: #34433a;
-    --border: #34433a;
-    --border-soft: #2a3930;
-    --border-strong: #46584b;
-    --thead: #202d25;
-    --zebra: #141e18;
-    --row-hover: #25332a;
-    --callout-text: #e2eee5;
-    --callout-bg: #26372d;
-    --leader-bg: #223128;
-    --leader-line: #34433a;
+    --ink: #eef3fb;
+    --paper: #0a1220;
+    --surface: #101c30;
+    --surface-soft: #16253c;
+    --surface-tint: #1a2c47;
+    --surface-alt: #0d1829;
+    --text: #ccd7ea;
+    --text-secondary: #b6c5de;
+    --text-muted: #9dabc6;
+    --link: #7fb0ff;
+    --rule: #24344f;
+    --border: #24344f;
+    --border-soft: #1d2c45;
+    --border-strong: #32456a;
+    --thead: #16253c;
+    --zebra: #0d1829;
+    --row-hover: #1c2c4a;
+    --callout-text: #dbe5f4;
+    --callout-bg: #142238;
+    --leader-bg: #132441;
+    --leader-line: #24344f;
   }
-  :root[data-theme='system'] .point-distribution-bar { fill: #a3c985; }
-  :root[data-theme='system'] .outcome-tab[aria-selected='true'], :root[data-theme='system'] .subtab.is-selected { color: #fff; background: #294333; }
+  :root[data-theme='system'] .point-distribution-bar { fill: #7fb0ff; }
+  :root[data-theme='system'] .outcome-tab[aria-selected='true'], :root[data-theme='system'] .subtab.is-selected { color: #fff; background: #1d3d6e; }
   :root[data-theme='system'] .result-bar { background: #26372d; }
   :root[data-theme='system'] .how-to-read { color: #dfe9e1; background: #26372d; }
   :root[data-theme='system'] .zone-bar { background: #26372d; }
@@ -758,7 +759,7 @@ th.numeric .sort-button { justify-content: flex-end; }
   :root[data-theme='system'] a:focus-visible,
   :root[data-theme='system'] input:focus-visible,
   :root[data-theme='system'] select:focus-visible,
-  :root[data-theme='system'] [tabindex='0']:focus-visible { outline-color: #d6fc53; }
+  :root[data-theme='system'] [tabindex='0']:focus-visible { outline-color: #7fb0ff; }
   :root[data-theme='system'] .leader-card { color: #edf4ef; }
   :root[data-theme='system'] .leader-main .team-badge { color: #edf4ef; background: #2a3930; border-color: #46584b; }
   :root[data-theme='system'] .projection-method summary { color: #cfe3d3; }
@@ -768,4 +769,33 @@ th.numeric .sort-button { justify-content: flex-end; }
   :root[data-theme='system'] .source-badge--espn { color: #e4c4e2; background: #37223a; }
   :root[data-theme='system'] .validation-badge--ok { color: #bfe3b2; background: #22331f; }
   :root[data-theme='system'] .validation-badge--fail { color: #eebfb4; background: #3a221d; }
+}
+
+
+/* Escudos reais (CDN ESPN) */
+.crest { display: inline-block; object-fit: contain; }
+.crest--medium { width: 22px; height: 22px; }
+.crest--large { width: 34px; height: 34px; vertical-align: -8px; margin: 0 4px; }
+.h2h-title { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.team-badge--logo { border-radius: 50%; background: var(--surface); object-fit: contain; }
+
+/* Presets de período do H2H */
+.h2h-period-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Análise por clube: layout corrigido */
+.team-analysis-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+.team-kpi--stacked { display: grid; gap: 10px; }
+.team-kpi--stacked .venue-stats-card { background: var(--surface); }
+.team-future { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.team-future-item strong { flex: 1; min-width: 0; }
+.team-future-item > span { flex: none; white-space: nowrap; }
+.team-future-venue { color: var(--text-muted); font-weight: 600; margin-right: 2px; }
+
+@media (max-width: 1023px) {
+  .team-analysis-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .team-future { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 767px) {
+  .team-analysis-grid { grid-template-columns: minmax(0, 1fr); }
 }

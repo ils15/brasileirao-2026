@@ -1,5 +1,5 @@
 import { useMemo, useState, type JSX } from 'react'
-import { currentClubs, remainingFixtures } from './projectionData'
+import { currentClubs, remainingFixtures, espnLogoUrl } from './projectionData'
 import { getHeadToHeadSummary } from './seasonStats'
 
 /**
@@ -37,6 +37,8 @@ function outcomeOfMatches(matches: readonly { home: string; away: string; homeGo
 
 const outcomeLabels = (a: string, b: string) => [`Vitórias de ${a}`, 'Empates', `Vitórias de ${b}`] as const
 
+const YEAR_OPTIONS = Array.from({ length: 15 }, (_, index) => 2012 + index)
+
 function HeadToHeadBar({ outcome, aName, bName }: { outcome: HeadToHeadOutcome; aName: string; bName: string }): JSX.Element {
   const total = Math.max(1, outcome.winsA + outcome.draws + outcome.winsB)
   const labels = outcomeLabels(aName, bName)
@@ -56,18 +58,12 @@ function HeadToHeadBar({ outcome, aName, bName }: { outcome: HeadToHeadOutcome; 
   )
 }
 
-/** Card por período: V-E-D do confronto e gols agregados entre os dois clubes. */
-function PeriodCard({ title, outcome, aName, bName }: { title: string; outcome: HeadToHeadOutcome; aName: string; bName: string }): JSX.Element {
-  return (
-    <div className="h2h-period-card">
-      <h4>{title}</h4>
-      <strong>{aName} {outcome.winsA} · {outcome.draws} · {outcome.winsB} {bName}</strong>
-      <span>
-        {outcome.matches === 1 ? '1 encontro' : `${outcome.matches} encontros`}
-        {outcome.matches > 0 && ` · gols ${outcome.goalsA}–${outcome.goalsB}`}
-      </span>
-    </div>
-  )
+/** Escudo real com fallback silencioso para nada. */
+function Crest({ clubId, size = 'medium' }: { clubId: string; size?: 'medium' | 'large' }): JSX.Element | null {
+  const [failed, setFailed] = useState(false)
+  const logo = espnLogoUrl(clubId)
+  if (!logo || failed) return null
+  return <img className={`crest crest--${size}`} src={logo} alt="" aria-hidden="true" loading="lazy" onError={() => setFailed(true)} />
 }
 
 function MeetingDot({ match, aId, aName, bName }: { match: { home: string; away: string; homeGoals: number; awayGoals: number; seasonYear: number; kickoff: string }; aId: string; aName: string; bName: string }): JSX.Element {
@@ -88,27 +84,26 @@ function MeetingDot({ match, aId, aName, bName }: { match: { home: string; away:
 export function HeadToHeadPanel(): JSX.Element {
   const [clubAId, setClubAId] = useState('flamengo')
   const [clubBId, setClubBId] = useState('palmeiras')
+  const [periodFrom, setPeriodFrom] = useState(2012)
+  const [periodTo, setPeriodTo] = useState(2026)
   const clubNames = useMemo(() => new Map(currentClubs.map(({ id, club }) => [id, club])), [])
   const clubA = currentClubs.find(({ id }) => id === clubAId) ?? currentClubs[0]!
   const clubB = currentClubs.find(({ id }) => id === clubBId) ?? currentClubs[1]!
   const summary = useMemo(() => getHeadToHeadSummary(clubA.id, clubB.id), [clubA.id, clubB.id])
 
-  const overall = useMemo(() => outcomeOfMatches(summary.matches, clubA.id, clubB.id), [summary, clubA.id, clubB.id])
-  const currentOutcome = useMemo(
-    () => outcomeOfMatches(summary.matches.filter((match) => match.seasonYear === 2026), clubA.id, clubB.id),
-    [summary, clubA.id, clubB.id],
+  const filteredMatches = useMemo(
+    () => summary.matches.filter((match) => match.seasonYear >= periodFrom && match.seasonYear <= periodTo),
+    [summary, periodFrom, periodTo],
   )
-  const historicalOutcome = useMemo(
-    () => outcomeOfMatches(summary.matches.filter((match) => match.seasonYear <= 2025), clubA.id, clubB.id),
-    [summary, clubA.id, clubB.id],
-  )
+  const filteredOutcome = useMemo(() => outcomeOfMatches(filteredMatches, clubA.id, clubB.id), [filteredMatches, clubA.id, clubB.id])
+  const overall = filteredOutcome
   const nextMeeting = remainingFixtures.find((fixture) =>
     (fixture.home === clubA.id && fixture.away === clubB.id) || (fixture.home === clubB.id && fixture.away === clubA.id))
 
   return (
     <section className="panel head-to-head-panel" aria-labelledby="head-to-head-title">
       <div className="section-heading">
-        <div><p className="eyebrow eyebrow-dark">CONFRONTO DIRETO</p><h2 id="head-to-head-title">{clubA.club} × {clubB.club}</h2></div>
+        <div><p className="eyebrow eyebrow-dark">Confronto direto</p><h2 id="head-to-head-title" className="h2h-title"><Crest clubId={clubA.id} size="large" /> {clubA.club} × {clubB.club} <Crest clubId={clubB.id} size="large" /></h2></div>
         <span className="section-index">02 <span>/ RETROSPECTO</span></span>
       </div>
       <p className="table-note">Retrospecto dos encontros disponíveis de 2021–2026 até o corte. Histórico, não previsão; nunca altera as probabilidades.</p>
@@ -126,6 +121,20 @@ export function HeadToHeadPanel(): JSX.Element {
             {currentClubs.map((club) => <option key={club.id} value={club.id}>{club.club}</option>)}
           </select>
         </label>
+        <label className="fixture-club-select">
+          <span>De</span>
+          <select aria-label="Ano inicial do período" value={periodFrom}
+            onChange={(event) => setPeriodFrom(Math.min(Number(event.currentTarget.value), periodTo))}>
+            {YEAR_OPTIONS.map((year) => <option key={year} value={year}>{year}</option>)}
+          </select>
+        </label>
+        <label className="fixture-club-select">
+          <span>Até</span>
+          <select aria-label="Ano final do período" value={periodTo}
+            onChange={(event) => setPeriodTo(Math.max(Number(event.currentTarget.value), periodFrom))}>
+            {YEAR_OPTIONS.map((year) => <option key={year} value={year}>{year}</option>)}
+          </select>
+        </label>
       </div>
 
       {clubA.id === clubB.id ? (
@@ -136,7 +145,30 @@ export function HeadToHeadPanel(): JSX.Element {
       ) : (
         <>
           <div className="h2h-summary">
+            <div className="h2h-period-presets" role="group" aria-label="Períodos rápidos do retrospecto">
+              <button
+                type="button"
+                className={periodFrom === 2012 && periodTo === 2026 ? 'evolution-chip is-selected' : 'evolution-chip'}
+                aria-pressed={periodFrom === 2012 && periodTo === 2026}
+                onClick={() => { setPeriodFrom(2012); setPeriodTo(2026) }}
+              >Desde 2012</button>
+              <button
+                type="button"
+                className={periodFrom === 2021 && periodTo === 2025 ? 'evolution-chip is-selected' : 'evolution-chip'}
+                aria-pressed={periodFrom === 2021 && periodTo === 2025}
+                onClick={() => { setPeriodFrom(2021); setPeriodTo(2025) }}
+              >2021–2025</button>
+              <button
+                type="button"
+                className={periodFrom === 2026 && periodTo === 2026 ? 'evolution-chip is-selected' : 'evolution-chip'}
+                aria-pressed={periodFrom === 2026 && periodTo === 2026}
+                onClick={() => { setPeriodFrom(2026); setPeriodTo(2026) }}
+              >Temporada 2026</button>
+            </div>
             <HeadToHeadBar outcome={overall} aName={clubA.club} bName={clubB.club} />
+            <p className="table-note">
+              Período {periodFrom}–{periodTo}: {overall.matches === 1 ? '1 encontro' : `${overall.matches} encontros`} · gols {overall.goalsA}–{overall.goalsB} ({clubA.club} primeiro)
+            </p>
             {nextMeeting && (
               <div className="h2h-next-meeting">
                 <strong>Próximo confronto no calendário</strong>
@@ -147,23 +179,15 @@ export function HeadToHeadPanel(): JSX.Element {
 
           <div className="h2h-columns">
             <div className="h2h-timeline">
-              <h3>Encontros ({summary.matches.length})</h3>
+              <h3>Encontros no período ({filteredMatches.length})</h3>
               {summary.matches.length === 0
                 ? <p className="empty-distribution">Sem placares disponíveis no recorte para este par.</p>
-                : <ul aria-label={`Timeline de encontros entre ${clubA.club} e ${clubB.club}`}>
+                : <ul aria-label={`Timeline de encontros entre ${clubA.club} e ${clubB.club} no período de ${periodFrom} a ${periodTo}`}>
                     {summary.matches.map((match, index) => (
                       <MeetingDot key={`${match.seasonYear}-${match.kickoff}-${index}`} match={match} aId={clubA.id} aName={clubA.club} bName={clubB.club} />
                     ))}
                   </ul>}
               <p className="table-note">Badge V/E/D é do ponto de vista de {clubA.club} (clube A).</p>
-            </div>
-            <div className="h2h-periods">
-              <h3>Retrospecto por período</h3>
-              <div className="h2h-period-grid">
-                <PeriodCard title="Temporada 2026 · até o corte" outcome={currentOutcome} aName={clubA.club} bName={clubB.club} />
-                <PeriodCard title="2021–2025 · histórico do confronto" outcome={historicalOutcome} aName={clubA.club} bName={clubB.club} />
-              </div>
-              <p className="table-note">V-E-D e gols agregados somente dos encontros entre os dois clubes.</p>
             </div>
           </div>
         </>
