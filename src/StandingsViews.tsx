@@ -85,46 +85,93 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
 
 const CHART_COLORS = ['#d62728', '#1f77b4', '#2ca02c', '#ff7f0e', '#9467bd', '#8c564b', '#e377c2', '#17becf', '#bcbd22', '#7f7f7f', '#aec7e8', '#ffbb78', '#98df8a', '#ff9896', '#c5b0d5', '#c49c94', '#f7b6d2', '#dbdb8d', '#9edae5', '#ad494a']
 
+/**
+ * Evolução da posição por rodada com seleção de foco: todos os clubes ficam
+ * visíveis em traço fino, e os selecionados ganham traço grosso + rótulo.
+ * Faixas de zona (Libertadores/rebaixamento) aparecem como fundo colorido.
+ */
 function PositionEvolutionChart(): JSX.Element {
   const evolution = useMemo(() => positionByRound(), [])
+  const [focusedIds, setFocusedIds] = useState<string[]>(() => ['flamengo', 'palmeiras'])
   const width = 960
-  const height = 560
-  const padding = { top: 24, right: 120, bottom: 36, left: 44 }
+  const height = 640
+  const padding = { top: 28, right: 130, bottom: 40, left: 46 }
   const stepX = (width - padding.left - padding.right) / Math.max(1, evolution.rounds.length - 1)
   const stepY = (height - padding.top - padding.bottom) / 19
   const labelFor = new Map(evolution.clubs.map(({ id, club }) => [id, club]))
+  const positionAt = (position: number): number => padding.top + (position - 1) * stepY
+  const xAt = (index: number): number => padding.left + index * stepX
+
+  function toggleFocus(id: string): void {
+    setFocusedIds((current) => {
+      if (current.includes(id)) return current.filter((entry) => entry !== id)
+      return [...current, id]
+    })
+  }
+
+  const zoneBands = [
+    { from: ZONES.libertadores.from, to: ZONES.libertadores.to, className: 'evolution-band--top' },
+    { from: ZONES.relegation.from, to: ZONES.relegation.to, className: 'evolution-band--bottom' },
+  ]
 
   return (
     <figure className="evolution-figure">
+      <div className="evolution-picker" role="group" aria-label="Selecionar clubes para destacar no gráfico">
+        {evolution.clubs.map((club) => {
+          const colorIndex = evolution.clubs.findIndex((entry) => entry.id === club.id)
+          return (
+            <button
+              key={club.id}
+              type="button"
+              className={focusedIds.includes(club.id) ? 'evolution-chip is-selected' : 'evolution-chip'}
+              aria-pressed={focusedIds.includes(club.id)}
+              onClick={() => toggleFocus(club.id)}
+            >
+              <i className="evolution-swatch" style={{ background: CHART_COLORS[colorIndex % CHART_COLORS.length] }} aria-hidden="true" />
+              {club.club}
+            </button>
+          )
+        })}
+      </div>
       <svg
         className="evolution-chart"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Evolução da posição de cada clube após cada rodada com jogos, da primeira à ${evolution.rounds.length}ª (${labelFor.get('flamengo')} termina em 1º)`}
+        aria-label={`Evolução da posição por rodada, da primeira à ${evolution.rounds.length}ª. Destacados: ${focusedIds.map((id) => labelFor.get(id) ?? id).join(', ') || 'nenhum clube'}. Faixa verde marca Libertadores 1º–5º; faixa vermelha, rebaixamento 17º–20º.`}
       >
-        {[1, 4, 5, 6, 11, 12, 16, 17, 20].map((position) => (
+        {zoneBands.map((band) => (
+          <rect key={band.className} x={padding.left} y={positionAt(band.from)} width={width - padding.left - padding.right} height={(band.to - band.from + 1) * stepY} className={`evolution-band ${band.className}`} />
+        ))}
+        {[1, 5, 6, 11, 12, 16, 17, 20].map((position) => (
           <g key={position}>
-            <line x1={padding.left} x2={width - padding.right} y1={padding.top + (position - 1) * stepY} y2={padding.top + (position - 1) * stepY} className={position <= ZONES.libertadores.to ? 'evolution-grid zone-line-top' : position >= ZONES.relegation.from ? 'evolution-grid zone-line-bottom' : 'evolution-grid'} />
-            <text x={padding.left - 8} y={padding.top + (position - 1) * stepY + 4} textAnchor="end" className="evolution-tick">{position}</text>
+            <line x1={padding.left} x2={width - padding.right} y1={positionAt(position)} y2={positionAt(position)} className="evolution-grid" />
+            <text x={padding.left - 8} y={positionAt(position) + 4} textAnchor="end" className="evolution-tick">{position}</text>
           </g>
         ))}
         {evolution.rounds.map((round, index) => (
-          <text key={round} x={padding.left + index * stepX} y={height - padding.bottom + 20} textAnchor="middle" className="evolution-tick">{round}</text>
+          <text key={round} x={xAt(index)} y={height - padding.bottom + 22} textAnchor="middle" className="evolution-tick">{round}</text>
         ))}
-        {evolution.clubs.map((club, clubIndex) => (
-          <g key={club.id}>
-            <polyline
-              className="evolution-line"
-              stroke={CHART_COLORS[clubIndex % CHART_COLORS.length]!}
-              points={club.positions.map((position, index) => `${padding.left + index * stepX},${padding.top + (position - 1) * stepY}`).join(' ')}
-            />
-            <circle cx={padding.left + (club.positions.length - 1) * stepX} cy={padding.top + (club.positions.at(-1)! - 1) * stepY} r="3.5" fill={CHART_COLORS[clubIndex % CHART_COLORS.length]} />
-            <text x={padding.left + (club.positions.length - 1) * stepX + 8} y={padding.top + (club.positions.at(-1)! - 1) * stepY + 4} className="evolution-label" fill={CHART_COLORS[clubIndex % CHART_COLORS.length]}>{labelFor.get(club.id)}</text>
-          </g>
-        ))}
+        {evolution.clubs.map((club) => {
+          const clubIndex = evolution.clubs.findIndex((entry) => entry.id === club.id)
+          const color = CHART_COLORS[clubIndex % CHART_COLORS.length]!
+          const isFocused = focusedIds.includes(club.id)
+          const points = club.positions.map((position, index) => `${xAt(index)},${positionAt(position)}`).join(' ')
+          return (
+            <g key={club.id} className={isFocused ? 'evolution-club is-focused' : 'evolution-club'}>
+              <polyline className="evolution-line" stroke={color} strokeWidth={isFocused ? 3.2 : 1.1} opacity={isFocused ? 1 : 0.32} points={points} />
+              {isFocused && (
+                <>
+                  <circle cx={xAt(club.positions.length - 1)} cy={positionAt(club.positions.at(-1)!)} r="4" fill={color} />
+                  <text x={xAt(club.positions.length - 1) + 8} y={positionAt(club.positions.at(-1)!) + 4} className="evolution-label" fill={color}>{labelFor.get(club.id)}</text>
+                </>
+              )}
+            </g>
+          )
+        })}
       </svg>
       <figcaption>
-        Posição ao fim de cada rodada com jogos (adiados podem deixar rodadas parciais). Faixas: Libertadores 1º–5º, rebaixamento 17º–20º.
+        Posição ao fim de cada rodada com jogos (adiados podem deixar rodadas parciais; o último ponto coincide com a classificação oficial).
+        Clique nos chips para destacar clubes; as 20 linhas ficam de fundo em traço fino.
       </figcaption>
     </figure>
   )

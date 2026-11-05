@@ -408,12 +408,38 @@ th.numeric .sort-button { justify-content: flex-end; }
 .evolution-figure { margin: 12px 0 0; }
 .evolution-chart { display: block; width: 100%; height: auto; border: 1px solid var(--border); background: var(--surface); }
 .evolution-grid { stroke: var(--border-soft); stroke-width: 1; }
-.evolution-grid.zone-line-top { stroke: #78a957; opacity: .5; }
-.evolution-grid.zone-line-bottom { stroke: #d47a63; opacity: .5; }
 .evolution-tick { fill: var(--text-muted); font: 11px var(--mono); }
-.evolution-line { fill: none; stroke-width: 1.8; opacity: .82; }
+.evolution-line { fill: none; }
 .evolution-figure figcaption { margin-top: 8px; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
 .evolution-figure .evolution-label { font: 600 11px var(--mono); }
+.evolution-band { opacity: .12; }
+.evolution-band--top { fill: #78a957; }
+.evolution-band--bottom { fill: #d47a63; }
+.evolution-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.evolution-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 17px; color: var(--text-secondary); background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 600; }
+.evolution-chip:hover { border-color: #81977f; color: var(--ink); }
+.evolution-chip.is-selected { border-color: var(--deep); color: #fff; background: var(--deep); }
+.evolution-swatch { width: 9px; height: 9px; border-radius: 50%; }
+
+/* Guia de leitura e barra de zonas nas projeções */
+.how-to-read { display: grid; gap: 6px; margin: 14px 0 4px; padding: 14px 16px; border-left: 3px solid #a7c34b; background: var(--callout-bg); color: var(--callout-text); font-size: 14px; line-height: 1.6; }
+.how-to-read strong { color: var(--ink); }
+.how-to-read ul { display: grid; gap: 5px; margin: 0; padding-left: 20px; }
+.zone-bar-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 4px 0 10px; color: var(--text-secondary); font-size: 12px; }
+.zone-bar-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.zone-bar-swatch { width: 10px; height: 10px; border-radius: 2px; }
+.zone-bar { display: flex; min-width: 150px; height: 16px; overflow: hidden; border-radius: 3px; background: var(--surface-tint); }
+.zone-bar-segment { display: block; height: 100%; }
+.zone-bar--title { background: #1f6d3d; }
+.zone-bar--libertadores { background: #78a957; }
+.zone-bar--sudamericana { background: #4c5870; }
+.zone-bar--middle { background: #b8c1ba; }
+.zone-bar--relegation { background: #d47a63; }
+.zone-bar-cell { min-width: 170px; }
+.points-table-title { margin-top: 26px; }
+.points-final-table tbody td, .zones-table tbody td { height: 50px; }
+.zones-table { min-width: 1020px; }
+.points-final-table { min-width: 880px; }
 
 /* Sequências e extremos */
 .streaks-view { display: grid; gap: 16px; }
@@ -637,6 +663,8 @@ th.numeric .sort-button { justify-content: flex-end; }
 :root[data-theme='dark'] .point-distribution-bar { fill: #a3c985; }
 :root[data-theme='dark'] .outcome-tab[aria-selected='true'], :root[data-theme='dark'] .subtab.is-selected { color: #fff; background: #294333; }
 :root[data-theme='dark'] .result-bar { background: #26372d; }
+:root[data-theme='dark'] .how-to-read { color: #dfe9e1; background: #26372d; }
+:root[data-theme='dark'] .zone-bar { background: #26372d; }
 :root[data-theme='dark'] .evolution-chart { border-color: var(--border); background: var(--surface); }
 :root[data-theme='dark'] .methodology-section { background: var(--surface); border-color: var(--border); }
 :root[data-theme='dark'] button:focus-visible,
@@ -682,6 +710,8 @@ th.numeric .sort-button { justify-content: flex-end; }
   :root[data-theme='system'] .point-distribution-bar { fill: #a3c985; }
   :root[data-theme='system'] .outcome-tab[aria-selected='true'], :root[data-theme='system'] .subtab.is-selected { color: #fff; background: #294333; }
   :root[data-theme='system'] .result-bar { background: #26372d; }
+  :root[data-theme='system'] .how-to-read { color: #dfe9e1; background: #26372d; }
+  :root[data-theme='system'] .zone-bar { background: #26372d; }
   :root[data-theme='system'] .evolution-chart { border-color: var(--border); background: var(--surface); }
   :root[data-theme='system'] .methodology-section { background: var(--surface); border-color: var(--border); }
   :root[data-theme='system'] button:focus-visible,

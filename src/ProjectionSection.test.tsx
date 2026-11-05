@@ -20,9 +20,16 @@ describe('painel de projeções', () => {
 
     expect(screen.getByRole('heading', { name: 'O que ainda pode acontecer' })).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Projeção concluída')
-    const probabilities = screen.getByRole('region', { name: /Probabilidades simuladas por clube/ })
-    expect(within(probabilities).getByRole('row', { name: /Flamengo/ })).toBeInTheDocument()
-    expect(within(probabilities).getAllByRole('row')).toHaveLength(21)
+    // Guia de leitura e duas tabelas com perguntas claras
+    expect(screen.getByText(/Em que zona o clube pode terminar\?/)).toBeInTheDocument()
+    expect(screen.getByText(/Quantos pontos o clube deve fazer\?/)).toBeInTheDocument()
+    const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
+    expect(within(zones).getByRole('row', { name: /Flamengo/ })).toBeInTheDocument()
+    expect(within(zones).getAllByRole('row')).toHaveLength(21)
+    // Barra empilhada de 5 zonas por linha
+    expect(within(zones).getAllByRole('img', { name: /Cenários de/ })).toHaveLength(20)
+    const pointsTable = screen.getByRole('region', { name: /Pontos finais projetados por clube/ })
+    expect(within(pointsTable).getAllByRole('row')).toHaveLength(21)
     expect(screen.getByText(/Não são odds nem recomendação de apostas/)).toBeInTheDocument()
     // Sub-abas: Por clube ativa; Por pontuação montado mas oculto
     expect(screen.getByRole('tab', { name: 'Por clube' })).toHaveAttribute('aria-selected', 'true')
@@ -87,30 +94,34 @@ describe('painel de projeções', () => {
     const result = runProjection({ simulations: 8, seed: 123 })
     render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
 
-    const probabilities = screen.getByRole('region', { name: /Probabilidades simuladas por clube/ })
+    const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
+    const points = screen.getByRole('region', { name: /Pontos finais projetados por clube/ })
     expect(screen.getByText(/n = 8 simulações · IC 95% Wilson/)).toBeInTheDocument()
-    expect(within(probabilities).getByRole('columnheader', { name: /MEDIANA DE PONTOS/ })).toBeInTheDocument()
-    expect(within(probabilities).getByRole('columnheader', { name: /Δ MEDIANA/ })).toBeInTheDocument()
+    expect(within(points).getByRole('columnheader', { name: /^MEDIANA/ })).toBeInTheDocument()
+    expect(within(points).getByRole('columnheader', { name: /Δ vs HOJE/ })).toBeInTheDocument()
 
     const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
-    const flamengoRow = within(probabilities).getByRole('row', { name: /Flamengo/ })
-    expect(flamengoRow).toHaveTextContent(`IC 95% ${percentFormat.format(flamengo.titleInterval.lower95)}–${percentFormat.format(flamengo.titleInterval.upper95)}`)
-    expect(flamengoRow).toHaveTextContent(String(flamengo.pointsStats.median))
-    expect(flamengoRow).toHaveTextContent(`${flamengo.pointsStats.p25}–${flamengo.pointsStats.p75}`)
-    expect(flamengoRow).toHaveTextContent(`atual ${flamengo.currentPoints}`)
+    const flamengoZonesRow = within(zones).getByRole('row', { name: /Flamengo/ })
+    expect(flamengoZonesRow).toHaveTextContent(`IC ${percentFormat.format(flamengo.titleInterval.lower95)}–${percentFormat.format(flamengo.titleInterval.upper95)}`)
+    expect(within(zones).getByRole('img', { name: /Cenários de Flamengo/ })).toBeInTheDocument()
+
+    const flamengoPointsRow = within(points).getByRole('row', { name: /Flamengo/ })
+    expect(flamengoPointsRow).toHaveTextContent(String(flamengo.pointsStats.median))
+    expect(flamengoPointsRow).toHaveTextContent(`${flamengo.pointsStats.p25}–${flamengo.pointsStats.p75}`)
+    expect(flamengoPointsRow).toHaveTextContent(String(flamengo.currentPoints))
     // Badge de variação: valor absoluto + percentual em todas as linhas
-    expect(within(probabilities).getAllByText(/ pts \(/)).toHaveLength(20)
+    expect(within(points).getAllByText(/ pts \(/)).toHaveLength(20)
 
     await user.click(screen.getByRole('button', { name: 'CSV' }))
     expect(createObjectURL).toHaveBeenCalledTimes(1)
     expect((click.mock.instances.at(-1) as HTMLAnchorElement).download).toContain('brasileirao-2026-projecoes')
 
     // Ordenação por título troca o estado do cabeçalho
-    const titleHeaderButton = within(probabilities).getByRole('button', { name: /^TÍTULO/ })
+    const titleHeaderButton = within(zones).getByRole('button', { name: /^TÍTULO/ })
     await user.click(titleHeaderButton)
-    expect(within(probabilities).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'ascending')
+    expect(within(zones).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'ascending')
     await user.click(titleHeaderButton)
-    expect(within(probabilities).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'descending')
+    expect(within(zones).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
   it('informa quando as simulações ainda estão em processamento', () => {

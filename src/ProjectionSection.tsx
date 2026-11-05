@@ -14,6 +14,7 @@ interface ProjectionPanelProps {
 
 const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
 const integer = new Intl.NumberFormat('pt-BR')
+const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
 const pointCurveOutcomes = [
   { id: 'libertadores', label: 'Libertadores · 1º–5º' },
@@ -21,15 +22,24 @@ const pointCurveOutcomes = [
   { id: 'other', label: 'Outras posições · 12º–20º' },
 ] as const
 
-const probabilityColumns: SortableColumn<ClubProbability>[] = [
+const zoneColumns: SortableColumn<ClubProbability>[] = [
   { id: 'position', header: 'POS', accessor: ({ currentPosition }) => currentPosition, numeric: true },
   { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
   { id: 'title', header: 'TÍTULO', accessor: ({ title }) => title, numeric: true },
   { id: 'libertadores', header: 'LIBERTADORES', accessor: ({ libertadores }) => libertadores, numeric: true },
   { id: 'sudamericana', header: 'SUL-AMERICANA', accessor: ({ sudamericana }) => sudamericana, numeric: true },
   { id: 'relegation', header: 'REBAIXAMENTO', accessor: ({ relegation }) => relegation, numeric: true },
-  { id: 'median', header: 'MEDIANA DE PONTOS', accessor: ({ pointsStats }) => pointsStats.median, numeric: true },
-  { id: 'p90', header: 'P90', accessor: ({ pointsStats }) => pointsStats.p90, numeric: true },
+]
+
+const pointsColumns: SortableColumn<ClubProbability>[] = [
+  { id: 'position', header: 'POS', accessor: ({ currentPosition }) => currentPosition, numeric: true },
+  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
+  { id: 'currentPoints', header: 'HOJE', accessor: ({ currentPoints }) => currentPoints, numeric: true },
+  { id: 'median', header: 'MEDIANA', accessor: ({ pointsStats }) => pointsStats.median, numeric: true },
+  { id: 'p25', header: 'FAIXA TÍPICA (P25)', accessor: ({ pointsStats }) => pointsStats.p25, numeric: true },
+  { id: 'p75', header: 'FAIXA TÍPICA (P75)', accessor: ({ pointsStats }) => pointsStats.p75, numeric: true },
+  { id: 'p90', header: 'CENÁRIO ALTO (P90)', accessor: ({ pointsStats }) => pointsStats.p90, numeric: true },
+  { id: 'delta', header: 'Δ vs HOJE', accessor: ({ pointsStats, currentPoints }) => pointsStats.median - currentPoints, numeric: true },
 ]
 
 interface ProbabilityCellProps {
@@ -42,8 +52,48 @@ function ProbabilityCell({ value, lower, upper }: ProbabilityCellProps): JSX.Ele
   return (
     <td className="numeric probability-cell">
       <strong>{percent.format(value)}</strong>
-      <span className="cell-ci">IC 95% {percent.format(lower)}–{percent.format(upper)}</span>
+      <span className="cell-ci">IC {percent.format(lower)}–{percent.format(upper)}</span>
     </td>
+  )
+}
+
+const ZONE_BAR_SEGMENTS = [
+  { key: 'title', className: 'zone-bar--title', label: 'Título' },
+  { key: 'libertadores', className: 'zone-bar--libertadores', label: 'Libertadores' },
+  { key: 'sudamericana', className: 'zone-bar--sudamericana', label: 'Sul-Americana' },
+  { key: 'middle', className: 'zone-bar--middle', label: 'Meio de tabela' },
+  { key: 'relegation', className: 'zone-bar--relegation', label: 'Rebaixamento' },
+] as const
+
+interface ClubForBar extends ClubProbability {}
+
+/** Barra 100% com as cinco zonas possíveis do clube — leitura instantânea do cenário. */
+function ZoneStackedBar({ club }: { club: ClubForBar }): JSX.Element {
+  const middle = Math.max(0, 1 - club.title - club.libertadores - club.sudamericana - club.relegation)
+  const values: Record<(typeof ZONE_BAR_SEGMENTS)[number]['key'], number> = {
+    title: club.title,
+    libertadores: club.libertadores,
+    sudamericana: club.sudamericana,
+    middle,
+    relegation: club.relegation,
+  }
+  const ariaLabel = ZONE_BAR_SEGMENTS.map((segment) => `${segment.label} ${percent.format(values[segment.key])}`).join(', ')
+  return (
+    <div className="zone-bar" role="img" aria-label={`Cenários de ${club.club}: ${ariaLabel}`}>
+      {ZONE_BAR_SEGMENTS.map((segment) => (
+        <span key={segment.key} className={`zone-bar-segment ${segment.className}`} style={{ width: `${values[segment.key] * 100}%` }} />
+      ))}
+    </div>
+  )
+}
+
+function ZoneBarLegend(): JSX.Element {
+  return (
+    <div className="zone-bar-legend" aria-hidden="true">
+      {ZONE_BAR_SEGMENTS.map((segment) => (
+        <span key={segment.key}><i className={`zone-bar-swatch ${segment.className}`} />{segment.label}</span>
+      ))}
+    </div>
   )
 }
 
@@ -187,7 +237,8 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
   const outcomeTabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const selectedDistribution = result?.pointsAnalysis.distributionByOutcome.find(({ id }) => id === activeDistribution)
   const probabilityRows = useMemo(() => result?.clubProbabilities ?? [], [result])
-  const { sortedRows: sortedProbabilities, toggleSort, ariaSort } = useTableSort(probabilityRows, probabilityColumns, 'position')
+  const { sortedRows: sortedZones, toggleSort: toggleZoneSort, ariaSort: zoneAriaSort } = useTableSort(probabilityRows, zoneColumns, 'position')
+  const { sortedRows: sortedPoints, toggleSort: togglePointsSort, ariaSort: pointsAriaSort } = useTableSort(probabilityRows, pointsColumns, 'position')
 
   function handleAnalysisTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number): void {
     const views = ['por-clube', 'por-pontuacao'] as const
@@ -291,41 +342,78 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
           <div role="tabpanel" id="analise-por-clube" aria-labelledby="aba-por-clube" hidden={activeAnalysis !== 'por-clube'}>
           <section className="projection-block" id="probabilidades-time" aria-labelledby="club-probabilities-title">
             <div className="projection-block-heading">
-              <div><p className="eyebrow eyebrow-dark">PROBABILIDADES POR CLUBE</p><h3 id="club-probabilities-title">Disputa pelas vagas e permanência</h3></div>
-              <span>Por clube · n = {integer.format(result.simulations)} simulações · IC 95% Wilson</span>
+              <div><p className="eyebrow eyebrow-dark">PROJEÇÕES POR CLUBE</p><h3 id="club-probabilities-title">Vagas, permanência e pontos finais</h3></div>
+              <span>n = {integer.format(result.simulations)} simulações · IC 95% Wilson</span>
             </div>
-            <p className="projection-table-note">Chances condicionais a este recorte e às vagas geradas pela tabela; títulos da Copa do Brasil e de torneios CONMEBOL, que podem redistribuir vagas, não foram simulados. Cada probabilidade vem com intervalo de confiança de 95%; a mediana e os percentis resumem a distribuição de pontos finais de cada clube nas {integer.format(result.simulations)} tabelas simuladas.</p>
-            <div className="table-scroll projection-table-scroll" role="region" aria-label="Probabilidades simuladas por clube; role para rolagem horizontal em telas pequenas" tabIndex={0}>
-              <table className="projection-table">
+            <div className="how-to-read">
+              <strong>Como ler:</strong>
+              <ul>
+                <li><strong>Em que zona o clube pode terminar?</strong> — a barra colorida mostra as cinco zonas possíveis em cada simulação; os percentuais dão a chance de cada uma.</li>
+                <li><strong>Quantos pontos o clube deve fazer?</strong> — a mediana é o valor central das simulações; a faixa típica reúne metade central (P25–P75) e o P90 um cenário alto.</li>
+                <li>Cada chance vem com o intervalo de confiança de 95% (IC) — a incerteza da própria estimativa com n = {integer.format(result.simulations)}.</li>
+              </ul>
+            </div>
+
+            <h4 className="points-table-title" id="zones-table-title">Em que zona cada clube pode terminar?</h4>
+            <ZoneBarLegend />
+            <div className="table-scroll projection-table-scroll" role="region" aria-label="Zonas possíveis por clube nas simulações; role para rolagem horizontal em telas pequenas" tabIndex={0}>
+              <table className="projection-table zones-table">
                 <thead>
                   <tr>
-                    {probabilityColumns.map((column) => (
-                      <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={ariaSort(column.id)}>
-                        <button type="button" className="sort-button" onClick={() => toggleSort(column.id)}>
-                          {column.id === 'libertadores' ? 'LIBERTADORES¹' : column.id === 'sudamericana' ? 'SUL-AMERICANA²' : column.header}
-                          <span className="sort-indicator" aria-hidden="true">{ariaSort(column.id) === 'ascending' ? ' ↑' : ariaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
-                          <span className="sr-only">{ariaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${ariaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
+                    {zoneColumns.map((column) => (
+                      <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={zoneAriaSort(column.id)}>
+                        <button type="button" className="sort-button" onClick={() => toggleZoneSort(column.id)}>
+                          {column.id === 'libertadores' ? 'LIBERTADORES¹' : column.header}
+                          <span className="sort-indicator" aria-hidden="true">{zoneAriaSort(column.id) === 'ascending' ? ' ↑' : zoneAriaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
+                          <span className="sr-only">{zoneAriaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${zoneAriaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
                         </button>
                       </th>
                     ))}
-                    <th scope="col" className="numeric">P25–P75</th>
-                    <th scope="col" className="numeric">Δ MEDIANA</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedProbabilities.map((club) => {
+                  {sortedZones.map((club) => (
+                    <tr key={club.id}>
+                      <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span>{club.club}</th>
+                      <td className="zone-bar-cell"><ZoneStackedBar club={club} /></td>
+                      <ProbabilityCell value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
+                      <ProbabilityCell value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
+                      <ProbabilityCell value={club.sudamericana} lower={club.sudamericanaInterval.lower95} upper={club.sudamericanaInterval.upper95} />
+                      <ProbabilityCell value={club.relegation} lower={club.relegationInterval.lower95} upper={club.relegationInterval.upper95} />
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="projection-footnote">¹ Considera as posições 1–5 na tabela (1º–4º direto; 5º preliminar). ² Posições 6–11: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. Chances condicionais a este recorte e às vagas geradas pela tabela; títulos de Copa do Brasil e CONMEBOL, que redistribuem vagas, não foram simulados.</p>
+
+            <h4 className="points-table-title" id="points-final-title">Quantos pontos cada clube deve fazer?</h4>
+            <div className="table-scroll projection-table-scroll" role="region" aria-label="Pontos finais projetados por clube; role para rolagem horizontal em telas pequenas" tabIndex={0}>
+              <table className="projection-table points-final-table">
+                <thead>
+                  <tr>
+                    {pointsColumns.map((column) => (
+                      <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={pointsAriaSort(column.id)}>
+                        <button type="button" className="sort-button" onClick={() => togglePointsSort(column.id)}>
+                          {column.header}
+                          <span className="sort-indicator" aria-hidden="true">{pointsAriaSort(column.id) === 'ascending' ? ' ↑' : pointsAriaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
+                          <span className="sr-only">{pointsAriaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${pointsAriaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
+                        </button>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedPoints.map((club) => {
                     const delta = club.pointsStats.median - club.currentPoints
                     const deltaPercent = club.currentPoints === 0 ? 0 : delta / club.currentPoints
                     return (
                       <tr key={club.id}>
                         <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span>{club.club}</th>
-                        <ProbabilityCell value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
-                        <ProbabilityCell value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
-                        <ProbabilityCell value={club.sudamericana} lower={club.sudamericanaInterval.lower95} upper={club.sudamericanaInterval.upper95} />
-                        <ProbabilityCell value={club.relegation} lower={club.relegationInterval.lower95} upper={club.relegationInterval.upper95} />
-                        <td className="numeric probability-cell"><strong>{club.pointsStats.median}</strong><span className="cell-ci">atual {club.currentPoints}</span></td>
-                        <td className="numeric probability-cell"><strong>{club.pointsStats.p90}</strong><span className="cell-ci">P10 {club.pointsStats.p10}</span></td>
+                        <td className="numeric games-cell">{club.currentPoints}</td>
+                        <td className="numeric probability-cell"><strong>{club.pointsStats.median}</strong><span className="cell-ci">média {decimal.format(club.pointsStats.mean)}</span></td>
                         <td className="numeric range-cell">{club.pointsStats.p25}–{club.pointsStats.p75}</td>
+                        <td className="numeric games-cell">{club.pointsStats.p90}<span className="cell-ci">mínimo {club.pointsStats.min}</span></td>
                         <td className="numeric">
                           <span className={`delta-badge ${delta > 0 ? 'delta-badge--up' : delta < 0 ? 'delta-badge--down' : 'delta-badge--flat'}`}>
                             {signedDecimal.format(delta)} pts ({signedDecimal.format(deltaPercent * 100)}%)
@@ -337,13 +425,14 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                 </tbody>
               </table>
             </div>
+            <p className="projection-table-note">Mediana e percentis usam a definição nearest-rank sobre as {integer.format(result.simulations)} simulações; Δ compara a mediana projetada com os pontos no corte (valor absoluto e percentual).</p>
+
             <div className="export-row" role="group" aria-label="Exportar projeções por clube">
-              <span className="export-row-label">Baixar esta tabela:</span>
+              <span className="export-row-label">Baixar as duas tabelas:</span>
               <button type="button" className="filter-button" onClick={() => exportProjections(result, 'csv')}>CSV</button>
               <button type="button" className="filter-button" onClick={() => exportProjections(result, 'xlsx')}>XLSX</button>
               <button type="button" className="filter-button" onClick={() => exportProjections(result, 'json')}>JSON</button>
             </div>
-            <p className="projection-footnote">¹ Considera as posições 1–5 na tabela (1º–4º direto; 5º preliminar). ² Posições 6–11: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. Mediana e percentis usam a definição nearest-rank sobre as {integer.format(result.simulations)} simulações; Δ MEDIANA compara a mediana projetada com os pontos no corte (valor absoluto e percentual).</p>
           </section>
           </div>
 

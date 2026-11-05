@@ -61,15 +61,24 @@ describe('aba classificações', () => {
     expect(within(table).getByRole('columnheader', { name: /^GP/ })).toHaveAttribute('aria-sort', 'ascending')
   })
 
-  it('mostra o gráfico de evolução com acessibilidade e referência da última posição', async () => {
+  it('mostra o gráfico de evolução com seleção de foco, faixas de zona e acessibilidade', async () => {
     const user = userEvent.setup()
     render(<StandingsViews />)
     await user.click(screen.getByRole('tab', { name: 'Evolução por rodada' }))
-    const chart = screen.getByRole('img', { name: /Evolução da posição de cada clube/ })
+    // 20 chips de seleção; Flamengo e Palmeiras destacados por padrão
+    const picker = screen.getByRole('group', { name: 'Selecionar clubes para destacar no gráfico' })
+    expect(within(picker).getAllByRole('button')).toHaveLength(20)
+    const chart = screen.getByRole('img', { name: /Destacados: Flamengo, Palmeiras/ })
     expect(chart).toBeInTheDocument()
-    expect(screen.getByText(/Faixas: Libertadores 1º–5º/)).toBeInTheDocument()
-    // Linhas do SVG: 20 clubes × 1 polyline cada
     expect(chart.querySelectorAll('polyline')).toHaveLength(20)
+    expect(chart.querySelectorAll('.evolution-band')).toHaveLength(2)
+    expect(screen.getByText(/o último ponto coincide com a classificação oficial/)).toBeInTheDocument()
+
+    // Clique destaca/desdestaca
+    await user.click(within(picker).getByRole('button', { name: /Cruzeiro/ }))
+    expect(screen.getByRole('img', { name: /Destacados: Flamengo, Palmeiras, Cruzeiro/ })).toBeInTheDocument()
+    await user.click(within(picker).getByRole('button', { name: /Flamengo/ }))
+    expect(screen.getByRole('img', { name: /Destacados: Palmeiras, Cruzeiro/ })).toBeInTheDocument()
   })
 
   it('exibe sequências vigentes e extremos de ataque/defesa', async () => {
