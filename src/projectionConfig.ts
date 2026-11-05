@@ -1,4 +1,4 @@
-export const SIMULATION_COUNT = 20_000
+export const SIMULATION_COUNT = 100_000
 export const SIMULATION_SEED = 20_261_104
 export const BACKTEST_SIMULATIONS = 5_000
 export const SHRINKAGE_MATCHES = 20

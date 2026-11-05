@@ -222,8 +222,8 @@ function App(): JSX.Element {
           <div className="hero-inner">
             <div className="hero-copy">
               <p className="eyebrow"><span className="eyebrow-line" />CAMPEONATO BRASILEIRO · SÉRIE A</p>
-              <h1 id="hero-title">A paixão do<br /><em>futebol brasileiro.</em></h1>
-              <p className="hero-description">Acompanhe a tabela, os clubes e os goleadores da temporada 2026.</p>
+              <h1 id="hero-title">O Brasileirão 2026<br /><em>em números.</em></h1>
+              <p className="hero-description">Projeções Monte Carlo, probabilidades de vagas e auditoria de dados — estatística aplicada à Série A, com histórico desde 2012.</p>
               <a className="hero-link" href="#classificacao">Explorar classificação <span aria-hidden="true">↓</span></a>
             </div>
             <aside className="leader-card" aria-label="Líder da classificação">
@@ -254,7 +254,10 @@ function App(): JSX.Element {
             </div>
           </div>
           <span className="source-separator" aria-hidden="true" />
-          <a href={CBF_URL} target="_blank" rel="noreferrer">Fonte oficial: CBF <span aria-hidden="true">↗</span></a>
+          <a className="cbf-source" href={CBF_URL} target="_blank" rel="noreferrer">
+            <img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
+            Fonte oficial: CBF <span aria-hidden="true">↗</span>
+          </a>
           <label className="theme-control">
             <span>Tema</span>
             <select
@@ -441,7 +444,7 @@ function App(): JSX.Element {
       <footer className="site-footer">
         <div className="footer-brand"><BrandMark /><strong>BRASILEIRÃO <span>2026</span></strong></div>
         <p>Snapshot estático · Simulações em segundo plano · Sem dados ao vivo.</p>
-        <div className="footer-sources"><a href={CBF_URL} target="_blank" rel="noreferrer">CBF · Classificação oficial ↗</a><a href={ESPN_URL} target="_blank" rel="noreferrer">ESPN · Conferência de artilharia ↗</a></div>
+        <div className="footer-sources"><a href={CBF_URL} target="_blank" rel="noreferrer"><img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} /> CBF · Classificação oficial ↗</a><a href={ESPN_URL} target="_blank" rel="noreferrer">ESPN · Conferência de artilharia ↗</a></div>
         <small>A classificação foi reconciliada em agregado ao conjunto de jogos até 04/11/2026 13:00 BRT; a cópia CBF foi capturada depois e não valida placares individuais. Artilharia de fonte secundária · sem atualização em tempo real.</small>
       </footer>
     </>

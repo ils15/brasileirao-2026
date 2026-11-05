@@ -1,4 +1,5 @@
 import { useMemo, useState, type JSX } from 'react'
+import { HomeIcon, AwayIcon, BallIcon } from './icons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type VenueStats } from './seasonStats'
 
@@ -15,13 +16,16 @@ function formatHeadToHeadStats(club: string, venue: 'em casa' | 'fora', stats: V
 interface VenueStatsCardProps {
   title: string
   stats: VenueStats
+  /** Ícone do mando: casa, fora ou geral (bola). */
+  venue?: 'home' | 'away' | 'ball'
 }
 
 /** Card de estatísticas por mando; reutilizado no painel de confrontos. */
-export function VenueStatsCard({ title, stats }: VenueStatsCardProps): JSX.Element {
+export function VenueStatsCard({ title, stats, venue = 'ball' }: VenueStatsCardProps): JSX.Element {
+  const Icon = venue === 'home' ? HomeIcon : venue === 'away' ? AwayIcon : BallIcon
   return (
     <article className="venue-stats-card">
-      <h4>{title}</h4>
+      <h4 className="venue-stats-title"><Icon /> {title}</h4>
       <dl>
         <div><dt>Jogos · V-E-D</dt><dd>{stats.matches} · {stats.wins}-{stats.draws}-{stats.losses}</dd></div>
         <div><dt>Pontos por jogo</dt><dd>{formatPointsPerMatch(stats.pointsPerMatch)}</dd></div>
@@ -60,10 +64,10 @@ export function FixtureCalendar(): JSX.Element {
       </div>
 
       <div className="venue-stats-grid" aria-label={`Desempenho de ${selectedClub.club} por mando`}>
-        <VenueStatsCard title="2026 · em casa" stats={currentStats.home} />
-        <VenueStatsCard title="2026 · fora" stats={currentStats.away} />
-        <VenueStatsCard title="2021–2025 · em casa" stats={historicalStats.home} />
-        <VenueStatsCard title="2021–2025 · fora" stats={historicalStats.away} />
+        <VenueStatsCard title="2026 · em casa" venue="home" stats={currentStats.home} />
+        <VenueStatsCard title="2026 · fora" venue="away" stats={currentStats.away} />
+        <VenueStatsCard title="2021–2025 · em casa" venue="home" stats={historicalStats.home} />
+        <VenueStatsCard title="2021–2025 · fora" venue="away" stats={historicalStats.away} />
       </div>
 
       <div className="fixture-list-heading">

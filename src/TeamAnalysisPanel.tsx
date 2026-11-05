@@ -1,6 +1,7 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { getCurrentVenueStats } from './seasonStats'
+import { HomeIcon, AwayIcon, CalendarIcon } from './icons'
 import { recentForm, currentStreaks, attackDefenseLeaders } from './rounds'
 import { useProjection } from './ProjectionContext'
 import { VenueStatsCard } from './FixtureCalendar'
@@ -62,8 +63,8 @@ function VenuePair({ clubId }: { clubId: string }): JSX.Element {
       <div className="team-kpi team-kpi--stacked">
         <strong>{total} pts/jogo</strong>
         <span>Casa e fora até o corte</span>
-        <VenueStatsCard title="Como mandante" stats={stats.home} />
-        <VenueStatsCard title="Como visitante" stats={stats.away} />
+        <VenueStatsCard title="Como mandante" venue="home" stats={stats.home} />
+        <VenueStatsCard title="Como visitante" venue="away" stats={stats.away} />
       </div>
     </>
   )
@@ -108,7 +109,7 @@ function FutureFixtures({ clubId, clubName }: { clubId: string; clubName: string
   const names = useMemo(() => new Map(currentClubs.map(({ id, club }) => [id, club])), [])
   return (
     <div className="team-kpi team-kpi--wide">
-      <strong>{fixtures.length} jogos restantes</strong>
+      <strong><CalendarIcon /> {fixtures.length} jogos restantes</strong>
       <span>Calendário de {clubName} ({ZONES.libertadores.from}º–{ZONES.relegation.to}º decidem as vagas)</span>
       <ul className="team-future">
         {fixtures.map((fixture) => {
@@ -116,7 +117,7 @@ function FutureFixtures({ clubId, clubName }: { clubId: string; clubName: string
           const opponent = names.get(isHome ? fixture.away : fixture.home) ?? (isHome ? fixture.away : fixture.home)
           return (
             <li className="team-future-item" key={fixture.cbfRef}>
-              <strong><span className="team-future-venue">{isHome ? 'Casa' : 'Fora'}</span> × {opponent}</strong>
+              <strong><span className="team-future-venue">{isHome ? <HomeIcon /> : <AwayIcon />}</span> × {opponent}</strong>
               <span>R{fixture.round} · {fixture.cbfRef}</span>
             </li>
           )

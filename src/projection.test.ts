@@ -200,9 +200,9 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(backtest.relativeImprovement).toBeGreaterThan(0.03)
   })
 
-  it('completa as 20.000 simulações aprovadas e conserva as vagas do torneio', () => {
+  it('completa as 100.000 simulações aprovadas e conserva as vagas do torneio', { timeout: 30_000 }, () => {
     const result = runProjection()
-    expect(result.simulations).toBe(20_000)
+    expect(result.simulations).toBe(100_000)
     expect(result.seed).toBe(20_261_104)
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.title, 0)).toBeCloseTo(1, 10)
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.libertadores, 0)).toBeCloseTo(5, 10)

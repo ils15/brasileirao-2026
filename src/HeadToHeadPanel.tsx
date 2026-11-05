@@ -97,6 +97,20 @@ export function HeadToHeadPanel(): JSX.Element {
   )
   const filteredOutcome = useMemo(() => outcomeOfMatches(filteredMatches, clubA.id, clubB.id), [filteredMatches, clubA.id, clubB.id])
   const overall = filteredOutcome
+  // Lacunas de divisão: clubes que caíram/subiram não se enfrentaram em todos os anos do período.
+  const yearsWithMeetings = useMemo(
+    () => [...new Set(filteredMatches.map((match) => match.seasonYear))].sort((left, right) => left - right),
+    [filteredMatches],
+  )
+  const gapYears = useMemo(() => {
+    const all = Array.from({ length: periodTo - periodFrom + 1 }, (_, index) => periodFrom + index)
+    return all.filter((year) => !yearsWithMeetings.includes(year))
+  }, [yearsWithMeetings, periodFrom, periodTo])
+  const gapsSummary = gapYears.length === 0
+    ? 'nenhuma lacuna: encontros em todos os anos do período'
+    : gapYears.length <= 6
+      ? `sem encontros em ${gapYears.join(', ')} (clubes em divisões diferentes)`
+      : `sem encontros em ${gapYears.length} anos do período (clubes em divisões diferentes)`
   const nextMeeting = remainingFixtures.find((fixture) =>
     (fixture.home === clubA.id && fixture.away === clubB.id) || (fixture.home === clubB.id && fixture.away === clubA.id))
 
@@ -168,6 +182,7 @@ export function HeadToHeadPanel(): JSX.Element {
             <HeadToHeadBar outcome={overall} aName={clubA.club} bName={clubB.club} />
             <p className="table-note">
               Período {periodFrom}–{periodTo}: {overall.matches === 1 ? '1 encontro' : `${overall.matches} encontros`} · gols {overall.goalsA}–{overall.goalsB} ({clubA.club} primeiro)
+                {gapYears.length > 0 && <> · {gapsSummary}</>}
             </p>
             {nextMeeting && (
               <div className="h2h-next-meeting">

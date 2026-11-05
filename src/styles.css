@@ -145,13 +145,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* KPIs executivos (aba Visão Geral) */
 .kpi-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.kpi-card { display: grid; gap: 6px; padding: 18px 20px; border: 1px solid var(--border); background: var(--surface); }
+.kpi-card { display: grid; gap: 6px; padding: 18px 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
 .kpi-value { color: var(--ink); font: 800 30px/1 var(--display); letter-spacing: -.04em; }
 .kpi-divider { color: var(--text-muted); font-size: 20px; font-weight: 600; }
 .kpi-label { color: var(--text-secondary); font-size: 13px; line-height: 1.4; }
 
 .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(300px, .8fr); align-items: start; gap: 22px; padding-top: 34px; }
-.panel { border: 1px solid var(--border); background: var(--surface); }
+.panel { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); box-shadow: 0 1px 3px rgba(16,29,25,.05); }
 .standings-panel, .scorers-panel { padding: 25px; }
 .section-heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
 .eyebrow-dark { margin: 0 0 9px; color: var(--text-muted); font-size: 12px; }
@@ -379,7 +379,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .next-round-panel { margin-top: 28px; padding: 25px; }
 .next-round-select { max-width: 340px; margin-bottom: 16px; }
 .next-round-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-.next-round-match { display: grid; gap: 6px; align-content: start; padding: 14px; border: 1px solid var(--border); background: var(--surface-soft); }
+.next-round-match { display: grid; gap: 6px; align-content: start; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); }
 .next-round-teams { color: var(--ink); font: 700 15px/1.35 var(--display); }
 .lambda-strip { display: flex; gap: 18px; margin: 0; }
 .lambda-strip div { display: grid; gap: 2px; }
@@ -463,7 +463,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 /* Análise do clube (aba Confrontos) */
 .team-analysis { margin-top: 28px; padding: 25px; }
 .team-analysis-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-.team-kpi { display: grid; gap: 4px; padding: 14px; border: 1px solid var(--border); background: var(--surface-soft); }
+.team-kpi { display: grid; gap: 4px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-soft); }
 .team-kpi strong { color: var(--ink); font: 800 24px/1 var(--display); }
 .team-kpi span { color: var(--text-secondary); font-size: 13px; }
 .form-dots { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
@@ -499,7 +499,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .fixture-club-select { display: grid; flex: 0 0 min(280px, 36%); gap: 6px; color: var(--text-secondary); font-size: 13px; font-weight: 700; }
 .fixture-club-select select { width: 100%; min-height: 44px; padding: 0 34px 0 12px; border: 1px solid var(--border-strong); border-radius: 3px; color: var(--ink); background: var(--surface); font-size: 14px; }
 .venue-stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 21px; }
-.venue-stats-card { min-width: 0; padding: 14px; border: 1px solid var(--border); background: var(--surface-soft); }
+.venue-stats-card { min-width: 0; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); }
 .venue-stats-card h4 { margin: 0 0 11px; color: var(--ink); font: 700 13px var(--display); }
 .venue-stats-card dl { display: grid; gap: 8px; margin: 0; }
 .venue-stats-card dl > div { display: flex; justify-content: space-between; gap: 8px; }
@@ -509,7 +509,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .fixture-list-heading h3 { margin: 0; color: var(--ink); font: 700 17px var(--display); }
 .fixture-list-heading span { color: var(--text-secondary); font: 12px var(--mono); text-align: right; }
 .remaining-fixture-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
-.remaining-fixture { min-width: 0; padding: 14px; border: 1px solid var(--border); background: var(--surface); }
+.remaining-fixture { min-width: 0; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
 .remaining-fixture-meta { display: flex; justify-content: space-between; gap: 8px; color: var(--text-muted); font: 12px var(--mono); }
 .remaining-fixture > strong { display: block; margin-top: 10px; color: var(--ink); font: 700 14px/1.4 var(--display); }
 .remaining-fixture > p { margin: 6px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
@@ -529,7 +529,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .clubs-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
 .clubs-heading > p { margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.6; text-align: right; }
 .club-filters { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 23px 0 16px; }
-.filter-button { min-height: 44px; padding: 0 15px; border: 1px solid var(--border-strong); border-radius: 22px; color: var(--text-secondary); background: transparent; cursor: pointer; font-size: 13px; transition: background .16s ease, border-color .16s ease, color .16s ease; }
+.filter-button { min-height: 44px; padding: 0 15px; border: 1px solid var(--border-strong); border-radius: 22px; font-weight: 600; color: var(--text-secondary); background: transparent; cursor: pointer; font-size: 13px; transition: background .16s ease, border-color .16s ease, color .16s ease; }
 .filter-button:hover { border-color: #81977f; }
 .filter-button:disabled { opacity: .45; cursor: not-allowed; }
 .filter-button.is-selected { border-color: var(--deep); color: #fff; background: var(--deep); }
@@ -799,3 +799,25 @@ th.numeric .sort-button { justify-content: flex-end; }
 @media (max-width: 767px) {
   .team-analysis-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+
+/* Logo oficial da CBF (atribuição de fonte) */
+.cbf-source { display: inline-flex; align-items: center; gap: 7px; }
+.cbf-logo { height: 18px; width: auto; }
+.footer-sources .cbf-logo { height: 16px; }
+
+/* Ícones de mando nos títulos */
+.venue-stats-title { display: inline-flex; align-items: center; gap: 7px; }
+.venue-icon { width: 15px; height: 15px; flex: 0 0 auto; stroke: currentColor; stroke-width: 1.6; opacity: .75; }
+.team-future-venue .venue-icon { width: 14px; height: 14px; display: inline-block; vertical-align: -3px; }
+
+/* Pontuação mágica: seletor de destino e coluna ativa */
+.magic-destiny-picker { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+.magic-active-col { color: var(--ink); border-bottom: 2px solid var(--lime); }
+.magic-active-value { font-weight: 700; }
+.magic-bar-low { position: absolute; right: 6px; top: -2px; color: var(--text-muted); font-size: 11px; }
+.magic-bar { position: relative; }
+
+/* Células de probabilidade zeradas: discretas, sem IC */
+.probability-cell--zero { color: var(--text-muted) !important; font-weight: 400 !important; }
+.probability-cell--zero strong { opacity: .55; }
