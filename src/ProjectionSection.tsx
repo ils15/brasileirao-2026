@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { SIMULATION_COUNT, SIMULATION_SEED } from './projectionConfig'
 import type { ClubProbability, ProjectionResult } from './projection'
 import { useProjection, type ProjectionStatus } from './ProjectionContext'
+import { wilsonInterval } from './pointCurve'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { buildXlsx, downloadFile, toCSV, toJson } from './exporters'
@@ -24,6 +25,9 @@ interface MagicRow {
   probabilities: Record<MagicKey, number>
   intervals: Record<MagicKey, [number, number]>
   lowSample: Record<MagicKey, boolean>
+  /** Clubes-simulações com aquele destino (para IC de leituras combinadas). */
+  successes: Record<MagicKey, number>
+  denominator: number
 }
 
 const MAGIC_COLORS: Record<MagicDestiny | 'middle', string> = {
@@ -47,8 +51,15 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
   const yAt = (probability: number): number =>
     height - padding.bottom - probability * (height - padding.top - padding.bottom)
 
+  // Mesma leitura combinada do chanceOf: libertadores (1º–5º) e
+  // sul-americana (1º–11º) são inclusivos; título e rebaixamento exclusivos.
+  const probabilityFor = (row: MagicRow, destinyId: MagicKey): number => {
+    if (destinyId === 'libertadores') return row.probabilities.title + row.probabilities.libertadores
+    if (destinyId === 'sudamericana') return row.probabilities.title + row.probabilities.libertadores + row.probabilities.sudamericana
+    return row.probabilities[destinyId]
+  }
   const pathFor = (destinyId: MagicKey): string =>
-    rows.map((row, index) => `${index === 0 ? 'M' : 'L'}${xAt(row.points).toFixed(1)},${yAt(row.probabilities[destinyId]).toFixed(1)}`).join(' ')
+    rows.map((row, index) => `${index === 0 ? 'M' : 'L'}${xAt(row.points).toFixed(1)},${yAt(probabilityFor(row, destinyId)).toFixed(1)}`).join(' ')
 
   const xTicks = [minX, 30, 40, 50, 60, 70, maxX].filter((value, index, list) => list.indexOf(value) === index)
 
@@ -108,23 +119,44 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           title: [0, 1], libertadores: [0, 1], sudamericana: [0, 1], middle: [0, 1], relegation: [0, 1],
         },
         lowSample: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
+        successes: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
+        denominator: 0,
       }
       entry.probabilities[row.outcome] = row.probability
       entry.intervals[row.outcome] = [row.lower95, row.upper95]
       entry.lowSample[row.outcome] = row.lowSample
+      entry.successes[row.outcome] = row.successes
+      entry.denominator = row.denominator
       byPoints.set(row.points, entry)
     }
     return [...byPoints.values()].sort((left, right) => left.points - right.points)
   }, [result])
 
   const destinyLabel = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!.label
-  // Categorias EXCLUSIVAS: o campeão não conta dentro de Libertadores
-  // (2º–5º). Por isso a curva de Libertadores/Sul-Americana recua em
-  // pontuações muito altas — nesses totais o clube tende a ser campeão,
-  // e a curva de Título assume. Captions explicam em cada destino.
-  const chanceOf = (row: MagicRow): number => row.probabilities[destiny]
-  const intervalFor = (row: MagicRow): [number, number] => row.intervals[destiny]
-  const lowSampleFor = (row: MagicRow): boolean => row.lowSample[destiny]
+  // Leitura por VAGA (instrução do usuário): campeão conta dentro de
+  // Libertadores (1º–5º) e Sul-Americana (1º–11º) — as curvas sobem
+  // monotonicamente com os pontos até 100%. Título (1º) e Rebaixamento
+  // (17º–20º) permanecem exclusivos; Rebaixamento desce até 0%.
+  const chanceOf = (row: MagicRow, destinyOverride?: MagicKey): number => {
+    const key = destinyOverride ?? destiny
+    if (key === 'libertadores') return row.probabilities.title + row.probabilities.libertadores
+    if (key === 'sudamericana') return row.probabilities.title + row.probabilities.libertadores + row.probabilities.sudamericana
+    return row.probabilities[key]
+  }
+  const intervalFor = (row: MagicRow): [number, number] => {
+    const combined = (keys: MagicKey[]): [number, number] => {
+      const successes = keys.reduce((sum, key) => sum + row.successes[key], 0)
+      return wilsonInterval(row.denominator === 0 ? 0 : successes / row.denominator, row.denominator)
+    }
+    if (destiny === 'libertadores') return combined(['title', 'libertadores'])
+    if (destiny === 'sudamericana') return combined(['title', 'libertadores', 'sudamericana'])
+    return row.intervals[destiny]
+  }
+  const lowSampleFor = (row: MagicRow): boolean => {
+    if (destiny === 'libertadores') return row.lowSample.title || row.lowSample.libertadores
+    if (destiny === 'sudamericana') return row.lowSample.title || row.lowSample.libertadores || row.lowSample.sudamericana
+    return row.lowSample[destiny]
+  }
 
   // Agrupa faixas consecutivas onde nenhuma probabilidade muda (0%/100% estáveis).
   const compactRows = useMemo(() => {
@@ -204,8 +236,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           <MagicCurveChart rows={rows} destiny={destiny} />
           <p className="magic-chart-caption">
             Linha tracejada: 50% — acima dela, {destinyLabel.toLowerCase()} é o resultado mais provável.
-            {destiny === 'libertadores' && <> Faixa <strong>exclusiva do título (2º–5º)</strong>: sobe com os pontos até 100%, e recua acima de ~76 pts porque aí o clube tende a ser campeão — veja a curva de Título.</>}
-            {destiny === 'sudamericana' && <> Faixa exclusiva (6º–11º): sobe com os pontos e recua no fim, quando o clube tende a Libertadores/título.</>}
+            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga (1º–5º)</strong>, incluindo o título: ascendente até 100%.</>}
+            {destiny === 'sudamericana' && <> Sul-Americana conta como <strong>vaga garantida (1º–11º)</strong>, incluindo título e Libertadores: ascendente até 100%.</>}
           </p>
         </div>
         <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyLabel}`}>
@@ -215,6 +247,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
               <span className="kpi-label">
                 {escaping
                   ? `Salvo é o mais provável (${percent.format(1 - chanceOf(likely))})`
+                  : destiny === 'sudamericana'
+                  ? `No mínimo Sul-Americana (${percent.format(chanceOf(likely))})`
                   : `A partir daqui, ${destinyLabel.toLowerCase()} é o mais provável (${percent.format(chanceOf(likely))})`}
               </span>
             </div>
