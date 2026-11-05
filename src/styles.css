@@ -413,11 +413,13 @@ th.numeric .sort-button { justify-content: flex-end; }
 .evolution-line { fill: none; }
 .evolution-figure figcaption { margin-top: 8px; color: var(--text-muted); font-size: 13px; line-height: 1.5; }
 .evolution-figure .evolution-label { font: 600 11px var(--mono); }
-.evolution-band { opacity: .12; }
+.evolution-band { opacity: .14; }
+:root[data-theme='dark'] .evolution-band { opacity: .2; }
+:root[data-theme='system'] .evolution-band { opacity: .2; }
 .evolution-band--top { fill: #78a957; }
 .evolution-band--bottom { fill: #d47a63; }
-.evolution-picker { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-.evolution-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 10px; border: 1px solid var(--border-strong); border-radius: 17px; color: var(--text-secondary); background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 600; }
+.evolution-picker { display: flex; flex-wrap: wrap; gap: 8px; row-gap: 8px; margin-bottom: 12px; }
+.evolution-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: 17px; color: var(--text-secondary); background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 600; }
 .evolution-chip:hover { border-color: #81977f; color: var(--ink); }
 .evolution-chip.is-selected { border-color: var(--deep); color: #fff; background: var(--deep); }
 .evolution-swatch { width: 9px; height: 9px; border-radius: 50%; }
@@ -833,7 +835,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .magic-curve { fill: none; stroke-width: 1.4; opacity: .38; }
 .magic-curve.is-active { stroke-width: 3; opacity: 1; }
 .magic-chart-caption { margin: 6px 0 0; color: var(--text-muted); font-size: 12px; line-height: 1.4; }
-.magic-kpis { display: grid; gap: 10px; align-content: start; }
+.magic-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-content: start; }
 
 /* Timeline H2H em 2 colunas */
 .h2h-timeline ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
@@ -842,4 +844,9 @@ th.numeric .sort-button { justify-content: flex-end; }
   .magic-layout { grid-template-columns: minmax(0, 1fr); }
   .magic-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .h2h-timeline ul { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .magic-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .magic-kpis .kpi-value { font-size: 22px; }
 }

@@ -216,8 +216,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             <strong className="kpi-value">{likely.points}<span className="kpi-divider"> pts</span></strong>
             <span className="kpi-label">
               {escaping
-                ? `Salvo é mais provável que rebaixado (${percent.format(1 - chanceOf(likely))} de segurança)`
-                : `A partir daqui, ${destinyLabel.toLowerCase()} é mais provável que não (${percent.format(chanceOf(likely))})`}
+                ? `Salvo é o mais provável (${percent.format(1 - chanceOf(likely))})`
+                : `A partir daqui, ${destinyLabel.toLowerCase()} é o mais provável (${percent.format(chanceOf(likely))})`}
             </span>
           </div>
         )}
@@ -226,7 +226,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             <strong className="kpi-value">{nearCertain.points}<span className="kpi-divider"> pts</span></strong>
             <span className="kpi-label">
               {escaping
-                ? `Salvo na prática (${percent.format(chanceOf(nearCertain))} de rebaixamento restante)`
+                ? `Salvo na prática (${percent.format(chanceOf(nearCertain))} restante)`
                 : `Praticamente garantido (${percent.format(chanceOf(nearCertain))})`}
             </span>
           </div>

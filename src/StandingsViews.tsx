@@ -158,7 +158,7 @@ function PositionEvolutionChart(): JSX.Element {
           const points = club.positions.map((position, index) => `${xAt(index)},${positionAt(position)}`).join(' ')
           return (
             <g key={club.id} className={isFocused ? 'evolution-club is-focused' : 'evolution-club'}>
-              <polyline className="evolution-line" stroke={color} strokeWidth={isFocused ? 3.2 : 1.1} opacity={isFocused ? 1 : 0.32} points={points} />
+              <polyline className="evolution-line" stroke={color} strokeWidth={isFocused ? 3.2 : 1} opacity={isFocused ? 1 : 0.18} points={points} />
               {isFocused && (
                 <>
                   <circle cx={xAt(club.positions.length - 1)} cy={positionAt(club.positions.at(-1)!)} r="4" fill={color} />
