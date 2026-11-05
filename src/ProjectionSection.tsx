@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { SIMULATION_COUNT, SIMULATION_SEED } from './projectionConfig'
 import type { ClubProbability, ProjectionResult } from './projection'
 import { useProjection, type ProjectionStatus } from './ProjectionContext'
+import { wilsonInterval } from './pointCurve'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { buildXlsx, downloadFile, toCSV, toJson } from './exporters'
@@ -24,6 +25,9 @@ interface MagicRow {
   probabilities: Record<MagicKey, number>
   intervals: Record<MagicKey, [number, number]>
   lowSample: Record<MagicKey, boolean>
+  /** Clubes-simulações com aquele destino (para IC de leituras combinadas). */
+  successes: Record<MagicKey, number>
+  denominator: number
 }
 
 const MAGIC_COLORS: Record<MagicDestiny | 'middle', string> = {
@@ -108,17 +112,39 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           title: [0, 1], libertadores: [0, 1], sudamericana: [0, 1], middle: [0, 1], relegation: [0, 1],
         },
         lowSample: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
+        successes: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
+        denominator: 0,
       }
       entry.probabilities[row.outcome] = row.probability
       entry.intervals[row.outcome] = [row.lower95, row.upper95]
       entry.lowSample[row.outcome] = row.lowSample
+      entry.successes[row.outcome] = row.successes
+      entry.denominator = row.denominator
       byPoints.set(row.points, entry)
     }
     return [...byPoints.values()].sort((left, right) => left.points - right.points)
   }, [result])
 
   const destinyLabel = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!.label
-  const chanceOf = (row: MagicRow): number => row.probabilities[destiny]
+  // Libertadores é lida como VAGA (1º–5º, incluindo o título): sobe com os
+  // pontos até 100%, sem o recuo artificial da categoria exclusiva 2º–5º
+  // (quando o campeão sai da conta). Rebaixamento e Sul-Americana seguem
+  // exclusivos por natureza.
+  const chanceOf = (row: MagicRow): number =>
+    destiny === 'libertadores'
+      ? row.probabilities.title + row.probabilities.libertadores
+      : row.probabilities[destiny]
+  const intervalFor = (row: MagicRow): [number, number] => {
+    if (destiny === 'libertadores') {
+      const successes = row.successes.title + row.successes.libertadores
+      return wilsonInterval(row.denominator === 0 ? 0 : successes / row.denominator, row.denominator)
+    }
+    return row.intervals[destiny]
+  }
+  const lowSampleFor = (row: MagicRow): boolean => {
+    if (destiny === 'libertadores') return row.lowSample.title || row.lowSample.libertadores
+    return row.lowSample[destiny]
+  }
 
   // Agrupa faixas consecutivas onde nenhuma probabilidade muda (0%/100% estáveis).
   const compactRows = useMemo(() => {
@@ -196,7 +222,11 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       <div className="magic-layout">
         <div className="magic-chart-box">
           <MagicCurveChart rows={rows} destiny={destiny} />
-          <p className="magic-chart-caption">Linha tracejada: 50% — acima dela, {destinyLabel.toLowerCase()} é o resultado mais provável.</p>
+          <p className="magic-chart-caption">
+            Linha tracejada: 50% — acima dela, {destinyLabel.toLowerCase()} é o resultado mais provável.
+            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga (1º–5º)</strong>, incluindo o título: a curva sobe com os pontos até 100%.</>}
+            {destiny === 'sudamericana' && <> Faixa exclusiva (6º–11º): em pontuações muito altas o clube tende a Libertadores/título, então a curva recua no fim.</>}
+          </p>
         </div>
         <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyLabel}`}>
           {likely && (
@@ -255,7 +285,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             {compactRows.map((group) => {
               const row = group.row
               const chance = chanceOf(row)
-              const [lower95, upper95] = row.intervals[destiny]
+              const [lower95, upper95] = intervalFor(row)
               // 0% e 100% (no valor exibido) não têm intervalo útil nem barra.
               const displaysZero = percent.format(chance) === '0,0%'
               const displaysCertain = percent.format(chance) === '100,0%'
@@ -269,7 +299,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
                       <>
                         <div className="magic-bar" role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
                           <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
-                          {row.lowSample[destiny] && <span className="magic-bar-low">amostra baixa</span>}
+                          {lowSampleFor(row) && <span className="magic-bar-low">amostra baixa</span>}
                         </div>
                         <span className="cell-ci">IC 95% {percent.format(lower95)}–{percent.format(upper95)}</span>
                       </>
