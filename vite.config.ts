@@ -7,5 +7,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
+    // O primeiro uso de qualquer painel que toque a projeção paga o cold start
+    // dos backtests walk-forward (14 temporadas); runners de CI são mais lentos.
+    testTimeout: 30_000,
   },
 })
