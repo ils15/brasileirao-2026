@@ -44,7 +44,9 @@ describe('painel de projeções', () => {
 
     // Pontuação mágica: linhas do destino + tabela de rebaixamento por pontuação
     expect(screen.getByRole('heading', { name: /A pontuação mágica: quantos pontos bastam\?/ })).toBeInTheDocument()
-    expect(screen.getByText(/rebaixamento é mais provável que não/)).toBeInTheDocument()
+    expect(screen.getByText(/Salvo é mais provável que rebaixado/)).toBeInTheDocument()
+    expect(screen.getByText(/Salvo na prática/)).toBeInTheDocument()
+    expect(screen.getByText(/Rebaixado praticamente garantido/)).toBeInTheDocument()
     // Seletor de destino: trocar para Título muda os KPIs
     expect(screen.getByRole('group', { name: 'Destino para a pontuação mágica' })).toBeInTheDocument()
     const magicTable = screen.getByRole('region', { name: /destino por pontuação exata: Rebaixamento/ })

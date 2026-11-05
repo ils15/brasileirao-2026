@@ -45,6 +45,66 @@ const MAGIC_DESTINIES = [
 
 type MagicDestiny = (typeof MAGIC_DESTINIES)[number]['id']
 
+const MAGIC_COLORS: Record<MagicDestiny | 'middle', string> = {
+  title: '#1f6d3d',
+  libertadores: '#78a957',
+  sudamericana: '#4c5870',
+  middle: '#b8c1ba',
+  relegation: '#d47a63',
+}
+
+/** Curva P(destino | pontos) em SVG: destino selecionado em destaque, demais em fundo. */
+function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDestiny }): JSX.Element {
+  const width = 640
+  const height = 320
+  const padding = { top: 16, right: 16, bottom: 30, left: 42 }
+  const points = rows.map((row) => row.points)
+  const minX = Math.min(...points)
+  const maxX = Math.max(...points)
+  const xAt = (value: number): number =>
+    padding.left + ((value - minX) / Math.max(1, maxX - minX)) * (width - padding.left - padding.right)
+  const yAt = (probability: number): number =>
+    height - padding.bottom - probability * (height - padding.top - padding.bottom)
+
+  const pathFor = (destinyId: MagicDestiny): string =>
+    rows.map((row, index) => `${index === 0 ? 'M' : 'L'}${xAt(row.points).toFixed(1)},${yAt(chanceOfFor(row, destinyId)).toFixed(1)}`).join(' ')
+
+  const xTicks = [minX, 30, 40, 50, 60, 70, maxX].filter((value, index, list) => list.indexOf(value) === index)
+
+  return (
+    <svg
+      className="magic-chart"
+      viewBox={`0 0 ${width} ${height}`}
+      role="img"
+      aria-label={`Curva de probabilidade de cada destino dado o total de pontos; ${MAGIC_DESTINIES.find((entry) => entry.id === destiny)!.label} destacado`}
+    >
+      {[0, 0.25, 0.5, 0.75, 1].map((probability) => (
+        <g key={probability}>
+          <line x1={padding.left} x2={width - padding.right} y1={yAt(probability)} y2={yAt(probability)} className="magic-grid" />
+          <text x={padding.left - 6} y={yAt(probability) + 4} textAnchor="end" className="magic-tick">{Math.round(probability * 100)}%</text>
+        </g>
+      ))}
+      <line x1={padding.left} x2={width - padding.right} y1={yAt(0.5)} y2={yAt(0.5)} className="magic-halfway" />
+      {xTicks.map((value) => (
+        <text key={value} x={xAt(value)} y={height - padding.bottom + 18} textAnchor="middle" className="magic-tick">{value}</text>
+      ))}
+      {MAGIC_DESTINIES.filter((entry) => entry.id !== destiny).map((entry) => (
+        <path key={entry.id} d={pathFor(entry.id)} className="magic-curve" stroke={MAGIC_COLORS[entry.id]} />
+      ))}
+      {rows.length > 1 && (
+        <>
+          <path d={`${pathFor(destiny)} L${xAt(maxX).toFixed(1)},${yAt(0)} L${xAt(minX).toFixed(1)},${yAt(0)} Z`} fill={MAGIC_COLORS[destiny]} opacity={0.14} stroke="none" />
+          <path d={pathFor(destiny)} className="magic-curve is-active" stroke={MAGIC_COLORS[destiny]} />
+        </>
+      )}
+    </svg>
+  )
+}
+
+function chanceOfFor(row: MagicRow, destiny: MagicDestiny): number {
+  return row[destiny]
+}
+
 /**
  * Curva P(destino | pontuação exata) em formato "linha do destino": o usuário
  * escolhe o destino e a leitura inteira (KPIs, barra, destaque) passa a
@@ -70,24 +130,35 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     return [...byPoints.values()].sort((left, right) => left.points - right.points)
   }, [result])
 
+  // Agrupa faixas consecutivas onde nenhuma probabilidade muda (0%/100% estáveis) — fim das linhas repetidas.
+  const compactRows = useMemo(() => {
+    const keyOf = (row: MagicRow): string => pointCurveOutcomes.map((outcome) => (row[outcome.id] * 1000).toFixed(0)).join(',')
+    const groups: { from: number; to: number; row: MagicRow }[] = []
+    for (const row of rows) {
+      const last = groups[groups.length - 1]
+      if (last && keyOf(last.row) === keyOf(row)) last.to = row.points
+      else groups.push({ from: row.points, to: row.points, row })
+    }
+    return groups
+  }, [rows])
+
   const destinyLabel = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!.label
   const chanceOf = (row: MagicRow): number => row[destiny]
-  const firstAtLeast = (threshold: number): MagicRow | undefined =>
-    rows.find((row) => chanceOf(row) >= threshold)
-  const firstAtMost = (threshold: number): MagicRow | undefined =>
-    rows.find((row) => chanceOf(row) <= threshold)
-
-  const likely = firstAtLeast(0.5)
-  const nearCertain = firstAtLeast(0.9)
-  const nearImpossible = firstAtMost(0.1)
-  const unlikely = rows.length > 0 && chanceOf(rows[0]!) < 0.5 ? rows[0] : undefined
+  // Para rebaixamento a pergunta é invertida: quantos pontos para ESCAPAR.
+  // effectiveChance representa a chance do "bom resultado" (salvo / destino conquistado).
+  const escaping = destiny === 'relegation'
+  const effectiveChanceOf = (row: MagicRow): number => (escaping ? 1 - chanceOf(row) : chanceOf(row))
+  const likely = rows.find((row) => effectiveChanceOf(row) >= 0.5)
+  const nearCertain = rows.find((row) => effectiveChanceOf(row) >= 0.9)
+  const nearImpossible = rows.find((row) => effectiveChanceOf(row) <= 0.1)
+  const unlikely = [...rows].reverse().find((row) => effectiveChanceOf(row) < 0.5)
 
   return (
     <section className="point-curve-section magic-points" aria-labelledby="magic-points-title">
       <h4 className="points-table-title" id="magic-points-title">A pontuação mágica: quantos pontos bastam?</h4>
       <p className="projection-table-note">
         Escolha o destino e veja a chance dele acontecer dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
-        IC 95% cluster-robusto por simulação.
+        IC 95% cluster-robusto por simulação; faixas onde nada muda (0% ou 100%) são agrupadas.
       </p>
       <div className="magic-destiny-picker" role="group" aria-label="Destino para a pontuação mágica">
         {MAGIC_DESTINIES.map((entry) => (
@@ -103,32 +174,56 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           </button>
         ))}
       </div>
-      <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyLabel}`}>
+
+      <div className="magic-layout">
+        <div className="magic-chart-box">
+          <MagicCurveChart rows={rows} destiny={destiny} />
+          <p className="magic-chart-caption">Linha tracejada: 50% — acima dela, {destinyLabel.toLowerCase()} é o resultado mais provável.</p>
+        </div>
+        <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyLabel}`}>
         {likely && (
           <div className="kpi-card">
             <strong className="kpi-value">{likely.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">Com {likely.points} pts, {destinyLabel.toLowerCase()} é mais provável que não ({percent.format(chanceOf(likely))})</span>
+            <span className="kpi-label">
+              {escaping
+                ? `Salvo é mais provável que rebaixado (${percent.format(1 - chanceOf(likely))} de segurança)`
+                : `${destinyLabel} é mais provável que não (${percent.format(chanceOf(likely))})`}
+            </span>
           </div>
         )}
         {nearCertain && (
           <div className="kpi-card">
             <strong className="kpi-value">{nearCertain.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">Praticamente garantido ({percent.format(chanceOf(nearCertain))})</span>
+            <span className="kpi-label">
+              {escaping
+                ? `Salvo na prática (${percent.format(chanceOf(nearCertain))} de rebaixamento restante)`
+                : `Praticamente garantido (${percent.format(chanceOf(nearCertain))})`}
+            </span>
           </div>
         )}
-        {nearImpossible && chanceOf(rows[rows.length - 1]!) > 0.1 && (
+        {nearImpossible && (
           <div className="kpi-card">
             <strong className="kpi-value">{nearImpossible.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">Praticamente descartado ({percent.format(chanceOf(nearImpossible))})</span>
+            <span className="kpi-label">
+              {escaping
+                ? `Rebaixado praticamente garantido (${percent.format(1 - chanceOf(nearImpossible))} de segurança)`
+                : `Praticamente descartado (${percent.format(chanceOf(nearImpossible))})`}
+            </span>
           </div>
         )}
         {unlikely && (
           <div className="kpi-card">
             <strong className="kpi-value">{unlikely.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">Menor pontuação observada ainda com chance ({percent.format(chanceOf(unlikely))})</span>
+            <span className="kpi-label">
+              {escaping
+                ? `Maior pontuação ainda com risco de rebaixamento (${percent.format(chanceOf(unlikely))})`
+                : `Maior pontuação ainda sem alcançar (${percent.format(chanceOf(unlikely))})`}
+            </span>
           </div>
         )}
       </div>
+      </div>
+
       <div className="table-scroll" role="region" aria-label={`Probabilidade do destino por pontuação exata: ${destinyLabel}`} tabIndex={0}>
         <table className="projection-table magic-table">
           <thead><tr>
@@ -139,19 +234,20 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             <th scope="col" className="numeric">Chance de {destinyLabel.toLowerCase()} (IC 95%)</th>
           </tr></thead>
           <tbody>
-            {rows.map((row) => {
+            {compactRows.map((group) => {
+              const row = group.row
               const chance = chanceOf(row)
               const isRelegation = destiny === 'relegation'
               return (
-                <tr key={row.points}>
-                  <th scope="row" className="magic-points-cell">{row.points}</th>
+                <tr key={group.from}>
+                  <th scope="row" className="magic-points-cell">{group.from === group.to ? group.from : `${group.from}–${group.to}`}</th>
                   {pointCurveOutcomes.map((outcome) => (
-                    <td key={outcome.id} className={`numeric games-cell ${outcome.id === destiny ? 'magic-active-value' : chanceOf === undefined ? '' : ''}`}>
+                    <td key={outcome.id} className={`numeric games-cell ${outcome.id === destiny ? 'magic-active-value' : ''}`}>
                       {percent.format(row[outcome.id])}
                     </td>
                   ))}
                   <td className="magic-bar-cell">
-                    <div className="magic-bar" role="img" aria-label={`Com ${row.points} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
+                    <div className="magic-bar" role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
                       <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
                       {isRelegation && row.lowSample && <span className="magic-bar-low">amostra baixa</span>}
                     </div>
