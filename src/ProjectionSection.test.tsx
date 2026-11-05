@@ -12,7 +12,9 @@ afterEach(() => {
 })
 
 describe('painel de projeções', () => {
-  it('apresenta probabilidades por clube, distribuições de pontuação exata e as limitações do modelo', () => {
+  // O primeiro teste do arquivo paga o cold start dos backtests cacheados
+  // (5 temporadas × 5.000 simulações); runners de CI mais lentos passam de 5s.
+  it('apresenta probabilidades por clube, distribuições de pontuação exata e as limitações do modelo', { timeout: 30_000 }, () => {
     const result = runProjection({ simulations: 8, seed: 123 })
     render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
 
