@@ -1,38 +1,50 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { getZoneLabel, matchesClubFilter, scorers, standings, type ClubFilter, type Standing } from './data'
 import { ProjectionSection } from './ProjectionSection'
+import { MethodologyPanel } from './MethodologyPanel'
+import { ProjectionProvider, useProjection } from './ProjectionContext'
 import { FixtureCalendar } from './FixtureCalendar'
 import { ResultsTable } from './ResultsTable'
 import { AuditPanel } from './AuditPanel'
+import { StandingsViews } from './StandingsViews'
+import { NextRoundPanel } from './NextRoundPanel'
+import { HeadToHeadPanel } from './HeadToHeadPanel'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
+import { seasonFacts, cutoffSummaryLine } from './seasonFacts'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const ESPN_URL = 'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols'
-const cutoffSummary = 'Corte analítico: 04/11/2026 · 13:00 BRT · arquivos capturados ~16:41 BRT; HTML CBF exibe 04/11/2026 - 19:41, fuso/semântica desconhecidos'
 type ThemeMode = 'system' | 'light' | 'dark'
 
 const TABS = [
   { id: 'visao-geral', label: 'Visão Geral' },
-  { id: 'jogos', label: 'Jogos & Resultados' },
-  { id: 'projecoes', label: 'Projeções & Métricas' },
+  { id: 'classificacoes', label: 'Classificações' },
+  { id: 'jogos', label: 'Jogos' },
+  { id: 'confrontos', label: 'Confrontos' },
+  { id: 'projecoes', label: 'Projeções' },
+  { id: 'metodologia', label: 'Metodologia & Validação' },
   { id: 'dados', label: 'Dados & Auditoria' },
 ] as const
 
 type TabId = (typeof TABS)[number]['id']
 
-/** Âncoras legadas (da versão de scroll único) continuam abrindo a aba certa. */
+/** Âncoras legadas continuam abrindo a aba certa. */
 const ANCHOR_TO_TAB: Record<string, TabId> = {
   '#inicio': 'visao-geral',
   '#classificacao': 'visao-geral',
   '#artilharia': 'visao-geral',
   '#clubes': 'visao-geral',
+  '#classificacoes': 'classificacoes',
   '#calendario': 'jogos',
   '#resultados': 'jogos',
+  '#confrontos': 'confrontos',
   '#projecoes': 'projecoes',
   '#probabilidades-time': 'projecoes',
   '#por-pontuacao': 'projecoes',
-  '#estatisticas': 'projecoes',
+  '#estatisticas': 'metodologia',
+  '#metodologia': 'metodologia',
+  '#forcas-time': 'metodologia',
   '#dados': 'dados',
 }
 
@@ -188,6 +200,7 @@ function App(): JSX.Element {
       </header>
 
       <main id="conteudo">
+        <ProjectionProvider>
         <section className="hero" id="inicio" aria-labelledby="hero-title">
           <div className="hero-pattern" aria-hidden="true" />
           <div className="hero-inner">
@@ -221,7 +234,7 @@ function App(): JSX.Element {
             <span className="snapshot-badge">Snapshot estático</span>
             <div className="snapshot-copy">
               <p className="snapshot-state">Sem atualização ao vivo.</p>
-              <p>{cutoffSummary}</p>
+              <p>{cutoffSummaryLine}</p>
             </div>
           </div>
           <span className="source-separator" aria-hidden="true" />
@@ -262,9 +275,9 @@ function App(): JSX.Element {
           <section id="painel-visao-geral" role="tabpanel" aria-labelledby="aba-visao-geral" hidden={activeTab !== 'visao-geral'}>
             <section className="kpi-strip" aria-label="Indicadores da temporada">
               <div className="kpi-card"><strong className="kpi-value">{leader.points}</strong><span className="kpi-label">Pontos do líder · {leader.club}</span></div>
-              <div className="kpi-card"><strong className="kpi-value">332<span className="kpi-divider">/380</span></strong><span className="kpi-label">Jogos disputados no corte</span></div>
+              <div className="kpi-card"><strong className="kpi-value">{seasonFacts.playedCount}<span className="kpi-divider">/{seasonFacts.scheduledCount}</span></strong><span className="kpi-label">Jogos disputados no corte</span></div>
               <div className="kpi-card"><strong className="kpi-value">{ZONES.libertadores.to}</strong><span className="kpi-label">Vagas de Libertadores (1º–5º)</span></div>
-              <div className="kpi-card"><strong className="kpi-value">48</strong><span className="kpi-label">Jogos restantes · 4 rodadas + adiados</span></div>
+              <div className="kpi-card"><strong className="kpi-value">{seasonFacts.remainingCount}</strong><span className="kpi-label">Jogos restantes · rodadas + adiados</span></div>
             </section>
 
             <section className="dashboard-grid" id="classificacao" aria-labelledby="standings-title">
@@ -384,14 +397,28 @@ function App(): JSX.Element {
             <FixtureCalendar />
           </section>
 
+          <section id="painel-classificacoes" role="tabpanel" aria-labelledby="aba-classificacoes" hidden={activeTab !== 'classificacoes'}>
+            <StandingsViews />
+          </section>
+
+          <section id="painel-confrontos" role="tabpanel" aria-labelledby="aba-confrontos" hidden={activeTab !== 'confrontos'}>
+            <NextRoundPanel />
+            <HeadToHeadPanel />
+          </section>
+
           <section id="painel-projecoes" role="tabpanel" aria-labelledby="aba-projecoes" hidden={activeTab !== 'projecoes'}>
             <ProjectionSection />
+          </section>
+
+          <section id="painel-metodologia" role="tabpanel" aria-labelledby="aba-metodologia" hidden={activeTab !== 'metodologia'}>
+            <MethodologyConsumer />
           </section>
 
           <section id="painel-dados" role="tabpanel" aria-labelledby="aba-dados" hidden={activeTab !== 'dados'}>
             <AuditPanel />
           </section>
         </div>
+        </ProjectionProvider>
       </main>
 
       <footer className="site-footer">
@@ -402,6 +429,12 @@ function App(): JSX.Element {
       </footer>
     </>
   )
+}
+
+/** Consome o worker compartilhado (um run para Projeções e Metodologia). */
+function MethodologyConsumer(): JSX.Element {
+  const { result, status, retry } = useProjection()
+  return <MethodologyPanel result={result} status={status} onRetry={retry} />
 }
 
 export default App

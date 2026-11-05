@@ -4,14 +4,21 @@ Dashboard responsivo em React, TypeScript e Vite. Os dados são locais e estáti
 
 ## Navegação por abas
 
-O painel é organizado em quatro abas acessíveis (role=tablist com navegação por teclado; âncoras antigas continuam abrindo a aba correspondente):
+O painel é organizado em sete abas acessíveis (role=tablist com navegação por teclado; âncoras antigas continuam abrindo a aba correspondente), no padrão de análises separadas por tema:
 
 1. **Visão Geral** — KPIs da temporada, classificação oficial com colunas ordenáveis, artilharia e clubes por zona.
-2. **Jogos & Resultados** — log dos 332 resultados até o corte (filtros por clube/fonte/período, ordenação e paginação) e calendário dos 48 jogos restantes por clube.
-3. **Projeções & Métricas** — probabilidades Monte Carlo com IC 95% Wilson, mediana/percentis de pontos finais e badge Δ; distribuições, curvas condicionais, backtest, ablação e metodologia; exportação CSV/XLSX/JSON.
-4. **Dados & Auditoria** — proveniência das fontes (URL, SHA-256, captura), validações em execução (temporada 2026 e histórico 2021–2025) e exportação dos dados brutos com bloco de proveniência.
+2. **Classificações** — oito vistas em sub-abas: geral, últimas 10 rodadas, mandante, visitante, turno (1º–19º), returno (20º–38º), evolução da posição por rodada (gráfico) e sequências/extremos.
+3. **Jogos** — log dos resultados até o corte (filtros por clube/fonte/período, ordenação e paginação) e calendário dos jogos restantes por clube.
+4. **Confrontos** — próxima rodada pendente com λ e probabilidades de resultado por jogo (barras H/E/F) e confronto direto visual entre dois clubes selecionáveis (barra de retrospecto, timeline dos encontros, por mando).
+5. **Projeções** — probabilidades Monte Carlo por clube (IC 95% Wilson, mediana/percentis, badge Δ, exportação) e as duas leituras por pontuação, em sub-abas.
+6. **Metodologia & Validação** — backtest e ablação walk-forward 2021–2025, tabela de forças por clube/mando que alimenta cada λ, exemplo numérico rastreável e fórmulas/limitações.
+7. **Dados & Auditoria** — proveniência das fontes (URL, SHA-256, captura), validações em execução e exportação dos dados brutos com bloco de proveniência.
 
-Documentação complementar: [auditoria de cálculos](docs/auditoria-calculos.md) (erros encontrados, correções e impacto nos números publicados) e [dicionário de dados](docs/dicionario-dados.md) (nomenclaturas padronizadas e fórmulas).
+Documentação complementar: [auditoria de cálculos](docs/auditoria-calculos.md), [dicionário de dados](docs/dicionario-dados.md) e [log de atualizações](docs/atualizacoes.md).
+
+## Atualização automática pós-rodada
+
+O site é um snapshot estático regenerado por pipeline: quando há jogos, um workflow agendado (`update-data.yml`, duas execuções diárias) coleta o CSV Football-Data e os scoreboards ESPN desde o último corte, **só publica resultados que conciliam com o calendário CBF de 380 jogos** (par ordenado único; disputados + pendentes = 380), regenera os módulos de dados, roda a suíte completa e faz commit + build + deploy no mesmo run. Sem dados novos conciliáveis, a execução é um no-op verde. A suíte de testes usa invariantes derivados dos dados (nada de contagens literais), então atualizações não quebram o CI. O histórico de cada atualização fica em `docs/atualizacoes.md`.
 
 ## Executar e verificar
 

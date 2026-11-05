@@ -9,15 +9,36 @@ com fórmula explícita e base amostral declarada.
 | Termo padronizado | Definição / fórmula | Onde aparece |
 |---|---|---|
 | **Pontos (corridos)** | Σ 3×vitórias + 1×empates do clube até o corte | Classificação, KPIs, clubes, exportações |
-| **Jogos Disputados** | Partidas com placar até o corte analítico (332 de 380) | KPIs, validações |
-| **Jogos Restantes** | 48 partidas da tabela básica CBF sem placar (4 rodadas finais + 8 adiados) | KPIs, calendário, exportações |
+| **Jogos Disputados** | Partidas com placar até o corte analítico | KPIs, validações |
+| **Jogos Restantes** | Partidas da tabela básica CBF sem placar | KPIs, calendário, exportações |
 | **Saldo de Gols** | Gols Pró − Gols Contra | Metodologia, critérios de desempate |
 | **Aproveitamento (%)** | Pontos ÷ (3 × Jogos Disputados) | Estatísticas por mando |
-| **Corte Analítico** | 04/11/2026 13:00 BRT (`2026-11-04T16:00:00Z`); kickoffs no limite ficam do lado "concluído"; registros Football-Data sem fuso do dia 04/11 são excluídos por conservadorismo | Todas as telas (badge snapshot), exportações (bloco de proveniência) |
+| **Corte Analítico** | Fim dos jogos coletados (BRT e UTC); kickoffs no limite ficam do lado "concluído"; registros Football-Data sem fuso do dia-limite são excluídos por conservadorismo | Todas as telas (badge snapshot), exportações (bloco de proveniência) |
 | **Libertadores (zona)** | Posições 1º–5º (1º–4º direto; 5º preliminar), somente pela tabela | Legenda, filtros, projeções, curvas |
 | **Sul-Americana (zona)** | Posições 6º–11º | Legenda, filtros, projeções, curvas |
 | **Zona de Rebaixamento** | Posições 17º–20º | Legenda, filtros, projeções |
 | **Desempate (REC incompleto)** | Pontos → Vitórias → Saldo → Gols Pró; entre 2 clubes: pontos/saldo/gols pró **no confronto**; empates restantes por sorteio reprodutível (cartões e sorteio oficial não existem nos dados) | Metodologia |
+
+## Análises por rodada
+
+| Termo padronizado | Definição / fórmula | Onde aparece |
+|---|---|---|
+| **Rodada nominal** | Número 1–38 impresso na tabela básica CBF (ref. única por par ordenado); a rodada 33 tem 9 jogos e a 34 tem 11 no calendário oficial | Aba Jogos, exportações |
+| **Últimas 10 rodadas** | Classificação agregada apenas das 10 rodadas completas mais recentes | Aba Classificações |
+| **Turno / Returno** | Agregados das rodadas 1–19 e 20–38 | Aba Classificações |
+| **Evolução por rodada** | Posição cumulativa do clube após cada rodada com jogos (adiados deixam rodadas parciais; o último ponto coincide com a classificação oficial) | Aba Classificações (gráfico) |
+| **Sequência vigente** | Corrente de vitórias/empates/derrotas nos resultados em ordem cronológica; “invicto” = vitórias+empates seguidos, “sem vitória” = empates+derrotas seguidos | Aba Classificações |
+| **Melhor ataque / defesa** | Maior gols marcados ÷ jogos; menor gols sofridos ÷ jogos, entre os disputados | Aba Classificações |
+| **Próxima rodada pendente** | Menor rodada nominal com jogos pendentes (adiados aparecem como "Rodada N (adiado)") | Aba Confrontos |
+
+## Confrontos e probabilidades por partida
+
+| Termo padronizado | Definição / fórmula | Onde aparece |
+|---|---|---|
+| **λ (gols esperados)** | Média de gols do modelo para um confronto; λ = μ × (ataque mandante/μ) × (defesa visitante/μ) com taxas regulares por mando | Aba Confrontos, Metodologia |
+| **Força por clube/mando** | Taxas de ataque e defesa (gols/jogo) regularizadas para a média da liga; a mesma tabela alimenta os 48 confrontos da simulação | Aba Metodologia & Validação |
+| **Probabilidade de resultado** | Marginais H/E/F de duas Poisson independentes com os λ do confronto; barras somam 100% | Aba Confrontos |
+| **Retrospecto direto** | Barra V-E-D + timeline dos encontros 2021–2026 disponíveis; histórico, nunca altera probabilidades | Aba Confrontos |
 
 ## Projeções (Monte Carlo)
 

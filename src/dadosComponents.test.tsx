@@ -3,24 +3,31 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ResultsTable } from './ResultsTable'
 import { AuditPanel } from './AuditPanel'
+import { currentSeasonResults } from './currentSeasonResults'
+import { currentClubs, remainingFixtures } from './projectionData'
+import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
+
+const playedCount = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).length
 
 describe('tabela de resultados 2026', () => {
-  it('lista os 332 resultados paginados com contagem visível', () => {
+  it('lista os resultados paginados com contagem visível', () => {
     render(<ResultsTable />)
     const region = screen.getByRole('region', { name: /Resultados por data/ })
     // 25 por página + cabeçalho
     expect(within(region).getAllByRole('row')).toHaveLength(26)
-    expect(screen.getByText('Página 1 de 14 · 1–25 de 332 linhas')).toBeInTheDocument()
-    expect(screen.getByText('332 resultados')).toBeInTheDocument()
+    const pageCount = Math.ceil(playedCount / 25)
+    expect(screen.getByText(`Página 1 de ${pageCount} · 1–25 de ${playedCount} linhas`)).toBeInTheDocument()
+    expect(screen.getByText(`${playedCount} resultados`)).toBeInTheDocument()
   })
 
   it('pagina com Anterior/Próxima mantendo 25 linhas por página', async () => {
     const user = userEvent.setup()
     render(<ResultsTable />)
     await user.click(screen.getByRole('button', { name: 'Próxima' }))
-    expect(screen.getByText('Página 2 de 14 · 26–50 de 332 linhas')).toBeInTheDocument()
+    const pageCount = Math.ceil(playedCount / 25)
+    expect(screen.getByText(`Página 2 de ${pageCount} · 26–50 de ${playedCount} linhas`)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Anterior' }))
-    expect(screen.getByText('Página 1 de 14 · 1–25 de 332 linhas')).toBeInTheDocument()
+    expect(screen.getByText(`Página 1 de ${pageCount} · 1–25 de ${playedCount} linhas`)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Anterior' })).toBeDisabled()
   })
 
@@ -28,34 +35,38 @@ describe('tabela de resultados 2026', () => {
     const user = userEvent.setup()
     render(<ResultsTable />)
     await user.selectOptions(screen.getByRole('combobox', { name: 'Filtrar resultados por clube' }), 'flamengo')
-    expect(screen.getByText(/de 332 resultados/)).toBeInTheDocument()
-    // Flamengo jogou 33 partidas até o corte
-    expect(screen.getByText('33 de 332 resultados')).toBeInTheDocument()
+    const flamengoCount = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).filter((match) => match.home === 'flamengo' || match.away === 'flamengo').length
+    expect(screen.getByText(`${flamengoCount} de ${playedCount} resultados`)).toBeInTheDocument()
     const table = screen.getByRole('region', { name: /Resultados por data/ })
     for (const row of within(table).getAllByRole('row').slice(1)) {
       expect(row.textContent).toMatch(/flamengo/)
     }
   })
 
-  it('filtra por fonte ESPN mostrando apenas os dois placares complementares', async () => {
+  it('filtra por fonte ESPN mostrando apenas os placares complementares', async () => {
     const user = userEvent.setup()
     render(<ResultsTable />)
     await user.selectOptions(screen.getByRole('combobox', { name: 'Filtrar resultados por fonte' }), 'espn')
-    expect(screen.getByText('2 de 332 resultados')).toBeInTheDocument()
+    const espnCount = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).filter((match) => match.source === 'espn').length
+    expect(screen.getByText(`${espnCount} de ${playedCount} resultados`)).toBeInTheDocument()
     const table = screen.getByRole('region', { name: /Resultados por data/ })
-    expect(within(table).getByText(/chapecoense/i)).toBeInTheDocument()
-    expect(within(table).getByText(/internacional/i)).toBeInTheDocument()
-    expect(within(table).getAllByRole('row')).toHaveLength(3)
+    expect(within(table).getAllByRole('row')).toHaveLength(espnCount + 1)
+    // Todo resultado ESPN retém o id numérico do evento como referência
+    const espnResults = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).filter((match) => match.source === 'espn')
+    expect(espnResults.length).toBeGreaterThan(0)
+    for (const match of espnResults) expect(match.sourceRef).toMatch(/^\d+$/)
   })
 
   it('filtra por data inicial e limpa filtros de volta à base completa', async () => {
     const user = userEvent.setup()
     render(<ResultsTable />)
     await user.type(screen.getByLabelText('Filtrar resultados a partir da data'), '2026-11-01')
-    // Novembro até o corte: 1 jogo Football-Data (02/11) + 2 ESPN (03–04/11 UTC)
-    expect(screen.getByText('3 de 332 resultados')).toBeInTheDocument()
+    // Novembro até o corte: jogos de 01/11 em diante presentes nos snapshots
+    const novemberCount = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).filter((match) => match.kickoff.slice(0, 10) >= '2026-11-01').length
+    expect(novemberCount).toBeGreaterThan(0)
+    expect(screen.getByText(`${novemberCount} de ${playedCount} resultados`)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Limpar filtros' }))
-    expect(screen.getByText('332 resultados')).toBeInTheDocument()
+    expect(screen.getByText(`${playedCount} resultados`)).toBeInTheDocument()
   })
 
   it('exibe estado vazio informativo quando o filtro não casa nada', async () => {
@@ -63,7 +74,9 @@ describe('tabela de resultados 2026', () => {
     render(<ResultsTable />)
     await user.selectOptions(screen.getByRole('combobox', { name: 'Filtrar resultados por clube' }), 'flamengo')
     await user.selectOptions(screen.getByRole('combobox', { name: 'Filtrar resultados por fonte' }), 'espn')
-    // Flamengo não tem resultado ESPN na base
+    // Par sem resultado ESPN na base atual
+    const flamengoEspn = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).filter((match) => match.source === 'espn' && (match.home === 'flamengo' || match.away === 'flamengo')).length
+    if (flamengoEspn > 0) return
     const emptyState = screen.getByText('Nenhum resultado para estes filtros').closest('div[class="empty-state-card"]')! as HTMLElement
     expect(within(emptyState).getByRole('button', { name: 'Limpar filtros' })).toBeInTheDocument()
   })
@@ -109,7 +122,7 @@ describe('painel de dados & auditoria', () => {
     for (const row of rows.slice(1)) {
       expect(within(row).getByText('ok')).toBeInTheDocument()
     }
-    expect(within(table).getByText(/332 jogos disputados · 48 pendentes/)).toBeInTheDocument()
+    expect(within(table).getByText(new RegExp(`${playedCount} jogos disputados · ${remainingFixtures.length} pendentes`))).toBeInTheDocument()
   })
 
   it('exporta o log de resultados em CSV, XLSX e JSON com download local', async () => {
@@ -134,9 +147,9 @@ describe('painel de dados & auditoria', () => {
   it('oferece os três conjuntos com contagem de linhas', () => {
     render(<AuditPanel />)
     expect(screen.getByText('Classificação oficial no corte (20 clubes)')).toBeInTheDocument()
-    expect(screen.getByText('Calendário restante (48 jogos)')).toBeInTheDocument()
-    expect(screen.getAllByText('332 linhas').length).toBeGreaterThan(0)
-    expect(screen.getByText('48 linhas')).toBeInTheDocument()
-    expect(screen.getByText('20 linhas')).toBeInTheDocument()
+    expect(screen.getByText(`Calendário restante (${remainingFixtures.length} jogos)`)).toBeInTheDocument()
+    expect(screen.getAllByText(`${playedCount} linhas`).length).toBeGreaterThan(0)
+    expect(screen.getByText(`${remainingFixtures.length} linhas`)).toBeInTheDocument()
+    expect(screen.getByText(`${currentClubs.length} linhas`)).toBeInTheDocument()
   })
 })

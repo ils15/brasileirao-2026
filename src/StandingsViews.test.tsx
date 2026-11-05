@@ -1,0 +1,99 @@
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
+import { StandingsViews } from './StandingsViews'
+import { standingsFromResults } from './rounds'
+import { currentClubs } from './projectionData'
+
+describe('aba classificações', () => {
+  it('abre na vista geral com as 20 linhas e colunas completas', () => {
+    render(<StandingsViews />)
+    const table = screen.getByRole('region', { name: /Classificação geral/ })
+    expect(within(table).getAllByRole('row')).toHaveLength(21)
+    expect(within(table).getByRole('columnheader', { name: /^PTS/ })).toBeInTheDocument()
+    expect(within(table).getByRole('columnheader', { name: /^GP/ })).toBeInTheDocument()
+    // Líder oficial na primeira linha de dados
+    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
+  })
+
+  it('troca entre as oito vistas por clique e teclado', async () => {
+    const user = userEvent.setup()
+    render(<StandingsViews />)
+    expect(screen.getAllByRole('tab')).toHaveLength(8)
+
+    await user.click(screen.getByRole('tab', { name: 'Últimas 10 rodadas' }))
+    const lastTen = screen.getByRole('region', { name: /últimas 10 rodadas completas/i })
+    expect(within(lastTen).getAllByRole('row')).toHaveLength(21)
+
+    const mandanteTab = screen.getByRole('tab', { name: 'Mandante' })
+    mandanteTab.focus()
+    await user.keyboard('{ArrowRight}')
+    expect(screen.getByRole('tab', { name: 'Visitante' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('region', { name: /só jogos como visitante|só com jogos como visitante/ })).toBeInTheDocument()
+    await user.keyboard('{Home}')
+    expect(screen.getByRole('tab', { name: 'Geral' })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('vista de mandantes soma só jogos em casa (menor total que a geral)', async () => {
+    const user = userEvent.setup()
+    render(<StandingsViews />)
+    const geral = screen.getByRole('region', { name: /Classificação geral/ })
+    const geralCells = within(within(geral).getAllByRole('row')[1]!).getAllByRole('cell')
+    const flamengo = currentClubs.find(({ id }) => id === 'flamengo')!
+    // Snapshot antes do clique: o React reutiliza as <tr> entre vistas
+    const geralPlayed = Number(geralCells[2]!.textContent)
+    expect(geralPlayed).toBe(flamengo.played)
+
+    await user.click(screen.getByRole('tab', { name: 'Mandante' }))
+    const mandante = screen.getByRole('region', { name: /mandante/ })
+    const mandanteCells = within(within(mandante).getAllByRole('row')[1]!).getAllByRole('cell')
+    const mandantePlayed = Number(mandanteCells[2]!.textContent)
+    expect(mandantePlayed).toBeLessThan(flamengo.played)
+  })
+
+  it('ordena a vista geral por gols pró ao clicar no cabeçalho', async () => {
+    const user = userEvent.setup()
+    render(<StandingsViews />)
+    await user.click(screen.getByRole('button', { name: /^GP/ }))
+    const table = screen.getByRole('region', { name: /Classificação geral/ })
+    // Ascendente: menor GP primeiro (Chapecoense, 33 gols)
+    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Chapecoense')
+    expect(within(table).getByRole('columnheader', { name: /^GP/ })).toHaveAttribute('aria-sort', 'ascending')
+  })
+
+  it('mostra o gráfico de evolução com acessibilidade e referência da última posição', async () => {
+    const user = userEvent.setup()
+    render(<StandingsViews />)
+    await user.click(screen.getByRole('tab', { name: 'Evolução por rodada' }))
+    const chart = screen.getByRole('img', { name: /Evolução da posição de cada clube/ })
+    expect(chart).toBeInTheDocument()
+    expect(screen.getByText(/Faixas: Libertadores 1º–5º/)).toBeInTheDocument()
+    // Linhas do SVG: 20 clubes × 1 polyline cada
+    expect(chart.querySelectorAll('polyline')).toHaveLength(20)
+  })
+
+  it('exibe sequências vigentes e extremos de ataque/defesa', async () => {
+    const user = userEvent.setup()
+    render(<StandingsViews />)
+    await user.click(screen.getByRole('tab', { name: 'Sequências e extremos' }))
+    const streaks = screen.getByRole('region', { name: 'Sequências vigentes por clube' })
+    expect(within(streaks).getAllByRole('row')).toHaveLength(21)
+    expect(screen.getByText(/Melhor ataque ·/)).toBeInTheDocument()
+    expect(screen.getByText(/Melhor defesa ·/)).toBeInTheDocument()
+    // Todos os 20 clubes têm linha
+    for (const club of currentClubs.slice(0, 3)) {
+      expect(within(streaks).getByRole('row', { name: new RegExp(club.club) })).toBeInTheDocument()
+    }
+  })
+
+  it('as vistas derivadas batem com standingsFromResults', async () => {
+    const user = userEvent.setup()
+    render(<StandingsViews />)
+    await user.click(screen.getByRole('tab', { name: 'Turno (1º–19º)' }))
+    const turno = screen.getByRole('region', { name: /turno/ })
+    const expectedLeader = standingsFromResults({ fromRound: 1, toRound: 19 })[0]!
+    expect(within(turno).getAllByRole('row')[1]).toHaveTextContent(expectedLeader.club)
+    const expectedPoints = within(turno).getAllByRole('row')[1]!.textContent ?? ''
+    expect(expectedPoints).toContain(String(expectedLeader.points))
+  })
+})

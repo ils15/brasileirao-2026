@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ProjectionPanel } from './ProjectionSection'
 import { runProjection } from './projection'
-import { HISTORICAL_SOURCE } from './historicalSeasons'
 
 const percentFormat = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
 
@@ -14,7 +13,8 @@ afterEach(() => {
 describe('painel de projeções', () => {
   // O primeiro teste do arquivo paga o cold start dos backtests cacheados
   // (5 temporadas × 5.000 simulações); runners de CI mais lentos passam de 5s.
-  it('apresenta probabilidades por clube, distribuições de pontuação exata e as limitações do modelo', { timeout: 30_000 }, () => {
+  it('apresenta probabilidades por clube, distribuições de pontuação exata e as limitações do modelo', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
     const result = runProjection({ simulations: 8, seed: 123 })
     render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
 
@@ -23,6 +23,14 @@ describe('painel de projeções', () => {
     const probabilities = screen.getByRole('region', { name: /Probabilidades simuladas por clube/ })
     expect(within(probabilities).getByRole('row', { name: /Flamengo/ })).toBeInTheDocument()
     expect(within(probabilities).getAllByRole('row')).toHaveLength(21)
+    expect(screen.getByText(/Não são odds nem recomendação de apostas/)).toBeInTheDocument()
+    // Sub-abas: Por clube ativa; Por pontuação montado mas oculto
+    expect(screen.getByRole('tab', { name: 'Por clube' })).toHaveAttribute('aria-selected', 'true')
+    expect(document.getElementById('analise-por-pontuacao')!.hidden).toBe(true)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+    expect(document.getElementById('analise-por-pontuacao')!.hidden).toBe(false)
+    expect(document.getElementById('analise-por-clube')!.hidden).toBe(true)
     expect(screen.getByRole('heading', { name: 'Pontuação exata dado resultado final' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Resultado dado pontuação exata' })).toBeInTheDocument()
     expect(screen.queryByText(/Até 29|30–39|40–49|50–59|60–69|70\+/)).not.toBeInTheDocument()
@@ -32,18 +40,6 @@ describe('painel de projeções', () => {
     expect(within(curve).getAllByRole('row').length).toBeGreaterThan(1)
     expect(within(curve).getByRole('row', { name: new RegExp(`^${result.pointCurve.rows[0]!.points} `) })).toHaveTextContent(`${result.pointCurve.rows[0]!.successes}/${result.pointCurve.rows[0]!.denominator}`)
     expect(within(curve).getAllByText('Amostra baixa').length).toBeGreaterThan(0)
-    expect(screen.getByText(/Não são odds nem recomendação de apostas/)).toBeInTheDocument()
-    expect(screen.getByText(/Em .* jogos futuros não usados no ajuste/)).toBeInTheDocument()
-    expect(screen.getByText(/Brier dos grupos finais por posição/)).toBeInTheDocument()
-    const backtestSummary = screen.getByText(/Esses Brier medem a política walk-forward/i)
-    expect(backtestSummary).toHaveTextContent(new RegExp(`k=${result.featureBacktest.productionShrinkageMatches}.*selecionado para a temporada 2025 usando apenas os anos anteriores.*Não há validação externa independente`, 'i'))
-    expect(screen.getByText(/base de treino efetiva.*332 resultados de 2026 até o corte/i)).toBeInTheDocument()
-    expect(screen.getByText(new RegExp(HISTORICAL_SOURCE.sha256))).toBeInTheDocument()
-    expect(screen.getByText(/A CBF foi comparada apenas nos totais finais/)).toBeInTheDocument()
-    expect(screen.getByText(/resultados H2H concluídos de 2026 nos snapshots disponíveis são acumulados com os resultados simulados/)).toBeInTheDocument()
-    expect(screen.getByText(/pontos, saldo e gols marcados no confronto/)).toBeInTheDocument()
-    expect(screen.getByText(/o H2H 2026 disponível entra somente no desempate entre dois clubes/)).toBeInTheDocument()
-    expect(screen.getByText(/kickoffs anteriores ao corte.*401841304.*401841301/)).toBeInTheDocument()
   })
 
   it('navega os resultados por teclado e mantém K/N idêntico entre gráfico e tabela', async () => {
@@ -51,6 +47,8 @@ describe('painel de projeções', () => {
     const result = runProjection({ simulations: 8, seed: 123 })
     render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
 
+    // As abas de resultado vivem na sub-aba Por pontuação
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
     const championTab = screen.getByRole('tab', { name: 'Campeão' })
     championTab.focus()
     await user.keyboard('{ArrowRight}')
@@ -115,19 +113,6 @@ describe('painel de projeções', () => {
     expect(within(probabilities).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
-  it('apresenta os quatro modelos de ablação em cada dobra temporal sem sugerir ganho consistente', () => {
-    render(<ProjectionPanel result={runProjection({ simulations: 8, seed: 123 })} status="ready" onRetry={vi.fn()} />)
-
-    const ablation = screen.getByRole('region', { name: /Ablação temporal de recursos/ })
-    expect(within(ablation).getByRole('columnheader', { name: /BASELINE/ })).toBeInTheDocument()
-    expect(within(ablation).getByRole('columnheader', { name: /BRIER CASA\/FORA/ })).toBeInTheDocument()
-    expect(within(ablation).getByRole('columnheader', { name: /BRIER H2H/ })).toBeInTheDocument()
-    expect(within(ablation).getByRole('columnheader', { name: /BRIER COMBINADO/ })).toBeInTheDocument()
-    expect(within(ablation).getByRole('row', { name: /2023/ })).toHaveTextContent('0,653')
-    expect(screen.getByText(/H2H é apenas contexto e tem peso zero na projeção/)).toBeInTheDocument()
-    expect(screen.getByText(/não mostram melhoria consistente/)).toBeInTheDocument()
-  })
-
   it('informa quando as simulações ainda estão em processamento', () => {
     render(<ProjectionPanel result={null} status="loading" onRetry={vi.fn()} />)
     expect(screen.getByRole('status')).toHaveTextContent('Calculando cenários em segundo plano')
@@ -138,10 +123,8 @@ describe('painel de projeções', () => {
 
     expect(document.getElementById('probabilidades-time')).toHaveTextContent(/Probabilidades por time/)
     expect(document.getElementById('por-pontuacao')).toHaveTextContent(/Probabilidade por pontuação/)
-    expect(document.getElementById('estatisticas')).toHaveTextContent(/Estatísticas e metodologia/)
     expect(screen.getByRole('heading', { name: 'Probabilidades por time' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Probabilidade por pontuação' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Estatísticas e metodologia' })).toBeInTheDocument()
     expect(screen.getByRole(status === 'loading' ? 'status' : 'alert')).toBeInTheDocument()
   })
 })

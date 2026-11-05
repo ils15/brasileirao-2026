@@ -2,6 +2,8 @@ import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
+import { currentClubs } from './projectionData'
+import { cutoffSummaryLine } from './seasonFacts'
 
 describe('painel do Brasileirão 2026', () => {
   beforeEach(() => {
@@ -23,37 +25,40 @@ describe('painel do Brasileirão 2026', () => {
     expect(window.localStorage.getItem('br2026-theme')).toBe('dark')
   })
 
-  it('organiza o painel em quatro abas acessíveis com seleção por clique e teclado', async () => {
+  it('organiza o painel em sete abas acessíveis com seleção por clique e teclado', async () => {
     const user = userEvent.setup()
     render(<App />)
 
     const tabs = screen.getAllByRole('tab')
-    expect(tabs.map((tab) => tab.textContent)).toEqual(['Visão Geral', 'Jogos & Resultados', 'Projeções & Métricas', 'Dados & Auditoria'])
+    expect(tabs.map((tab) => tab.textContent)).toEqual([
+      'Visão Geral', 'Classificações', 'Jogos', 'Confrontos', 'Projeções', 'Metodologia & Validação', 'Dados & Auditoria',
+    ])
     const tablist = screen.getByRole('tablist', { name: 'Navegação principal' })
-    expect(within(tablist).getAllByRole('tab')).toHaveLength(4)
+    expect(within(tablist).getAllByRole('tab')).toHaveLength(7)
 
     // Aba inicial: Visão Geral visível; as demais ocultas.
     expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
+    expect(document.getElementById('painel-classificacoes')!.hidden).toBe(true)
     expect(document.getElementById('painel-jogos')!.hidden).toBe(true)
+    expect(document.getElementById('painel-confrontos')!.hidden).toBe(true)
     expect(document.getElementById('painel-projecoes')!.hidden).toBe(true)
+    expect(document.getElementById('painel-metodologia')!.hidden).toBe(true)
     expect(document.getElementById('painel-dados')!.hidden).toBe(true)
 
     // Seleção por clique troca o painel visível.
-    await user.click(screen.getByRole('tab', { name: 'Jogos & Resultados' }))
-    expect(screen.getByRole('tabpanel', { name: 'Jogos & Resultados' })).toBeVisible()
+    await user.click(screen.getByRole('tab', { name: 'Confrontos' }))
+    expect(screen.getByRole('tabpanel', { name: 'Confrontos' })).toBeVisible()
     expect(document.getElementById('painel-visao-geral')!.hidden).toBe(true)
-    expect(screen.getByRole('heading', { name: 'Resultados 2026' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: 'Próxima rodada' })).toBeVisible()
 
     // Teclado: setas movem a seleção com foco gerenciado (roving tabindex).
-    const projecoesTab = screen.getByRole('tab', { name: 'Projeções & Métricas' })
+    const projecoesTab = screen.getByRole('tab', { name: 'Projeções' })
     projecoesTab.focus()
     await user.keyboard('{ArrowRight}')
-    const dadosTab = screen.getByRole('tab', { name: 'Dados & Auditoria' })
-    expect(dadosTab).toHaveAttribute('aria-selected', 'true')
-    expect(dadosTab).toHaveFocus()
-    expect(screen.getByRole('tabpanel', { name: 'Dados & Auditoria' })).toBeVisible()
-    await user.keyboard('{ArrowLeft}')
-    expect(screen.getByRole('tab', { name: 'Projeções & Métricas' })).toHaveAttribute('aria-selected', 'true')
+    const metodologiaTab = screen.getByRole('tab', { name: 'Metodologia & Validação' })
+    expect(metodologiaTab).toHaveAttribute('aria-selected', 'true')
+    expect(metodologiaTab).toHaveFocus()
+    expect(screen.getByRole('tabpanel', { name: 'Metodologia & Validação' })).toBeVisible()
 
     // End vai à última aba; Home volta à primeira.
     await user.keyboard('{End}')
@@ -69,11 +74,28 @@ describe('painel do Brasileirão 2026', () => {
 
     window.history.replaceState(null, '', '#estatisticas')
     window.dispatchEvent(new HashChangeEvent('hashchange'))
-    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Projeções & Métricas' })).toBeVisible())
+    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Metodologia & Validação' })).toBeVisible())
 
     window.history.replaceState(null, '', '#dados')
     window.dispatchEvent(new HashChangeEvent('hashchange'))
     await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Dados & Auditoria' })).toBeVisible())
+
+    window.history.replaceState(null, '', '#calendario')
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
+    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Jogos' })).toBeVisible())
+  })
+
+  it('exibe as análises da aba Classificações e da aba Confrontos', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('tab', { name: 'Classificações' }))
+    expect(screen.getByRole('heading', { name: 'Classificações' })).toBeVisible()
+    expect(screen.getByRole('tablist', { name: 'Vistas da classificação' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: 'Confrontos' }))
+    expect(screen.getByRole('heading', { name: 'Próxima rodada' })).toBeVisible()
+    expect(screen.getByRole('heading', { name: /Confronto direto|Flamengo × Palmeiras/ })).toBeVisible()
   })
 
   it('mostra KPIs executivos da temporada na visão geral', () => {
@@ -83,7 +105,7 @@ describe('painel do Brasileirão 2026', () => {
     expect(within(kpis).getByText('Pontos do líder · Flamengo')).toBeInTheDocument()
     expect(within(kpis).getByText('Jogos disputados no corte')).toBeInTheDocument()
     expect(within(kpis).getByText('Vagas de Libertadores (1º–5º)')).toBeInTheDocument()
-    expect(within(kpis).getByText('Jogos restantes · 4 rodadas + adiados')).toBeInTheDocument()
+    expect(within(kpis).getByText('Jogos restantes · rodadas + adiados')).toBeInTheDocument()
   })
 
   it('ordena a classificação por pontos ao clicar no cabeçalho', async () => {
@@ -92,20 +114,23 @@ describe('painel do Brasileirão 2026', () => {
 
     await user.click(screen.getByRole('button', { name: /^PTS/ }))
     const table = screen.getByRole('region', { name: /Tabela classificatória/ })
-    // Ascendente: menor pontuação primeiro (Chapecoense, 21 pts)
-    expect(within(table).getAllByRole('row')[1]!).toHaveTextContent('Chapecoense')
+    // Ascendente: menor pontuação primeiro (lanterna)
+    const lastPlace = currentClubs[currentClubs.length - 1]!
+    expect(within(table).getAllByRole('row')[1]!).toHaveTextContent(lastPlace.club)
     expect(within(table).getByRole('columnheader', { name: /PTS/ })).toHaveAttribute('aria-sort', 'ascending')
 
     await user.click(screen.getByRole('button', { name: /^PTS/ }))
-    // Descendente: líder primeiro (Flamengo, 73 pts)
-    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
+    // Descendente: líder primeiro
+    expect(within(table).getAllByRole('row')[1]).toHaveTextContent(currentClubs[0]!.club)
     expect(within(table).getByRole('columnheader', { name: /PTS/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
   it('mostra os 20 clubes na ordem oficial, com pontos e jogos do snapshot', () => {
     render(<App />)
 
-    const rows = screen.getAllByRole('row')
+    // A classificação da Visão Geral (outras abas também têm tabelas no DOM)
+    const standingsTable = screen.getByRole('region', { name: /Tabela classificatória/ })
+    const rows = within(standingsTable).getAllByRole('row')
     expect(rows).toHaveLength(21)
     const renderedStandings = rows.slice(1).map((row) => {
       const cells = row.querySelectorAll('th, td')
@@ -116,30 +141,15 @@ describe('painel do Brasileirão 2026', () => {
         cells[3]?.textContent?.trim(),
       ]
     })
-    expect(renderedStandings).toEqual([
-      ['01', 'Flamengo', '73', '33'],
-      ['02', 'Palmeiras', '70', '33'],
-      ['03', 'Cruzeiro', '57', '33'],
-      ['04', 'Fluminense', '54', '33'],
-      ['05', 'Athletico Paranaense', '54', '33'],
-      ['06', 'Bahia', '53', '33'],
-      ['07', 'Atlético Mineiro', '50', '33'],
-      ['08', 'Red Bull Bragantino', '47', '34'],
-      ['09', 'Santos FC', '47', '34'],
-      ['10', 'São Paulo', '43', '33'],
-      ['11', 'Coritiba SAF', '42', '34'],
-      ['12', 'Mirassol', '40', '34'],
-      ['13', 'Botafogo', '39', '33'],
-      ['14', 'Vasco da Gama SAF', '38', '32'],
-      ['15', 'Vitória', '38', '33'],
-      ['16', 'Internacional', '38', '34'],
-      ['17', 'Grêmio', '37', '33'],
-      ['18', 'Corinthians', '36', '33'],
-      ['19', 'Remo', '29', '33'],
-      ['20', 'Chapecoense', '21', '33'],
-    ])
+    // Invariante: a tabela renderizada reflete o snapshot derivado dos dados
+    expect(renderedStandings).toEqual(currentClubs.map((club) => [
+      String(club.position).padStart(2, '0'),
+      club.club,
+      String(club.points),
+      String(club.played),
+    ]))
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
-    expect(within(sourceSummary).getByText(/Corte analítico: 04\/11\/2026 · 13:00 BRT · arquivos capturados ~16:41 BRT; HTML CBF exibe 04\/11\/2026 - 19:41, fuso\/semântica desconhecidos/)).toBeInTheDocument()
+    expect(within(sourceSummary).getByText(cutoffSummaryLine)).toBeInTheDocument()
     expect(screen.getByText(/A classificação foi reconciliada em agregado ao conjunto de jogos até 04\/11\/2026 13:00 BRT/)).toBeInTheDocument()
     expect(screen.queryByText(/snapshot CBF de 04\/11\/2026 às 13:00/)).not.toBeInTheDocument()
   })
@@ -170,10 +180,13 @@ describe('painel do Brasileirão 2026', () => {
     await user.click(screen.getByRole('button', { name: 'Rebaixamento' }))
 
     const clubList = screen.getByRole('list', { name: 'Clubes filtrados por zona' })
+    // Invariante: sempre os quatro últimos do snapshot
+    const relegated = currentClubs.filter((club) => club.position >= 17)
     expect(within(clubList).getAllByRole('listitem')).toHaveLength(4)
-    expect(within(clubList).getByText('Corinthians')).toBeInTheDocument()
-    expect(within(clubList).getByText('Chapecoense')).toBeInTheDocument()
-    expect(within(clubList).queryByText('Flamengo')).not.toBeInTheDocument()
+    for (const club of relegated) {
+      expect(within(clubList).getByText(club.club)).toBeInTheDocument()
+    }
+    expect(within(clubList).queryByText(currentClubs[0]!.club)).not.toBeInTheDocument()
   })
 
   it('preserva os três artilheiros empatados na quinta posição', () => {

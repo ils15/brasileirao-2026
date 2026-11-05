@@ -172,6 +172,43 @@ export function expectedGoalsHomeAway(
   }
 }
 
+export interface ExpectedGoalsBreakdown {
+  expected: ExpectedGoals
+  /** Médias por mando da base de treino (μ casa/μ fora). */
+  averages: GoalAverages
+  homeAttackRate: number
+  homeDefenseRate: number
+  awayAttackRate: number
+  awayDefenseRate: number
+}
+
+/**
+ * Decomposição passo a passo do λ casa/fora com os mesmos fatores de
+ * `expectedGoalsHomeAway` — usada na rastreabilidade do exemplo numérico
+ * (aba Metodologia & Validação).
+ */
+export function expectedGoalsBreakdown(
+  homeId: string,
+  awayId: string,
+  trainingMatches: readonly ModelMatch[],
+  referenceYear: number,
+  shrinkageMatches: number,
+): ExpectedGoalsBreakdown {
+  const averages = historicalGoalAverages(trainingMatches)
+  const homeAttackRate = rateForTeam(homeId, 'home', 'attack', trainingMatches, referenceYear, shrinkageMatches, averages.home)
+  const homeDefenseRate = rateForTeam(homeId, 'home', 'defense', trainingMatches, referenceYear, shrinkageMatches, averages.away)
+  const awayAttackRate = rateForTeam(awayId, 'away', 'attack', trainingMatches, referenceYear, shrinkageMatches, averages.away)
+  const awayDefenseRate = rateForTeam(awayId, 'away', 'defense', trainingMatches, referenceYear, shrinkageMatches, averages.home)
+  return {
+    expected: expectedGoalsHomeAway(homeId, awayId, trainingMatches, referenceYear, shrinkageMatches),
+    averages,
+    homeAttackRate,
+    homeDefenseRate,
+    awayAttackRate,
+    awayDefenseRate,
+  }
+}
+
 export function estimateHeadToHeadAdjustment(
   records: readonly ModelMatch[],
   baseline: ExpectedGoals,
@@ -233,6 +270,39 @@ export function expectedGoalsForVariant(
     home: Math.max(0.05, expected.home + adjustment.home),
     away: Math.max(0.05, expected.away + adjustment.away),
   }
+}
+
+export interface TeamStrengthRow {
+  clubId: string
+  /** Taxa de gols marcados como mandante (regularizada), em gols/jogo. */
+  attackHome: number
+  /** Taxa de gols sofridos como mandante. */
+  defenseHome: number
+  /** Taxa de gols marcados como visitante. */
+  attackAway: number
+  /** Taxa de gols sofridos como visitante. */
+  defenseAway: number
+}
+
+/**
+ * Tabela de forças por clube e mando usada pelo modelo casa/fora: a mesma
+ * `rateForTeam` da previsão de produção, exposta para rastreabilidade
+ * (aba Metodologia & Validação). μ de referência = médias por mando da base.
+ */
+export function teamStrengthTable(
+  trainingMatches: readonly ModelMatch[],
+  referenceYear: number,
+  shrinkageMatches: number,
+  clubIds: readonly string[],
+  leagueAverages: GoalAverages,
+): TeamStrengthRow[] {
+  return clubIds.map((clubId) => ({
+    clubId,
+    attackHome: rateForTeam(clubId, 'home', 'attack', trainingMatches, referenceYear, shrinkageMatches, leagueAverages.home),
+    defenseHome: rateForTeam(clubId, 'home', 'defense', trainingMatches, referenceYear, shrinkageMatches, leagueAverages.away),
+    attackAway: rateForTeam(clubId, 'away', 'attack', trainingMatches, referenceYear, shrinkageMatches, leagueAverages.away),
+    defenseAway: rateForTeam(clubId, 'away', 'defense', trainingMatches, referenceYear, shrinkageMatches, leagueAverages.home),
+  }))
 }
 
 export function poissonResultProbabilities(expected: ExpectedGoals): [number, number, number] {

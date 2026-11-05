@@ -17,7 +17,8 @@ interface VenueStatsCardProps {
   stats: VenueStats
 }
 
-function VenueStatsCard({ title, stats }: VenueStatsCardProps): JSX.Element {
+/** Card de estatísticas por mando; reutilizado no painel de confrontos. */
+export function VenueStatsCard({ title, stats }: VenueStatsCardProps): JSX.Element {
   return (
     <article className="venue-stats-card">
       <h4>{title}</h4>

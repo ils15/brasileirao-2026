@@ -1,0 +1,76 @@
+name: Atualização pós-rodada
+
+on:
+  schedule:
+    # 06:30 e 14:30 UTC (03:30 e 11:30 BRT): após o fim dos jogos e na
+    # manhã seguinte, cobrindo o lag de publicação do Football-Data.
+    - cron: '30 6 * * *'
+    - cron: '30 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: update-data-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.update.outputs.changed }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Collect, validate and package post-round data
+        id: update
+        env:
+          FETCH: '1'
+        run: |
+          node scripts/update-data.mjs
+          if [ -n "$(git status --porcelain -- src/currentSeasonResults.ts src/projectionData.ts src/sourceMetadata.ts data/source-snapshots docs/atualizacoes.md)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Push data commit
+        if: steps.update.outputs.changed == 'true'
+        run: git push origin HEAD:main
+      - name: Build for the project site
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          npm run build
+          npm run smoke:pages
+        env:
+          GITHUB_PAGES: 'true'
+      - name: Upload Pages artifact
+        if: steps.update.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+
+  deploy:
+    if: needs.update.outputs.changed == 'true'
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
