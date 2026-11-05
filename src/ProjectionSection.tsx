@@ -150,8 +150,38 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   const effectiveChanceOf = (row: MagicRow): number => (escaping ? 1 - chanceOf(row) : chanceOf(row))
   const likely = rows.find((row) => effectiveChanceOf(row) >= 0.5)
   const nearCertain = rows.find((row) => effectiveChanceOf(row) >= 0.9)
-  const nearImpossible = rows.find((row) => effectiveChanceOf(row) <= 0.1)
-  const unlikely = [...rows].reverse().find((row) => effectiveChanceOf(row) < 0.5)
+
+  // Limite da faixa inicial onde o destino é praticamente garantido (só faz
+  // sentido quando começa garantido — ex. rebaixamento em pontuações baixas).
+  const guaranteedEnd = useMemo(() => {
+    if (!escaping) return undefined
+    let end: number | undefined
+    for (const row of rows) {
+      if (chanceOf(row) >= 0.9) end = row.points
+      else break
+    }
+    return end
+  }, [rows, escaping])
+  const guaranteedMinSafety = useMemo(() => {
+    if (guaranteedEnd === undefined) return undefined
+    const inBand = rows.filter((row) => row.points <= guaranteedEnd!)
+    return Math.min(...inBand.map((row) => 1 - chanceOf(row)))
+  }, [rows, guaranteedEnd])
+
+  // Primeira pontuação em que o destino começa a aparecer.
+  const firstChanceRow = useMemo(() => rows.find((row) => chanceOf(row) > 0), [rows])
+
+  // Zona cinzenta: entre "praticamente descartado" e "praticamente garantido".
+  const grayZone = useMemo(() => {
+    const inZone = rows.filter((row) => effectiveChanceOf(row) > 0.1 && effectiveChanceOf(row) < 0.9)
+    if (inZone.length === 0) return undefined
+    return {
+      from: inZone[0]!.points,
+      to: inZone[inZone.length - 1]!.points,
+      safetyMin: Math.min(...inZone.map((row) => effectiveChanceOf(row))),
+      safetyMax: Math.max(...inZone.map((row) => effectiveChanceOf(row))),
+    }
+  }, [rows, escaping])
 
   return (
     <section className="point-curve-section magic-points" aria-labelledby="magic-points-title">
@@ -187,7 +217,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             <span className="kpi-label">
               {escaping
                 ? `Salvo é mais provável que rebaixado (${percent.format(1 - chanceOf(likely))} de segurança)`
-                : `${destinyLabel} é mais provável que não (${percent.format(chanceOf(likely))})`}
+                : `A partir daqui, ${destinyLabel.toLowerCase()} é mais provável que não (${percent.format(chanceOf(likely))})`}
             </span>
           </div>
         )}
@@ -201,23 +231,25 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             </span>
           </div>
         )}
-        {nearImpossible && (
+        {escaping && guaranteedEnd !== undefined && (
           <div className="kpi-card">
-            <strong className="kpi-value">{nearImpossible.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">
-              {escaping
-                ? `Rebaixado praticamente garantido (${percent.format(1 - chanceOf(nearImpossible))} de segurança)`
-                : `Praticamente descartado (${percent.format(chanceOf(nearImpossible))})`}
-            </span>
+            <strong className="kpi-value">Até {guaranteedEnd}<span className="kpi-divider"> pts</span></strong>
+            <span className="kpi-label">Rebaixado praticamente garantido — escapar no máximo {percent.format(1 - guaranteedMinSafety!)}</span>
           </div>
         )}
-        {unlikely && (
+        {!escaping && firstChanceRow && chanceOf(firstChanceRow) < 0.1 && (
           <div className="kpi-card">
-            <strong className="kpi-value">{unlikely.points}<span className="kpi-divider"> pts</span></strong>
+            <strong className="kpi-value">{firstChanceRow.points}<span className="kpi-divider"> pts</span></strong>
+            <span className="kpi-label">A chance só começa a aparecer aqui ({percent.format(chanceOf(firstChanceRow))})</span>
+          </div>
+        )}
+        {grayZone && (
+          <div className="kpi-card">
+            <strong className="kpi-value">{grayZone.from}–{grayZone.to}<span className="kpi-divider"> pts</span></strong>
             <span className="kpi-label">
-              {escaping
-                ? `Maior pontuação ainda com risco de rebaixamento (${percent.format(chanceOf(unlikely))})`
-                : `Maior pontuação ainda sem alcançar (${percent.format(chanceOf(unlikely))})`}
+              Zona cinzenta: {escaping
+                ? `segurança de ${percent.format(grayZone.safetyMin)} a ${percent.format(grayZone.safetyMax)}`
+                : `chance de ${percent.format(grayZone.safetyMin)} a ${percent.format(grayZone.safetyMax)}`}
             </span>
           </div>
         )}

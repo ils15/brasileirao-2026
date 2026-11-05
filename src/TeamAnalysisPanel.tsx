@@ -82,12 +82,13 @@ function FinalProjection({ clubId, clubName }: { clubId: string; clubName: strin
     )
   }
   const delta = club.pointsStats.median - club.currentPoints
+  // Destinos sem chance (0%) não são exibidos — só o que ainda é possível.
   const zoneChips = [
     { label: 'Título', value: club.title },
     { label: 'Libertadores', value: club.libertadores },
     { label: 'Sul-Americana', value: club.sudamericana },
     { label: 'Rebaixamento', value: club.relegation },
-  ]
+  ].filter((chip) => chip.value > 0)
   return (
     <div className="team-kpi team-kpi--wide">
       <strong>{club.pointsStats.median} pts <small className="cell-ci">mediana · {signedDecimal.format(delta)} vs hoje</small></strong>
