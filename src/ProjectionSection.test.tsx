@@ -47,6 +47,15 @@ describe('painel de projeções', () => {
     expect(within(curve).getAllByRole('row').length).toBeGreaterThan(1)
     expect(within(curve).getByRole('row', { name: new RegExp(`^${result.pointCurve.rows[0]!.points} `) })).toHaveTextContent(`${result.pointCurve.rows[0]!.successes}/${result.pointCurve.rows[0]!.denominator}`)
     expect(within(curve).getAllByText('Amostra baixa').length).toBeGreaterThan(0)
+
+    // Pontuação mágica: linhas do destino + tabela de rebaixamento por pontuação
+    expect(screen.getByRole('heading', { name: /A pontuação mágica: quantos pontos bastam\?/ })).toBeInTheDocument()
+    expect(screen.getByText(/Salvo mais provável que rebaixado/)).toBeInTheDocument()
+    const magicTable = screen.getByRole('region', { name: /Probabilidade de cada destino por pontuação exata/ })
+    expect(within(magicTable).getAllByRole('img', { name: /chance de rebaixamento/ }).length).toBeGreaterThan(3)
+    // Curva em 5 destinos
+    expect(within(curve).getByRole('columnheader', { name: /Título/ })).toBeInTheDocument()
+    expect(within(curve).getByRole('columnheader', { name: /Rebaixamento/ })).toBeInTheDocument()
   })
 
   it('navega os resultados por teclado e mantém K/N idêntico entre gráfico e tabela', async () => {

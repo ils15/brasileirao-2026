@@ -8,6 +8,7 @@ import { ResultsTable } from './ResultsTable'
 import { AuditPanel } from './AuditPanel'
 import { StandingsViews } from './StandingsViews'
 import { NextRoundPanel } from './NextRoundPanel'
+import { TeamAnalysisPanel } from './TeamAnalysisPanel'
 import { HeadToHeadPanel } from './HeadToHeadPanel'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
@@ -403,6 +404,7 @@ function App(): JSX.Element {
 
           <section id="painel-confrontos" role="tabpanel" aria-labelledby="aba-confrontos" hidden={activeTab !== 'confrontos'}>
             <NextRoundPanel />
+            <TeamAnalysisPanel />
             <HeadToHeadPanel />
           </section>
 

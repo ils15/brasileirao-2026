@@ -17,10 +17,108 @@ const integer = new Intl.NumberFormat('pt-BR')
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
 const pointCurveOutcomes = [
+  { id: 'title', label: 'Título · 1º' },
   { id: 'libertadores', label: 'Libertadores · 1º–5º' },
   { id: 'sudamericana', label: 'Sul-Americana · 6º–11º' },
-  { id: 'other', label: 'Outras posições · 12º–20º' },
+  { id: 'middle', label: 'Meio · 12º–16º' },
+  { id: 'relegation', label: 'Rebaixamento · 17º–20º' },
 ] as const
+
+interface MagicRow {
+  points: number
+  title: number
+  libertadores: number
+  sudamericana: number
+  middle: number
+  relegation: number
+}
+
+/**
+ * Curva P(resultado | pontuação exata) em formato "linha do destino": para
+ * cada pontuação, a chance de cada destino final — destacando quantos pontos
+ * bastam para escapar do rebaixamento.
+ */
+function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element {
+  const rows = useMemo<MagicRow[]>(() => {
+    const byPoints = new Map<number, MagicRow>()
+    for (const row of result.pointCurve.rows) {
+      const entry = byPoints.get(row.points) ?? { points: row.points, title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 }
+      entry[row.outcome] = row.probability
+      byPoints.set(row.points, entry)
+    }
+    return [...byPoints.values()].sort((left, right) => left.points - right.points)
+  }, [result])
+
+  const firstBelow = (predicate: (row: MagicRow) => boolean): MagicRow | undefined =>
+    rows.find((row) => predicate(row))
+
+  const practicallySafe = firstBelow((row) => row.relegation <= 0.1)
+  const coinFlip = firstBelow((row) => row.relegation <= 0.5)
+  const libCoinFlip = firstBelow((row) => row.libertadores >= 0.5)
+  const danger = [...rows].reverse().find((row) => row.relegation >= 0.5)
+
+  return (
+    <section className="point-curve-section magic-points" aria-labelledby="magic-points-title">
+      <h4 className="points-table-title" id="magic-points-title">A pontuação mágica: quantos pontos bastam?</h4>
+      <p className="projection-table-note">
+        Chance de cada destino final dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
+        Barras indicam a chance de rebaixamento naquela pontuação; IC 95% cluster-robusto por simulação.
+      </p>
+      <div className="magic-kpis" aria-label="Linhas do destino por pontuação">
+        {coinFlip && (
+          <div className="kpi-card">
+            <strong className="kpi-value">{coinFlip.points}<span className="kpi-divider"> pts</span></strong>
+            <span className="kpi-label">Salvo mais provável que rebaixado ({percent.format(1 - coinFlip.relegation)} de segurança)</span>
+          </div>
+        )}
+        {practicallySafe && (
+          <div className="kpi-card">
+            <strong className="kpi-value">{practicallySafe.points}<span className="kpi-divider"> pts</span></strong>
+            <span className="kpi-label">Salvo na prática ({percent.format(practicallySafe.relegation)} de rebaixamento restante)</span>
+          </div>
+        )}
+        {libCoinFlip && (
+          <div className="kpi-card">
+            <strong className="kpi-value">{libCoinFlip.points}<span className="kpi-divider"> pts</span></strong>
+            <span className="kpi-label">Mais provável na Libertadores ({percent.format(libCoinFlip.libertadores)})</span>
+          </div>
+        )}
+        {danger && (
+          <div className="kpi-card">
+            <strong className="kpi-value">{danger.points}<span className="kpi-divider"> pts</span></strong>
+            <span className="kpi-label">Acima disso, mais provável rebaixado ({percent.format(danger.relegation)})</span>
+          </div>
+        )}
+      </div>
+      <div className="table-scroll" role="region" aria-label="Probabilidade de cada destino por pontuação exata" tabIndex={0}>
+        <table className="projection-table magic-table">
+          <thead><tr>
+            <th scope="col">PONTOS</th>
+            {pointCurveOutcomes.map((outcome) => <th key={outcome.id} scope="col" className="numeric">{outcome.label}</th>)}
+            <th scope="col">CHANCE DE REBAIXAMENTO</th>
+          </tr></thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.points}>
+                <th scope="row" className="magic-points-cell">{row.points}</th>
+                <td className="numeric games-cell">{percent.format(row.title)}</td>
+                <td className="numeric games-cell">{percent.format(row.libertadores)}</td>
+                <td className="numeric games-cell">{percent.format(row.sudamericana)}</td>
+                <td className="numeric games-cell">{percent.format(row.middle)}</td>
+                <td className={`numeric games-cell ${row.relegation >= 0.5 ? 'magic-danger' : ''}`}>{percent.format(row.relegation)}</td>
+                <td className="magic-bar-cell">
+                  <div className="magic-bar" role="img" aria-label={`Com ${row.points} pontos: ${percent.format(row.relegation)} de chance de rebaixamento`}>
+                    <span className="magic-bar-fill" style={{ width: `${row.relegation * 100}%` }} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  )
+}
 
 const zoneColumns: SortableColumn<ClubProbability>[] = [
   { id: 'position', header: 'POS', accessor: ({ currentPosition }) => currentPosition, numeric: true },
@@ -471,9 +569,11 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
               )}
             </section>
 
+            <MagicPointsPanel result={result} />
+
             <section className="point-curve-section" aria-labelledby="point-curve-title">
               <h4 className="points-table-title" id="point-curve-title">Resultado dado pontuação exata</h4>
-              <p className="projection-table-note">P(resultado | pontuação exata). Nesta curva, Libertadores inclui posições 1º–5º e Sul-Americana 6º–11º; “Outras” reúne 12º–20º. K/N = clubes-simulações com o resultado / total na pontuação exata. IC 95% calculado com clusters de simulações; “amostra baixa” marca largura de intervalo ≥ {percent.format(POINT_CURVE_LOW_SAMPLE_WIDTH)}. Categorias com K=0 não são estimadas e aparecem como —.</p>
+              <p className="projection-table-note">P(resultado | pontuação exata) com os cinco destinos possíveis, em K/N: clubes-simulações com o resultado ÷ total na pontuação exata. IC 95% calculado com clusters de simulações; “amostra baixa” marca largura de intervalo ≥ {percent.format(POINT_CURVE_LOW_SAMPLE_WIDTH)}. Destinos com K=0 não são estimados e aparecem como —.</p>
               <div className="table-scroll projection-table-scroll" role="region" aria-label="Curva de resultado condicionado à pontuação exata; role para rolagem horizontal" tabIndex={0}>
               <table className="projection-table point-curve-table">
                 <thead><tr><th scope="col">PONTOS EXATOS</th>{pointCurveOutcomes.map((outcome) => <th className="numeric" scope="col" key={outcome.id}>{outcome.label}</th>)}</tr></thead>

@@ -1,6 +1,6 @@
-import { MC_CI_Z, POINT_CURVE_LOW_SAMPLE_WIDTH } from './projectionConfig'
+import { MC_CI_Z, POINT_CURVE_LOW_SAMPLE_WIDTH, ZONES } from './projectionConfig'
 
-export type PointCurveOutcome = 'libertadores' | 'sudamericana' | 'other'
+export type PointCurveOutcome = 'title' | 'libertadores' | 'sudamericana' | 'middle' | 'relegation'
 
 export interface PointCurveSample {
   simulation: number
@@ -37,12 +37,14 @@ interface PointCount {
   outcomes: Record<PointCurveOutcome, OutcomeCount>
 }
 
-const outcomes: readonly PointCurveOutcome[] = ['libertadores', 'sudamericana', 'other']
+const outcomes: readonly PointCurveOutcome[] = ['title', 'libertadores', 'sudamericana', 'middle', 'relegation']
 
 function outcomeAt(position: number): PointCurveOutcome {
-  if (position <= 5) return 'libertadores'
-  if (position <= 11) return 'sudamericana'
-  return 'other'
+  if (position === 1) return 'title'
+  if (position <= ZONES.libertadores.to) return 'libertadores'
+  if (position <= ZONES.sudamericana.to) return 'sudamericana'
+  if (position <= ZONES.middle.to) return 'middle'
+  return 'relegation'
 }
 
 function createPointCount(simulationCount: number): PointCount {
@@ -51,9 +53,11 @@ function createPointCount(simulationCount: number): PointCount {
     denominator: 0,
     clusterDenominators: new Uint8Array(simulationCount),
     outcomes: {
+      title: createOutcomeCount(),
       libertadores: createOutcomeCount(),
       sudamericana: createOutcomeCount(),
-      other: createOutcomeCount(),
+      middle: createOutcomeCount(),
+      relegation: createOutcomeCount(),
     },
   }
 }

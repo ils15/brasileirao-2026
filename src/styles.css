@@ -451,6 +451,41 @@ th.numeric .sort-button { justify-content: flex-end; }
 .strength-table { min-width: 700px; }
 .methodology-section { margin-top: 0; padding: 25px; background: var(--surface); border: 1px solid var(--border); }
 
+/* Pontuação mágica */
+.magic-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 14px 0; }
+.magic-table { min-width: 860px; }
+.magic-points-cell { font: 700 15px var(--mono); }
+.magic-danger { color: #8f2d23; font-weight: 700; }
+.magic-bar { min-width: 120px; height: 12px; overflow: hidden; border-radius: 3px; background: var(--surface-tint); }
+.magic-bar-fill { display: block; height: 100%; background: linear-gradient(90deg, #e39a8b, #d47a63); }
+
+/* Análise do clube (aba Confrontos) */
+.team-analysis { margin-top: 28px; padding: 25px; }
+.team-analysis-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.team-kpi { display: grid; gap: 4px; padding: 14px; border: 1px solid var(--border); background: var(--surface-soft); }
+.team-kpi strong { color: var(--ink); font: 800 24px/1 var(--display); }
+.team-kpi span { color: var(--text-secondary); font-size: 13px; }
+.form-dots { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
+.form-dot { display: inline-grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; font: 700 12px var(--mono); color: #fff; }
+.form-dot--W { background: #4f7d3a; }
+.form-dot--D { background: #7d877f; }
+.form-dot--L { background: #b0604a; }
+.team-future { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.team-future-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border: 1px solid var(--border); background: var(--surface-soft); color: var(--text); font-size: 14px; }
+.team-future-item strong { color: var(--ink); }
+.projection-zone-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+.projection-zone-chip { display: inline-flex; flex-direction: column; gap: 2px; min-width: 108px; padding: 10px 12px; border: 1px solid var(--border); background: var(--surface-soft); }
+.projection-zone-chip strong { color: var(--ink); font: 700 15px var(--mono); }
+.projection-zone-chip span { color: var(--text-secondary); font-size: 12px; }
+
+/* H2H moderno: placar em cápsula + badge do resultado */
+.meeting-item { gap: 12px; }
+.meeting-badge { display: inline-grid; width: 24px; height: 24px; place-items: center; border-radius: 6px; font: 700 12px var(--mono); color: #fff; }
+.meeting-badge--win { background: #4f7d3a; }
+.meeting-badge--draw { background: #7d877f; }
+.meeting-badge--loss { background: #b0604a; }
+.meeting-score { font: 700 15px var(--mono); color: var(--ink); white-space: nowrap; }
+
 .fixture-calendar { margin-top: 28px; padding: 24px; }
 .fixture-calendar-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
 .fixture-calendar-heading h2 { margin: 0; color: var(--ink); font: 800 clamp(22px, 2.7vw, 30px)/1.12 var(--display); letter-spacing: -.05em; }

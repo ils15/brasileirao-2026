@@ -237,3 +237,33 @@ export function attackDefenseLeaders(matches: readonly CurrentSeasonMatch[] = cu
   const defense = withRates.reduce((best, row) => (row.concededPerMatch < best.concededPerMatch ? row : best), withRates[0]!)
   return { attack, defense }
 }
+
+export interface RecentResult {
+  kickoff: string
+  home: string
+  away: string
+  homeGoals: number
+  awayGoals: number
+  /** W/D/L do ponto de vista do clube consultado. */
+  result: 'W' | 'D' | 'L'
+}
+
+/** Últimos n resultados do clube em ordem cronológica (mais recente por último). */
+export function recentForm(clubId: string, n = 5, matches: readonly CurrentSeasonMatch[] = currentSeasonResults): RecentResult[] {
+  return resultsWithRound(matches)
+    .filter((match) => match.home === clubId || match.away === clubId)
+    .sort((left, right) => left.kickoff.localeCompare(right.kickoff) || left.cbfRef.localeCompare(right.cbfRef))
+    .slice(-n)
+    .map((match) => {
+      const own = match.home === clubId ? match.homeGoals : match.awayGoals
+      const other = match.home === clubId ? match.awayGoals : match.homeGoals
+      return {
+        kickoff: match.kickoff,
+        home: match.home,
+        away: match.away,
+        homeGoals: match.homeGoals,
+        awayGoals: match.awayGoals,
+        result: own > other ? 'W' : own === other ? 'D' : 'L',
+      }
+    })
+}

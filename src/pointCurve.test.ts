@@ -11,19 +11,21 @@ describe('curva de resultado por pontos finais', () => {
       { simulation: 2, club: 'E', points: 70, position: 18 },
     ]
 
+    // Mapeamento de 5 destinos: 1º = título; 2º–5º = libertadores; 6º–11º = sudamericana; 12º–16º = middle; 17º–20º = relegation
     const curve = buildPointOutcomeCurve(samples, 3)
     expect(curve.rows.map(({ points, outcome, successes, denominator }) => [points, outcome, successes, denominator])).toEqual([
-      [50, 'libertadores', 2, 3],
+      [50, 'title', 1, 3],
+      [50, 'libertadores', 1, 3],
       [50, 'sudamericana', 1, 3],
-      [60, 'other', 1, 1],
-      [70, 'other', 1, 1],
+      [60, 'middle', 1, 1],
+      [70, 'relegation', 1, 1],
     ])
-    const libertadoresAt50 = curve.rows.find((row) => row.points === 50 && row.outcome === 'libertadores')!
-    expect(libertadoresAt50.probability).toBeCloseTo(2 / 3, 12)
-    expect(libertadoresAt50.lower95).toBeLessThanOrEqual(libertadoresAt50.probability)
-    expect(libertadoresAt50.upper95).toBeGreaterThanOrEqual(libertadoresAt50.probability)
-    expect(libertadoresAt50.clusterCount).toBe(2)
-    expect(libertadoresAt50.lowSample).toBe(true)
+    const titleAt50 = curve.rows.find((row) => row.points === 50 && row.outcome === 'title')!
+    expect(titleAt50.probability).toBeCloseTo(1 / 3, 12)
+    expect(titleAt50.lower95).toBeLessThanOrEqual(titleAt50.probability)
+    expect(titleAt50.upper95).toBeGreaterThanOrEqual(titleAt50.probability)
+    expect(titleAt50.clusterCount).toBe(2)
+    expect(titleAt50.lowSample).toBe(true)
   })
 
   it('não estima células sem denominador e omite resultados com K=0', () => {

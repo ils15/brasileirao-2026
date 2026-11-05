@@ -3,7 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { NextRoundPanel } from './NextRoundPanel'
 import { HeadToHeadPanel } from './HeadToHeadPanel'
-import { remainingFixtures } from './projectionData'
+import { TeamAnalysisPanel } from './TeamAnalysisPanel'
+import { ProjectionProvider } from './ProjectionContext'
+import { currentClubs, remainingFixtures } from './projectionData'
 import { matchProbabilities } from './matchProbabilities'
 import { getHeadToHeadSummary } from './seasonStats'
 
@@ -61,8 +63,10 @@ describe('painel de confronto direto', () => {
 
     const timeline = screen.getByRole('list', { name: /Timeline de encontros entre Flamengo e Palmeiras/ })
     expect(within(timeline).getAllByRole('listitem')).toHaveLength(summary.matches.length)
-    // O encontro 2026 Flamengo 0–3 Palmeiras está na timeline
-    expect(within(timeline).getByText('flamengo 0–3 palmeiras')).toBeInTheDocument()
+    // O encontro 2026 Flamengo 0–3 Palmeiras está na timeline com badge de derrota
+    const meeting2026 = within(timeline).getAllByRole('listitem').find((item) => item.textContent?.includes('flamengo') && item.textContent?.includes('0–3'))!
+    expect(meeting2026).toHaveTextContent('D')
+    expect(within(timeline).getAllByRole('listitem').filter((item) => item.textContent?.includes('palmeiras')).length).toBeGreaterThan(0)
 
     // Cards por mando (4)
     expect(screen.getByText('2026 · Flamengo em casa')).toBeInTheDocument()
@@ -89,5 +93,32 @@ describe('painel de confronto direto', () => {
     const timeline = screen.getByRole('list', { name: /Timeline de encontros entre Grêmio e Internacional/ })
     expect(within(timeline).getAllByRole('listitem')).toHaveLength(summary.matches.length)
     expect(screen.getByRole('heading', { name: 'Grêmio × Internacional' })).toBeInTheDocument()
+  })
+})
+
+describe('análise por clube', () => {
+  it('abre no Grêmio com forma, sequência, mando e próximos jogos', () => {
+    render(<ProjectionProvider><TeamAnalysisPanel /></ProjectionProvider>)
+    expect(screen.getByRole('heading', { name: 'Como está e para onde vai' })).toBeInTheDocument()
+    // KPI de posição/pontos do snapshot
+    expect(screen.getByText(/Posição e pontos no corte/)).toBeInTheDocument()
+    // Forma recente com 5 dots
+    expect(screen.getByText(/Últimos 5 jogos de Grêmio/)).toBeInTheDocument()
+    expect(screen.getByText(/Calendário de Grêmio/)).toBeInTheDocument()
+    // Casa/fora
+    expect(screen.getByText('Casa · V-E-D · pts/j')).toBeInTheDocument()
+    expect(screen.getByText('Fora · V-E-D · pts/j')).toBeInTheDocument()
+    // Card de projeção degradado (sem Worker no jsdom)
+    expect(screen.getByText(/Projeção indisponível|Projeção em cálculo/)).toBeInTheDocument()
+  })
+
+  it('troca o clube e atualiza forma, projeção e calendário', async () => {
+    const user = userEvent.setup()
+    render(<ProjectionProvider><TeamAnalysisPanel /></ProjectionProvider>)
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Clube para análise individual' }), 'flamengo')
+    expect(screen.getByText(/Últimos 5 jogos de Flamengo/)).toBeInTheDocument()
+    expect(screen.getByText(/Calendário de Flamengo/)).toBeInTheDocument()
+    const flamengo = currentClubs.find(({ id }) => id === 'flamengo')!
+    expect(screen.getByText(`${flamengo.position}º · ${flamengo.points} pts`)).toBeInTheDocument()
   })
 })

@@ -50,15 +50,17 @@ function HeadToHeadBar({ outcome, aName, bName }: { outcome: HeadToHeadOutcome; 
   )
 }
 
-function MeetingDot({ match, aId }: { match: { home: string; away: string; homeGoals: number; awayGoals: number; seasonYear: number; kickoff: string }; aId: string }): JSX.Element {
+function MeetingDot({ match, aId, aName, bName }: { match: { home: string; away: string; homeGoals: number; awayGoals: number; seasonYear: number; kickoff: string }; aId: string; aName: string; bName: string }): JSX.Element {
   const goalsA = match.home === aId ? match.homeGoals : match.awayGoals
   const goalsB = match.home === aId ? match.awayGoals : match.homeGoals
   const kind = goalsA > goalsB ? 'win' : goalsA === goalsB ? 'draw' : 'loss'
+  const badge = kind === 'win' ? 'V' : kind === 'draw' ? 'E' : 'D'
   return (
     <li className={`meeting-item meeting-item--${kind}`}>
-      <span className="meeting-dot" aria-hidden="true" />
+      <span className={`meeting-badge meeting-badge--${kind}`} aria-hidden="true">{badge}</span>
       <span className="meeting-year">{match.seasonYear}</span>
-      <strong>{match.home} {match.homeGoals}–{match.awayGoals} {match.away}</strong>
+      <strong>{match.home} <span className="meeting-score">{match.homeGoals}–{match.awayGoals}</span> {match.away}</strong>
+      <span className="sr-only">{kind === 'win' ? `vitória de ${aName}` : kind === 'draw' ? 'empate' : `vitória de ${bName}`}</span>
     </li>
   )
 }
@@ -122,10 +124,10 @@ export function HeadToHeadPanel(): JSX.Element {
                 ? <p className="empty-distribution">Sem placares disponíveis no recorte para este par.</p>
                 : <ul aria-label={`Timeline de encontros entre ${clubA.club} e ${clubB.club}`}>
                     {summary.matches.map((match, index) => (
-                      <MeetingDot key={`${match.seasonYear}-${match.kickoff}-${index}`} match={match} aId={clubA.id} />
+                      <MeetingDot key={`${match.seasonYear}-${match.kickoff}-${index}`} match={match} aId={clubA.id} aName={clubA.club} bName={clubB.club} />
                     ))}
                   </ul>}
-              <p className="table-note">Verde: vitória de {clubA.club} · cinza: empate · vermelho: vitória de {clubB.club}.</p>
+              <p className="table-note">Badge V/E/D é do ponto de vista de {clubA.club} (clube A).</p>
             </div>
             <div className="h2h-venue-stats">
               <h3>Retrospecto por mando</h3>
