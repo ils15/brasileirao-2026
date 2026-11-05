@@ -46,17 +46,23 @@ export const scorers: Scorer[] = [
   { position: '5º', name: 'Vinicius', club: 'Grêmio', goals: 11 },
 ]
 
+import { ZONES } from './projectionConfig'
+
 export type ClubFilter = 'all' | 'qualification' | 'middle' | 'relegation'
 
+// Fronteiras vindas de projectionConfig.ZONES: a marcação de zona da
+// classificação segue a mesma definição usada nas projeções (auditoria:
+// a legenda antiga marcava 1º–6º como "classificação" enquanto a projeção
+// colocava o 6º na Sul-Americana).
 export function matchesClubFilter(position: number, filter: ClubFilter): boolean {
-  if (filter === 'qualification') return position <= 6
-  if (filter === 'relegation') return position >= 17
-  if (filter === 'middle') return position >= 7 && position <= 16
+  if (filter === 'qualification') return position >= ZONES.libertadores.from && position <= ZONES.libertadores.to
+  if (filter === 'relegation') return position >= ZONES.relegation.from
+  if (filter === 'middle') return position >= ZONES.sudamericana.from && position <= ZONES.middle.to
   return true
 }
 
 export function getZoneLabel(position: number): string {
-  if (position <= 6) return 'Faixa de classificação'
-  if (position >= 17) return 'Zona de rebaixamento'
-  return 'Demais posições'
+  if (matchesClubFilter(position, 'qualification')) return `${ZONES.libertadores.label} (${ZONES.libertadores.detail})`
+  if (matchesClubFilter(position, 'relegation')) return `Zona de rebaixamento (${ZONES.relegation.detail})`
+  return `${ZONES.sudamericana.label} ou meio de tabela (${ZONES.sudamericana.detail}–${ZONES.middle.detail})`
 }

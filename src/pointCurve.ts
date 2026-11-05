@@ -63,7 +63,7 @@ function effectiveClusterCount(point: PointCount): number {
   return sumSquares === 0 ? 0 : point.denominator ** 2 / sumSquares
 }
 
-function wilsonInterval(probability: number, effectiveCount: number): [number, number] {
+export function wilsonInterval(probability: number, effectiveCount: number): [number, number] {
   if (effectiveCount === 0) return [0, 1]
   const zSquared = MC_CI_Z ** 2
   const denominator = 1 + zSquared / effectiveCount

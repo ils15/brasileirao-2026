@@ -1,12 +1,45 @@
-import { useEffect, useMemo, useState, type JSX } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { getZoneLabel, matchesClubFilter, scorers, standings, type ClubFilter, type Standing } from './data'
 import { ProjectionSection } from './ProjectionSection'
 import { FixtureCalendar } from './FixtureCalendar'
+import { ResultsTable } from './ResultsTable'
+import { AuditPanel } from './AuditPanel'
+import { useTableSort, type SortableColumn } from './useTableSort'
+import { ZONES } from './projectionConfig'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const ESPN_URL = 'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols'
 const cutoffSummary = 'Corte analítico: 04/11/2026 · 13:00 BRT · arquivos capturados ~16:41 BRT; HTML CBF exibe 04/11/2026 - 19:41, fuso/semântica desconhecidos'
 type ThemeMode = 'system' | 'light' | 'dark'
+
+const TABS = [
+  { id: 'visao-geral', label: 'Visão Geral' },
+  { id: 'jogos', label: 'Jogos & Resultados' },
+  { id: 'projecoes', label: 'Projeções & Métricas' },
+  { id: 'dados', label: 'Dados & Auditoria' },
+] as const
+
+type TabId = (typeof TABS)[number]['id']
+
+/** Âncoras legadas (da versão de scroll único) continuam abrindo a aba certa. */
+const ANCHOR_TO_TAB: Record<string, TabId> = {
+  '#inicio': 'visao-geral',
+  '#classificacao': 'visao-geral',
+  '#artilharia': 'visao-geral',
+  '#clubes': 'visao-geral',
+  '#calendario': 'jogos',
+  '#resultados': 'jogos',
+  '#projecoes': 'projecoes',
+  '#probabilidades-time': 'projecoes',
+  '#por-pontuacao': 'projecoes',
+  '#estatisticas': 'projecoes',
+  '#dados': 'dados',
+}
+
+function tabFromHash(hash: string): TabId | null {
+  if (hash === `#visao-geral` || hash === `#jogos` || hash === `#projecoes` || hash === `#dados`) return hash.slice(1) as TabId
+  return ANCHOR_TO_TAB[hash] ?? null
+}
 
 function getSavedTheme(): ThemeMode {
   try {
@@ -24,8 +57,8 @@ function parseTheme(value: string): ThemeMode {
 
 const filters: { id: ClubFilter; label: string }[] = [
   { id: 'all', label: 'Todos' },
-  { id: 'qualification', label: 'Classificação' },
-  { id: 'middle', label: 'Demais posições' },
+  { id: 'qualification', label: 'Libertadores' },
+  { id: 'middle', label: 'Sul-Americana e meio' },
   { id: 'relegation', label: 'Rebaixamento' },
 ]
 
@@ -34,8 +67,8 @@ function normalizeText(value: string): string {
 }
 
 function zoneClass(position: number): string {
-  if (position <= 6) return 'qualification'
-  if (position >= 17) return 'relegation'
+  if (position <= ZONES.libertadores.to) return 'qualification'
+  if (position >= ZONES.relegation.from) return 'relegation'
   return 'middle'
 }
 
@@ -64,10 +97,19 @@ function TeamBadge({ team }: { team: Standing }): JSX.Element {
   return <span className="team-badge" aria-hidden="true">{team.initials}</span>
 }
 
+const standingsColumns: SortableColumn<Standing>[] = [
+  { id: 'position', header: 'POS', accessor: ({ position }) => position, numeric: true },
+  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
+  { id: 'points', header: 'PTS', accessor: ({ points }) => points, numeric: true },
+  { id: 'played', header: 'J', accessor: ({ played }) => played, numeric: true },
+]
+
 function App(): JSX.Element {
   const [query, setQuery] = useState('')
   const [clubFilter, setClubFilter] = useState<ClubFilter>('all')
   const [theme, setTheme] = useState<ThemeMode>(getSavedTheme)
+  const [activeTab, setActiveTab] = useState<TabId>('visao-geral')
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const leader = standings[0]!
   const normalizedQuery = normalizeText(query.trim())
 
@@ -79,6 +121,7 @@ function App(): JSX.Element {
     () => standings.filter((team) => matchesClubFilter(team.position, clubFilter)),
     [clubFilter],
   )
+  const { sortedRows: sortedStandings, toggleSort, ariaSort } = useTableSort(filteredStandings, standingsColumns, 'position')
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -88,6 +131,50 @@ function App(): JSX.Element {
       // A restricted browser can still use the selected theme for this visit.
     }
   }, [theme])
+
+  const applyHash = useCallback((hash: string, shouldScroll: boolean) => {
+    const tab = tabFromHash(hash)
+    if (!tab) return
+    setActiveTab(tab)
+    if (!shouldScroll) return
+    const target = document.getElementById(hash.slice(1))
+    window.requestAnimationFrame(() => {
+      // jsdom e leitores antigos não implementam scrollIntoView.
+      if (target && typeof target.scrollIntoView === 'function') target.scrollIntoView({ behavior: 'smooth' })
+    })
+  }, [])
+
+  useEffect(() => {
+    applyHash(window.location.hash, false)
+    const onHashChange = (): void => applyHash(window.location.hash, true)
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [applyHash])
+
+  function selectTab(tab: TabId): void {
+    setActiveTab(tab)
+    // replaceState não dispara hashchange nem rola a página; apenas registra a aba na URL.
+    window.history.replaceState(null, '', `#${tab}`)
+  }
+
+  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number): void {
+    const lastIndex = TABS.length - 1
+    const nextIndex = event.key === 'ArrowRight'
+      ? (index + 1) % TABS.length
+      : event.key === 'ArrowLeft'
+        ? (index - 1 + TABS.length) % TABS.length
+        : event.key === 'Home'
+          ? 0
+          : event.key === 'End'
+            ? lastIndex
+            : -1
+    if (nextIndex < 0) return
+    event.preventDefault()
+    const nextTab = TABS[nextIndex]
+    if (!nextTab) return
+    selectTab(nextTab.id)
+    tabRefs.current[nextIndex]?.focus()
+  }
 
   return (
     <>
@@ -153,116 +240,156 @@ function App(): JSX.Element {
           </label>
         </section>
 
-        <nav className="section-nav" aria-label="Navegação por área">
-          <a href="#probabilidades-time">Por time</a>
-          <a href="#por-pontuacao">Por pontuação</a>
-          <a href="#classificacao">Classificação</a>
-          <a href="#calendario">Calendário</a>
-          <a href="#estatisticas">Estatísticas/Metodologia</a>
+        <nav className="app-tabs" role="tablist" aria-label="Navegação principal">
+          {TABS.map((tab, index) => (
+            <button
+              key={tab.id}
+              ref={(element) => { tabRefs.current[index] = element }}
+              className={activeTab === tab.id ? 'app-tab is-selected' : 'app-tab'}
+              id={`aba-${tab.id}`}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === tab.id}
+              aria-controls={`painel-${tab.id}`}
+              tabIndex={activeTab === tab.id ? 0 : -1}
+              onClick={() => selectTab(tab.id)}
+              onKeyDown={(event) => handleTabKeyDown(event, index)}
+            >{tab.label}</button>
+          ))}
         </nav>
 
         <div className="content-wrap">
-          <section className="dashboard-grid" id="classificacao" aria-labelledby="standings-title">
-            <div className="standings-panel panel">
-              <div className="section-heading">
-                <div><p className="eyebrow eyebrow-dark">A CORRIDA PELO TOPO</p><h2 id="standings-title">Classificação</h2></div>
-                <span className="section-index">01 <span>/ TABELA</span></span>
-              </div>
-              <div className="table-tools">
-                <label className="search-field">
-                  <SearchIcon />
-                  <span className="sr-only">Buscar clube na classificação</span>
-                  <input
-                    aria-label="Buscar clube na classificação"
-                    type="search"
-                    value={query}
-                    onChange={(event) => setQuery(event.currentTarget.value)}
-                    placeholder="Buscar clube..."
-                  />
-                </label>
-                <p className="result-count" aria-live="polite">
-                  {filteredStandings.length} {filteredStandings.length === 1 ? 'clube encontrado' : 'clubes encontrados'}
-                </p>
-              </div>
-              <div className="zone-legend" aria-label="Legenda das zonas da tabela">
-                <span><i className="legend-dot qualification" />Faixa de classificação · 1–6</span>
-                <span><i className="legend-dot middle" />Demais posições · 7–16</span>
-                <span><i className="legend-dot relegation" />Rebaixamento · 17–20</span>
-              </div>
-              <div className="table-scroll" role="region" aria-label="Tabela classificatória; role para rolagem horizontal em telas pequenas" tabIndex={0}>
-                <table>
-                  <thead><tr><th scope="col">POS</th><th scope="col">CLUBE</th><th scope="col" className="numeric">PTS</th><th scope="col" className="numeric">J</th></tr></thead>
-                  <tbody>
-                    {filteredStandings.map((team) => (
-                      <tr className={`standing-row standing-row--${zoneClass(team.position)}`} key={team.club} aria-label={`${team.club}: ${getZoneLabel(team.position)}`}>
-                        <td className="position-cell"><span>{String(team.position).padStart(2, '0')}</span></td>
-                        <th scope="row" className="club-cell"><TeamBadge team={team} /><span>{team.club}</span></th>
-                        <td className="points-cell numeric">{team.points}</td>
-                        <td className="games-cell numeric">{team.played}</td>
-                      </tr>
-                    ))}
-                    {filteredStandings.length === 0 && (
-                      <tr><td className="empty-state" colSpan={4}>Nenhum clube encontrado. Tente outro nome.</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <p className="table-note">Posições oficiais mantidas conforme a CBF. O número de jogos varia entre os clubes.</p>
-            </div>
+          <section id="painel-visao-geral" role="tabpanel" aria-labelledby="aba-visao-geral" hidden={activeTab !== 'visao-geral'}>
+            <section className="kpi-strip" aria-label="Indicadores da temporada">
+              <div className="kpi-card"><strong className="kpi-value">{leader.points}</strong><span className="kpi-label">Pontos do líder · {leader.club}</span></div>
+              <div className="kpi-card"><strong className="kpi-value">332<span className="kpi-divider">/380</span></strong><span className="kpi-label">Jogos disputados no corte</span></div>
+              <div className="kpi-card"><strong className="kpi-value">{ZONES.libertadores.to}</strong><span className="kpi-label">Vagas de Libertadores (1º–5º)</span></div>
+              <div className="kpi-card"><strong className="kpi-value">48</strong><span className="kpi-label">Jogos restantes · 4 rodadas + adiados</span></div>
+            </section>
 
-            <section className="scorers-panel panel" id="artilharia" aria-labelledby="scorers-title">
-              <div className="section-heading">
-                <div><p className="eyebrow eyebrow-dark">QUEM FAZ A DIFERENÇA</p><h2 id="scorers-title">Artilharia</h2></div>
-                <span className="section-index">02 <span>/ GOLS</span></span>
+            <section className="dashboard-grid" id="classificacao" aria-labelledby="standings-title">
+              <div className="standings-panel panel">
+                <div className="section-heading">
+                  <div><p className="eyebrow eyebrow-dark">A CORRIDA PELO TOPO</p><h2 id="standings-title">Classificação</h2></div>
+                  <span className="section-index">01 <span>/ TABELA</span></span>
+                </div>
+                <div className="table-tools">
+                  <label className="search-field">
+                    <SearchIcon />
+                    <span className="sr-only">Buscar clube na classificação</span>
+                    <input
+                      aria-label="Buscar clube na classificação"
+                      type="search"
+                      value={query}
+                      onChange={(event) => setQuery(event.currentTarget.value)}
+                      placeholder="Buscar clube..."
+                    />
+                  </label>
+                  <p className="result-count" aria-live="polite">
+                    {filteredStandings.length} {filteredStandings.length === 1 ? 'clube encontrado' : 'clubes encontrados'}
+                  </p>
+                </div>
+                <div className="zone-legend" aria-label="Legenda das zonas da tabela">
+                  <span><i className="legend-dot qualification" />Libertadores · {ZONES.libertadores.detail}</span>
+                  <span><i className="legend-dot middle" />Sul-Americana e demais · {ZONES.sudamericana.from}–{ZONES.middle.to}</span>
+                  <span><i className="legend-dot relegation" />Rebaixamento · {ZONES.relegation.detail}</span>
+                </div>
+                <div className="table-scroll" role="region" aria-label="Tabela classificatória; role para rolagem horizontal em telas pequenas" tabIndex={0}>
+                  <table>
+                    <thead>
+                      <tr>
+                        {standingsColumns.map((column) => (
+                          <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={ariaSort(column.id)}>
+                            <button type="button" className="sort-button" onClick={() => toggleSort(column.id)}>
+                              {column.header}
+                              <span className="sort-indicator" aria-hidden="true">{ariaSort(column.id) === 'ascending' ? ' ↑' : ariaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
+                              <span className="sr-only">{ariaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${ariaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
+                            </button>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sortedStandings.map((team) => (
+                        <tr className={`standing-row standing-row--${zoneClass(team.position)}`} key={team.club} aria-label={`${team.club}: ${getZoneLabel(team.position)}`}>
+                          <td className="position-cell"><span>{String(team.position).padStart(2, '0')}</span></td>
+                          <th scope="row" className="club-cell"><TeamBadge team={team} /><span>{team.club}</span></th>
+                          <td className="points-cell numeric">{team.points}</td>
+                          <td className="games-cell numeric">{team.played}</td>
+                        </tr>
+                      ))}
+                      {sortedStandings.length === 0 && (
+                        <tr><td className="empty-state" colSpan={4}>Nenhum clube encontrado. Tente outro nome.</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="table-note">Posições oficiais mantidas conforme a CBF. O número de jogos varia entre os clubes.</p>
               </div>
-              <p className="scorers-caption">Os goleadores da temporada</p>
-              <ol className="scorer-list" aria-label="Artilharia">
-                {scorers.map((scorer, index) => (
-                  <li className="scorer-item" key={`${scorer.name}-${scorer.club}`}>
-                    <span className="scorer-rank">{scorer.position}</span>
-                    <span className={`scorer-avatar scorer-avatar--${index + 1}`} aria-hidden="true">{scorer.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span>
-                    <span className="scorer-info"><strong>{scorer.name}</strong><small>{scorer.club}</small></span>
-                    <span className="goal-count"><strong>{scorer.goals}</strong><small>GOLS</small></span>
+
+              <section className="scorers-panel panel" id="artilharia" aria-labelledby="scorers-title">
+                <div className="section-heading">
+                  <div><p className="eyebrow eyebrow-dark">QUEM FAZ A DIFERENÇA</p><h2 id="scorers-title">Artilharia</h2></div>
+                  <span className="section-index">02 <span>/ GOLS</span></span>
+                </div>
+                <p className="scorers-caption">Os goleadores da temporada</p>
+                <ol className="scorer-list" aria-label="Artilharia">
+                  {scorers.map((scorer, index) => (
+                    <li className="scorer-item" key={`${scorer.name}-${scorer.club}`}>
+                      <span className="scorer-rank">{scorer.position}</span>
+                      <span className={`scorer-avatar scorer-avatar--${index + 1}`} aria-hidden="true">{scorer.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span>
+                      <span className="scorer-info"><strong>{scorer.name}</strong><small>{scorer.club}</small></span>
+                      <span className="goal-count"><strong>{scorer.goals}</strong><small>GOLS</small></span>
+                    </li>
+                  ))}
+                </ol>
+                <p className="scorers-source-note">Fonte secundária: ESPN. Horário de captura específico da lista não informado neste painel.</p>
+                <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
+                <a className="text-link" href={ESPN_URL} target="_blank" rel="noreferrer">Ver estatísticas na ESPN <span aria-hidden="true">↗</span></a>
+              </section>
+            </section>
+
+            <section className="clubs-section" id="clubes" aria-labelledby="clubs-title">
+              <div className="clubs-heading">
+                <div><p className="eyebrow eyebrow-dark">OS PROTAGONISTAS</p><h2 id="clubs-title">Clubes da Série A</h2></div>
+                <p>Vinte histórias, uma só disputa.<br />Filtre pela faixa da tabela.</p>
+              </div>
+              <div className="club-filters" role="group" aria-label="Filtrar clubes por zona da tabela">
+                {filters.map((filter) => (
+                  <button
+                    aria-pressed={clubFilter === filter.id}
+                    className={clubFilter === filter.id ? 'filter-button is-selected' : 'filter-button'}
+                    key={filter.id}
+                    onClick={() => setClubFilter(filter.id)}
+                    type="button"
+                  >{filter.label}</button>
+                ))}
+                <span className="filter-count" aria-live="polite">{filteredClubs.length} clubes</span>
+              </div>
+              <ul className="club-list" aria-label="Clubes filtrados por zona">
+                {filteredClubs.map((team) => (
+                  <li className={`club-card club-card--${zoneClass(team.position)}`} key={team.club}>
+                    <span className="club-card-position">{String(team.position).padStart(2, '0')}</span>
+                    <TeamBadge team={team} />
+                    <span className="club-card-name">{team.club}</span>
+                    <span className="club-card-points">{team.points}<small> PTS</small></span>
                   </li>
                 ))}
-              </ol>
-              <p className="scorers-source-note">Fonte secundária: ESPN. Horário de captura específico da lista não informado neste painel.</p>
-              <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
-              <a className="text-link" href={ESPN_URL} target="_blank" rel="noreferrer">Ver estatísticas na ESPN <span aria-hidden="true">↗</span></a>
+              </ul>
             </section>
           </section>
 
-          <ProjectionSection />
+          <section id="painel-jogos" role="tabpanel" aria-labelledby="aba-jogos" hidden={activeTab !== 'jogos'}>
+            <ResultsTable />
+            <FixtureCalendar />
+          </section>
 
-          <FixtureCalendar />
+          <section id="painel-projecoes" role="tabpanel" aria-labelledby="aba-projecoes" hidden={activeTab !== 'projecoes'}>
+            <ProjectionSection />
+          </section>
 
-          <section className="clubs-section" id="clubes" aria-labelledby="clubs-title">
-            <div className="clubs-heading">
-              <div><p className="eyebrow eyebrow-dark">OS PROTAGONISTAS</p><h2 id="clubs-title">Clubes da Série A</h2></div>
-              <p>Vinte histórias, uma só disputa.<br />Filtre pela faixa da tabela.</p>
-            </div>
-            <div className="club-filters" role="group" aria-label="Filtrar clubes por zona da tabela">
-              {filters.map((filter) => (
-                <button
-                  aria-pressed={clubFilter === filter.id}
-                  className={clubFilter === filter.id ? 'filter-button is-selected' : 'filter-button'}
-                  key={filter.id}
-                  onClick={() => setClubFilter(filter.id)}
-                  type="button"
-                >{filter.label}</button>
-              ))}
-              <span className="filter-count" aria-live="polite">{filteredClubs.length} clubes</span>
-            </div>
-            <ul className="club-list" aria-label="Clubes filtrados por zona">
-              {filteredClubs.map((team) => (
-                <li className={`club-card club-card--${zoneClass(team.position)}`} key={team.club}>
-                  <span className="club-card-position">{String(team.position).padStart(2, '0')}</span>
-                  <TeamBadge team={team} />
-                  <span className="club-card-name">{team.club}</span>
-                  <span className="club-card-points">{team.points}<small> PTS</small></span>
-                </li>
-              ))}
-            </ul>
+          <section id="painel-dados" role="tabpanel" aria-labelledby="aba-dados" hidden={activeTab !== 'dados'}>
+            <AuditPanel />
           </section>
         </div>
       </main>

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
@@ -7,6 +7,7 @@ describe('painel do Brasileirão 2026', () => {
   beforeEach(() => {
     window.localStorage.clear()
     document.documentElement.removeAttribute('data-theme')
+    window.history.replaceState(null, '', ' ')
   })
 
   it('permite selecionar e persistir o tema de exibição', async () => {
@@ -22,18 +23,83 @@ describe('painel do Brasileirão 2026', () => {
     expect(window.localStorage.getItem('br2026-theme')).toBe('dark')
   })
 
-  it('separa a navegação nas cinco áreas de consulta do painel', () => {
+  it('organiza o painel em quatro abas acessíveis com seleção por clique e teclado', async () => {
+    const user = userEvent.setup()
     render(<App />)
 
-    const areaNavigation = screen.getByRole('navigation', { name: 'Navegação por área' })
-    expect(within(areaNavigation).getByRole('link', { name: 'Por time' })).toHaveAttribute('href', '#probabilidades-time')
-    expect(within(areaNavigation).getByRole('link', { name: 'Por pontuação' })).toHaveAttribute('href', '#por-pontuacao')
-    expect(within(areaNavigation).getByRole('link', { name: 'Classificação' })).toHaveAttribute('href', '#classificacao')
-    expect(within(areaNavigation).getByRole('link', { name: 'Calendário' })).toHaveAttribute('href', '#calendario')
-    expect(within(areaNavigation).getByRole('link', { name: 'Estatísticas/Metodologia' })).toHaveAttribute('href', '#estatisticas')
-    for (const link of within(areaNavigation).getAllByRole('link')) {
-      expect(document.querySelector(link.getAttribute('href') ?? '')).toBeInTheDocument()
-    }
+    const tabs = screen.getAllByRole('tab')
+    expect(tabs.map((tab) => tab.textContent)).toEqual(['Visão Geral', 'Jogos & Resultados', 'Projeções & Métricas', 'Dados & Auditoria'])
+    const tablist = screen.getByRole('tablist', { name: 'Navegação principal' })
+    expect(within(tablist).getAllByRole('tab')).toHaveLength(4)
+
+    // Aba inicial: Visão Geral visível; as demais ocultas.
+    expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
+    expect(document.getElementById('painel-jogos')!.hidden).toBe(true)
+    expect(document.getElementById('painel-projecoes')!.hidden).toBe(true)
+    expect(document.getElementById('painel-dados')!.hidden).toBe(true)
+
+    // Seleção por clique troca o painel visível.
+    await user.click(screen.getByRole('tab', { name: 'Jogos & Resultados' }))
+    expect(screen.getByRole('tabpanel', { name: 'Jogos & Resultados' })).toBeVisible()
+    expect(document.getElementById('painel-visao-geral')!.hidden).toBe(true)
+    expect(screen.getByRole('heading', { name: 'Resultados 2026' })).toBeVisible()
+
+    // Teclado: setas movem a seleção com foco gerenciado (roving tabindex).
+    const projecoesTab = screen.getByRole('tab', { name: 'Projeções & Métricas' })
+    projecoesTab.focus()
+    await user.keyboard('{ArrowRight}')
+    const dadosTab = screen.getByRole('tab', { name: 'Dados & Auditoria' })
+    expect(dadosTab).toHaveAttribute('aria-selected', 'true')
+    expect(dadosTab).toHaveFocus()
+    expect(screen.getByRole('tabpanel', { name: 'Dados & Auditoria' })).toBeVisible()
+    await user.keyboard('{ArrowLeft}')
+    expect(screen.getByRole('tab', { name: 'Projeções & Métricas' })).toHaveAttribute('aria-selected', 'true')
+
+    // End vai à última aba; Home volta à primeira.
+    await user.keyboard('{End}')
+    expect(screen.getByRole('tab', { name: 'Dados & Auditoria' })).toHaveAttribute('aria-selected', 'true')
+    await user.keyboard('{Home}')
+    expect(screen.getByRole('tab', { name: 'Visão Geral' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
+  })
+
+  it('abre a aba correta a partir de âncoras legadas da versão anterior', async () => {
+    render(<App />)
+    expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
+
+    window.history.replaceState(null, '', '#estatisticas')
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
+    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Projeções & Métricas' })).toBeVisible())
+
+    window.history.replaceState(null, '', '#dados')
+    window.dispatchEvent(new HashChangeEvent('hashchange'))
+    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Dados & Auditoria' })).toBeVisible())
+  })
+
+  it('mostra KPIs executivos da temporada na visão geral', () => {
+    render(<App />)
+
+    const kpis = screen.getByRole('region', { name: 'Indicadores da temporada' })
+    expect(within(kpis).getByText('Pontos do líder · Flamengo')).toBeInTheDocument()
+    expect(within(kpis).getByText('Jogos disputados no corte')).toBeInTheDocument()
+    expect(within(kpis).getByText('Vagas de Libertadores (1º–5º)')).toBeInTheDocument()
+    expect(within(kpis).getByText('Jogos restantes · 4 rodadas + adiados')).toBeInTheDocument()
+  })
+
+  it('ordena a classificação por pontos ao clicar no cabeçalho', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: /^PTS/ }))
+    const table = screen.getByRole('region', { name: /Tabela classificatória/ })
+    // Ascendente: menor pontuação primeiro (Chapecoense, 21 pts)
+    expect(within(table).getAllByRole('row')[1]!).toHaveTextContent('Chapecoense')
+    expect(within(table).getByRole('columnheader', { name: /PTS/ })).toHaveAttribute('aria-sort', 'ascending')
+
+    await user.click(screen.getByRole('button', { name: /^PTS/ }))
+    // Descendente: líder primeiro (Flamengo, 73 pts)
+    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
+    expect(within(table).getByRole('columnheader', { name: /PTS/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
   it('mostra os 20 clubes na ordem oficial, com pontos e jogos do snapshot', () => {

@@ -1,5 +1,49 @@
 import { describe, expect, it } from 'vitest'
-import { estimateHeadToHeadAdjustment, type ModelMatch } from './matchModel'
+import {
+  estimateHeadToHeadAdjustment,
+  expectedGoalsFromTeamTotals,
+  historicalGoalAverages,
+  poissonResultProbabilities,
+  type ModelMatch,
+} from './matchModel'
+
+describe('fórmulas de gols esperados e probabilidades', () => {
+  it('devolve médias neutras para base vazia (guarda de divisão por zero)', () => {
+    expect(historicalGoalAverages([])).toEqual({ home: 1, away: 1 })
+  })
+
+  it('calcula força de ataque/defesa com encolhimento em caso numérico conhecido', () => {
+    // μ casa = μ fora = 1,4 (2 gols por jogo na base). Times com 2 jogos:
+    // casa marcou 4 e sofreu 0; fora marcou 0 e sofreu 4. k = 2.
+    // atk_casa = (4 + 2·1,4)/(2+2)/1,4 = 6,8/4/1,4 ≈ 1,2143
+    // def_fora = (4 + 2·1,4)/(2+2)/1,4 ≈ 1,2143
+    // λ_casa = 1,4 · 1,2143 · 1,2143 ≈ 2,0633
+    const averages = { home: 1.4, away: 1.4 }
+    const home = { played: 2, goalsFor: 4, goalsAgainst: 0 }
+    const away = { played: 2, goalsFor: 0, goalsAgainst: 4 }
+    const expected = expectedGoalsFromTeamTotals(home, away, averages, 2)
+    expect(expected.home).toBeCloseTo(1.4 * (6.8 / 4 / 1.4) * (6.8 / 4 / 1.4), 12)
+    expect(expected.away).toBeCloseTo(1.4 * (2.8 / 4 / 1.4) * (2.8 / 4 / 1.4), 12)
+  })
+
+  it('mantém multiplicadores neutros quando não há partidas nem encolhimento', () => {
+    const empty = { played: 0, goalsFor: 0, goalsAgainst: 0 }
+    const expected = expectedGoalsFromTeamTotals(empty, empty, { home: 1.3, away: 1.1 }, 0)
+    expect(expected.home).toBeCloseTo(1.3, 12)
+    expect(expected.away).toBeCloseTo(1.1, 12)
+  })
+
+  it('normaliza as probabilidades de resultado para somar 1', () => {
+    const probabilities = poissonResultProbabilities({ home: 1.8, away: 0.9 })
+    expect(probabilities.reduce((sum, value) => sum + value, 0)).toBeCloseTo(1, 12)
+    for (const probability of probabilities) {
+      expect(probability).toBeGreaterThanOrEqual(0)
+      expect(probability).toBeLessThanOrEqual(1)
+    }
+    // Time da casa mais forte deve ter probabilidade de vitória maior.
+    expect(probabilities[0]).toBeGreaterThan(probabilities[2])
+  })
+})
 
 describe('ajuste H2H regularizado por mando', () => {
   it('usa zero quando não há confronto comprovado', () => {

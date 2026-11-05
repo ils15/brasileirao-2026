@@ -1,4 +1,4 @@
-import { currentClubs, historicalSeasons, remainingFixtures, type ProjectionClub } from './projectionData'
+import { currentClubs, historicalSeasons, remainingFixtures } from './projectionData'
 import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonResults'
 import type { HistoricalMatch } from './historicalSeasons'
 import {
@@ -7,17 +7,24 @@ import {
   splitWalkForwardByKickoff,
   type FeatureBacktest,
 } from './modelBacktest'
-import { expectedGoalsForVariant } from './matchModel'
+import {
+  expectedGoalsForVariant,
+  expectedGoalsFromTeamTotals,
+  historicalGoalAverages,
+  poissonResultProbabilities,
+} from './matchModel'
 import { PointOutcomeCurveAccumulator, type PointCurveOutcome } from './pointCurve'
+import { PointsDistributionAccumulator, probabilityWithInterval, type PointsStats, type ProbabilityInterval } from './pointsDistribution'
+import { normalizeTeamId } from './clubIds'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import {
   BACKTEST_CUTOFF,
   BACKTEST_SIMULATIONS,
   RESULT_GROUPS,
   SHRINKAGE_CANDIDATES,
-  SHRINKAGE_MATCHES,
   SIMULATION_COUNT,
   SIMULATION_SEED,
+  ZONES,
   type ResultGroupId,
 } from './projectionConfig'
 
@@ -29,8 +36,10 @@ export {
   SHRINKAGE_MATCHES,
   SIMULATION_COUNT,
   SIMULATION_SEED,
+  ZONES,
 } from './projectionConfig'
 export type { ResultGroupId } from './projectionConfig'
+export type { PointsStats, ProbabilityInterval } from './pointsDistribution'
 
 export interface ExpectedGoals {
   home: number
@@ -59,10 +68,16 @@ export interface ClubProbability {
   id: string
   club: string
   currentPosition: number
+  currentPoints: number
   title: number
   libertadores: number
   sudamericana: number
   relegation: number
+  titleInterval: ProbabilityInterval
+  libertadoresInterval: ProbabilityInterval
+  sudamericanaInterval: ProbabilityInterval
+  relegationInterval: ProbabilityInterval
+  pointsStats: PointsStats
 }
 
 export interface ExactPointCount {
@@ -131,7 +146,10 @@ export interface ProjectionResult {
   clubProbabilities: ClubProbability[]
   pointsAnalysis: PointsAnalysis
   pointCurve: PointCurveResult
+  /** Média de gols do histórico puro 2021–2025 (1.900 jogos), referência editorial. */
   leagueAverageGoals: { home: number; away: number }
+  /** Média de gols da base efetivamente usada pelo modelo de produção (histórico + 2026 até o corte). */
+  trainingGoalAverages: { home: number; away: number }
   backtest: BacktestSummary
   featureBacktest: FeatureBacktest
 }
@@ -160,6 +178,7 @@ interface TeamState extends SimulationClub {
   goalDifference: number
   h2hPoints: number[]
   h2hGoalDifference: number[]
+  h2hGoalsFor: number[]
   drawOrder: number
 }
 
@@ -177,6 +196,7 @@ interface SimulationClub {
 export interface HeadToHeadRecord {
   points: number
   goalDifference: number
+  goalsFor: number
 }
 
 export type HeadToHeadMatrix = ReadonlyMap<string, ReadonlyMap<string, HeadToHeadRecord>>
@@ -194,13 +214,9 @@ interface RandomSource {
   next(): number
 }
 
-function historicalGoalAverages(matches: readonly MatchInput[]): { home: number; away: number } {
-  const totals = matches.reduce((sum, match) => ({
-    home: sum.home + match.homeGoals,
-    away: sum.away + match.awayGoals,
-  }), { home: 0, away: 0 })
-  return { home: totals.home / matches.length, away: totals.away / matches.length }
-}
+// A média de gols, a fórmula de gols esperados e as probabilidades de Poisson
+// vivem em matchModel.ts; este módulo apenas as consome (auditoria: fórmulas
+// duplicadas com guardas divergentes entre projection.ts e matchModel.ts).
 
 function historicalMatches(seasons = historicalSeasons): MatchInput[] {
   return seasons.flatMap((season) => season.matches.map((match) => historicalMatchInput(season.teamIds, match)))
@@ -208,8 +224,8 @@ function historicalMatches(seasons = historicalSeasons): MatchInput[] {
 
 function historicalMatchInput(teamIds: readonly string[], [home, away, homeGoals, awayGoals, kickoff, sourceOrdinal]: HistoricalMatch): MatchInput {
   return {
-    home: teamIds[home]!,
-    away: teamIds[away]!,
+    home: normalizeTeamId(teamIds[home]!),
+    away: normalizeTeamId(teamIds[away]!),
     homeGoals,
     awayGoals,
     kickoff,
@@ -248,25 +264,6 @@ function poissonSample(mean: number, random: RandomSource): number {
   return goals - 1
 }
 
-function expectedGoalsForTeams(
-  home: Pick<ProjectionClub, 'played' | 'goalsFor' | 'goalsAgainst'>,
-  away: Pick<ProjectionClub, 'played' | 'goalsFor' | 'goalsAgainst'>,
-  averages: { home: number; away: number },
-  shrinkageMatches = SHRINKAGE_MATCHES,
-): ExpectedGoals {
-  const averageTeamGoals = (averages.home + averages.away) / 2
-  const strength = (team: Pick<ProjectionClub, 'played' | 'goalsFor' | 'goalsAgainst'>): { attack: number; defense: number } => ({
-    attack: (team.goalsFor + shrinkageMatches * averageTeamGoals) / (team.played + shrinkageMatches) / averageTeamGoals,
-    defense: (team.goalsAgainst + shrinkageMatches * averageTeamGoals) / (team.played + shrinkageMatches) / averageTeamGoals,
-  })
-  const homeStrength = strength(home)
-  const awayStrength = strength(away)
-  return {
-    home: averages.home * homeStrength.attack * awayStrength.defense,
-    away: averages.away * awayStrength.attack * homeStrength.defense,
-  }
-}
-
 export function estimateExpectedGoals(homeId: string, awayId: string): ExpectedGoals {
   const home = currentClubs.find((club) => club.id === homeId)
   const away = currentClubs.find((club) => club.id === awayId)
@@ -283,34 +280,11 @@ export function estimateExpectedGoals(homeId: string, awayId: string): ExpectedG
   )
 }
 
-function poissonProbabilities(mean: number, maxGoals = 12): number[] {
-  const probabilities = [Math.exp(-mean)]
-  for (let goals = 0; goals < maxGoals; goals += 1) {
-    probabilities.push(probabilities[goals]! * mean / (goals + 1))
-  }
-  const total = probabilities.reduce((sum, value) => sum + value, 0)
-  return probabilities.map((value) => value / total)
-}
-
-function resultProbabilities(expected: ExpectedGoals): [number, number, number] {
-  const home = poissonProbabilities(expected.home)
-  const away = poissonProbabilities(expected.away)
-  const probabilities: [number, number, number] = [0, 0, 0]
-  for (let homeGoals = 0; homeGoals < home.length; homeGoals += 1) {
-    for (let awayGoals = 0; awayGoals < away.length; awayGoals += 1) {
-      const resultIndex = homeGoals > awayGoals ? 0 : homeGoals === awayGoals ? 1 : 2
-      probabilities[resultIndex] += home[homeGoals]! * away[awayGoals]!
-    }
-  }
-  const total = probabilities.reduce((sum, value) => sum + value, 0)
-  return probabilities.map((value) => value / total) as [number, number, number]
-}
-
 function getOutcome(position: number): ResultGroupId {
   if (position === 1) return 'champion'
-  if (position <= 5) return 'libertadores'
-  if (position <= 11) return 'sudamericana'
-  if (position <= 16) return 'middle'
+  if (position <= ZONES.libertadores.to) return 'libertadores'
+  if (position <= ZONES.sudamericana.to) return 'sudamericana'
+  if (position <= ZONES.middle.to) return 'middle'
   return 'relegation'
 }
 
@@ -339,7 +313,9 @@ function analysisFromAccumulator(accumulator: PointCountAccumulator): PointsAnal
 export function buildPointsAnalysis(samples: readonly PointOutcomeSample[]): PointsAnalysis {
   const accumulator = createAccumulator()
   for (const sample of samples) {
-    if (!Number.isInteger(sample.points) || !RESULT_GROUPS.some(({ id }) => id === sample.outcome)) continue
+    // Pontuação negativa não existe no formato de pontos corridos; descartar
+    // evita que amostras corrompidas gerem categorias impossíveis (auditoria).
+    if (!Number.isInteger(sample.points) || sample.points < 0 || !RESULT_GROUPS.some(({ id }) => id === sample.outcome)) continue
     const pointCounts = accumulator.outcomeCounts[sample.outcome]!
     pointCounts.set(sample.points, (pointCounts.get(sample.points) ?? 0) + 1)
   }
@@ -367,14 +343,20 @@ export function buildCurrentSeasonHeadToHead(
   for (const match of filterAtOrBeforeAnalyticalCutoff(matches)) {
     const homePoints = match.homeGoals > match.awayGoals ? 3 : match.homeGoals === match.awayGoals ? 1 : 0
     const awayPoints = match.awayGoals > match.homeGoals ? 3 : match.awayGoals === match.homeGoals ? 1 : 0
-    addHeadToHead(matrix, match.home, match.away, homePoints, match.homeGoals - match.awayGoals)
-    addHeadToHead(matrix, match.away, match.home, awayPoints, match.awayGoals - match.homeGoals)
+    addHeadToHead(matrix, match.home, match.away, homePoints, match.homeGoals - match.awayGoals, match.homeGoals)
+    addHeadToHead(matrix, match.away, match.home, awayPoints, match.awayGoals - match.homeGoals, match.awayGoals)
   }
   return matrix
 }
 
+/**
+ * Critérios CBF/REC para confronto direto entre dois clubes:
+ * 1) pontos no confronto; 2) saldo de gols no confronto; 3) gols marcados
+ * no confronto. O terceiro critério foi incluído na auditoria — antes a
+ * comparação parava no saldo e caía no sorteio.
+ */
 export function compareHeadToHeadForTable(a: HeadToHeadRecord, b: HeadToHeadRecord): number {
-  return b.points - a.points || b.goalDifference - a.goalDifference
+  return b.points - a.points || b.goalDifference - a.goalDifference || b.goalsFor - a.goalsFor
 }
 
 function finalTable(states: TeamState[]): SimulatedClub[] {
@@ -386,10 +368,13 @@ function finalTable(states: TeamState[]): SimulatedClub[] {
     const group = byKnownCriteria.slice(start, end)
     if (group.length === 2) {
       group.sort((a, b) => compareHeadToHeadForTable(
-        { points: a.h2hPoints[b.index]!, goalDifference: a.h2hGoalDifference[b.index]! },
-        { points: b.h2hPoints[a.index]!, goalDifference: b.h2hGoalDifference[a.index]! },
+        { points: a.h2hPoints[b.index]!, goalDifference: a.h2hGoalDifference[b.index]!, goalsFor: a.h2hGoalsFor[b.index]! },
+        { points: b.h2hPoints[a.index]!, goalDifference: b.h2hGoalDifference[a.index]!, goalsFor: b.h2hGoalsFor[a.index]! },
       ) || a.drawOrder - b.drawOrder)
     } else {
+      // Limitação documentada: empates entre 3+ clubes não implementam os
+      // critérios REC seguintes (cartões, sorteio oficial) — sem dados de
+      // cartões, mantém-se o sorteio reprodutível por simulação.
       group.sort((a, b) => a.drawOrder - b.drawOrder)
     }
     sorted.push(...group)
@@ -418,6 +403,7 @@ function initialTeamStates(
     goalDifference: club.goalsFor - club.goalsAgainst,
     h2hPoints: clubs.map((opponent) => initialHeadToHead.get(club.id)?.get(opponent.id)?.points ?? 0),
     h2hGoalDifference: clubs.map((opponent) => initialHeadToHead.get(club.id)?.get(opponent.id)?.goalDifference ?? 0),
+    h2hGoalsFor: clubs.map((opponent) => initialHeadToHead.get(club.id)?.get(opponent.id)?.goalsFor ?? 0),
     drawOrder: random.next(),
   }))
 }
@@ -459,6 +445,8 @@ function simulateSeason(
     away.h2hPoints[homeEntry.index] = away.h2hPoints[homeEntry.index]! + h2hPoints[1]
     home.h2hGoalDifference[awayEntry.index] = home.h2hGoalDifference[awayEntry.index]! + homeGoals - awayGoals
     away.h2hGoalDifference[homeEntry.index] = away.h2hGoalDifference[homeEntry.index]! + awayGoals - homeGoals
+    home.h2hGoalsFor[awayEntry.index] = home.h2hGoalsFor[awayEntry.index]! + homeGoals
+    away.h2hGoalsFor[homeEntry.index] = away.h2hGoalsFor[homeEntry.index]! + awayGoals
 
     if (homeGoals > awayGoals) {
       home.points += 3
@@ -536,7 +524,7 @@ function scoringPrediction(
   const home = totals.get(homeId)
   const away = totals.get(awayId)
   if (!home || !away) throw new Error(`Clube ainda sem partidas no corte do backtest: ${homeId}–${awayId}`)
-  return resultProbabilities(expectedGoalsForTeams(home, away, averages, shrinkageMatches))
+  return poissonResultProbabilities(expectedGoalsFromTeamTotals(home, away, averages, shrinkageMatches))
 }
 
 function brierScore(
@@ -570,8 +558,10 @@ function evaluateHistoricalYear(year: number, shrinkageMatches: number): MatchBa
     year,
     matches: testMatches.length,
     shrinkageMatches,
-    modelBrier: modelSeasonBrier / testMatches.length,
-    baselineBrier: baselineSeasonBrier / testMatches.length,
+    // Divisão guardada: fold sem partidas de teste devolve 0 em vez de NaN
+    // (auditoria: divisões sem guarda).
+    modelBrier: testMatches.length === 0 ? 0 : modelSeasonBrier / testMatches.length,
+    baselineBrier: testMatches.length === 0 ? 0 : baselineSeasonBrier / testMatches.length,
   }
 }
 
@@ -589,11 +579,13 @@ function addHeadToHead(
   opponent: string,
   points: number,
   goalDifference: number,
+  goalsFor: number,
 ): void {
   const opponents = matrix.get(club) ?? new Map<string, HeadToHeadRecord>()
-  const current = opponents.get(opponent) ?? { points: 0, goalDifference: 0 }
+  const current = opponents.get(opponent) ?? { points: 0, goalDifference: 0, goalsFor: 0 }
   current.points += points
   current.goalDifference += goalDifference
+  current.goalsFor += goalsFor
   opponents.set(opponent, current)
   matrix.set(club, opponents)
 }
@@ -611,11 +603,12 @@ function historicalTableBacktest(year: number, shrinkageMatches: number): { tabl
   for (const match of cutoff) {
     const homePoints = match.homeGoals > match.awayGoals ? 3 : match.homeGoals === match.awayGoals ? 1 : 0
     const awayPoints = match.awayGoals > match.homeGoals ? 3 : match.awayGoals === match.homeGoals ? 1 : 0
-    addHeadToHead(headToHead, match.home, match.away, homePoints, match.homeGoals - match.awayGoals)
-    addHeadToHead(headToHead, match.away, match.home, awayPoints, match.awayGoals - match.homeGoals)
+    addHeadToHead(headToHead, match.home, match.away, homePoints, match.homeGoals - match.awayGoals, match.homeGoals)
+    addHeadToHead(headToHead, match.away, match.home, awayPoints, match.awayGoals - match.homeGoals, match.awayGoals)
   }
 
-  const clubs: SimulationClub[] = season.teamIds.map((id, index) => {
+  const clubs: SimulationClub[] = season.teamIds.map((rawId, index) => {
+    const id = normalizeTeamId(rawId)
     const total = totals.get(id)
     if (!total) throw new Error(`Sem dados de temporada no corte: ${year} ${id}`)
     return {
@@ -633,11 +626,11 @@ function historicalTableBacktest(year: number, shrinkageMatches: number): { tabl
     const home = totals.get(fixture.home)
     const away = totals.get(fixture.away)
     if (!home || !away) throw new Error(`Confronto sem histórico no corte: ${fixture.home}–${fixture.away}`)
-    return expectedGoalsForTeams(home, away, averages, shrinkageMatches)
+    return expectedGoalsFromTeamTotals(home, away, averages, shrinkageMatches)
   })
 
   const currentTable = finalTable(initialTeamStates(createRandom(20_260_000 + year), clubs, headToHead))
-  const actualPosition = new Map(season.officialStandings.map(([id], index) => [id, index + 1]))
+  const actualPosition = new Map(season.officialStandings.map(([rawId], index) => [normalizeTeamId(rawId), index + 1]))
   const actualOutcome = new Map(clubs.map((club) => [club.id, RESULT_GROUPS.findIndex(({ id }) => id === historicalOutcomeGroup(actualPosition.get(club.id)!))]))
   const baselineOutcome = new Map(currentTable.map((club) => [club.id, RESULT_GROUPS.findIndex(({ id }) => id === historicalOutcomeGroup(club.position))]))
   const simulatedCounts = new Map(clubs.map((club) => [club.id, RESULT_GROUPS.map(() => 0)]))
@@ -689,22 +682,23 @@ export function runTemporalBacktest(): BacktestSummary {
   const baselineBrier = seasons.reduce((sum, season) => sum + season.baselineBrier * season.matches, 0) / matchesTotal
   const tableBrier = seasons.reduce((sum, season) => sum + season.tableBrier, 0) / seasons.length
   const tableBaselineBrier = seasons.reduce((sum, season) => sum + season.tableBaselineBrier, 0) / seasons.length
-  const productionShrinkageMatches = SHRINKAGE_CANDIDATES.reduce((best, candidate) => {
-    const candidateScore = historicalSeasons.reduce((sum, season) => sum + candidatesByYear.get(season.year)!.find((entry) => entry.shrinkageMatches === candidate)!.modelBrier, 0)
-    const bestScore = historicalSeasons.reduce((sum, season) => sum + candidatesByYear.get(season.year)!.find((entry) => entry.shrinkageMatches === best)!.modelBrier, 0)
-    return candidateScore < bestScore ? candidate : best
-  }, SHRINKAGE_CANDIDATES[0])
+  // k de produção escolhido por walk-forward: o mesmo k aplicado à última
+  // temporada usando apenas os anos anteriores — seleção fora da amostra.
+  // Antes da auditoria o k era escolhido in-sample sobre as 5 temporadas
+  // exibidas (viés de seleção no número publicado).
+  const productionShrinkageMatches = seasons[seasons.length - 1]!.shrinkageMatches
+  const relativeImprovement = (baseline: number, model: number): number => (baseline === 0 ? 0 : (baseline - model) / baseline)
   cachedTemporalBacktest = {
     cutoffMatches: BACKTEST_CUTOFF,
     matches: matchesTotal,
     modelBrier,
     baselineBrier,
-    relativeImprovement: (baselineBrier - modelBrier) / baselineBrier,
+    relativeImprovement: relativeImprovement(baselineBrier, modelBrier),
     productionShrinkageMatches,
     tableSimulationsPerSeason: BACKTEST_SIMULATIONS,
     tableBrier,
     tableBaselineBrier,
-    tableRelativeImprovement: (tableBaselineBrier - tableBrier) / tableBaselineBrier,
+    tableRelativeImprovement: relativeImprovement(tableBaselineBrier, tableBrier),
     seasons,
   }
   return cachedTemporalBacktest
@@ -712,8 +706,8 @@ export function runTemporalBacktest(): BacktestSummary {
 
 export function validateHistoricalSeason(season: (typeof historicalSeasons)[number]): { matches: number; clubs: number; mismatchedClubs: number } {
   const totals = seasonToDateTotals(historicalMatches([season]))
-  const mismatchedClubs = season.officialStandings.filter(([id, points, played, wins, draws, losses, goalsFor, goalsAgainst]) => {
-    const actual = totals.get(id)
+  const mismatchedClubs = season.officialStandings.filter(([rawId, points, played, wins, draws, losses, goalsFor, goalsAgainst]) => {
+    const actual = totals.get(normalizeTeamId(rawId))
     return !actual
       || actual.points !== points
       || actual.played !== played
@@ -741,6 +735,7 @@ export function runProjection(options: { simulations?: number; seed?: number } =
   const probabilityCounts = new Map(currentClubs.map((club) => [club.id, { title: 0, libertadores: 0, sudamericana: 0, relegation: 0 }]))
   const pointAccumulator = createAccumulator()
   const pointCurveAccumulator = new PointOutcomeCurveAccumulator(simulations)
+  const pointsDistribution = new PointsDistributionAccumulator(currentClubs.map(({ id }) => id), simulations)
   const featureBacktest = runFeatureBacktest()
 
   for (let simulation = 0; simulation < simulations; simulation += 1) {
@@ -748,34 +743,48 @@ export function runProjection(options: { simulations?: number; seed?: number } =
     for (const club of season.table) {
       const counts = probabilityCounts.get(club.id)!
       if (club.position === 1) counts.title += 1
-      if (club.position <= 5) counts.libertadores += 1
-      if (club.position >= 6 && club.position <= 11) counts.sudamericana += 1
-      if (club.position >= 17) counts.relegation += 1
+      if (club.position >= ZONES.libertadores.from && club.position <= ZONES.libertadores.to) counts.libertadores += 1
+      if (club.position >= ZONES.sudamericana.from && club.position <= ZONES.sudamericana.to) counts.sudamericana += 1
+      if (club.position >= ZONES.relegation.from) counts.relegation += 1
       const outcome = getOutcome(club.position)
       pointCurveAccumulator.add({ simulation, club: club.id, points: club.points, position: club.position })
+      pointsDistribution.add(club.id, club.points)
       const pointCounts = pointAccumulator.outcomeCounts[outcome]!
       pointCounts.set(club.points, (pointCounts.get(club.points) ?? 0) + 1)
     }
   }
+
+  const pointsStats = pointsDistribution.build()
 
   return {
     simulations,
     seed,
     clubProbabilities: currentClubs.map((club) => {
       const counts = probabilityCounts.get(club.id)!
+      const titleInterval = probabilityWithInterval(counts.title, simulations)
+      const libertadoresInterval = probabilityWithInterval(counts.libertadores, simulations)
+      const sudamericanaInterval = probabilityWithInterval(counts.sudamericana, simulations)
+      const relegationInterval = probabilityWithInterval(counts.relegation, simulations)
       return {
         id: club.id,
         club: club.club,
         currentPosition: club.position,
-        title: counts.title / simulations,
-        libertadores: counts.libertadores / simulations,
-        sudamericana: counts.sudamericana / simulations,
-        relegation: counts.relegation / simulations,
+        currentPoints: club.points,
+        title: titleInterval.probability,
+        libertadores: libertadoresInterval.probability,
+        sudamericana: sudamericanaInterval.probability,
+        relegation: relegationInterval.probability,
+        titleInterval,
+        libertadoresInterval,
+        sudamericanaInterval,
+        relegationInterval,
+        pointsStats: pointsStats.get(club.id)!,
       }
     }),
     pointsAnalysis: analysisFromAccumulator(pointAccumulator),
     pointCurve: pointCurveAccumulator.build(),
     leagueAverageGoals: fullHistoryGoalAverages,
+    trainingGoalAverages: historicalGoalAverages(productionTrainingMatches),
     backtest: runTemporalBacktest(),
     featureBacktest,
   }

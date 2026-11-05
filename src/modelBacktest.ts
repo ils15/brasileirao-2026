@@ -8,6 +8,7 @@ import {
   type ForecastVariant,
   type ModelMatch,
 } from './matchModel'
+import { normalizeTeamId } from './clubIds'
 import { splitWalkForwardByKickoff } from './chronology'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 
@@ -39,14 +40,10 @@ export interface FeatureBacktest {
   seasons: AblationSeason[]
 }
 
-const teamIdAliases: Readonly<Record<string, string>> = {
-  saopaulo: 'sao-paulo',
-}
-
 function historicalModelMatch(teamIds: readonly string[], match: HistoricalMatch, year: number): ModelMatch {
   const [homeIndex, awayIndex, homeGoals, awayGoals, kickoff, sourceOrdinal] = match
-  const home = teamIdAliases[teamIds[homeIndex]!] ?? teamIds[homeIndex]!
-  const away = teamIdAliases[teamIds[awayIndex]!] ?? teamIds[awayIndex]!
+  const home = normalizeTeamId(teamIds[homeIndex]!)
+  const away = normalizeTeamId(teamIds[awayIndex]!)
   return { home, away, homeGoals, awayGoals, kickoff, seasonYear: year, sourceOrdinal }
 }
 
@@ -90,7 +87,7 @@ function scoreMatches(
     const expected = expectedGoalsForVariant(match.home, match.away, training, year, variant, shrinkageMatches)
     return sum + brierScore(poissonResultProbabilities(expected), outcomeIndex(match))
   }, 0)
-  return { brier: brier / test.length }
+  return { brier: test.length === 0 ? 0 : brier / test.length }
 }
 
 function bestPriorCandidate(scoresByYear: ReadonlyMap<number, ReadonlyMap<number, number>>, years: readonly number[]): number {
@@ -100,10 +97,6 @@ function bestPriorCandidate(scoresByYear: ReadonlyMap<number, ReadonlyMap<number
     const bestScore = years.reduce((sum, year) => sum + (scoresByYear.get(year)?.get(best) ?? Number.POSITIVE_INFINITY), 0)
     return score < bestScore ? candidate : best
   }, SHRINKAGE_CANDIDATES[0]!)
-}
-
-function bestOverallCandidate(scoresByYear: ReadonlyMap<number, ReadonlyMap<number, number>>): number {
-  return bestPriorCandidate(scoresByYear, [...scoresByYear.keys()])
 }
 
 function candidateScores(
@@ -159,7 +152,10 @@ export function runFeatureBacktest(): FeatureBacktest {
   cachedFeatureBacktest = {
     cutoffMatches: BACKTEST_CUTOFF,
     baselineShrinkageMatches: MODEL_PARAMETERS.baselineShrinkageMatches,
-    productionShrinkageMatches: bestOverallCandidate(homeAwayCandidates),
+    // k de produção por walk-forward: o k escolhido para a última temporada
+    // usando apenas anos anteriores (fora da amostra). Antes da auditoria era
+    // o melhor candidato in-sample sobre todas as temporadas exibidas.
+    productionShrinkageMatches: seasons[seasons.length - 1]!.homeAwayShrinkageMatches,
     h2hShrinkageMatches: MODEL_PARAMETERS.h2hShrinkageMatches,
     h2hConsistentlyImproves,
     // Mixed folds and no independent validation: production forecast weight remains zero.

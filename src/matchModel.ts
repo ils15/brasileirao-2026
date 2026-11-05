@@ -77,10 +77,17 @@ export function expectedGoalsFromTeamTotals(
   shrinkageMatches: number,
 ): ExpectedGoals {
   const averageTeamGoals = (averages.home + averages.away) / 2
-  const strength = (team: ModelTotals): { attack: number; defense: number } => ({
-    attack: (team.goalsFor + shrinkageMatches * averageTeamGoals) / (team.played + shrinkageMatches) / averageTeamGoals,
-    defense: (team.goalsAgainst + shrinkageMatches * averageTeamGoals) / (team.played + shrinkageMatches) / averageTeamGoals,
-  })
+  if (averageTeamGoals <= 0) return { home: averages.home, away: averages.away }
+  // Sem partidas e sem encolhimento não há informação de força: multiplicadores
+  // neutros (1) evitam NaN na divisão por zero (auditoria: divisões sem guarda).
+  const strength = (team: ModelTotals): { attack: number; defense: number } => {
+    const matches = team.played + shrinkageMatches
+    if (matches === 0) return { attack: 1, defense: 1 }
+    return {
+      attack: (team.goalsFor + shrinkageMatches * averageTeamGoals) / matches / averageTeamGoals,
+      defense: (team.goalsAgainst + shrinkageMatches * averageTeamGoals) / matches / averageTeamGoals,
+    }
+  }
   const homeStrength = strength(home)
   const awayStrength = strength(away)
   return {

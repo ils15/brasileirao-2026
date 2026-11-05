@@ -2,6 +2,17 @@
 
 Dashboard responsivo em React, TypeScript e Vite. Os dados são locais e estáticos: não há API, atualização ao vivo ou busca de dados em runtime. O corte analítico é **04/11/2026 às 13:00 BRT** (`2026-11-04T16:00:00Z`); horário de corte, kickoff da partida e hora de captura das fontes são conceitos distintos.
 
+## Navegação por abas
+
+O painel é organizado em quatro abas acessíveis (role=tablist com navegação por teclado; âncoras antigas continuam abrindo a aba correspondente):
+
+1. **Visão Geral** — KPIs da temporada, classificação oficial com colunas ordenáveis, artilharia e clubes por zona.
+2. **Jogos & Resultados** — log dos 332 resultados até o corte (filtros por clube/fonte/período, ordenação e paginação) e calendário dos 48 jogos restantes por clube.
+3. **Projeções & Métricas** — probabilidades Monte Carlo com IC 95% Wilson, mediana/percentis de pontos finais e badge Δ; distribuições, curvas condicionais, backtest, ablação e metodologia; exportação CSV/XLSX/JSON.
+4. **Dados & Auditoria** — proveniência das fontes (URL, SHA-256, captura), validações em execução (temporada 2026 e histórico 2021–2025) e exportação dos dados brutos com bloco de proveniência.
+
+Documentação complementar: [auditoria de cálculos](docs/auditoria-calculos.md) (erros encontrados, correções e impacto nos números publicados) e [dicionário de dados](docs/dicionario-dados.md) (nomenclaturas padronizadas e fórmulas).
+
 ## Executar e verificar
 
 ```sh
@@ -41,11 +52,11 @@ taxa_c,v = (gols 2026_c,v + k × taxa histórica ponderada_c,v) / (jogos 2026_c,
 λ fora = μ fora × (ataque visitante,fora / μ fora) × (gols sofridos mandante,casa / μ fora)
 ```
 
-As taxas históricas usam 2021–2025, ponderação por recência com meia-vida de 2,5 temporadas e regularização para a média da liga com 20 jogos ponderados prévios. `k=15` para a produção foi selecionado entre `{0, 2, 4, 6, 8, 10, 12, 15, 20, 25, 30}` pelo Brier da variante casa/fora nos mesmos cinco folds temporais 2021–2025; não há validação externa independente desse k. Gols são amostrados de Poisson independentes.
+As taxas históricas usam 2021–2025, ponderação por recência com meia-vida de 2,5 temporadas e regularização para a média da liga com 20 jogos ponderados prévios. `k=20` para a produção segue a política walk-forward: é o k selecionado para a temporada 2025 usando apenas os anos anteriores, entre `{0, 2, 4, 6, 8, 10, 12, 15, 20, 25, 30}` pelo Brier da variante casa/fora (antes da auditoria, o k era escolhido in-sample sobre as mesmas cinco temporadas — ver `docs/auditoria-calculos.md`); não há validação externa independente desse k. A μ exibida como base de treino cobre histórico + 332 jogos de 2026 até o corte (o histórico puro é referência editorial). Gols são amostrados de Poisson independentes.
 
 ### Walk-forward e ablações
 
-O corte de cada temporada começa no limite do 300º jogo cronológico, sem dividir kickoffs empatados. Parâmetros anuais de `k` usam somente resultados de anos anteriores (2021 usa `k=12` pré-fixado). A tabela do app exibe Brier por temporada para o modelo temporal baseline e sua referência, além das categorias finais por posição. Esses resultados avaliam as respectivas políticas walk-forward e não validam de forma independente o k=15 da produção.
+O corte de cada temporada começa no limite do 300º jogo cronológico, sem dividir kickoffs empatados. Parâmetros anuais de `k` usam somente resultados de anos anteriores (2021 usa `k=12` pré-fixado). A tabela do app exibe Brier por temporada para o modelo temporal baseline e sua referência, além das categorias finais por posição. Esses resultados avaliam as respectivas políticas walk-forward; o k de produção herdado da seleção de 2025 (fora da amostra) tampouco tem validação externa independente.
 
 A ablação de resultado H/empate/F compara os quatro recursos nos mesmos folds. Valores abaixo são Brier; menor é melhor:
 
@@ -65,4 +76,4 @@ A curva é condicionada à pontuação final exata: `K/N` é clubes-simulações
 
 As 5.000 simulações de tabela por temporada avaliam grupos finais históricos pelas faixas de posição da época: 1º campeão; 2º–6º Libertadores; 7º–12º Sul-Americana; 13º–16º meio; 17º–20º rebaixamento. Para 2026, as probabilidades consideram 1º–4º Libertadores direta, 5º preliminar, 6º–11º Sul-Americana e quatro últimos rebaixados. Campeões da Copa do Brasil e de torneios CONMEBOL, que podem redistribuir vagas, não são simulados.
 
-O desempate usa pontos, vitórias, saldo e gols pró; para empate entre dois clubes, a simulação considera resultados H2H de 2026 concluídos no corte e os resultados dos confrontos simulados. Os placares concluídos são rastreáveis aos snapshots Football-Data/ESPN, mas não foram conferidos linha a linha contra a CBF. Cartões não estão disponíveis e o fallback para empates restantes é uniforme e reprodutível. O H2H nunca altera as probabilidades projetadas. As projeções não são odds nem recomendação de apostas; a variação Monte Carlo não representa toda a incerteza dos dados e do modelo.
+O desempate usa pontos, vitórias, saldo e gols pró; para empate entre dois clubes, a simulação considera os critérios do confronto direto (pontos, saldo e gols marcados no confronto) sobre os jogos de 2026 concluídos no corte e os resultados simulados. Os placares concluídos são rastreáveis aos snapshots Football-Data/ESPN, mas não foram conferidos linha a linha contra a CBF. Cartões não estão disponíveis e o fallback para empates restantes é uniforme e reprodutível. O H2H nunca altera as probabilidades projetadas. As projeções não são odds nem recomendação de apostas; a variação Monte Carlo não representa toda a incerteza dos dados e do modelo.

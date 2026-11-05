@@ -10,8 +10,8 @@ describe('projeção estática do Brasileirão 2026', () => {
     const headToHead = buildCurrentSeasonHeadToHead()
     const flamengoAgainstPalmeiras = headToHead.get('flamengo')?.get('palmeiras')
     const palmeirasAgainstFlamengo = headToHead.get('palmeiras')?.get('flamengo')
-    expect(flamengoAgainstPalmeiras).toEqual({ points: 0, goalDifference: -3 })
-    expect(palmeirasAgainstFlamengo).toEqual({ points: 3, goalDifference: 3 })
+    expect(flamengoAgainstPalmeiras).toEqual({ points: 0, goalDifference: -3, goalsFor: 0 })
+    expect(palmeirasAgainstFlamengo).toEqual({ points: 3, goalDifference: 3, goalsFor: 3 })
     expect(compareHeadToHeadForTable(flamengoAgainstPalmeiras!, palmeirasAgainstFlamengo!)).toBeGreaterThan(0)
     expect(compareHeadToHeadForTable(palmeirasAgainstFlamengo!, flamengoAgainstPalmeiras!)).toBeLessThan(0)
     expect(buildCurrentSeasonHeadToHead([
@@ -21,6 +21,15 @@ describe('projeção estática do Brasileirão 2026', () => {
         kickoff: '2026-11-04T16:01:00Z', source: 'espn', sourceRef: 'future-test-only',
       },
     ])).toEqual(headToHead)
+  })
+
+  it('aplica gols marcados no confronto como terceiro critério de desempate H2H', () => {
+    // Mesmos pontos e mesmo saldo no confronto: quem marcou mais gols leva.
+    const fewerGoals = { points: 4, goalDifference: 0, goalsFor: 2 }
+    const moreGoals = { points: 4, goalDifference: 0, goalsFor: 5 }
+    expect(compareHeadToHeadForTable(fewerGoals, moreGoals)).toBeGreaterThan(0)
+    expect(compareHeadToHeadForTable(moreGoals, fewerGoals)).toBeLessThan(0)
+    expect(compareHeadToHeadForTable(moreGoals, { ...moreGoals })).toBe(0)
   })
 
   it('usa 20 clubes, os 48 jogos restantes e temporadas históricas completas validadas', () => {
@@ -90,6 +99,9 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(result.table).toHaveLength(20)
     expect(result.table.every((club) => club.played === 38)).toBe(true)
     expect(result.table.reduce((total, club) => total + club.points, 0)).toBe(result.totalPoints)
+    // Conservação real: o total final precisa fechar com a soma dos pontos
+    // de partida mais os pontos distribuídos nos 48 jogos simulados.
+    expect(result.pointsAtStart + result.pointsAdded).toBe(result.totalPoints)
     expect(result.table.filter((club) => club.position <= 4)).toHaveLength(4)
     expect(result.table.filter((club) => club.position === 5)).toHaveLength(1)
     expect(result.table.filter((club) => club.position >= 6 && club.position <= 11)).toHaveLength(6)
@@ -157,6 +169,19 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(analysis.distributionByOutcome.every((row) => row.samples === 0 && row.points.length === 0)).toBe(true)
   })
 
+  it('rejeita amostras com pontuação negativa ou não inteira', () => {
+    const analysis = buildPointsAnalysis([
+      { points: -3, outcome: 'relegation' },
+      { points: 40.5, outcome: 'champion' },
+      { points: 30, outcome: 'relegation' },
+    ])
+    const relegation = analysis.distributionByOutcome.find(({ id }) => id === 'relegation')
+    const champion = analysis.distributionByOutcome.find(({ id }) => id === 'champion')
+    expect(relegation?.samples).toBe(1)
+    expect(relegation?.points).toEqual([{ points: 30, count: 1, probability: 1 }])
+    expect(champion?.samples).toBe(0)
+  })
+
   it('corta o backtest pela data/hora explícita mesmo quando as partidas chegam fora da ordem do array', () => {
     const season = historicalSeasons[0]!
     const originalMatches = season.matches
@@ -169,7 +194,9 @@ describe('projeção estática do Brasileirão 2026', () => {
     }
     expect(backtest.modelBrier).toBeCloseTo(0.61794, 5)
     expect(backtest.tableBrier).toBeCloseTo(0.40907, 5)
-    expect(backtest.productionShrinkageMatches).toBe(20)
+    // k de produção escolhido por walk-forward (k aplicado à última
+    // temporada usando apenas anos anteriores), não in-sample.
+    expect(backtest.productionShrinkageMatches).toBe(12)
   })
 
   it('mantém os kickoffs empatados juntos e informa os folds do backtest sem usar jogos futuros', () => {
@@ -184,7 +211,7 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(backtest.modelBrier).toBeLessThan(backtest.baselineBrier)
     expect(backtest.tableSimulationsPerSeason).toBe(5_000)
     expect(backtest.tableBrier).toBeLessThan(backtest.tableBaselineBrier)
-    expect(backtest.productionShrinkageMatches).toBe(20)
+    expect(backtest.productionShrinkageMatches).toBe(12)
     expect(backtest.relativeImprovement).toBeGreaterThan(0.03)
   })
 
@@ -196,5 +223,35 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.libertadores, 0)).toBeCloseTo(5, 10)
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.sudamericana, 0)).toBeCloseTo(6, 10)
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.relegation, 0)).toBeCloseTo(4, 10)
+  })
+
+  it('resume pontos finais por clube com mediana, percentis, desvio e IC Wilson', () => {
+    const result = runProjection({ simulations: 250, seed: 777 })
+    for (const club of result.clubProbabilities) {
+      const stats = club.pointsStats
+      expect(stats.samples).toBe(250)
+      expect(stats.min).toBeLessThanOrEqual(stats.p10)
+      expect(stats.p10).toBeLessThanOrEqual(stats.p25)
+      expect(stats.p25).toBeLessThanOrEqual(stats.median)
+      expect(stats.median).toBeLessThanOrEqual(stats.p75)
+      expect(stats.p75).toBeLessThanOrEqual(stats.p90)
+      expect(stats.p90).toBeLessThanOrEqual(stats.max)
+      // Pontos finais só podem crescer em relação aos pontos atuais no
+      // snapshot — os jogos restantes distribuem pontos não negativos.
+      expect(stats.min).toBeGreaterThanOrEqual(club.currentPoints)
+      expect(Number.isInteger(stats.median)).toBe(true)
+      expect(stats.stdDev).toBeGreaterThanOrEqual(0)
+      for (const interval of [club.titleInterval, club.libertadoresInterval, club.sudamericanaInterval, club.relegationInterval]) {
+        expect(interval.lower95).toBeLessThanOrEqual(interval.probability)
+        expect(interval.probability).toBeLessThanOrEqual(interval.upper95)
+        expect(interval.lower95).toBeGreaterThanOrEqual(0)
+        expect(interval.upper95).toBeLessThanOrEqual(1)
+      }
+    }
+    // A μ exibida como base de treino precisa ser a média da base efetiva
+    // (histórico completo + 332 jogos de 2026 até o corte), não do histórico puro.
+    expect(result.trainingGoalAverages.home).toBeGreaterThan(0)
+    expect(result.leagueAverageGoals.home).toBeGreaterThan(0)
+    expect(result.trainingGoalAverages.home).not.toBe(result.leagueAverageGoals.home)
   })
 })

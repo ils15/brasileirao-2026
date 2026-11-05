@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, type JSX, type KeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { POINT_CURVE_LOW_SAMPLE_WIDTH, RESULT_GROUPS, SHRINKAGE_CANDIDATES, SIMULATION_COUNT, SIMULATION_SEED, type ResultGroupId } from './projectionConfig'
-import type { OutcomeDistribution, ProjectionResult } from './projection'
+import type { ClubProbability, OutcomeDistribution, ProjectionResult } from './projection'
 import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { CURRENT_SEASON_SOURCE } from './currentSeasonResults'
 import { ANALYTICAL_CUTOFF_LOCAL } from './sourceMetadata'
+import { useTableSort, type SortableColumn } from './useTableSort'
+import { buildXlsx, downloadFile, toCSV, toJson } from './exporters'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const FIXTURES_URL = 'https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/Tabela_BA_sica_Brasileiro_SA_rie_A_2026_d64996b4d8.pdf'
@@ -21,11 +23,92 @@ interface ProjectionPanelProps {
 const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
 const integer = new Intl.NumberFormat('pt-BR')
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
+const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
 const pointCurveOutcomes = [
   { id: 'libertadores', label: 'Libertadores · 1º–5º' },
   { id: 'sudamericana', label: 'Sul-Americana · 6º–11º' },
   { id: 'other', label: 'Outras posições · 12º–20º' },
 ] as const
+
+const probabilityColumns: SortableColumn<ClubProbability>[] = [
+  { id: 'position', header: 'POS', accessor: ({ currentPosition }) => currentPosition, numeric: true },
+  { id: 'club', header: 'CLUBE', accessor: ({ club }) => club, numeric: false },
+  { id: 'title', header: 'TÍTULO', accessor: ({ title }) => title, numeric: true },
+  { id: 'libertadores', header: 'LIBERTADORES', accessor: ({ libertadores }) => libertadores, numeric: true },
+  { id: 'sudamericana', header: 'SUL-AMERICANA', accessor: ({ sudamericana }) => sudamericana, numeric: true },
+  { id: 'relegation', header: 'REBAIXAMENTO', accessor: ({ relegation }) => relegation, numeric: true },
+  { id: 'median', header: 'MEDIANA DE PONTOS', accessor: ({ pointsStats }) => pointsStats.median, numeric: true },
+  { id: 'p90', header: 'P90', accessor: ({ pointsStats }) => pointsStats.p90, numeric: true },
+]
+
+interface ProbabilityCellProps {
+  value: number
+  lower: number
+  upper: number
+}
+
+function ProbabilityCell({ value, lower, upper }: ProbabilityCellProps): JSX.Element {
+  return (
+    <td className="numeric probability-cell">
+      <strong>{percent.format(value)}</strong>
+      <span className="cell-ci">IC 95% {percent.format(lower)}–{percent.format(upper)}</span>
+    </td>
+  )
+}
+
+function exportProjections(result: ProjectionResult, format: 'csv' | 'xlsx' | 'json'): void {
+  const columns = [
+    { key: 'position', header: 'Posição Atual' },
+    { key: 'club', header: 'Clube' },
+    { key: 'currentPoints', header: 'Pontos no Corte' },
+    { key: 'title', header: 'Título (%)' },
+    { key: 'titleLow', header: 'Título IC 95% Inferior (%)' },
+    { key: 'titleHigh', header: 'Título IC 95% Superior (%)' },
+    { key: 'libertadores', header: 'Libertadores (%)' },
+    { key: 'sudamericana', header: 'Sul-Americana (%)' },
+    { key: 'relegation', header: 'Rebaixamento (%)' },
+    { key: 'median', header: 'Mediana de Pontos Finais' },
+    { key: 'mean', header: 'Média de Pontos Finais' },
+    { key: 'p25', header: 'P25 de Pontos Finais' },
+    { key: 'p75', header: 'P75 de Pontos Finais' },
+    { key: 'p90', header: 'P90 de Pontos Finais' },
+    { key: 'stdDev', header: 'Desvio-Padrão de Pontos Finais' },
+  ]
+  const rows = result.clubProbabilities.map((club) => ({
+    position: club.currentPosition,
+    club: club.club,
+    currentPoints: club.currentPoints,
+    title: club.title * 100,
+    titleLow: club.titleInterval.lower95 * 100,
+    titleHigh: club.titleInterval.upper95 * 100,
+    libertadores: club.libertadores * 100,
+    sudamericana: club.sudamericana * 100,
+    relegation: club.relegation * 100,
+    median: club.pointsStats.median,
+    mean: Number(club.pointsStats.mean.toFixed(2)),
+    p25: club.pointsStats.p25,
+    p75: club.pointsStats.p75,
+    p90: club.pointsStats.p90,
+    stdDev: Number(club.pointsStats.stdDev.toFixed(2)),
+  }))
+  const filename = `brasileirao-2026-projecoes-n${integer.format(result.simulations)}`
+  if (format === 'csv') {
+    downloadFile(`${filename}.csv`, 'text/csv;charset=utf-8', toCSV(columns, rows))
+    return
+  }
+  if (format === 'xlsx') {
+    downloadFile(`${filename}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buildXlsx([{ name: 'Projeções por clube', columns, rows }]))
+    return
+  }
+  downloadFile(`${filename}.json`, 'application/json;charset=utf-8', toJson({
+    dataset: 'Projeções Monte Carlo por clube',
+    simulacoes: result.simulations,
+    semente: result.seed,
+    corteAnalitico: ANALYTICAL_CUTOFF_LOCAL,
+    colunas: columns.map(({ header }) => header),
+    linhas: rows,
+  }))
+}
 
 type PointCurveRow = ProjectionResult['pointCurve']['rows'][number]
 
@@ -110,6 +193,8 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
   const [activeDistribution, setActiveDistribution] = useState<ResultGroupId>('champion')
   const outcomeTabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const selectedDistribution = result?.pointsAnalysis.distributionByOutcome.find(({ id }) => id === activeDistribution)
+  const probabilityRows = useMemo(() => result?.clubProbabilities ?? [], [result])
+  const { sortedRows: sortedProbabilities, toggleSort, ariaSort } = useTableSort(probabilityRows, probabilityColumns, 'position')
 
   function handleOutcomeTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number): void {
     const lastIndex = RESULT_GROUPS.length - 1
@@ -183,26 +268,58 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
           <section className="projection-block" id="probabilidades-time" aria-labelledby="club-probabilities-title">
             <div className="projection-block-heading">
               <div><p className="eyebrow eyebrow-dark">PROBABILIDADES POR CLUBE</p><h3 id="club-probabilities-title">Disputa pelas vagas e permanência</h3></div>
-              <span>Por clube, entre {integer.format(result.simulations)} tabelas simuladas</span>
+              <span>Por clube · n = {integer.format(result.simulations)} simulações · IC 95% Wilson</span>
             </div>
-            <p className="projection-table-note">Chances condicionais a este recorte e às vagas geradas pela tabela; títulos da Copa do Brasil e de torneios CONMEBOL, que podem redistribuir vagas, não foram simulados.</p>
+            <p className="projection-table-note">Chances condicionais a este recorte e às vagas geradas pela tabela; títulos da Copa do Brasil e de torneios CONMEBOL, que podem redistribuir vagas, não foram simulados. Cada probabilidade vem com intervalo de confiança de 95%; a mediana e os percentis resumem a distribuição de pontos finais de cada clube nas {integer.format(result.simulations)} tabelas simuladas.</p>
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Probabilidades simuladas por clube; role para rolagem horizontal em telas pequenas" tabIndex={0}>
               <table className="projection-table">
-                <thead><tr><th scope="col">CLUBE</th><th scope="col" className="numeric">TÍTULO</th><th scope="col" className="numeric">LIBERTADORES¹</th><th scope="col" className="numeric">SUL-AMERICANA²</th><th scope="col" className="numeric">REBAIXAMENTO</th></tr></thead>
+                <thead>
+                  <tr>
+                    {probabilityColumns.map((column) => (
+                      <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={ariaSort(column.id)}>
+                        <button type="button" className="sort-button" onClick={() => toggleSort(column.id)}>
+                          {column.id === 'libertadores' ? 'LIBERTADORES¹' : column.id === 'sudamericana' ? 'SUL-AMERICANA²' : column.header}
+                          <span className="sort-indicator" aria-hidden="true">{ariaSort(column.id) === 'ascending' ? ' ↑' : ariaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
+                          <span className="sr-only">{ariaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${ariaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
+                        </button>
+                      </th>
+                    ))}
+                    <th scope="col" className="numeric">P25–P75</th>
+                    <th scope="col" className="numeric">Δ MEDIANA</th>
+                  </tr>
+                </thead>
                 <tbody>
-                  {result.clubProbabilities.map((club) => (
-                    <tr key={club.id}>
-                      <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span>{club.club}</th>
-                      <td className="numeric probability-cell">{percent.format(club.title)}</td>
-                      <td className="numeric probability-cell">{percent.format(club.libertadores)}</td>
-                      <td className="numeric probability-cell">{percent.format(club.sudamericana)}</td>
-                      <td className="numeric probability-cell">{percent.format(club.relegation)}</td>
-                    </tr>
-                  ))}
+                  {sortedProbabilities.map((club) => {
+                    const delta = club.pointsStats.median - club.currentPoints
+                    const deltaPercent = club.currentPoints === 0 ? 0 : delta / club.currentPoints
+                    return (
+                      <tr key={club.id}>
+                        <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span>{club.club}</th>
+                        <ProbabilityCell value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
+                        <ProbabilityCell value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
+                        <ProbabilityCell value={club.sudamericana} lower={club.sudamericanaInterval.lower95} upper={club.sudamericanaInterval.upper95} />
+                        <ProbabilityCell value={club.relegation} lower={club.relegationInterval.lower95} upper={club.relegationInterval.upper95} />
+                        <td className="numeric probability-cell"><strong>{club.pointsStats.median}</strong><span className="cell-ci">atual {club.currentPoints}</span></td>
+                        <td className="numeric probability-cell"><strong>{club.pointsStats.p90}</strong><span className="cell-ci">P10 {club.pointsStats.p10}</span></td>
+                        <td className="numeric range-cell">{club.pointsStats.p25}–{club.pointsStats.p75}</td>
+                        <td className="numeric">
+                          <span className={`delta-badge ${delta > 0 ? 'delta-badge--up' : delta < 0 ? 'delta-badge--down' : 'delta-badge--flat'}`}>
+                            {signedDecimal.format(delta)} pts ({signedDecimal.format(deltaPercent * 100)}%)
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>
-            <p className="projection-footnote">¹ Considera as posições 1–5 na tabela (1º–4º direto; 5º preliminar). ² Posições 6–11: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão.</p>
+            <div className="export-row" role="group" aria-label="Exportar projeções por clube">
+              <span className="export-row-label">Baixar esta tabela:</span>
+              <button type="button" className="filter-button" onClick={() => exportProjections(result, 'csv')}>CSV</button>
+              <button type="button" className="filter-button" onClick={() => exportProjections(result, 'xlsx')}>XLSX</button>
+              <button type="button" className="filter-button" onClick={() => exportProjections(result, 'json')}>JSON</button>
+            </div>
+            <p className="projection-footnote">¹ Considera as posições 1–5 na tabela (1º–4º direto; 5º preliminar). ² Posições 6–11: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. Mediana e percentis usam a definição nearest-rank sobre as {integer.format(result.simulations)} simulações; Δ MEDIANA compara a mediana projetada com os pontos no corte (valor absoluto e percentual).</p>
           </section>
 
           <section className="projection-block" id="por-pontuacao" aria-labelledby="points-analysis-title">
@@ -264,7 +381,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
               <span>Resultado de jogo H/empate/F · menor Brier é melhor</span>
             </div>
             <p className="backtest-summary">
-              Em {integer.format(result.backtest.matches)} jogos futuros não usados no ajuste, o Brier de resultado H/empate/F foi <strong>{decimal.format(result.backtest.modelBrier)}</strong> contra <strong>{decimal.format(result.backtest.baselineBrier)}</strong> da referência de frequências históricas ({percent.format(result.backtest.relativeImprovement)} menor). O Brier dos grupos finais por posição foi <strong>{decimal.format(result.backtest.tableBrier)}</strong> contra <strong>{decimal.format(result.backtest.tableBaselineBrier)}</strong> da classificação observada no corte ({percent.format(result.backtest.tableRelativeImprovement)} menor; {integer.format(result.backtest.tableSimulationsPerSeason)} simulações por temporada). Em cada ano, o corte fica próximo do 300º jogo e kickoffs empatados não são separados; somente temporadas anteriores e jogos até o corte alimentam a previsão. Esses Brier medem a política walk-forward do modelo baseline: o k de cada ano foi escolhido apenas com anos anteriores (2021 usa k=12 pré-fixado). Separadamente, k={result.featureBacktest.productionShrinkageMatches} usado na projeção 2026 foi escolhido entre {SHRINKAGE_CANDIDATES.length} candidatos pelo Brier da variante casa/fora nas mesmas cinco dobras temporais. Os Brier baseline acima não validam esse k de produção independentemente, e não há validação externa independente.
+              Em {integer.format(result.backtest.matches)} jogos futuros não usados no ajuste, o Brier de resultado H/empate/F foi <strong>{decimal.format(result.backtest.modelBrier)}</strong> contra <strong>{decimal.format(result.backtest.baselineBrier)}</strong> da referência de frequências históricas ({percent.format(result.backtest.relativeImprovement)} menor). O Brier dos grupos finais por posição foi <strong>{decimal.format(result.backtest.tableBrier)}</strong> contra <strong>{decimal.format(result.backtest.tableBaselineBrier)}</strong> da classificação observada no corte ({percent.format(result.backtest.tableRelativeImprovement)} menor; {integer.format(result.backtest.tableSimulationsPerSeason)} simulações por temporada). Em cada ano, o corte fica próximo do 300º jogo e kickoffs empatados não são separados; somente temporadas anteriores e jogos até o corte alimentam a previsão. Esses Brier medem a política walk-forward do modelo baseline: o k de cada ano foi escolhido apenas com anos anteriores (2021 usa k=12 pré-fixado). Separadamente, k={result.featureBacktest.productionShrinkageMatches} usado na projeção 2026 segue a mesma política: é o k selecionado para a temporada 2025 usando apenas os anos anteriores, entre {SHRINKAGE_CANDIDATES.length} candidatos pelo Brier da variante casa/fora. Não há validação externa independente desse k de produção.
             </p>
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Resultados anuais do backtest temporal" tabIndex={0}>
               <table className="projection-table backtest-table">
@@ -279,7 +396,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
               <div><p className="eyebrow eyebrow-dark">TESTE DE RECURSOS</p><h3 id="ablation-title">Ablation walk-forward 2021–2025</h3></div>
               <span>Mesmo teste por temporada · menor Brier é melhor</span>
             </div>
-            <p className="projection-table-note">Brier de resultado H/empate/F para baseline, forças casa/fora, confronto direto (H2H) e combinação. Os kickoffs empatados ficam na mesma dobra; por isso o teste tem 80 ou 82 jogos conforme a temporada. As variantes não mostram melhoria consistente em todos os anos. H2H é apenas contexto e tem peso zero na projeção. O k={result.featureBacktest.productionShrinkageMatches} da produção foi selecionado entre {SHRINKAGE_CANDIDATES.length} candidatos no conjunto das mesmas cinco temporadas e não tem validação independente.</p>
+            <p className="projection-table-note">Brier de resultado H/empate/F para baseline, forças casa/fora, confronto direto (H2H) e combinação. Os kickoffs empatados ficam na mesma dobra; por isso o teste tem 80 ou 82 jogos conforme a temporada. As variantes não mostram melhoria consistente em todos os anos. H2H é apenas contexto e tem peso zero na projeção. O k={result.featureBacktest.productionShrinkageMatches} da produção é o mesmo escolhido para 2025 com apenas os anos anteriores (fora da amostra); não há validação independente adicional.</p>
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Ablação temporal de recursos" tabIndex={0}>
               <table className="projection-table backtest-table ablation-table">
                 <thead><tr><th scope="col">ANO TESTADO</th><th scope="col" className="numeric">JOGOS DE TESTE</th><th scope="col" className="numeric">k CASA/FORA</th><th scope="col" className="numeric">k COMBINADO</th><th scope="col" className="numeric">BRIER BASELINE</th><th scope="col" className="numeric">BRIER CASA/FORA</th><th scope="col" className="numeric">BRIER H2H</th><th scope="col" className="numeric">BRIER COMBINADO</th></tr></thead>
@@ -292,9 +409,9 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
             <summary>Fórmula, regras, dados e limitações</summary>
             <div className="method-copy">
               <h3>Método de gols esperados</h3>
-              <p>Nos 1.900 placares de 2021–2025, μ<sub>casa</sub> = {decimal.format(result.leagueAverageGoals.home)} e μ<sub>fora</sub> = {decimal.format(result.leagueAverageGoals.away)} são as médias por mando. Para cada clube e mando v, as taxas de ataque e gols sofridos usam (gols 2026<sub>c,v</sub> + k × taxa histórica<sub>c,v</sub>)/(jogos 2026<sub>c,v</sub> + k), com k = {result.featureBacktest.productionShrinkageMatches}. As taxas históricas específicas por clube/mando são ponderadas por recência (meia-vida de 2,5 temporadas) e regularizadas para a média da liga com 20 jogos ponderados prévios. λ<sub>casa</sub> = μ<sub>casa</sub> × ataque<sub>mandante,casa</sub>/μ<sub>casa</sub> × defesa<sub>visitante,fora</sub>/μ<sub>casa</sub>; λ<sub>fora</sub> = μ<sub>fora</sub> × ataque<sub>visitante,fora</sub>/μ<sub>fora</sub> × defesa<sub>mandante,casa</sub>/μ<sub>fora</sub>. Placares são amostrados de Poisson independentes.</p>
-              <p>Foram simulados 20.000 campeonatos com semente fixa {SIMULATION_SEED}; cada um incorpora os 48 confrontos informados (incluindo oito adiados) e os pontos, vitórias e gols do snapshot. As posições usam pontos, vitórias, saldo e gols pró. Para empate de dois clubes, os resultados H2H concluídos de 2026 nos snapshots disponíveis são acumulados com os resultados simulados; placares individuais não foram conferidos contra a CBF. O REC também considera cartões e sorteio, ausentes dos dados. Empates ainda não resolvidos usam desempate uniforme reprodutível, então não há aplicação integral dos critérios oficiais.</p>
-              <p>O backtest usa o limite dos primeiros 300 jogos em ordem cronológica como corte e as partidas seguintes como teste; kickoffs idênticos não são separados, portanto o tamanho do conjunto de teste pode variar. Médias, forças e frequências são estimadas sem jogos posteriores ao corte; a política anual de k usa somente os anos anteriores (2021 usa k=12 pré-fixado). Para 2026, k foi escolhido entre {SHRINKAGE_CANDIDATES.join(', ')} pelo Brier de casa/fora das mesmas dobras walk-forward 2021–2025; essa seleção não tem validação independente. As ablações de casa/fora e H2H estão expostas acima; H2H não entra na previsão de 2026 porque não melhorou de modo consistente.</p>
+              <p>Na base de treino efetiva (1.900 placares de 2021–2025 mais os 332 resultados de 2026 até o corte), μ<sub>casa</sub> = {decimal.format(result.trainingGoalAverages.home)} e μ<sub>fora</sub> = {decimal.format(result.trainingGoalAverages.away)} são as médias por mando usadas pelo modelo; no histórico puro de 2021–2025, μ<sub>casa</sub> = {decimal.format(result.leagueAverageGoals.home)} e μ<sub>fora</sub> = {decimal.format(result.leagueAverageGoals.away)}. Para cada clube e mando v, as taxas de ataque e gols sofridos usam (gols 2026<sub>c,v</sub> + k × taxa histórica<sub>c,v</sub>)/(jogos 2026<sub>c,v</sub> + k), com k = {result.featureBacktest.productionShrinkageMatches}. As taxas históricas específicas por clube/mando são ponderadas por recência (meia-vida de 2,5 temporadas) e regularizadas para a média da liga com 20 jogos ponderados prévios. λ<sub>casa</sub> = μ<sub>casa</sub> × ataque<sub>mandante,casa</sub>/μ<sub>casa</sub> × defesa<sub>visitante,fora</sub>/μ<sub>casa</sub>; λ<sub>fora</sub> = μ<sub>fora</sub> × ataque<sub>visitante,fora</sub>/μ<sub>fora</sub> × defesa<sub>mandante,casa</sub>/μ<sub>fora</sub>. Placares são amostrados de Poisson independentes.</p>
+              <p>Foram simulados 20.000 campeonatos com semente fixa {SIMULATION_SEED}; cada um incorpora os 48 confrontos informados (incluindo oito adiados) e os pontos, vitórias e gols do snapshot. As posições usam pontos, vitórias, saldo e gols pró. Para empate de dois clubes, os resultados H2H concluídos de 2026 nos snapshots disponíveis são acumulados com os resultados simulados (pontos, saldo e gols marcados no confronto); placares individuais não foram conferidos contra a CBF. O REC também considera cartões e sorteio, ausentes dos dados. Empates ainda não resolvidos usam desempate uniforme reprodutível, então não há aplicação integral dos critérios oficiais.</p>
+              <p>O backtest usa o limite dos primeiros 300 jogos em ordem cronológica como corte e as partidas seguintes como teste; kickoffs idênticos não são separados, portanto o tamanho do conjunto de teste pode variar. Médias, forças e frequências são estimadas sem jogos posteriores ao corte; a política anual de k usa somente os anos anteriores (2021 usa k=12 pré-fixado). Para 2026, k = {result.featureBacktest.productionShrinkageMatches} foi herdado da seleção walk-forward da temporada 2025 (escolhido apenas com os anos anteriores, entre {SHRINKAGE_CANDIDATES.join(', ')}); não há validação independente adicional. As ablações de casa/fora e H2H estão expostas acima; H2H não entra na previsão de 2026 porque não melhorou de modo consistente.</p>
               <p>A distribuição P(pontuação exata | resultado) conta clubes×simulação em cada total inteiro observado dentro de categorias finais exclusivas; cada valor exibe K/N, em que N é o total de clubes-simulações da categoria, e pontos com K=0 são omitidos. A curva separada P(resultado | pontuação exata) usa Libertadores 1º–5º e Sul-Americana 6º–11º, conforme a definição já adotada. Nela, cada simulação é um cluster no IC de 95%, para não tratar os 20 clubes da mesma tabela como independentes. “Amostra baixa” significa intervalo com largura de ao menos {percent.format(POINT_CURVE_LOW_SAMPLE_WIDTH)}; resultados com K=0 não são estimados.</p>
               <p>As regras históricas eram: 1º campeão; 2º–6º Libertadores; 7º–12º Sul-Americana; 13º–16º meio; 17º–20º rebaixamento. Para 2026: 1º–4º Libertadores direta, 5º preliminar, 6º–11º Sul-Americana e quatro últimos rebaixados. Vagas de copas nacionais/CONMEBOL e suas redistribuições não são simuladas. O desempate usa pontos, vitórias, saldo e gols pró; o H2H 2026 disponível entra somente no desempate entre dois clubes, nunca nas probabilidades. H2H de 2021–2025 é exibido como contexto; cartões e sorteio não são simulados.</p>
               <p>O corte de projeção é {ANALYTICAL_CUTOFF_LOCAL.replace('T', ' ').replace('-03:00', ' BRT')}; a coleta é distinta: Football-Data, ESPN e página CBF foram capturados em {CURRENT_SEASON_SOURCE.cbfStandings.collectedAt.replace('T', ' ')}. O HTML CBF arquivado imprime “{CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp}”; fuso e semântica de publicação/atualização não são indicados. A CBF foi usada somente para conferir agregados, não para validar resultados individuais. Dos {CURRENT_SEASON_SOURCE.footballData.rows2026} resultados de Football-Data, somam-se dois placares ESPN com kickoffs anteriores ao corte — Chapecoense 1–2 Mirassol (03/11 22:30Z, evento 401841304) e Internacional 1–0 Coritiba (04/11 00:30Z, evento 401841301) — totalizando 332 resultados. Os snapshots e hashes estão em <code>data/source-snapshots/</code>. O calendário contém 380 jogos da tabela básica CBF, dos quais 48 permanecem. Football-Data não informa fuso horário no campo Time e alerta para erros de compilação; seu CSV 2026 não tinha esses dois resultados. É fonte secundária.</p>

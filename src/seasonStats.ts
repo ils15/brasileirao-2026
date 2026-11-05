@@ -1,6 +1,7 @@
 import { currentClubs, remainingFixtures } from './projectionData'
 import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonResults'
 import { historicalSeasons } from './historicalSeasons'
+import { normalizeTeamId } from './clubIds'
 import { filterAtOrBeforeAnalyticalCutoff, isAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 
 export interface VenueStats {
@@ -80,33 +81,10 @@ export function getCurrentVenueStats(clubId: string, matches = currentSeasonResu
   return summarizeMatches(filterAtOrBeforeAnalyticalCutoff(matches), clubId)
 }
 
-const historicalClubIds: Readonly<Record<string, string>> = {
-  'athletico-pr': 'athletico-pr',
-  'atletico-mg': 'atletico-mg',
-  bahia: 'bahia',
-  bragantino: 'bragantino',
-  chapecoense: 'chapecoense',
-  corinthians: 'corinthians',
-  coritiba: 'coritiba',
-  cruzeiro: 'cruzeiro',
-  flamengo: 'flamengo',
-  fluminense: 'fluminense',
-  gremio: 'gremio',
-  internacional: 'internacional',
-  mirassol: 'mirassol',
-  palmeiras: 'palmeiras',
-  remo: 'remo',
-  santos: 'santos',
-  saopaulo: 'sao-paulo',
-  vasco: 'vasco',
-  vitoria: 'vitoria',
-  botafogo: 'botafogo',
-}
-
 function historicalMatchesFor(clubId: string): ScoreMatch[] {
   const result: ScoreMatch[] = []
   for (const season of historicalSeasons) {
-    const ids = season.teamIds.map((id) => historicalClubIds[id] ?? id)
+    const ids = season.teamIds.map(normalizeTeamId)
     season.matches.forEach(([home, away, homeGoals, awayGoals]) => {
       const homeId = ids[home]!
       const awayId = ids[away]!
@@ -129,7 +107,7 @@ function pairMatches(homeId: string, awayId: string, currentResults: readonly Cu
   const historical: HeadToHeadMatch[] = []
 
   for (const season of historicalSeasons) {
-    const ids = season.teamIds.map((id) => historicalClubIds[id] ?? id)
+    const ids = season.teamIds.map(normalizeTeamId)
     season.matches.forEach(([home, away, homeGoals, awayGoals, kickoff]) => {
       const homeTeam = ids[home]!
       const awayTeam = ids[away]!
@@ -203,11 +181,14 @@ export function validateCurrentSeason(): {
 
   const validCutoff = currentSeasonResults.every((match) => isAtOrBeforeAnalyticalCutoff(match.kickoff, match.source))
   const validFixtures = uniqueFixtures.size === allFixtures.length && fixtureCounts.size === 20
-  if (!validCutoff || !validFixtures) return { clubs: currentClubs.length, completedMatches: 0, remainingMatches: remainingFixtures.length, scheduledMatches: allFixtures.length, mismatchedClubs: currentClubs.length }
+  // completedMatches sempre reflete a base filtrada pelo corte — a mesma
+  // usada nas estatísticas (auditoria: bases misturadas).
+  const completedMatches = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).length
+  if (!validCutoff || !validFixtures) return { clubs: currentClubs.length, completedMatches, remainingMatches: remainingFixtures.length, scheduledMatches: allFixtures.length, mismatchedClubs: currentClubs.length }
 
   return {
     clubs: currentClubs.length,
-    completedMatches: currentSeasonResults.length,
+    completedMatches,
     remainingMatches: remainingFixtures.length,
     scheduledMatches: allFixtures.length,
     mismatchedClubs,

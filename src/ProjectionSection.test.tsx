@@ -1,9 +1,15 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ProjectionPanel } from './ProjectionSection'
 import { runProjection } from './projection'
 import { HISTORICAL_SOURCE } from './historicalSeasons'
+
+const percentFormat = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
 
 describe('painel de projeções', () => {
   it('apresenta probabilidades por clube, distribuições de pontuação exata e as limitações do modelo', () => {
@@ -28,10 +34,12 @@ describe('painel de projeções', () => {
     expect(screen.getByText(/Em .* jogos futuros não usados no ajuste/)).toBeInTheDocument()
     expect(screen.getByText(/Brier dos grupos finais por posição/)).toBeInTheDocument()
     const backtestSummary = screen.getByText(/Esses Brier medem a política walk-forward/i)
-    expect(backtestSummary).toHaveTextContent(/k=15.*mesmas cinco dobras temporais.*não validam esse k de produção independentemente/i)
+    expect(backtestSummary).toHaveTextContent(new RegExp(`k=${result.featureBacktest.productionShrinkageMatches}.*selecionado para a temporada 2025 usando apenas os anos anteriores.*Não há validação externa independente`, 'i'))
+    expect(screen.getByText(/base de treino efetiva.*332 resultados de 2026 até o corte/i)).toBeInTheDocument()
     expect(screen.getByText(new RegExp(HISTORICAL_SOURCE.sha256))).toBeInTheDocument()
     expect(screen.getByText(/A CBF foi comparada apenas nos totais finais/)).toBeInTheDocument()
     expect(screen.getByText(/resultados H2H concluídos de 2026 nos snapshots disponíveis são acumulados com os resultados simulados/)).toBeInTheDocument()
+    expect(screen.getByText(/pontos, saldo e gols marcados no confronto/)).toBeInTheDocument()
     expect(screen.getByText(/o H2H 2026 disponível entra somente no desempate entre dois clubes/)).toBeInTheDocument()
     expect(screen.getByText(/kickoffs anteriores ao corte.*401841304.*401841301/)).toBeInTheDocument()
   })
@@ -67,6 +75,42 @@ describe('painel de projeções', () => {
       expect(chart).toHaveTextContent(`${point.points} pts`)
       expect(chart).toHaveTextContent(new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(point.probability))
     })
+  })
+
+  it('exibe mediana, percentis, IC 95%, badge de variação e exporta a tabela de projeções', async () => {
+    const user = userEvent.setup()
+    const createObjectURL = vi.fn(() => 'blob:projecoes')
+    Object.defineProperty(URL, 'createObjectURL', { value: createObjectURL, configurable: true })
+    Object.defineProperty(URL, 'revokeObjectURL', { value: vi.fn(), configurable: true })
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const probabilities = screen.getByRole('region', { name: /Probabilidades simuladas por clube/ })
+    expect(screen.getByText(/n = 8 simulações · IC 95% Wilson/)).toBeInTheDocument()
+    expect(within(probabilities).getByRole('columnheader', { name: /MEDIANA DE PONTOS/ })).toBeInTheDocument()
+    expect(within(probabilities).getByRole('columnheader', { name: /Δ MEDIANA/ })).toBeInTheDocument()
+
+    const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
+    const flamengoRow = within(probabilities).getByRole('row', { name: /Flamengo/ })
+    expect(flamengoRow).toHaveTextContent(`IC 95% ${percentFormat.format(flamengo.titleInterval.lower95)}–${percentFormat.format(flamengo.titleInterval.upper95)}`)
+    expect(flamengoRow).toHaveTextContent(String(flamengo.pointsStats.median))
+    expect(flamengoRow).toHaveTextContent(`${flamengo.pointsStats.p25}–${flamengo.pointsStats.p75}`)
+    expect(flamengoRow).toHaveTextContent(`atual ${flamengo.currentPoints}`)
+    // Badge de variação: valor absoluto + percentual em todas as linhas
+    expect(within(probabilities).getAllByText(/ pts \(/)).toHaveLength(20)
+
+    await user.click(screen.getByRole('button', { name: 'CSV' }))
+    expect(createObjectURL).toHaveBeenCalledTimes(1)
+    expect((click.mock.instances.at(-1) as HTMLAnchorElement).download).toContain('brasileirao-2026-projecoes')
+
+    // Ordenação por título troca o estado do cabeçalho
+    const titleHeaderButton = within(probabilities).getByRole('button', { name: /^TÍTULO/ })
+    await user.click(titleHeaderButton)
+    expect(within(probabilities).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'ascending')
+    await user.click(titleHeaderButton)
+    expect(within(probabilities).getByRole('columnheader', { name: /^TÍTULO/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
   it('apresenta os quatro modelos de ablação em cada dobra temporal sem sugerir ganho consistente', () => {
