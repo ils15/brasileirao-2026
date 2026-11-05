@@ -49,12 +49,18 @@ describe('painel de projeções', () => {
     expect(screen.getByText(/Rebaixado praticamente garantido/)).toBeInTheDocument()
     // Seletor de destino: trocar para Título muda os KPIs
     expect(screen.getByRole('group', { name: 'Destino para a pontuação mágica' })).toBeInTheDocument()
-    const magicTable = screen.getByRole('region', { name: /destino por pontuação exata: Rebaixamento/ })
-    expect(within(magicTable).getAllByRole('img', { name: /chance de rebaixamento/ }).length).toBeGreaterThan(3)
-    // Os cinco destinos separados nas colunas da tabela mágica
-    expect(within(magicTable).getByRole('columnheader', { name: /^Título/ })).toBeInTheDocument()
-    expect(within(magicTable).getByRole('columnheader', { name: /^Rebaixamento/ })).toBeInTheDocument()
+    const magicTable = screen.getByRole('region', { name: /Chance de rebaixamento por pontuação exata/ })
+    // Barras só onde 0% < chance < 100%; faixas estáveis ficam sem barra
+    const bars = within(magicTable).getAllByRole('img', { name: /chance de rebaixamento/ })
+    expect(bars.length).toBeGreaterThanOrEqual(2)
+    // A tabela exibe SOMENTE a estatística do destino selecionado
     expect(within(magicTable).getByRole('columnheader', { name: /Chance de rebaixamento/ })).toBeInTheDocument()
+    expect(within(magicTable).queryByRole('columnheader', { name: /^Título/ })).not.toBeInTheDocument()
+    // Primeira faixa: 100% de chance e SEM barra (valor estável)
+    const firstDataRow = within(magicTable).getAllByRole('row')[1]!
+    expect(firstDataRow).toHaveTextContent('100,0%')
+    expect(firstDataRow.querySelector('.magic-bar')).toBeNull()
+    expect(firstDataRow.querySelector('.magic-bar')).toBeNull()
   })
 
   it('exibe mediana, percentis, IC 95%, badge de variação e exporta a tabela de projeções', { timeout: 30_000 }, async () => {

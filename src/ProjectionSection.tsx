@@ -16,34 +16,15 @@ const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFracti
 const integer = new Intl.NumberFormat('pt-BR')
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
-const pointCurveOutcomes = [
-  { id: 'title', label: 'Título · 1º' },
-  { id: 'libertadores', label: 'Libertadores · 1º–5º' },
-  { id: 'sudamericana', label: 'Sul-Americana · 6º–11º' },
-  { id: 'middle', label: 'Meio · 12º–16º' },
-  { id: 'relegation', label: 'Rebaixamento · 17º–20º' },
-] as const
+type MagicKey = MagicDestiny | 'middle'
+const MAGIC_KEYS: MagicKey[] = ['title', 'libertadores', 'sudamericana', 'middle', 'relegation']
 
 interface MagicRow {
   points: number
-  title: number
-  libertadores: number
-  sudamericana: number
-  middle: number
-  relegation: number
-  relegationLower: number
-  relegationUpper: number
-  lowSample: boolean
+  probabilities: Record<MagicKey, number>
+  intervals: Record<MagicKey, [number, number]>
+  lowSample: Record<MagicKey, boolean>
 }
-
-const MAGIC_DESTINIES = [
-  { id: 'relegation', label: 'Rebaixamento', swatch: 'zone-bar--relegation' },
-  { id: 'libertadores', label: 'Libertadores', swatch: 'zone-bar--libertadores' },
-  { id: 'sudamericana', label: 'Sul-Americana', swatch: 'zone-bar--sudamericana' },
-  { id: 'title', label: 'Título', swatch: 'zone-bar--title' },
-] as const
-
-type MagicDestiny = (typeof MAGIC_DESTINIES)[number]['id']
 
 const MAGIC_COLORS: Record<MagicDestiny | 'middle', string> = {
   title: '#1f6d3d',
@@ -66,8 +47,8 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
   const yAt = (probability: number): number =>
     height - padding.bottom - probability * (height - padding.top - padding.bottom)
 
-  const pathFor = (destinyId: MagicDestiny): string =>
-    rows.map((row, index) => `${index === 0 ? 'M' : 'L'}${xAt(row.points).toFixed(1)},${yAt(chanceOfFor(row, destinyId)).toFixed(1)}`).join(' ')
+  const pathFor = (destinyId: MagicKey): string =>
+    rows.map((row, index) => `${index === 0 ? 'M' : 'L'}${xAt(row.points).toFixed(1)},${yAt(row.probabilities[destinyId]).toFixed(1)}`).join(' ')
 
   const xTicks = [minX, 30, 40, 50, 60, 70, maxX].filter((value, index, list) => list.indexOf(value) === index)
 
@@ -88,8 +69,8 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
       {xTicks.map((value) => (
         <text key={value} x={xAt(value)} y={height - padding.bottom + 18} textAnchor="middle" className="magic-tick">{value}</text>
       ))}
-      {MAGIC_DESTINIES.filter((entry) => entry.id !== destiny).map((entry) => (
-        <path key={entry.id} d={pathFor(entry.id)} className="magic-curve" stroke={MAGIC_COLORS[entry.id]} />
+      {MAGIC_KEYS.filter((key) => key !== destiny).map((key) => (
+        <path key={key} d={pathFor(key)} className="magic-curve" stroke={MAGIC_COLORS[key]} />
       ))}
       {rows.length > 1 && (
         <>
@@ -101,14 +82,19 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
   )
 }
 
-function chanceOfFor(row: MagicRow, destiny: MagicDestiny): number {
-  return row[destiny]
-}
+const MAGIC_DESTINIES = [
+  { id: 'relegation', label: 'Rebaixamento', swatch: 'zone-bar--relegation' },
+  { id: 'libertadores', label: 'Libertadores', swatch: 'zone-bar--libertadores' },
+  { id: 'sudamericana', label: 'Sul-Americana', swatch: 'zone-bar--sudamericana' },
+  { id: 'title', label: 'Título', swatch: 'zone-bar--title' },
+] as const
+
+type MagicDestiny = (typeof MAGIC_DESTINIES)[number]['id']
 
 /**
  * Curva P(destino | pontuação exata) em formato "linha do destino": o usuário
- * escolhe o destino e a leitura inteira (KPIs, barra, destaque) passa a
- * responder a ele. Todas as colunas permanecem para transparência.
+ * escolhe o destino e TODA a leitura (gráfico, KPIs, tabela) responde a ele —
+ * exibindo somente a estatística da classe selecionada.
  */
 function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element {
   const [destiny, setDestiny] = useState<MagicDestiny>('relegation')
@@ -116,23 +102,27 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     const byPoints = new Map<number, MagicRow>()
     for (const row of result.pointCurve.rows) {
       const entry = byPoints.get(row.points) ?? {
-        points: row.points, title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0,
-        relegationLower: 0, relegationUpper: 1, lowSample: false,
+        points: row.points,
+        probabilities: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
+        intervals: {
+          title: [0, 1], libertadores: [0, 1], sudamericana: [0, 1], middle: [0, 1], relegation: [0, 1],
+        },
+        lowSample: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
       }
-      entry[row.outcome] = row.probability
-      if (row.outcome === 'relegation') {
-        entry.relegationLower = row.lower95
-        entry.relegationUpper = row.upper95
-        entry.lowSample = row.lowSample
-      }
+      entry.probabilities[row.outcome] = row.probability
+      entry.intervals[row.outcome] = [row.lower95, row.upper95]
+      entry.lowSample[row.outcome] = row.lowSample
       byPoints.set(row.points, entry)
     }
     return [...byPoints.values()].sort((left, right) => left.points - right.points)
   }, [result])
 
-  // Agrupa faixas consecutivas onde nenhuma probabilidade muda (0%/100% estáveis) — fim das linhas repetidas.
+  const destinyLabel = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!.label
+  const chanceOf = (row: MagicRow): number => row.probabilities[destiny]
+
+  // Agrupa faixas consecutivas onde nenhuma probabilidade muda (0%/100% estáveis).
   const compactRows = useMemo(() => {
-    const keyOf = (row: MagicRow): string => pointCurveOutcomes.map((outcome) => (row[outcome.id] * 1000).toFixed(0)).join(',')
+    const keyOf = (row: MagicRow): string => MAGIC_KEYS.map((key) => (row.probabilities[key] * 1000).toFixed(0)).join(',')
     const groups: { from: number; to: number; row: MagicRow }[] = []
     for (const row of rows) {
       const last = groups[groups.length - 1]
@@ -142,8 +132,6 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     return groups
   }, [rows])
 
-  const destinyLabel = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!.label
-  const chanceOf = (row: MagicRow): number => row[destiny]
   // Para rebaixamento a pergunta é invertida: quantos pontos para ESCAPAR.
   // effectiveChance representa a chance do "bom resultado" (salvo / destino conquistado).
   const escaping = destiny === 'relegation'
@@ -187,8 +175,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     <section className="point-curve-section magic-points" aria-labelledby="magic-points-title">
       <h4 className="points-table-title" id="magic-points-title">A pontuação mágica: quantos pontos bastam?</h4>
       <p className="projection-table-note">
-        Escolha o destino e veja a chance dele acontecer dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
-        IC 95% cluster-robusto por simulação; faixas onde nada muda (0% ou 100%) são agrupadas.
+        Escolha o destino e veja somente a estatística dele dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
+        IC 95% cluster-robusto por simulação; faixas onde nada muda (0% ou 100%) são agrupadas e exibidas sem barra nem intervalo.
       </p>
       <div className="magic-destiny-picker" role="group" aria-label="Destino para a pontuação mágica">
         {MAGIC_DESTINIES.map((entry) => (
@@ -211,80 +199,80 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           <p className="magic-chart-caption">Linha tracejada: 50% — acima dela, {destinyLabel.toLowerCase()} é o resultado mais provável.</p>
         </div>
         <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyLabel}`}>
-        {likely && (
-          <div className="kpi-card">
-            <strong className="kpi-value">{likely.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">
-              {escaping
-                ? `Salvo é o mais provável (${percent.format(1 - chanceOf(likely))})`
-                : `A partir daqui, ${destinyLabel.toLowerCase()} é o mais provável (${percent.format(chanceOf(likely))})`}
-            </span>
-          </div>
-        )}
-        {nearCertain && (
-          <div className="kpi-card">
-            <strong className="kpi-value">{nearCertain.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">
-              {escaping
-                ? `Salvo na prática (${percent.format(chanceOf(nearCertain))} restante)`
-                : `Praticamente garantido (${percent.format(chanceOf(nearCertain))})`}
-            </span>
-          </div>
-        )}
-        {escaping && guaranteedEnd !== undefined && (
-          <div className="kpi-card">
-            <strong className="kpi-value">Até {guaranteedEnd}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">Rebaixado praticamente garantido — escapar no máximo {percent.format(1 - guaranteedMinSafety!)}</span>
-          </div>
-        )}
-        {!escaping && firstChanceRow && chanceOf(firstChanceRow) < 0.1 && (
-          <div className="kpi-card">
-            <strong className="kpi-value">{firstChanceRow.points}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">A chance só começa a aparecer aqui ({percent.format(chanceOf(firstChanceRow))})</span>
-          </div>
-        )}
-        {grayZone && (
-          <div className="kpi-card">
-            <strong className="kpi-value">{grayZone.from}–{grayZone.to}<span className="kpi-divider"> pts</span></strong>
-            <span className="kpi-label">
-              Zona cinzenta: {escaping
-                ? `segurança de ${percent.format(grayZone.safetyMin)} a ${percent.format(grayZone.safetyMax)}`
-                : `chance de ${percent.format(grayZone.safetyMin)} a ${percent.format(grayZone.safetyMax)}`}
-            </span>
-          </div>
-        )}
-      </div>
+          {likely && (
+            <div className="kpi-card">
+              <strong className="kpi-value">{likely.points}<span className="kpi-divider"> pts</span></strong>
+              <span className="kpi-label">
+                {escaping
+                  ? `Salvo é o mais provável (${percent.format(1 - chanceOf(likely))})`
+                  : `A partir daqui, ${destinyLabel.toLowerCase()} é o mais provável (${percent.format(chanceOf(likely))})`}
+              </span>
+            </div>
+          )}
+          {nearCertain && (
+            <div className="kpi-card">
+              <strong className="kpi-value">{nearCertain.points}<span className="kpi-divider"> pts</span></strong>
+              <span className="kpi-label">
+                {escaping
+                  ? `Salvo na prática (${percent.format(chanceOf(nearCertain))} restante)`
+                  : `Praticamente garantido (${percent.format(chanceOf(nearCertain))})`}
+              </span>
+            </div>
+          )}
+          {escaping && guaranteedEnd !== undefined && (
+            <div className="kpi-card">
+              <strong className="kpi-value">Até {guaranteedEnd}<span className="kpi-divider"> pts</span></strong>
+              <span className="kpi-label">Rebaixado praticamente garantido (escapar ≤ {percent.format(1 - guaranteedMinSafety!)})</span>
+            </div>
+          )}
+          {!escaping && firstChanceRow && chanceOf(firstChanceRow) < 0.1 && (
+            <div className="kpi-card">
+              <strong className="kpi-value">{firstChanceRow.points}<span className="kpi-divider"> pts</span></strong>
+              <span className="kpi-label">Chance começa a aparecer aqui ({percent.format(chanceOf(firstChanceRow))})</span>
+            </div>
+          )}
+          {grayZone && (
+            <div className="kpi-card">
+              <strong className="kpi-value">{grayZone.from}–{grayZone.to}<span className="kpi-divider"> pts</span></strong>
+              <span className="kpi-label">
+                {escaping
+                  ? `Zona cinzenta: segurança ${percent.format(grayZone.safetyMin)}–${percent.format(grayZone.safetyMax)}`
+                  : `Zona cinzenta: chance ${percent.format(grayZone.safetyMin)}–${percent.format(grayZone.safetyMax)}`}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="table-scroll" role="region" aria-label={`Probabilidade do destino por pontuação exata: ${destinyLabel}`} tabIndex={0}>
+      <div className="table-scroll" role="region" aria-label={`Chance de ${destinyLabel.toLowerCase()} por pontuação exata`} tabIndex={0}>
         <table className="projection-table magic-table">
           <thead><tr>
             <th scope="col">Pontos</th>
-            {pointCurveOutcomes.map((outcome) => (
-              <th key={outcome.id} scope="col" className={`numeric ${outcome.id === destiny ? 'magic-active-col' : ''}`}>{outcome.label}</th>
-            ))}
-            <th scope="col" className="numeric">Chance de {destinyLabel.toLowerCase()} (IC 95%)</th>
+            <th scope="col" className="numeric">Chance de {destinyLabel.toLowerCase()}</th>
+            <th scope="col">IC 95% e barra</th>
           </tr></thead>
           <tbody>
             {compactRows.map((group) => {
               const row = group.row
               const chance = chanceOf(row)
-              const isRelegation = destiny === 'relegation'
+              const [lower95, upper95] = row.intervals[destiny]
+              // 0% e 100% (no valor exibido) não têm intervalo útil nem barra.
+              const displaysZero = percent.format(chance) === '0,0%'
+              const displaysCertain = percent.format(chance) === '100,0%'
+              const hasInterval = !displaysZero && !displaysCertain
               return (
-                <tr key={group.from}>
+                <tr key={group.from} className={displaysZero ? 'magic-row--zero' : undefined}>
                   <th scope="row" className="magic-points-cell">{group.from === group.to ? group.from : `${group.from}–${group.to}`}</th>
-                  {pointCurveOutcomes.map((outcome) => (
-                    <td key={outcome.id} className={`numeric games-cell ${outcome.id === destiny ? 'magic-active-value' : ''}`}>
-                      {percent.format(row[outcome.id])}
-                    </td>
-                  ))}
+                  <td className={`numeric games-cell ${displaysZero ? 'probability-cell--zero' : 'magic-active-value'}`}>{percent.format(chance)}</td>
                   <td className="magic-bar-cell">
-                    <div className="magic-bar" role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
-                      <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
-                      {isRelegation && row.lowSample && <span className="magic-bar-low">amostra baixa</span>}
-                    </div>
-                    {isRelegation && chance > 0 && chance < 1 && (
-                      <span className="cell-ci">IC {percent.format(row.relegationLower)}–{percent.format(row.relegationUpper)}</span>
+                    {hasInterval && (
+                      <>
+                        <div className="magic-bar" role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
+                          <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
+                          {row.lowSample[destiny] && <span className="magic-bar-low">amostra baixa</span>}
+                        </div>
+                        <span className="cell-ci">IC 95% {percent.format(lower95)}–{percent.format(upper95)}</span>
+                      </>
                     )}
                   </td>
                 </tr>
