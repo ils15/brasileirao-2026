@@ -94,10 +94,10 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
 }
 
 const MAGIC_DESTINIES = [
-  { id: 'relegation', label: 'Rebaixamento', swatch: 'zone-bar--relegation' },
-  { id: 'libertadores', label: 'Libertadores', swatch: 'zone-bar--libertadores' },
-  { id: 'sudamericana', label: 'Sul-Americana', swatch: 'zone-bar--sudamericana' },
-  { id: 'title', label: 'Título', swatch: 'zone-bar--title' },
+  { id: 'relegation', label: 'Série B', phrase: 'rebaixado para a Série B', swatch: 'zone-bar--relegation' },
+  { id: 'libertadores', label: 'Libertadores', phrase: 'classificado para a Libertadores', swatch: 'zone-bar--libertadores' },
+  { id: 'sudamericana', label: 'Sul-Americana', phrase: 'classificado para a Sul-Americana', swatch: 'zone-bar--sudamericana' },
+  { id: 'title', label: 'Campeão', phrase: 'campeão', swatch: 'zone-bar--title' },
 ] as const
 
 type MagicDestiny = (typeof MAGIC_DESTINIES)[number]['id']
@@ -132,7 +132,9 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     return [...byPoints.values()].sort((left, right) => left.points - right.points)
   }, [result])
 
-  const destinyLabel = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!.label
+  const destinyEntry = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!
+  const destinyPhrase = destinyEntry.phrase
+  const cap = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
   // Leitura por VAGA (instrução do usuário): campeão conta dentro de
   // Libertadores (1º–5º) e Sul-Americana (1º–11º) — as curvas sobem
   // monotonicamente com os pontos até 100%. Título (1º) e Rebaixamento
@@ -235,21 +237,21 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         <div className="magic-chart-box">
           <MagicCurveChart rows={rows} destiny={destiny} />
           <p className="magic-chart-caption">
-            Linha tracejada: 50% — acima dela, {destinyLabel.toLowerCase()} é o resultado mais provável.
-            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga (1º–5º)</strong>, incluindo o título: ascendente até 100%.</>}
-            {destiny === 'sudamericana' && <> Sul-Americana conta como <strong>vaga garantida (1º–11º)</strong>, incluindo título e Libertadores: ascendente até 100%.</>}
+            Linha tracejada: 50% — acima dela, ser {destinyPhrase} é o resultado mais provável.
+            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga (1º–5º)</strong>, incluindo o campeão: a curva sobe até 100%.</>}
+            {destiny === 'sudamericana' && <> Sul-Americana conta como <strong>vaga garantida (1º–11º)</strong>, incluindo campeão e Libertadores: a curva sobe até 100%.</>}
           </p>
         </div>
-        <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyLabel}`}>
+        <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyPhrase}`}>
           {likely && (
             <div className="kpi-card">
               <strong className="kpi-value">{likely.points}<span className="kpi-divider"> pts</span></strong>
               <span className="kpi-label">
                 {escaping
-                  ? `Salvo é o mais provável (${percent.format(1 - chanceOf(likely))})`
+                  ? `Sem Série B é o mais provável (${percent.format(1 - chanceOf(likely))})`
                   : destiny === 'sudamericana'
                   ? `No mínimo Sul-Americana (${percent.format(chanceOf(likely))})`
-                  : `A partir daqui, ${destinyLabel.toLowerCase()} é o mais provável (${percent.format(chanceOf(likely))})`}
+                  : `${cap(destinyPhrase)} é o mais provável (${percent.format(chanceOf(likely))})`}
               </span>
             </div>
           )}
@@ -258,7 +260,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
               <strong className="kpi-value">{nearCertain.points}<span className="kpi-divider"> pts</span></strong>
               <span className="kpi-label">
                 {escaping
-                  ? `Salvo na prática (${percent.format(chanceOf(nearCertain))} restante)`
+                  ? `Sem Série B praticamente garantido (${percent.format(chanceOf(nearCertain))} restante)`
                   : `Praticamente garantido (${percent.format(chanceOf(nearCertain))})`}
               </span>
             </div>
@@ -266,7 +268,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           {escaping && guaranteedEnd !== undefined && (
             <div className="kpi-card">
               <strong className="kpi-value">Até {guaranteedEnd}<span className="kpi-divider"> pts</span></strong>
-              <span className="kpi-label">Rebaixado praticamente garantido (escapar ≤ {percent.format(1 - guaranteedMinSafety!)})</span>
+              <span className="kpi-label">{cap(destinyPhrase)} praticamente garantido (escapar ≤ {percent.format(1 - guaranteedMinSafety!)})</span>
             </div>
           )}
           {!escaping && firstChanceRow && chanceOf(firstChanceRow) < 0.1 && (
@@ -288,11 +290,11 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         </div>
       </div>
 
-      <div className="table-scroll" role="region" aria-label={`Chance de ${destinyLabel.toLowerCase()} por pontuação exata; faixas estáveis em 0% ou 100% ficam de fora`} tabIndex={0}>
+      <div className="table-scroll" role="region" aria-label={`Chance de ser ${destinyPhrase} por pontuação exata; faixas estáveis em 0% ou 100% ficam de fora`} tabIndex={0}>
         <table className="projection-table magic-table">
           <thead><tr>
             <th scope="col">Pontos</th>
-            <th scope="col" className="numeric">Chance de {destinyLabel.toLowerCase()}</th>
+            <th scope="col" className="numeric">Chance de ser {destinyPhrase}</th>
             <th scope="col">IC 95% e barra</th>
           </tr></thead>
           <tbody>
@@ -309,13 +311,13 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
                   <th scope="row" className="magic-points-cell">{group.from === group.to ? group.from : `${group.from}–${group.to}`}</th>
                   <td className={`numeric games-cell ${displaysZero ? 'probability-cell--zero' : 'magic-active-value'}`}>{percent.format(chance)}</td>
                   <td className="magic-bar-cell">
-                    <div className={`magic-bar ${displaysCertain ? 'magic-bar--full' : ''}`} role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
+                    <div className={`magic-bar ${displaysCertain ? 'magic-bar--full' : ''}`} role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de ${destinyPhrase}`}>
                       <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
                       {lowSampleFor(row) && <span className="magic-bar-low">amostra baixa</span>}
                     </div>
                     {hasInterval && <span className="cell-ci">IC 95% {percent.format(lower95)}–{percent.format(upper95)}</span>}
-                    {displaysCertain && <span className="cell-ci">destino assegurado</span>}
-                    {displaysZero && <span className="cell-ci">matematicamente impossível</span>}
+                    {displaysCertain && <span className="cell-ci">{cap(destinyPhrase)}</span>}
+                    {displaysZero && <span className="cell-ci">impossível</span>}
                   </td>
                 </tr>
               )

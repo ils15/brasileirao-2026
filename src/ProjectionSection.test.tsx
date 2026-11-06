@@ -44,12 +44,12 @@ describe('painel de projeções', () => {
 
     // Pontuação mágica: linhas do destino + tabela de rebaixamento por pontuação
     expect(screen.getByRole('heading', { name: /A pontuação mágica: quantos pontos bastam\?/ })).toBeInTheDocument()
-    expect(screen.getByText(/Salvo é o mais provável/)).toBeInTheDocument()
-    expect(screen.getByText(/Salvo na prática/)).toBeInTheDocument()
-    expect(screen.getByText(/Rebaixado praticamente garantido/)).toBeInTheDocument()
+    expect(screen.getByText(/Sem Série B é o mais provável/)).toBeInTheDocument()
+    expect(screen.getByText(/Sem Série B praticamente garantido/)).toBeInTheDocument()
+    expect(screen.getByText(/rebaixado para a Série B praticamente garantido/i)).toBeInTheDocument()
     // Seletor de destino: trocar para Título muda os KPIs
     expect(screen.getByRole('group', { name: 'Destino para a pontuação mágica' })).toBeInTheDocument()
-    const magicTable = screen.getByRole('region', { name: /Chance de rebaixamento por pontuação exata/ })
+    const magicTable = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
     // Toda faixa tem barra — extremos (0%/100%) agrupados numa linha cada,
     // com a barra cheia ou vazia; IC só quando há incerteza de verdade
     const dataRows = within(magicTable).getAllByRole('row').slice(1)
@@ -61,13 +61,13 @@ describe('painel de projeções', () => {
     const firstDataRow = within(magicTable).getAllByRole('row')[1]!
     expect(firstDataRow).toHaveTextContent('100,0%')
     expect(firstDataRow.querySelector('.magic-bar-fill')).not.toBeNull()
-    expect(firstDataRow.querySelector('.cell-ci')).toHaveTextContent('destino assegurado')
+    expect(firstDataRow.querySelector('.cell-ci')).toHaveTextContent('Rebaixado para a Série B')
     // Última faixa: 0% com a barra vazia e sem IC
     const lastDataRow = within(magicTable).getAllByRole('row').at(-1)!
     expect(lastDataRow).toHaveTextContent('0,0%')
-    expect(lastDataRow.querySelector('.cell-ci')).toHaveTextContent('matematicamente impossível')
+    expect(lastDataRow.querySelector('.cell-ci')).toHaveTextContent('impossível')
     // A tabela exibe SOMENTE a estatística do destino selecionado
-    expect(within(magicTable).getByRole('columnheader', { name: /Chance de rebaixamento/ })).toBeInTheDocument()
+    expect(within(magicTable).getByRole('columnheader', { name: /Chance de ser rebaixado para a Série B/ })).toBeInTheDocument()
     expect(within(magicTable).queryByRole('columnheader', { name: /^Título/ })).not.toBeInTheDocument()
   })
 
