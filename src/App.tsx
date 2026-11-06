@@ -82,6 +82,7 @@ function normalizeText(value: string): string {
 
 function zoneClass(position: number): string {
   if (position <= ZONES.libertadores.to) return 'qualification'
+  if (position <= ZONES.sudamericana.to) return 'sudamericana'
   if (position >= ZONES.relegation.from) return 'relegation'
   return 'middle'
 }
@@ -328,7 +329,8 @@ function App(): JSX.Element {
                 </div>
                 <div className="zone-legend" aria-label="Legenda das zonas da tabela">
                   <span><i className="legend-dot qualification" />Libertadores · {ZONES.libertadores.detail}</span>
-                  <span><i className="legend-dot middle" />Sul-Americana e demais · {ZONES.sudamericana.from}–{ZONES.middle.to}</span>
+                  <span><i className="legend-dot sudamericana" />Sul-Americana · {ZONES.sudamericana.detail}</span>
+                  <span><i className="legend-dot middle" />Meio de tabela · {ZONES.middle.detail}</span>
                   <span><i className="legend-dot relegation" />Rebaixamento · {ZONES.relegation.detail}</span>
                 </div>
                 <div className="table-scroll" role="region" aria-label="Tabela classificatória; role para rolagem horizontal em telas pequenas" tabIndex={0}>

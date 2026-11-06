@@ -39,7 +39,7 @@ describe('tabela de resultados 2026', () => {
     expect(screen.getByText(`${flamengoCount} de ${playedCount} resultados`)).toBeInTheDocument()
     const table = screen.getByRole('region', { name: /Resultados por data/ })
     for (const row of within(table).getAllByRole('row').slice(1)) {
-      expect(row.textContent).toMatch(/flamengo/)
+      expect(row.textContent).toMatch(/Flamengo/i)
     }
   })
 

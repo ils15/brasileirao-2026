@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { attackDefenseLeaders, currentStreaks, lastNRounds, positionByRound, standingsFromResults, type StandingsRow } from './rounds'
+import { espnLogoUrl } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
 
@@ -33,6 +34,7 @@ const SHORT_COLUMNS: SortableColumn<StandingsRow>[] = [
 
 function zoneClass(position: number): string {
   if (position <= ZONES.libertadores.to) return 'qualification'
+  if (position <= ZONES.sudamericana.to) return 'sudamericana'
   if (position >= ZONES.relegation.from) return 'relegation'
   return 'middle'
 }
@@ -72,7 +74,14 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
             <tr key={row.id} className={`standing-row standing-row--${zoneClass(row.position)}`}>
               {columns.map((column, index) => (
                 index === 1
-                  ? <th key={column.id} scope="row" className="club-cell"><span>{row.club}</span></th>
+                  ? (
+                    <th key={column.id} scope="row" className="club-cell">
+                      {espnLogoUrl(row.id) && (
+                        <img className="crest crest--xs" src={espnLogoUrl(row.id)} alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
+                      )}
+                      <span>{row.club}</span>
+                    </th>
+                  )
                   : <td key={column.id} className={column.id === 'points' ? 'numeric points-cell' : 'numeric games-cell'}>{formatCell(row, column.id)}</td>
               ))}
             </tr>

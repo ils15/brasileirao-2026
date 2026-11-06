@@ -169,6 +169,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .zone-legend > span { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 12px; }
 .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
 .legend-dot.qualification { background: #69a750; }
+.legend-dot.sudamericana { background: #5b7fd4; }
 .legend-dot.middle { background: #b8c1ba; }
 .legend-dot.relegation { background: #d47a63; }
 .table-scroll { overflow-x: auto; overscroll-behavior-x: contain; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
@@ -181,6 +182,7 @@ thead th.numeric, td.numeric { padding-right: 15px; text-align: right; }
 tbody tr { border-top: 1px solid var(--border-soft); transition: background-color .15s ease; }
 tbody tr:hover { background: var(--row-hover); }
 .standing-row--qualification { box-shadow: inset 3px 0 #78a957; }
+.standing-row--sudamericana { box-shadow: inset 3px 0 #5b7fd4; }
 .standing-row--relegation { box-shadow: inset 3px 0 #d47a63; }
 tbody td, tbody th { height: 48px; }
 .position-cell { color: var(--text-muted); font: 13px var(--mono); }
@@ -539,6 +541,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .club-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
 .club-card { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 66px; padding: 10px 12px; border: 1px solid var(--border); background: var(--surface); }
 .club-card--qualification { border-left: 3px solid #78a957; }
+.club-card--sudamericana { border-left: 3px solid #5b7fd4; }
 .club-card--relegation { border-left: 3px solid #d47a63; }
 .club-card-position { color: var(--text-muted); font: 13px var(--mono); }
 .club-card .team-badge { width: 29px; height: 29px; }
@@ -881,3 +884,17 @@ th.numeric .sort-button { justify-content: flex-end; }
 .update-clock > div { display: grid; gap: 2px; }
 .update-clock strong { color: var(--text-muted); font: 600 11px var(--mono); letter-spacing: .04em; }
 .update-clock span { color: var(--ink); font: 700 13px var(--mono); white-space: nowrap; }
+
+/* Escudos em tabelas e resultados */
+.crest--xs { width: 20px; height: 20px; object-fit: contain; }
+.results-club { display: inline-flex; align-items: center; gap: 8px; }
+
+/* Filtros de resultados: linha inteira aproveitada */
+.results-filters { display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 12px; align-items: end; }
+.results-filters label { min-width: 0; }
+.results-filters select, .results-filters input { width: 100%; }
+.result-count { grid-column: 1 / -1; }
+
+@media (max-width: 767px) {
+  .results-filters { grid-template-columns: minmax(0, 1fr); }
+}

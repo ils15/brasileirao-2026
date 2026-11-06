@@ -1,6 +1,7 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonResults'
-import { currentClubs } from './projectionData'
+import { currentClubs, espnLogoUrl } from './projectionData'
+import { cutoffLabel } from './seasonFacts'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import { EmptyState } from './EmptyState'
 import { useTableSort, type SortableColumn } from './useTableSort'
@@ -38,6 +39,13 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
 
   const cutoffMatches = useMemo(() => filterAtOrBeforeAnalyticalCutoff(matches), [matches])
   const clubOptions = useMemo(() => [...currentClubs].sort((left, right) => left.club.localeCompare(right.club, 'pt-BR')), [])
+  const nameFor = useMemo(() => new Map(currentClubs.map(({ id, club }) => [id, club])), [])
+  const crestFor = (clubId: string): JSX.Element | null => {
+    const logo = espnLogoUrl(clubId)
+    return logo
+      ? <img className="crest crest--xs" src={logo} alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
+      : null
+  }
 
   const filtered = useMemo(() => {
     return cutoffMatches.filter((match) => {
@@ -70,7 +78,7 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
         <span className="section-index">02 <span>/ JOGOS</span></span>
       </div>
       <p className="table-note">
-        Todos os {cutoffMatches.length} resultados até o corte analítico de 04/11/2026 13:00 BRT, com fonte de cada placar.
+        Todos os {cutoffMatches.length} resultados até o corte analítico ({cutoffLabel}), com fonte de cada placar.
         A base amarra cada linha à referência original (linha do CSV ou evento ESPN).
       </p>
 
@@ -136,9 +144,9 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
                 {visibleRows.map((match) => (
                   <tr key={`${match.home}-${match.away}-${match.kickoff}`}>
                     <th scope="row" className="results-date">{formatKickoff(match.kickoff)}</th>
-                    <td className="club-cell">{match.home}</td>
+                    <td className="club-cell"><span className="results-club">{crestFor(match.home)}{nameFor.get(match.home) ?? match.home}</span></td>
                     <td className="numeric results-score">{match.homeGoals}–{match.awayGoals}</td>
-                    <td className="club-cell">{match.away}</td>
+                    <td className="club-cell"><span className="results-club">{crestFor(match.away)}{nameFor.get(match.away) ?? match.away}</span></td>
                     <td><span className={`source-badge source-badge--${match.source}`}>{SOURCE_LABELS[match.source]}</span></td>
                   </tr>
                 ))}
