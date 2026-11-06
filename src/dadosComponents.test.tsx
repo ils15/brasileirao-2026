@@ -111,7 +111,7 @@ describe('painel de dados & auditoria', () => {
     render(<AuditPanel />)
     const block = screen.getByRole('heading', { name: 'Fontes e captura' }).closest('section')!
     expect(within(block).getAllByText(/SHA-256/)).toHaveLength(4)
-    expect(within(block).getAllByText(/2026-11-\d\d 16:41:4\d-03:00|2026-11-\d\d 20:29:00-03:00/).length).toBeGreaterThan(0)
+    expect(within(block).getAllByText(/2026-11-\d\d \d\d:\d\d:\d\d-03:00/).length).toBeGreaterThan(0)
   })
 
   it('valida a temporada 2026 e as 14 temporadas históricas sem divergências', () => {

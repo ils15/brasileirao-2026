@@ -157,8 +157,12 @@ async function main() {
     sha256: sha256(csvText),
     rows2026: (csvText.match(/,2026,/g) ?? []).length,
     espnCount: espnMatches.filter((match) => !existingResults.some((existing) => existing.sourceRef === match.sourceRef)).length,
-    cbfDisplayed: readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8').match(/displayedTimestamp: '([^']+)'/)?.[1] ?? 'unknown',
-    lastCbfSha256: currentMetadataSource.match(/cbfStandings[\s\S]*?sha256: '([^']+)'/)?.[1] ?? 'unknown-not-refreshed',
+    cbfDisplayed: currentMetadataSource.match(/displayedTimestamp: '([^']+)'/)?.[1] ?? 'unknown',
+    espnSha256: espnSnapshots.size > 0
+      ? sha256([...espnSnapshots.values()].join('|'))
+      : currentMetadataSource.match(/espn: \{[\s\S]*?sha256: '([^']+)'/)?.[1] ?? 'unknown',
+    espnTeamIdsJson: readFileSync(join(srcDir, 'projectionData.ts'), 'utf8').match(/ESPN_TEAM_IDS: Readonly<Record<string, number>> = (\{[^}]+\})/)?.[1] ?? '{}',
+    historicalSha256: readFileSync(join(srcDir, 'historicalSeasons.ts'), 'utf8').match(/sha256: '([^']+)'/)?.[1] ?? 'unknown',
   }
   const files = {
     'src/currentSeasonResults.ts': renderCurrentSeasonResults({ results: merged, metadata }),

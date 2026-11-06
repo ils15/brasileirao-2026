@@ -49,3 +49,19 @@ export const cutoffSummaryLine = (() => {
   const cbfDisplayed = CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp
   return `Corte analítico: ${cutoffLabel} · arquivos capturados ~${collectedTime} BRT; HTML CBF exibe ${cbfDisplayed}, fuso/semântica desconhecidos`
 })()
+
+/** Relógio de atualização: quando os dados foram cortados e quando o site se atualiza de novo. */
+export const updateClock = {
+  /** Corte analítico como Date (BRT declarado). */
+  cutoffDate: new Date(ANALYTICAL_CUTOFF_LOCAL),
+  /** Última coleta declarada pelas fontes. */
+  lastCollected: CURRENT_SEASON_SOURCE.footballData.collectedAt,
+  /** Dias entre o corte e hoje (0 quando o corte é de hoje ou ainda não chegou). */
+  get daysSinceCutoff(): number {
+    return Math.max(0, Math.floor((Date.now() - this.cutoffDate.getTime()) / 86_400_000))
+  },
+  /** Verdadeiro quando há coleta automática agendada para as próximas horas. */
+  get nextRunToday(): boolean {
+    return this.daysSinceCutoff <= 1
+  },
+} as const

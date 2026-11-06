@@ -13,7 +13,7 @@ import { HeadToHeadPanel } from './HeadToHeadPanel'
 import { espnLogoUrlByClub } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
-import { seasonFacts, cutoffSummaryLine } from './seasonFacts'
+import { seasonFacts, cutoffSummaryLine, updateClock } from './seasonFacts'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const ESPN_URL = 'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols'
@@ -252,6 +252,11 @@ function App(): JSX.Element {
               <p className="snapshot-state">Sem atualização ao vivo.</p>
               <p>{cutoffSummaryLine}</p>
             </div>
+          </div>
+          <span className="source-separator" aria-hidden="true" />
+          <div className="update-clock" aria-label="Relógio de atualização dos dados">
+            <div><strong>Dados até</strong><span>{updateClock.daysSinceCutoff === 0 ? 'hoje' : updateClock.daysSinceCutoff === 1 ? 'ontem' : `${updateClock.daysSinceCutoff} dias`}</span></div>
+            <div><strong>Próxima coleta</strong><span>{updateClock.nextRunToday ? 'hoje 03:30/11:30 BRT' : 'amanhã 03:30 BRT'}</span></div>
           </div>
           <span className="source-separator" aria-hidden="true" />
           <a className="cbf-source" href={CBF_URL} target="_blank" rel="noreferrer">

@@ -22,11 +22,11 @@ export interface RemainingFixture {
 
 export const currentClubs: ProjectionClub[] = [
   { id: 'flamengo', club: 'Flamengo', initials: 'FLA', position: 1, points: 76, played: 34, wins: 23, draws: 7, losses: 4, goalsFor: 71, goalsAgainst: 29 },
-  { id: 'palmeiras', club: 'Palmeiras', initials: 'PAL', position: 2, points: 70, played: 33, wins: 20, draws: 10, losses: 3, goalsFor: 56, goalsAgainst: 22 },
-  { id: 'cruzeiro', club: 'Cruzeiro', initials: 'CRU', position: 3, points: 57, played: 33, wins: 17, draws: 6, losses: 10, goalsFor: 52, goalsAgainst: 46 },
+  { id: 'palmeiras', club: 'Palmeiras', initials: 'PAL', position: 2, points: 73, played: 34, wins: 21, draws: 10, losses: 3, goalsFor: 62, goalsAgainst: 23 },
+  { id: 'cruzeiro', club: 'Cruzeiro', initials: 'CRU', position: 3, points: 60, played: 34, wins: 18, draws: 6, losses: 10, goalsFor: 55, goalsAgainst: 48 },
   { id: 'fluminense', club: 'Fluminense', initials: 'FLU', position: 4, points: 54, played: 33, wins: 15, draws: 9, losses: 9, goalsFor: 52, goalsAgainst: 42 },
   { id: 'athletico-pr', club: 'Athletico Paranaense', initials: 'CAP', position: 5, points: 54, played: 34, wins: 15, draws: 9, losses: 10, goalsFor: 51, goalsAgainst: 43 },
-  { id: 'bahia', club: 'Bahia', initials: 'BAH', position: 6, points: 53, played: 33, wins: 14, draws: 11, losses: 8, goalsFor: 48, goalsAgainst: 42 },
+  { id: 'bahia', club: 'Bahia', initials: 'BAH', position: 6, points: 53, played: 34, wins: 14, draws: 11, losses: 9, goalsFor: 50, goalsAgainst: 45 },
   { id: 'atletico-mg', club: 'Atlético Mineiro', initials: 'CAM', position: 7, points: 50, played: 34, wins: 14, draws: 8, losses: 12, goalsFor: 44, goalsAgainst: 40 },
   { id: 'bragantino', club: 'Red Bull Bragantino', initials: 'RBB', position: 8, points: 47, played: 34, wins: 13, draws: 8, losses: 13, goalsFor: 44, goalsAgainst: 39 },
   { id: 'santos', club: 'Santos FC', initials: 'SAN', position: 9, points: 47, played: 34, wins: 12, draws: 11, losses: 11, goalsFor: 50, goalsAgainst: 49 },
@@ -39,14 +39,12 @@ export const currentClubs: ProjectionClub[] = [
   { id: 'internacional', club: 'Internacional', initials: 'INT', position: 16, points: 38, played: 34, wins: 9, draws: 11, losses: 14, goalsFor: 38, goalsAgainst: 42 },
   { id: 'corinthians', club: 'Corinthians', initials: 'COR', position: 17, points: 37, played: 34, wins: 9, draws: 10, losses: 15, goalsFor: 36, goalsAgainst: 42 },
   { id: 'gremio', club: 'Grêmio', initials: 'GRE', position: 18, points: 37, played: 34, wins: 9, draws: 10, losses: 15, goalsFor: 38, goalsAgainst: 47 },
-  { id: 'remo', club: 'Remo', initials: 'REM', position: 19, points: 29, played: 33, wins: 6, draws: 11, losses: 16, goalsFor: 36, goalsAgainst: 51 },
+  { id: 'remo', club: 'Remo', initials: 'REM', position: 19, points: 29, played: 34, wins: 6, draws: 11, losses: 17, goalsFor: 37, goalsAgainst: 57 },
   { id: 'chapecoense', club: 'Chapecoense', initials: 'CHA', position: 20, points: 21, played: 33, wins: 4, draws: 9, losses: 20, goalsFor: 33, goalsAgainst: 68 },
 ]
 
 export const remainingFixtures: RemainingFixture[] = [
   { round: '21 adiado', home: 'chapecoense', away: 'vasco', cbfRef: '210' },
-  { round: '34', home: 'palmeiras', away: 'remo', cbfRef: '334' },
-  { round: '34', home: 'cruzeiro', away: 'bahia', cbfRef: '336' },
   { round: '34', home: 'vitoria', away: 'fluminense', cbfRef: '339' },
   { round: '35', home: 'flamengo', away: 'athletico-pr', cbfRef: '341' },
   { round: '35', home: 'vasco', away: 'internacional', cbfRef: '342' },

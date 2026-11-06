@@ -875,3 +875,9 @@ th.numeric .sort-button { justify-content: flex-end; }
 @media (max-width: 640px) {
   .h2h-mini-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Relógio de atualização */
+.update-clock { display: flex; gap: 14px; align-items: center; }
+.update-clock > div { display: grid; gap: 2px; }
+.update-clock strong { color: var(--text-muted); font: 600 11px var(--mono); letter-spacing: .04em; }
+.update-clock span { color: var(--ink); font: 700 13px var(--mono); white-space: nowrap; }

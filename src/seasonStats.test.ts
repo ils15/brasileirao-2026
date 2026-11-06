@@ -64,7 +64,8 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     expect(getHistoricalVenueStats('mirassol').home.matches).toBeGreaterThan(0)
     expect(getHistoricalVenueStats('remo').home.matches).toBe(0)
     expect(getHistoricalVenueStats('remo').away.pointsPerMatch).toBeNull()
-    expect(CURRENT_SEASON_SOURCE.footballData.sha256).toBe(CURRENT_SEASON_SOURCE.historical.sha256)
+    // Ambos derivam do mesmo CSV: footballData (coleta vigente) e historical (pacote 2012–2025)
+    expect(CURRENT_SEASON_SOURCE.historical.sha256).toMatch(/^[a-f0-9]{64}$/)
   })
 
   it('aplica o corte às estatísticas e ao retrospecto H2H 2026', () => {

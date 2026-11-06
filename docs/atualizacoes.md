@@ -8,3 +8,8 @@ Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`
 - flamengo 3–1 gremio (espn, 401841307)
 - botafogo 1–0 atletico-mg (espn, 401841305)
 - sao-paulo 0–0 corinthians (espn, 401841298)
+
+## 2026-11-06 — 2 novo(s) resultado(s)
+
+- palmeiras 6–1 remo (football-data, csv-line-5658)
+- cruzeiro 3–2 bahia (espn, 401841303)

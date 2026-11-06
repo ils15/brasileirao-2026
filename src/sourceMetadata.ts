@@ -1,7 +1,7 @@
 // Corte analítico regenerado por scripts/update-data.mjs: fim dos jogos da última rodada coletada.
 // Football-Data não informa fuso; o dia-limite inteiro permanece de fora (política conservadora).
-export const ANALYTICAL_CUTOFF_LOCAL = '2026-11-05T20:29:00-03:00'
-export const ANALYTICAL_CUTOFF_UTC = '2026-11-05T20:29:03Z'
+export const ANALYTICAL_CUTOFF_LOCAL = '2026-11-06T17:56:00-03:00'
+export const ANALYTICAL_CUTOFF_UTC = '2026-11-06T17:56:22Z'
 
 export interface CutoffDatedMatch {
   kickoff: string
