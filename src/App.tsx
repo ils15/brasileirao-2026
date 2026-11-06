@@ -71,9 +71,10 @@ function parseTheme(value: string): ThemeMode {
 
 const filters: { id: ClubFilter; label: string }[] = [
   { id: 'all', label: 'Todos' },
-  { id: 'qualification', label: 'Libertadores' },
-  { id: 'middle', label: 'Sul-Americana e meio' },
-  { id: 'relegation', label: 'Rebaixamento' },
+  { id: 'libertadores', label: 'Libertadores' },
+  { id: 'sudamericana', label: 'Sul-Americana' },
+  { id: 'sem-internacional', label: 'Sem competição internacional' },
+  { id: 'relegation', label: 'Série B' },
 ]
 
 function normalizeText(value: string): string {

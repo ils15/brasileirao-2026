@@ -41,12 +41,13 @@ function FormStrip({ clubId, clubName }: { clubId: string; clubName: string }): 
 function StreakCard({ clubId, clubName }: { clubId: string; clubName: string }): JSX.Element | null {
   const streak = useMemo(() => currentStreaks().find((entry) => entry.id === clubId), [clubId])
   if (!streak) return null
+  const plural = (n: number, singular: string, pluralForm: string): string => `${n} ${n === 1 ? singular : pluralForm}`
   const lines: string[] = []
-  if (streak.wins > 0) lines.push(`${streak.wins} vitórias seguidas`)
-  if (streak.draws > 0) lines.push(`${streak.draws} empates seguidos`)
-  if (streak.losses > 0) lines.push(`${streak.losses} derrotas seguidas`)
-  if (streak.unbeaten > 1) lines.push(`${streak.unbeaten} jogos invicto`)
-  if (streak.winless > 1) lines.push(`${streak.winless} jogos sem vitória`)
+  if (streak.wins > 0) lines.push(plural(streak.wins, 'vitória seguida', 'vitórias seguidas'))
+  if (streak.draws > 0) lines.push(plural(streak.draws, 'empate seguido', 'empates seguidos'))
+  if (streak.losses > 0) lines.push(plural(streak.losses, 'derrota seguida', 'derrotas seguidas'))
+  if (streak.unbeaten > 0) lines.push(plural(streak.unbeaten, 'jogo invicto', 'jogos invicto'))
+  if (streak.winless > 0) lines.push(plural(streak.winless, 'jogo sem vitória', 'jogos sem vitória'))
   return (
     <div className="team-kpi">
       <strong>{lines[0] ?? 'Sem sequência ativa'}</strong>

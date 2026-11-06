@@ -840,8 +840,10 @@ th.numeric .sort-button { justify-content: flex-end; }
 .magic-chart-caption { margin: 6px 0 0; color: var(--text-muted); font-size: 12px; line-height: 1.4; }
 .magic-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-content: start; }
 
-/* Timeline H2H em 2 colunas */
-.h2h-timeline ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px; }
+/* Timeline H2H e placares em colunas múltiplas */
+.h2h-timeline ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 22px; }
+.retro-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; margin: 6px 0 0; padding: 0; list-style: none; }
+.retro-item { display: flex; align-items: center; gap: 9px; padding: 5px 0; border-bottom: 1px solid var(--border-soft); color: var(--text); font-size: 13px; }
 
 @media (max-width: 900px) {
   .magic-layout { grid-template-columns: minmax(0, 1fr); }
@@ -897,4 +899,11 @@ th.numeric .sort-button { justify-content: flex-end; }
 
 @media (max-width: 767px) {
   .results-filters { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 1200px) {
+  .h2h-timeline ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .h2h-timeline ul, .retro-list { grid-template-columns: minmax(0, 1fr); }
 }

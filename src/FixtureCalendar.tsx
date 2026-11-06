@@ -99,18 +99,23 @@ export function FixtureCalendar(): JSX.Element {
                 <details>
                   <summary>Placares do retrospecto ({headToHead.matches.length})</summary>
                   {headToHead.matches.length > 0 ? (
-                    <ol aria-label={`Placares H2H de ${home} e ${away}`}>
+                    <ul className="retro-list" aria-label={`Placares H2H de ${home} e ${away}`}>
                       {headToHead.matches.map((match, index) => {
+                        const goalsClub = match.home === fixture.home ? match.homeGoals : match.awayGoals
+                        const goalsOther = match.home === fixture.home ? match.awayGoals : match.homeGoals
+                        const kind = goalsClub > goalsOther ? 'win' : goalsClub === goalsOther ? 'draw' : 'loss'
+                        const badge = kind === 'win' ? 'V' : kind === 'draw' ? 'E' : 'D'
                         const meetingHome = clubNames.get(match.home) ?? match.home
                         const meetingAway = clubNames.get(match.away) ?? match.away
-                        const homeVenue = match.home === fixture.home ? 'mandante' : 'visitante'
                         return (
-                          <li key={`${match.seasonYear}-${match.kickoff}-${index}`}>
-                            {match.seasonYear} · {meetingHome} {match.homeGoals}–{match.awayGoals} {meetingAway} · {home} como {homeVenue}
+                          <li key={`${match.seasonYear}-${match.kickoff}-${index}`} className={`meeting-item meeting-item--${kind}`}>
+                            <span className={`meeting-badge meeting-badge--${kind}`} aria-hidden="true">{badge}</span>
+                            <span className="meeting-year">{match.seasonYear}</span>
+                            <strong>{meetingHome} <span className="meeting-score">{match.homeGoals}–{match.awayGoals}</span> {meetingAway}</strong>
                           </li>
                         )
                       })}
-                    </ol>
+                    </ul>
                   ) : <p>Sem placares disponíveis no recorte.</p>}
                 </details>
               </div>

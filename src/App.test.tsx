@@ -177,7 +177,7 @@ describe('painel do Brasileirão 2026', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('button', { name: 'Rebaixamento' }))
+    await user.click(screen.getByRole('button', { name: 'Série B' }))
 
     const clubList = screen.getByRole('list', { name: 'Clubes filtrados por zona' })
     // Invariante: sempre os quatro últimos do snapshot

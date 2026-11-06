@@ -45,6 +45,8 @@ describe('calendário e retrospecto por mando', () => {
     expect(miniGrid.textContent).toContain('2026 fora')
     await user.click(fixtureView.getByText(/Placares do retrospecto/))
     const scores = fixtureView.getByRole('list', { name: 'Placares H2H de Flamengo e Athletico Paranaense' })
-    expect(scores.querySelector('li')?.textContent).toContain('2026 · Athletico Paranaense 1–1 Flamengo')
+    const firstScore = scores.querySelector('li')!
+    expect(firstScore.textContent).toContain('Athletico Paranaense 1–1 Flamengo')
+    expect(firstScore.querySelector('.meeting-badge')).not.toBeNull()
   })
 })
