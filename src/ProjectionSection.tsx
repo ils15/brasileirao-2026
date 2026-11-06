@@ -197,17 +197,6 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   // Primeira pontuação em que o destino começa a aparecer.
   const firstChanceRow = useMemo(() => rows.find((row) => chanceOf(row) > 0), [rows])
 
-  // A tabela lista somente as faixas em jogo: depois que o destino chega a
-  // 0% (ou 100%) e não sai mais, as linhas seguintes não dizem nada novo —
-  // os KPIs e o gráfico já cobrem os extremos.
-  const visibleRows = useMemo(
-    () => compactRows.filter((group) => {
-      const chance = chanceOf(group.row)
-      return chance > 0 && chance < 1
-    }),
-    [compactRows, destiny],
-  )
-
   // Zona cinzenta: entre "praticamente descartado" e "praticamente garantido".
   const grayZone = useMemo(() => {
     const inZone = rows.filter((row) => effectiveChanceOf(row) > 0.1 && effectiveChanceOf(row) < 0.9)
@@ -307,7 +296,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             <th scope="col">IC 95% e barra</th>
           </tr></thead>
           <tbody>
-            {visibleRows.map((group) => {
+            {compactRows.map((group) => {
               const row = group.row
               const chance = chanceOf(row)
               const [lower95, upper95] = intervalFor(row)
@@ -320,15 +309,13 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
                   <th scope="row" className="magic-points-cell">{group.from === group.to ? group.from : `${group.from}–${group.to}`}</th>
                   <td className={`numeric games-cell ${displaysZero ? 'probability-cell--zero' : 'magic-active-value'}`}>{percent.format(chance)}</td>
                   <td className="magic-bar-cell">
-                    {hasInterval && (
-                      <>
-                        <div className="magic-bar" role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
-                          <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
-                          {lowSampleFor(row) && <span className="magic-bar-low">amostra baixa</span>}
-                        </div>
-                        <span className="cell-ci">IC 95% {percent.format(lower95)}–{percent.format(upper95)}</span>
-                      </>
-                    )}
+                    <div className={`magic-bar ${displaysCertain ? 'magic-bar--full' : ''}`} role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de chance de ${destinyLabel.toLowerCase()}`}>
+                      <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
+                      {lowSampleFor(row) && <span className="magic-bar-low">amostra baixa</span>}
+                    </div>
+                    {hasInterval && <span className="cell-ci">IC 95% {percent.format(lower95)}–{percent.format(upper95)}</span>}
+                    {displaysCertain && <span className="cell-ci">destino assegurado</span>}
+                    {displaysZero && <span className="cell-ci">matematicamente impossível</span>}
                   </td>
                 </tr>
               )
@@ -337,8 +324,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         </table>
       </div>
       <p className="projection-table-note">
-        Faixas de pontuação com destino estável (0% ou 100% do início ao fim) não são listadas —
-        os destaques acima e a curva cobrem os extremos.
+        Faixas onde o destino não muda (0% ou 100% do início ao fim) são agrupadas numa única linha,
+        sempre com a barra preenchida ou vazia; o IC 95% aparece só quando há de fato incerteza.
       </p>
     </section>
   )
