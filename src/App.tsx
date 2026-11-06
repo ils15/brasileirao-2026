@@ -247,16 +247,16 @@ function App(): JSX.Element {
 
         <section className="source-strip" aria-label="Fonte e horário dos dados">
           <div className="snapshot-summary">
-            <span className="snapshot-badge">Snapshot estático</span>
+            <span className="snapshot-badge">Snapshot automático</span>
             <div className="snapshot-copy">
-              <p className="snapshot-state">Sem atualização ao vivo.</p>
+              <p className="snapshot-state">Sem placares ao vivo — atualização automática a cada 2 horas.</p>
               <p>{cutoffSummaryLine}</p>
             </div>
           </div>
           <span className="source-separator" aria-hidden="true" />
           <div className="update-clock" aria-label="Relógio de atualização dos dados">
-            <div><strong>Dados até</strong><span>{updateClock.daysSinceCutoff === 0 ? 'hoje' : updateClock.daysSinceCutoff === 1 ? 'ontem' : `${updateClock.daysSinceCutoff} dias`}</span></div>
-            <div><strong>Próxima coleta</strong><span>{updateClock.nextRunToday ? 'hoje 03:30/11:30 BRT' : 'amanhã 03:30 BRT'}</span></div>
+            <div><strong>Frescor</strong><span>{updateClock.daysSinceCutoff === 0 ? 'hoje' : updateClock.daysSinceCutoff === 1 ? 'ontem' : `${updateClock.daysSinceCutoff} dias atrás`}</span></div>
+            <div><strong>Próxima verificação</strong><span>a cada 2 horas</span></div>
           </div>
           <span className="source-separator" aria-hidden="true" />
           <a className="cbf-source" href={CBF_URL} target="_blank" rel="noreferrer">

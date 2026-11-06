@@ -158,8 +158,8 @@ describe('painel do Brasileirão 2026', () => {
     render(<App />)
 
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
-    expect(within(sourceSummary).getByText('Snapshot estático')).toBeInTheDocument()
-    expect(within(sourceSummary).getByText('Sem atualização ao vivo.')).toBeInTheDocument()
+    expect(within(sourceSummary).getByText('Snapshot automático')).toBeInTheDocument()
+    expect(within(sourceSummary).getByText('Sem placares ao vivo — atualização automática a cada 2 horas.')).toBeInTheDocument()
   })
 
   it('pesquisa a classificação pelo nome do clube', async () => {

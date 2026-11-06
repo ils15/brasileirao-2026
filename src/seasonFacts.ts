@@ -43,11 +43,11 @@ export const historicalFacts = {
 /** Rótulo legível do corte analítico (horário local de Brasília declarado). */
 export const cutoffLabel = `${formatLocalIso(ANALYTICAL_CUTOFF_LOCAL)} BRT`
 
-/** Resumo curto da faixa de fonte: corte + captura declarada das fontes. */
+/** Resumo curto da faixa de fonte: frescor dos dados em horário de Brasília. */
 export const cutoffSummaryLine = (() => {
-  const collectedTime = CURRENT_SEASON_SOURCE.footballData.collectedAt.split('T')[1]?.slice(0, 5) ?? ''
-  const cbfDisplayed = CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp
-  return `Corte analítico: ${cutoffLabel} · arquivos capturados ~${collectedTime} BRT; HTML CBF exibe ${cbfDisplayed}, fuso/semântica desconhecidos`
+  const cutoffTime = ANALYTICAL_CUTOFF_LOCAL.split('T')[1]?.slice(0, 5) ?? ''
+  const cutoffDay = ANALYTICAL_CUTOFF_LOCAL.split('T')[0]?.split('-').reverse().slice(0, 2).join('/') ?? ''
+  return `Dados atualizados até ${cutoffDay} · ${cutoffTime} (horário de Brasília) · nova verificação automática a cada 2 horas`
 })()
 
 /** Relógio de atualização: quando os dados foram cortados e quando o site se atualiza de novo. */
