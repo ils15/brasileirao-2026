@@ -197,6 +197,17 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   // Primeira pontuação em que o destino começa a aparecer.
   const firstChanceRow = useMemo(() => rows.find((row) => chanceOf(row) > 0), [rows])
 
+  // A tabela lista somente as faixas em jogo: depois que o destino chega a
+  // 0% (ou 100%) e não sai mais, as linhas seguintes não dizem nada novo —
+  // os KPIs e o gráfico já cobrem os extremos.
+  const visibleRows = useMemo(
+    () => compactRows.filter((group) => {
+      const chance = chanceOf(group.row)
+      return chance > 0 && chance < 1
+    }),
+    [compactRows, destiny],
+  )
+
   // Zona cinzenta: entre "praticamente descartado" e "praticamente garantido".
   const grayZone = useMemo(() => {
     const inZone = rows.filter((row) => effectiveChanceOf(row) > 0.1 && effectiveChanceOf(row) < 0.9)
@@ -288,7 +299,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         </div>
       </div>
 
-      <div className="table-scroll" role="region" aria-label={`Chance de ${destinyLabel.toLowerCase()} por pontuação exata`} tabIndex={0}>
+      <div className="table-scroll" role="region" aria-label={`Chance de ${destinyLabel.toLowerCase()} por pontuação exata; faixas estáveis em 0% ou 100% ficam de fora`} tabIndex={0}>
         <table className="projection-table magic-table">
           <thead><tr>
             <th scope="col">Pontos</th>
@@ -296,7 +307,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             <th scope="col">IC 95% e barra</th>
           </tr></thead>
           <tbody>
-            {compactRows.map((group) => {
+            {visibleRows.map((group) => {
               const row = group.row
               const chance = chanceOf(row)
               const [lower95, upper95] = intervalFor(row)
@@ -325,6 +336,10 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           </tbody>
         </table>
       </div>
+      <p className="projection-table-note">
+        Faixas de pontuação com destino estável (0% ou 100% do início ao fim) não são listadas —
+        os destaques acima e a curva cobrem os extremos.
+      </p>
     </section>
   )
 }

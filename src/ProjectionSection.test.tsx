@@ -50,17 +50,20 @@ describe('painel de projeções', () => {
     // Seletor de destino: trocar para Título muda os KPIs
     expect(screen.getByRole('group', { name: 'Destino para a pontuação mágica' })).toBeInTheDocument()
     const magicTable = screen.getByRole('region', { name: /Chance de rebaixamento por pontuação exata/ })
-    // Barras só onde 0% < chance < 100%; faixas estáveis ficam sem barra
-    const bars = within(magicTable).getAllByRole('img', { name: /chance de rebaixamento/ })
-    expect(bars.length).toBeGreaterThanOrEqual(2)
+    // A tabela lista somente faixas em jogo (0% < chance < 100%): estáveis em
+    // 0%/100% ficam de fora — quem cobre os extremos são os KPIs e o gráfico
+    const dataRows = within(magicTable).getAllByRole('row').slice(1)
+    expect(dataRows.length).toBeGreaterThan(0)
+    for (const row of dataRows) {
+      expect(row.querySelector('.magic-bar')).not.toBeNull()
+      // Primeira célula de dados = chance do destino: nunca 0% nem 100% (estáveis ficam de fora)
+      const chanceCell = row.querySelectorAll('td')[0]
+      expect(chanceCell?.textContent).not.toBe('100,0%')
+      expect(chanceCell?.textContent).not.toBe('0,0%')
+    }
     // A tabela exibe SOMENTE a estatística do destino selecionado
     expect(within(magicTable).getByRole('columnheader', { name: /Chance de rebaixamento/ })).toBeInTheDocument()
     expect(within(magicTable).queryByRole('columnheader', { name: /^Título/ })).not.toBeInTheDocument()
-    // Primeira faixa: 100% de chance e SEM barra (valor estável)
-    const firstDataRow = within(magicTable).getAllByRole('row')[1]!
-    expect(firstDataRow).toHaveTextContent('100,0%')
-    expect(firstDataRow.querySelector('.magic-bar')).toBeNull()
-    expect(firstDataRow.querySelector('.magic-bar')).toBeNull()
   })
 
   it('exibe mediana, percentis, IC 95%, badge de variação e exporta a tabela de projeções', { timeout: 30_000 }, async () => {
