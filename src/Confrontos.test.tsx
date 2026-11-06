@@ -25,7 +25,7 @@ describe('painel da próxima rodada', () => {
     // Barra com rótulo acessível contendo as três probabilidades
     const fixture = remainingFixtures.find(({ round }) => round === '21 adiado')!
     const { probabilities } = matchProbabilities(fixture.home, fixture.away)
-    const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
+    const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
     expect(within(match).getByRole('img')).toHaveAttribute('aria-label', expect.stringContaining(percent.format(probabilities[0])))
   })
 

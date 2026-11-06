@@ -33,7 +33,7 @@ function pendingRounds(): RoundGroup[] {
     .sort((left, right) => left.roundNumber - right.roundNumber || left.suffix.localeCompare(right.suffix))
 }
 
-const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
+const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 function ResultBar({ probabilities, home, away }: { probabilities: readonly [number, number, number]; home: string; away: string }): JSX.Element {

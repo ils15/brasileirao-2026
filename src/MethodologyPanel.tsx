@@ -15,7 +15,7 @@ const FIXTURES_URL = 'https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/
 const REC_URL = 'https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf'
 const HISTORICAL_URL = 'https://www.football-data.co.uk/new/BR.csv'
 
-const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
+const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const integer = new Intl.NumberFormat('pt-BR')
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
 const rate = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
