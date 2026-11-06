@@ -43,16 +43,17 @@ function StreakCard({ clubId, clubName }: { clubId: string; clubName: string }):
   const streak = useMemo(() => currentStreaks().find((entry) => entry.id === clubId), [clubId])
   if (!streak) return null
   const plural = (n: number, singular: string, pluralForm: string): string => `${n} ${n === 1 ? singular : pluralForm}`
-  const lines: string[] = []
-  if (streak.wins > 0) lines.push(plural(streak.wins, 'vitória seguida', 'vitórias seguidas'))
-  if (streak.draws > 0) lines.push(plural(streak.draws, 'empate seguido', 'empates seguidos'))
-  if (streak.losses > 0) lines.push(plural(streak.losses, 'derrota seguida', 'derrotas seguidas'))
-  if (streak.unbeaten > 0) lines.push(plural(streak.unbeaten, 'jogo invicto', 'jogos invicto'))
-  if (streak.winless > 0) lines.push(plural(streak.winless, 'jogo sem vitória', 'jogos sem vitória'))
+  const lines: { text: string; kind: 'win' | 'draw' | 'loss' }[] = []
+  if (streak.wins > 0) lines.push({ text: plural(streak.wins, 'vitória seguida', 'vitórias seguidas'), kind: 'win' })
+  if (streak.draws > 0) lines.push({ text: plural(streak.draws, 'empate seguido', 'empates seguidos'), kind: 'draw' })
+  if (streak.losses > 0) lines.push({ text: plural(streak.losses, 'derrota seguida', 'derrotas seguidas'), kind: 'loss' })
+  if (streak.unbeaten > 0) lines.push({ text: plural(streak.unbeaten, 'jogo invicto', 'jogos invicto'), kind: 'win' })
+  if (streak.winless > 0) lines.push({ text: plural(streak.winless, 'jogo sem vitória', 'jogos sem vitória'), kind: 'loss' })
+  const kindColor = (kind: 'win' | 'draw' | 'loss'): string => (kind === 'win' ? 'streak-text--win' : kind === 'loss' ? 'streak-text--loss' : 'streak-text--draw')
   return (
     <div className="team-kpi">
-      <strong>{lines[0] ?? 'Sem sequência ativa'}</strong>
-      <span>Sequência vigente de {clubName}{lines.length > 1 ? ` · ${lines.slice(1).join(' · ')}` : ''}</span>
+      <strong className={lines[0] ? kindColor(lines[0]!.kind) : ''}>{lines[0]?.text ?? 'Sem sequência ativa'}</strong>
+      <span>Sequência vigente de {clubName}{lines.length > 1 ? ` · ${lines.slice(1).map((line) => line.text).join(' · ')}` : ''}</span>
     </div>
   )
 }

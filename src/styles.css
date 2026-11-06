@@ -914,3 +914,19 @@ th.numeric .sort-button { justify-content: flex-end; }
 @media (max-width: 767px) {
   .h2h-timeline ul, .retro-list { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Placar colorido: vencedor verde, perdedor vermelho, empate neutro */
+.score-line { font-variant-numeric: tabular-nums; }
+.score-line--decided .score-part--win { color: #6fc24a; }
+.score-line--decided .score-part--loss { color: #e0805f; }
+.score-part--draw { color: inherit; }
+.score-sep { opacity: .55; margin: 0 1px; }
+
+/* Ícones de mando preenchidos */
+.venue-icon--filled { fill: currentColor; stroke: none; width: 14px; height: 14px; }
+.team-future-venue .venue-icon--filled { width: 15px; height: 15px; }
+
+/* Texto de sequência tingido pelo tipo */
+.streak-text--win { color: #6fc24a; }
+.streak-text--loss { color: #e0805f; }
+.streak-text--draw { color: inherit; }

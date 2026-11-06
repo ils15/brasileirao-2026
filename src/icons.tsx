@@ -1,23 +1,19 @@
 import type { JSX } from 'react'
 
 /** Ícone de mando: casa (mandante). */
-export function HomeIcon({ className = 'venue-icon' }: { className?: string }): JSX.Element {
+export function HomeIcon({ className = 'venue-icon venue-icon--filled' }: { className?: string }): JSX.Element {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 11.5 12 4l8 7.5" />
-      <path d="M6 10.5V20h12v-9.5" />
-      <path d="M10 20v-5h4v5" />
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3.5 11.2 12 3.5l8.5 7.7h-2.3V20h-5v-5.4h-2.4V20h-5v-8.8H3.5Z" />
     </svg>
   )
 }
 
 /** Ícone de mando: fora (visitante). */
-export function AwayIcon({ className = 'venue-icon' }: { className?: string }): JSX.Element {
+export function AwayIcon({ className = 'venue-icon venue-icon--filled' }: { className?: string }): JSX.Element {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M10.5 13.5 4 7l2-2 6.5 6.5M13 4h7v7" />
-      <path d="M20 4 10 14" />
-      <path d="m5 12-2 7 7-2" />
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 15.5 13.5 12 8 4.5l1.8-1.3L17.5 9l3.6-1.2c.5-.2 1 .3.9.8l-1 6.9ZM7.8 14.2l3.4 3.4-1 3.9c-.2.6-.9.7-1.3.3l-3-3-2.9 1 1-2.9-3-3c-.4-.4-.3-1.1.3-1.3l3.9-1 3.4 3.4Z" />
     </svg>
   )
 }

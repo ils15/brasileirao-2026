@@ -1,6 +1,7 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { Crest } from './Crest'
+import { ScoreLine } from './ScoreLine'
 import { HomeIcon, AwayIcon } from './icons'
 import { getHeadToHeadSummary } from './seasonStats'
 
@@ -85,7 +86,7 @@ function MeetingDot({ match, aId, aName, bName }: { match: { home: string; away:
     <li className={`meeting-item meeting-item--${kind}`}>
       <span className={`meeting-badge meeting-badge--${kind}`} aria-hidden="true">{badge}</span>
       <span className="meeting-year">{match.seasonYear}</span>
-      <strong>{match.home} <span className="meeting-score">{match.homeGoals}–{match.awayGoals}</span> {match.away}</strong>
+      <strong>{match.home} <span className="meeting-score"><ScoreLine homeGoals={match.homeGoals} awayGoals={match.awayGoals} perspectiveHome={match.home === aId} /></span> {match.away}</strong>
       <span className="sr-only">{kind === 'win' ? `vitória de ${aName}` : kind === 'draw' ? 'empate' : `vitória de ${bName}`}</span>
     </li>
   )

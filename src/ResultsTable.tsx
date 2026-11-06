@@ -2,6 +2,7 @@ import { useMemo, useState, type JSX } from 'react'
 import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonResults'
 import { currentClubs, espnLogoUrl } from './projectionData'
 import { cutoffLabel } from './seasonFacts'
+import { ScoreLine } from './ScoreLine'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import { EmptyState } from './EmptyState'
 import { useTableSort, type SortableColumn } from './useTableSort'
@@ -145,7 +146,7 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
                   <tr key={`${match.home}-${match.away}-${match.kickoff}`}>
                     <th scope="row" className="results-date">{formatKickoff(match.kickoff)}</th>
                     <td className="club-cell"><span className="results-club">{crestFor(match.home)}{nameFor.get(match.home) ?? match.home}</span></td>
-                    <td className="numeric results-score">{match.homeGoals}–{match.awayGoals}</td>
+                    <td className="numeric results-score"><ScoreLine homeGoals={match.homeGoals} awayGoals={match.awayGoals} /></td>
                     <td className="club-cell"><span className="results-club">{crestFor(match.away)}{nameFor.get(match.away) ?? match.away}</span></td>
                     <td><span className={`source-badge source-badge--${match.source}`}>{SOURCE_LABELS[match.source]}</span></td>
                   </tr>

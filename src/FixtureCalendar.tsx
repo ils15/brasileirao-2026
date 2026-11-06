@@ -1,5 +1,6 @@
 import { useMemo, useState, type JSX } from 'react'
 import { HomeIcon, AwayIcon, BallIcon } from './icons'
+import { ScoreLine } from './ScoreLine'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type VenueStats } from './seasonStats'
 
@@ -111,7 +112,7 @@ export function FixtureCalendar(): JSX.Element {
                           <li key={`${match.seasonYear}-${match.kickoff}-${index}`} className={`meeting-item meeting-item--${kind}`}>
                             <span className={`meeting-badge meeting-badge--${kind}`} aria-hidden="true">{badge}</span>
                             <span className="meeting-year">{match.seasonYear}</span>
-                            <strong>{meetingHome} <span className="meeting-score">{match.homeGoals}–{match.awayGoals}</span> {meetingAway}</strong>
+                            <strong>{meetingHome} <span className="meeting-score"><ScoreLine homeGoals={match.homeGoals} awayGoals={match.awayGoals} perspectiveHome={match.home === fixture.home} /></span> {meetingAway}</strong>
                           </li>
                         )
                       })}
