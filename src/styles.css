@@ -849,8 +849,14 @@ th.numeric .sort-button { justify-content: flex-end; }
 
 /* Timeline H2H e placares em colunas múltiplas */
 .h2h-timeline ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 22px; }
-.retro-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; margin: 6px 0 0; padding: 0; list-style: none; }
-.retro-item { display: flex; align-items: center; gap: 9px; padding: 5px 0; border-bottom: 1px solid var(--border-soft); color: var(--text); font-size: 13px; }
+.h2h-timeline .meeting-item { white-space: nowrap; overflow: hidden; }
+.h2h-timeline .meeting-item strong { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.h2h-timeline .meeting-item .meeting-year { flex: none; }
+.retro-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 6px 0 0; padding: 0; list-style: none; }
+.retro-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border-soft); color: var(--text); font-size: 13px; white-space: nowrap; overflow: hidden; }
+.retro-item strong { overflow: hidden; text-overflow: ellipsis; }
+.retro-item .meeting-year { flex: none; }
+.retro-item .meeting-score { flex: none; }
 
 @media (max-width: 900px) {
   .magic-layout { grid-template-columns: minmax(0, 1fr); }

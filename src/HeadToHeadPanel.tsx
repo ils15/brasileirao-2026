@@ -77,7 +77,7 @@ function VenuePeriodCard({ venue, title, outcome, aName, bName }: { venue: 'home
   )
 }
 
-function MeetingDot({ match, aId, aName, bName }: { match: { home: string; away: string; homeGoals: number; awayGoals: number; seasonYear: number; kickoff: string }; aId: string; aName: string; bName: string }): JSX.Element {
+function MeetingDot({ match, aId, aName, bName, nameFor }: { match: { home: string; away: string; homeGoals: number; awayGoals: number; seasonYear: number; kickoff: string }; aId: string; aName: string; bName: string; nameFor: ReadonlyMap<string, string> }): JSX.Element {
   const goalsA = match.home === aId ? match.homeGoals : match.awayGoals
   const goalsB = match.home === aId ? match.awayGoals : match.homeGoals
   const kind = goalsA > goalsB ? 'win' : goalsA === goalsB ? 'draw' : 'loss'
@@ -86,7 +86,7 @@ function MeetingDot({ match, aId, aName, bName }: { match: { home: string; away:
     <li className={`meeting-item meeting-item--${kind}`}>
       <span className={`meeting-badge meeting-badge--${kind}`} aria-hidden="true">{badge}</span>
       <span className="meeting-year">{match.seasonYear}</span>
-      <strong>{match.home} <span className="meeting-score"><ScoreLine homeGoals={match.homeGoals} awayGoals={match.awayGoals} perspectiveHome={match.home === aId} /></span> {match.away}</strong>
+      <strong>{nameFor.get(match.home) ?? match.home} <span className="meeting-score"><ScoreLine homeGoals={match.homeGoals} awayGoals={match.awayGoals} perspectiveHome={match.home === aId} /></span> {nameFor.get(match.away) ?? match.away}</strong>
       <span className="sr-only">{kind === 'win' ? `vitória de ${aName}` : kind === 'draw' ? 'empate' : `vitória de ${bName}`}</span>
     </li>
   )
@@ -227,7 +227,7 @@ export function HeadToHeadPanel(): JSX.Element {
                 ? <p className="empty-distribution">Sem placares disponíveis no recorte para este par.</p>
                 : <ul aria-label={`Timeline de encontros entre ${clubA.club} e ${clubB.club} no período de ${periodFrom} a ${periodTo}`}>
                     {summary.matches.map((match, index) => (
-                      <MeetingDot key={`${match.seasonYear}-${match.kickoff}-${index}`} match={match} aId={clubA.id} aName={clubA.club} bName={clubB.club} />
+                      <MeetingDot key={`${match.seasonYear}-${match.kickoff}-${index}`} match={match} aId={clubA.id} aName={clubA.club} bName={clubB.club} nameFor={clubNames} />
                     ))}
                   </ul>}
               <p className="table-note">Badge V/E/D é do ponto de vista de {clubA.club} (clube A).</p>

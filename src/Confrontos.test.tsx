@@ -65,9 +65,9 @@ describe('painel de confronto direto', () => {
     const timeline = screen.getByRole('list', { name: /Timeline de encontros entre Flamengo e Palmeiras/ })
     expect(within(timeline).getAllByRole('listitem')).toHaveLength(summary.matches.length)
     // O encontro 2026 Flamengo 0–3 Palmeiras está na timeline com badge de derrota
-    const meeting2026 = within(timeline).getAllByRole('listitem').find((item) => item.textContent?.includes('flamengo') && item.textContent?.includes('0–3'))!
+    const meeting2026 = within(timeline).getAllByRole('listitem').find((item) => item.textContent?.includes('Flamengo') && item.textContent?.includes('0–3'))!
     expect(meeting2026).toHaveTextContent('D')
-    expect(within(timeline).getAllByRole('listitem').filter((item) => item.textContent?.includes('palmeiras')).length).toBeGreaterThan(0)
+    expect(within(timeline).getAllByRole('listitem').filter((item) => item.textContent?.includes('Palmeiras')).length).toBeGreaterThan(0)
 
     // Presets de período: barra e resumo respondem ao filtro (default desde 2012)
     const summaryBox = document.querySelector('.h2h-summary')!
