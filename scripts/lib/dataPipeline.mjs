@@ -242,6 +242,78 @@ export function validateIntegrity({ schedule, results, remaining }) {
   return true
 }
 
+/** Display names da ESPN → slug. */
+const ESPN_DISPLAY_SLUGS = {
+  'Flamengo': 'flamengo', 'Palmeiras': 'palmeiras', 'Cruzeiro': 'cruzeiro',
+  'Fluminense': 'fluminense', 'Athletico Paranaense': 'athletico-pr', 'Bahia': 'bahia',
+  'Atlético-MG': 'atletico-mg', 'Red Bull Bragantino': 'bragantino', 'Santos': 'santos',
+  'São Paulo': 'sao-paulo', 'Botafogo': 'botafogo', 'Coritiba': 'coritiba',
+  'Vasco da Gama': 'vasco', 'Mirassol': 'mirassol', 'Vitória': 'vitoria',
+  'Internacional': 'internacional', 'Corinthians': 'corinthians', 'Grêmio': 'gremio',
+  'Remo': 'remo', 'Chapecoense': 'chapecoense',
+}
+
+/** Códigos valorfinal → slug. */
+const VF_CODE_SLUGS = {
+  flamengo: 'flamengo', palmeiras: 'palmeiras', cruzeiro: 'cruzeiro', fluminense: 'fluminense',
+  athletico: 'athletico-pr', bahia: 'bahia', atletico: 'atletico-mg', bragantino: 'bragantino',
+  santos: 'santos', saopaulo: 'sao-paulo', botafogo: 'botafogo', coritiba: 'coritiba',
+  vasco: 'vasco', mirassol: 'mirassol', vitoria: 'vitoria', internacional: 'internacional',
+  corinthians: 'corinthians', gremio: 'gremio', remo: 'remo', chapecoense: 'chapecoense',
+}
+
+/** Classificação ESPN por clube (stats agregadas da temporada). */
+export function parseEspnStandings(jsonText) {
+  const data = JSON.parse(jsonText)
+  const out = []
+  for (const child of data.children ?? []) {
+    for (const entry of child.standings?.entries ?? []) {
+      const stats = Object.fromEntries((entry.stats ?? []).map((stat) => [stat.name, stat.value]))
+      const slug = ESPN_DISPLAY_SLUGS[entry.team?.displayName]
+      if (slug) out.push({ slug, points: stats.points, played: stats.gamesPlayed })
+    }
+  }
+  return out
+}
+
+/** Classificação valorfinal por clube (dados abertos CC BY). */
+export function parseValorfinalClubes(jsonText) {
+  const data = JSON.parse(jsonText)
+  return (data.clubes ?? []).map((club) => ({
+    slug: VF_CODE_SLUGS[club.code] ?? club.code,
+    points: club.pontos,
+    played: club.jogos,
+  }))
+}
+
+/**
+ * Conciliação independente: a classificação empacotada precisa bater com
+ * ESPN e valorfinal.
+ */
+export function reconcileStandings({ standings, espn, valorfinal }) {
+  const ourPoints = new Map(standings.map((row) => [row.id, { points: row.points, played: row.played }]))
+  const report = []
+  let espnDiverge = 0
+  let vfDiverge = 0
+  for (const row of espn) {
+    const ours = ourPoints.get(row.slug)
+    if (!ours) continue
+    if (ours.points !== row.points || ours.played !== row.played) {
+      espnDiverge += 1
+      report.push(`ESPN: ${row.slug} tem ${row.points} pts/${row.played} jogos, empacotado ${ours.points}/${ours.played}`)
+    }
+  }
+  for (const row of valorfinal) {
+    const ours = ourPoints.get(row.slug)
+    if (!ours) continue
+    if (ours.points !== row.points || ours.played !== row.played) {
+      vfDiverge += 1
+      report.push(`valorfinal: ${row.slug} tem ${row.points} pts/${row.played} jogos, empacotado ${ours.points}/${ours.played}`)
+    }
+  }
+  return { espnDiverge, vfDiverge, report }
+}
+
 /** Lê o corte atual empacotado (para o updater saber de onde coletar). */
 export function readCurrentCutoff(source) {
   const utc = source.match(/ANALYTICAL_CUTOFF_UTC = '([^']+)'/)?.[1]

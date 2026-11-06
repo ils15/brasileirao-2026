@@ -16,6 +16,9 @@ import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  parseEspnStandings,
+  parseValorfinalClubes,
+  reconcileStandings,
   computeRemaining,
   computeStandings,
   loadCbfSchedule,
@@ -145,6 +148,25 @@ async function main() {
   const remaining = computeRemaining(merged, schedule)
   validateIntegrity({ schedule, results: merged, remaining })
   console.log(`Integridade ok: ${merged.length} disputados + ${remaining.length} pendentes = ${schedule.length}`)
+
+  // Conciliação independente: ESPN standings + valorfinal dados abertos.
+  // Se ambas divergirem da nossa tabela, provavelmente perdemos resultados
+  // — abortar sem publicar.
+  try {
+    const espnStandingsText = await fetchText('https://site.api.espn.com/apis/v2/sports/soccer/bra.1/standings?season=2026')
+    const espnRows = parseEspnStandings(espnStandingsText)
+    const vfText = await fetchText('https://valorfinal.com.br/brasileirao/dados.json')
+    const vfRows = parseValorfinalClubes(vfText)
+    const reconciliation = reconcileStandings({ standings, espn: espnRows, valorfinal: vfRows })
+    console.log(`Conciliação: ${espnRows.length} clubes ESPN, ${vfRows.length} valorfinal · divergências ESPN ${reconciliation.espnDiverge}, valorfinal ${reconciliation.vfDiverge}`)
+    for (const line of reconciliation.report) console.warn('  ' + line)
+    if (reconciliation.espnDiverge > 2) {
+      throw new Error(`Conciliação ESPN divergiu em ${reconciliation.espnDiverge} clubes — resultados podem ter sido perdidos.\n${reconciliation.report.join('\n')}`)
+    }
+  } catch (error) {
+    if (error.message.includes('Conciliação')) throw error
+    console.warn(`  Conciliação externa indisponível (${error.message.split('\n')[0]}); seguindo só com a integridade interna.`)
+  }
 
   // 5. Regeneração dos módulos TS.
   const now = new Date().toISOString()

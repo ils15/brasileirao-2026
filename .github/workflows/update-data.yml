@@ -2,10 +2,10 @@ name: Atualização pós-rodada
 
 on:
   schedule:
-    # 06:30 e 14:30 UTC (03:30 e 11:30 BRT): após o fim dos jogos e na
-    # manhã seguinte, cobrindo o lag de publicação do Football-Data.
-    - cron: '30 6 * * *'
-    - cron: '30 14 * * *'
+    # A cada 2 horas: a ESPN publica os placares minutos após o fim de cada
+    # jogo, então a janela curta pega os resultados no mesmo dia. Sem dados
+    # novos a execução é um no-op rápido (~1 min).
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 permissions:
