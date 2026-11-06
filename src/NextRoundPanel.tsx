@@ -1,5 +1,6 @@
 import { useMemo, useState, type JSX } from 'react'
-import { currentClubs, remainingFixtures, espnLogoUrl } from './projectionData'
+import { currentClubs, remainingFixtures } from './projectionData'
+import { Crest } from './Crest'
 import { matchProbabilities } from './matchProbabilities'
 import { seasonFacts } from './seasonFacts'
 
@@ -33,13 +34,6 @@ function pendingRounds(): RoundGroup[] {
 }
 
 const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
-
-function TeamCrest({ clubId, clubName }: { clubId: string; clubName: string }): JSX.Element {
-  const [failed, setFailed] = useState(false)
-  const logo = espnLogoUrl(clubId)
-  if (!logo || failed) return <span className="team-future-venue" aria-hidden="true">{clubName.slice(0, 3).toUpperCase()}</span>
-  return <img className="crest crest--medium" src={logo} alt="" aria-hidden="true" loading="lazy" onError={() => setFailed(true)} />
-}
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 function ResultBar({ probabilities, home, away }: { probabilities: readonly [number, number, number]; home: string; away: string }): JSX.Element {
@@ -106,7 +100,7 @@ export function NextRoundPanel(): JSX.Element {
                 <span>{home} × {away}</span>
                 <span>CBF {fixture.cbfRef}</span>
               </div>
-              <strong className="next-round-teams"><TeamCrest clubId={fixture.home} clubName={home} /> {home} <span aria-hidden="true">×</span> {away} <TeamCrest clubId={fixture.away} clubName={away} /></strong>
+              <strong className="next-round-teams"><Crest clubId={fixture.home} /> {home} <span aria-hidden="true">×</span> {away} <Crest clubId={fixture.away} /></strong>
               <dl className="lambda-strip" aria-label={`Gols esperados de ${home} × ${away}`}>
                 <div><dt>λ {home}</dt><dd>{decimal.format(expected.home)}</dd></div>
                 <div><dt>λ {away}</dt><dd>{decimal.format(expected.away)}</dd></div>

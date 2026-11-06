@@ -467,7 +467,14 @@ th.numeric .sort-button { justify-content: flex-end; }
 /* Análise do clube (aba Confrontos) */
 .team-analysis { margin-top: 28px; padding: 25px; }
 .team-analysis-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-.team-kpi { display: grid; gap: 4px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-soft); }
+.team-kpi { display: grid; gap: 4px; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-soft); align-content: start; }
+.team-kpi--wide { grid-column: 1 / -1; }
+.team-kpi--pos { display: flex; align-items: center; gap: 14px; }
+.team-kpi--pos .crest--xl { flex: 0 0 auto; }
+.team-kpi--pos .team-kpi-body { display: grid; gap: 4px; min-width: 0; }
+.crest--xl { width: 56px; height: 56px; object-fit: contain; }
+.projection-zone-strip { display: flex; flex-wrap: wrap; gap: 10px; }
+.projection-zone-chip { flex: 1 1 130px; }
 .team-kpi strong { color: var(--ink); font: 800 24px/1 var(--display); }
 .team-kpi span { color: var(--text-secondary); font-size: 13px; }
 .form-dots { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
@@ -479,7 +486,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .team-future-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border: 1px solid var(--border); background: var(--surface-soft); color: var(--text); font-size: 14px; }
 .team-future-item strong { color: var(--ink); }
 .projection-zone-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-.projection-zone-chip { display: inline-flex; flex-direction: column; gap: 2px; min-width: 108px; padding: 10px 12px; border: 1px solid var(--border); background: var(--surface-soft); }
+.projection-zone-chip { display: inline-flex; flex-direction: column; gap: 2px; flex: 1 1 130px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-soft); }
 .projection-zone-chip strong { color: var(--ink); font: 700 15px var(--mono); }
 .projection-zone-chip span { color: var(--text-secondary); font-size: 12px; }
 

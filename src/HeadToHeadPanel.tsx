@@ -1,5 +1,6 @@
 import { useMemo, useState, type JSX } from 'react'
-import { currentClubs, remainingFixtures, espnLogoUrl } from './projectionData'
+import { currentClubs, remainingFixtures } from './projectionData'
+import { Crest } from './Crest'
 import { HomeIcon, AwayIcon } from './icons'
 import { getHeadToHeadSummary } from './seasonStats'
 
@@ -73,14 +74,6 @@ function VenuePeriodCard({ venue, title, outcome, aName, bName }: { venue: 'home
       </span>
     </div>
   )
-}
-
-/** Escudo real com fallback silencioso para nada. */
-function Crest({ clubId, size = 'medium' }: { clubId: string; size?: 'medium' | 'large' }): JSX.Element | null {
-  const [failed, setFailed] = useState(false)
-  const logo = espnLogoUrl(clubId)
-  if (!logo || failed) return null
-  return <img className={`crest crest--${size}`} src={logo} alt="" aria-hidden="true" loading="lazy" onError={() => setFailed(true)} />
 }
 
 function MeetingDot({ match, aId, aName, bName }: { match: { home: string; away: string; homeGoals: number; awayGoals: number; seasonYear: number; kickoff: string }; aId: string; aName: string; bName: string }): JSX.Element {

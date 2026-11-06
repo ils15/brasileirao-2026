@@ -1,6 +1,7 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { getCurrentVenueStats } from './seasonStats'
+import { Crest } from './Crest'
 import { HomeIcon, AwayIcon, CalendarIcon } from './icons'
 import { recentForm, currentStreaks, attackDefenseLeaders } from './rounds'
 import { useProjection } from './ProjectionContext'
@@ -60,14 +61,14 @@ function VenuePair({ clubId }: { clubId: string }): JSX.Element {
   const stats = useMemo(() => getCurrentVenueStats(clubId), [clubId])
   const total = decimal.format((stats.home.pointsPerMatch ?? 0) + (stats.away.pointsPerMatch ?? 0))
   return (
-    <>
-      <div className="team-kpi team-kpi--stacked">
-        <strong>{total} pts/jogo</strong>
-        <span>Casa e fora até o corte</span>
+    <div className="team-kpi team-kpi--wide">
+      <strong>{total} pts/jogo</strong>
+      <span>Desempenho por mando até o corte</span>
+      <div className="venue-stats-grid h2h-stats-grid">
         <VenueStatsCard title="Como mandante" venue="home" stats={stats.home} />
         <VenueStatsCard title="Como visitante" venue="away" stats={stats.away} />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -116,11 +117,14 @@ function FutureFixtures({ clubId, clubName }: { clubId: string; clubName: string
       <ul className="team-future">
         {fixtures.map((fixture) => {
           const isHome = fixture.home === clubId
-          const opponent = names.get(isHome ? fixture.away : fixture.home) ?? (isHome ? fixture.away : fixture.home)
+          const opponentId = isHome ? fixture.away : fixture.home
+          const opponent = names.get(opponentId) ?? opponentId
           return (
             <li className="team-future-item" key={fixture.cbfRef}>
-              <strong><span className="team-future-venue">{isHome ? <HomeIcon /> : <AwayIcon />}</span> × {opponent}</strong>
-              <span>R{fixture.round} · {fixture.cbfRef}</span>
+              <span className="team-future-venue" title={isHome ? 'Em casa' : 'Fora de casa'}>{isHome ? <HomeIcon /> : <AwayIcon />}</span>
+              <Crest clubId={opponentId} size="xs" />
+              <strong>× {opponent}</strong>
+              <span className="team-future-meta">R{fixture.round} · {fixture.cbfRef}</span>
             </li>
           )
         })}
@@ -152,9 +156,12 @@ export function TeamAnalysisPanel(): JSX.Element {
       </label>
 
       <div className="team-analysis-grid">
-        <div className="team-kpi">
-          <strong>{club.position}º · {club.points} pts</strong>
-          <span>Posição e pontos no corte · {club.played} jogos · saldo {club.goalsFor - club.goalsAgainst > 0 ? '+' : ''}{club.goalsFor - club.goalsAgainst}</span>
+        <div className="team-kpi team-kpi--pos">
+          <Crest clubId={club.id} size="xl" />
+          <div className="team-kpi-body">
+            <strong>{club.position}º · {club.points} pts</strong>
+            <span>Posição e pontos no corte · {club.played} jogos · saldo {club.goalsFor - club.goalsAgainst > 0 ? '+' : ''}{club.goalsFor - club.goalsAgainst}</span>
+          </div>
         </div>
         <FormStrip clubId={club.id} clubName={club.club} />
         <StreakCard clubId={club.id} clubName={club.club} />
