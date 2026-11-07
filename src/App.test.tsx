@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
 import { currentClubs } from './projectionData'
 import { cutoffSummaryLine } from './seasonFacts'
+import { scorers, SCORERS_SOURCE } from './data'
 
 describe('painel do Brasileirão 2026', () => {
   beforeEach(() => {
@@ -188,15 +189,29 @@ describe('painel do Brasileirão 2026', () => {
     expect(within(clubList).queryByText(currentClubs[0]!.club)).not.toBeInTheDocument()
   })
 
-  it('preserva os três artilheiros empatados na quinta posição', () => {
+  it('artilharia derivada da fonte: ordem por gols, empates compartilham posição e fonte declarada', () => {
     render(<App />)
 
     const topScorers = screen.getByRole('list', { name: 'Artilharia' })
-    expect(within(topScorers).getAllByText('5º')).toHaveLength(3)
-    expect(within(topScorers).getByText('Samuel Lino')).toBeInTheDocument()
-    expect(within(topScorers).getByText('Luciano Juba')).toBeInTheDocument()
-    expect(within(topScorers).getByText('Vinicius')).toBeInTheDocument()
-    expect(screen.getByText(/Horário de captura específico da lista não informado/)).toBeInTheDocument()
+    // Ordenação estrita por gols descendente nos itens renderizados
+    const goalCounts = [...topScorers.querySelectorAll('.goal-count strong')].map((element) => Number(element.textContent))
+    expect(goalCounts.length).toBe(scorers.length)
+    for (let index = 1; index < goalCounts.length; index += 1) {
+      expect(goalCounts[index - 1]).toBeGreaterThanOrEqual(goalCounts[index]!)
+    }
+    // Líder na 1ª posição com o máximo do dataset
+    expect(within(topScorers).getAllByText('1º')[0]).toBeInTheDocument()
+    // Empates derivados: o primeiro grupo de gols repetidos exibe a MESMA
+    // posição para todos os seus membros (sem exclusão ordinal)
+    const firstTie = scorers.findIndex((scorer, index) => index > 0 && scorer.goals === scorers[index - 1]!.goals)
+    if (firstTie > 0) {
+      const tiedGoals = scorers[firstTie]!.goals
+      const tiedCount = scorers.filter((scorer) => scorer.goals === tiedGoals).length
+      const tiedPosition = scorers[firstTie]!.position
+      expect(within(topScorers).getAllByText(tiedPosition)).toHaveLength(tiedCount)
+    }
+    expect(screen.getByText(new RegExp(SCORERS_SOURCE.name))).toBeInTheDocument()
+    expect(screen.getByText(/atualizada automaticamente após cada rodada/)).toBeInTheDocument()
   })
 
   it('identifica as fontes oficiais e a conferência secundária', () => {

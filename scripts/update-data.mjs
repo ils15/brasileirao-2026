@@ -16,6 +16,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
+import { refreshApiFutebolBr } from './refresh-apifutebolbr.mjs'
 import {
   parseEspnStandings,
   parseValorfinalClubes,
@@ -181,6 +182,15 @@ async function main() {
       // dados já empacotados continuam válidos — não bloquear o resultado.
       console.warn(`  Dados avançados indisponíveis nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
     }
+    try {
+      // Artilharia + preenchimento paced de partidas (API Futebol BR).
+      await refreshApiFutebolBr({
+        log: (line) => console.log(`  ${line}`),
+        ourStandings: standings,
+      })
+    } catch (error) {
+      console.warn(`  API Futebol BR indisponível nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
+    }
   }
 
   // 5. Regeneração dos módulos TS.
@@ -244,7 +254,7 @@ async function main() {
   console.log('Executando suíte de testes...')
   run('npm', ['test'])
 
-  run('git', ['add', 'src/currentSeasonResults.ts', 'src/projectionData.ts', 'src/sourceMetadata.ts', 'src/advancedStats2026.ts', 'data/source-snapshots', 'docs/atualizacoes.md'])
+  run('git', ['add', 'src/currentSeasonResults.ts', 'src/projectionData.ts', 'src/sourceMetadata.ts', 'src/advancedStats2026.ts', 'src/scorers2026.ts', 'data/source-snapshots', 'docs/atualizacoes.md'])
   run('git', ['commit', '-m', `data: atualização pós-rodada ${cutoffLocalDate} (+${added.length} resultados)`])
   console.log(`Commit criado. O workflow faz push, build e deploy.`)
 }

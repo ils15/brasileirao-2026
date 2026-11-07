@@ -38,9 +38,13 @@ jobs:
         id: update
         env:
           FETCH: '1'
+          API_FUTEBOL_BR_KEY: ${{ secrets.API_FUTEBOL_BR_KEY }}
+          # Orçamento por ciclo da API Futebol BR: plano Premium (trial até
+          # 14/11/2026) = 1.000/dia; após o trial (100/dia), reduzir para 6.
+          API_FUTEBOL_BR_PER_RUN: '25'
         run: |
           node scripts/update-data.mjs
-          if [ -n "$(git status --porcelain -- src/currentSeasonResults.ts src/projectionData.ts src/sourceMetadata.ts data/source-snapshots docs/atualizacoes.md)" ]; then
+          if [ -n "$(git status --porcelain -- src/currentSeasonResults.ts src/projectionData.ts src/sourceMetadata.ts src/advancedStats2026.ts src/scorers2026.ts data/source-snapshots docs/atualizacoes.md)" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"

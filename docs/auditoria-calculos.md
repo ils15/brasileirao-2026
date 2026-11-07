@@ -308,3 +308,39 @@ fidelidade regulamentar (eliminar a queda direta para o sorteio do §17).
 conferidos com tabela agregada; sem cobertura de xG (placeholder "-" na
 fonte) o jogo entra nos cartões mas sai do dataset xG; módulo
 `src/advancedStats2026.ts` é GERADO — nunca editado à mão.
+
+
+## 19. API Futebol BR: artilharia automática e preenchimento em segundo plano — **Adotado**
+
+**Fonte:** API Futebol BR (api.api-futebol.com.br, Bearer key no secret
+`API_FUTEBOL_BR_KEY`). Sondagem em nov/2026 (plano Premium de teste,
+1.000 req/dia até 14/11; plano grátis segue com 100/dia):
+
+- `/v1/campeonatos/10/artilharia` → goleadores da edição atual
+  (**sem assistências** nos dados; endpoint dedicado de assistências não existe);
+- `/v1/campeonatos/10/tabela` → classificação: **20/20 clubes, 0
+  divergências** vs nossos placares na adesão (conciliação tripla com
+  ESPN standings e valorfinal);
+- `/v1/partidas/{id}` → gols por atleta (sem assistência) e **cartões por
+  partida** (cross-check com 365scores: nas 11 primeiras partidas comuns,
+  Δamarelos 4, Δvermelhos 0 — as fontes divergem em critérios de contagem;
+  365scores permanece a fonte do desempate);
+- **sem xG** nas estatísticas de partida; **sem rota para edições antigas**
+  (404 em /edicoes, /slug/fases e /artilharia/{edicao_id}).
+
+**Artilharia:** a lista manual (ESPN, sem metadados) foi substituída por
+`src/scorers2026.ts` GERADO a cada ciclo do updater, com Σgols de atletas
+≈ gols pró da tabela menos gols contra (872 vs 906 na adesão; pequenas
+diferenças por clube são gol contra e arredondamentos da fonte) e
+conciliação da tabela como guarda. Posição por empate compartilha o
+número do primeiro lugar.
+
+**Preenchimento histórico em segundo plano (sem pressa):** cada ciclo do
+updater coleta até `API_FUTEBOL_BR_PER_RUN` detalhes de partidas
+encerradas ainda não cobertos (rodadas recentes primeiro), guardando o
+acumulado em `data/source-snapshots/apifb-partidas-2026.json`. O
+"histórico" que o projeto consegue não vem desta API (sem edições
+antigas): vem do acúmulo ORGÂNICO dos snapshots anuais — 2026 vira a
+primeira temporada com xG + cartões completos; com 2027, o blend do §18
+ganha validação walk-forward ENTRE temporadas e o peso do xG é
+recalibrado sob o mesmo protocolo do k de produção.

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
-import { getZoneLabel, matchesClubFilter, scorers, standings, type ClubFilter, type Standing } from './data'
+import { getZoneLabel, matchesClubFilter, scorers, standings, SCORERS_SOURCE, type ClubFilter, type Standing } from './data'
 import { ProjectionSection } from './ProjectionSection'
 import { MethodologyPanel } from './MethodologyPanel'
 import { ProjectionProvider, useProjection } from './ProjectionContext'
@@ -382,7 +382,7 @@ function App(): JSX.Element {
                     </li>
                   ))}
                 </ol>
-                <p className="scorers-source-note">Fonte secundária: ESPN. Horário de captura específico da lista não informado neste painel.</p>
+                <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {SCORERS_SOURCE.fetchedAt.slice(0, 16).replace('T', ' ')} UTC · atualizada automaticamente após cada rodada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
                 <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
                 <a className="text-link" href={ESPN_URL} target="_blank" rel="noreferrer">Ver estatísticas na ESPN <span aria-hidden="true">↗</span></a>
               </section>

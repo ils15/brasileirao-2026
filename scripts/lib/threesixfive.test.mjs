@@ -159,10 +159,10 @@ describe('parseStatsCards', () => {
 describe('mergeAdvancedStats e validateAdvancedStats', () => {
   const base = parseGameDetail(gameDetail)
 
-  it('funde por gameId com precedência do existente e ordena', () => {
+  it('funde por gameId e nunca sobrescreve o já coletado', () => {
     const merged = mergeAdvancedStats([{ ...base, yellowHome: 9 }], [base])
     expect(merged).toHaveLength(1)
-    expect(merged[0].yellowHome).toBe(2)
+    expect(merged[0].yellowHome).toBe(9)
   })
 
   it('valida pares únicos, ΣxG próximo de Σgols e cartões não negativos', () => {

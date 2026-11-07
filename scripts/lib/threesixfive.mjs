@@ -186,10 +186,10 @@ export function parseStatsCards(jsonText) {
   return cardsByClub
 }
 
-/** Fusão incremental: registros existentes têm precedência; novos entram por gameId. */
+/** Fusão incremental por gameId: o que já foi coletado NUNCA é sobrescrito. */
 export function mergeAdvancedStats(existing, incoming) {
   const byId = new Map(existing.map((record) => [record.gameId, record]))
-  for (const record of incoming) byId.set(record.gameId, { ...byId.get(record.gameId), ...record })
+  for (const record of incoming) if (!byId.has(record.gameId)) byId.set(record.gameId, record)
   return [...byId.values()].sort((left, right) => left.gameId - right.gameId)
 }
 

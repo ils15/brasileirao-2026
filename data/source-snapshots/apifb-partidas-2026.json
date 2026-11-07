@@ -1,0 +1,127 @@
+{
+ "source": "API Futebol BR",
+ "fetchedAt": "2026-11-07T15:40:16.818Z",
+ "matches": [
+  {
+   "partidaId": 27965,
+   "home": "fluminense",
+   "away": "internacional",
+   "homeGoals": 2,
+   "awayGoals": 1,
+   "yellowHome": 2,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27975,
+   "home": "flamengo",
+   "away": "gremio",
+   "homeGoals": 3,
+   "awayGoals": 1,
+   "yellowHome": 0,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27976,
+   "home": "botafogo",
+   "away": "atletico-mg",
+   "homeGoals": 1,
+   "awayGoals": 0,
+   "yellowHome": 2,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27977,
+   "home": "sao-paulo",
+   "away": "corinthians",
+   "homeGoals": 0,
+   "awayGoals": 0,
+   "yellowHome": 5,
+   "yellowAway": 3,
+   "redHome": 0,
+   "redAway": 2
+  },
+  {
+   "partidaId": 27978,
+   "home": "palmeiras",
+   "away": "remo",
+   "homeGoals": 6,
+   "awayGoals": 1,
+   "yellowHome": 0,
+   "yellowAway": 4,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27979,
+   "home": "bragantino",
+   "away": "santos",
+   "homeGoals": 2,
+   "awayGoals": 1,
+   "yellowHome": 1,
+   "yellowAway": 3,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27980,
+   "home": "cruzeiro",
+   "away": "bahia",
+   "homeGoals": 3,
+   "awayGoals": 2,
+   "yellowHome": 3,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27981,
+   "home": "internacional",
+   "away": "coritiba",
+   "homeGoals": 1,
+   "awayGoals": 0,
+   "yellowHome": 3,
+   "yellowAway": 4,
+   "redHome": 1,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27982,
+   "home": "athletico-pr",
+   "away": "vasco",
+   "homeGoals": 1,
+   "awayGoals": 3,
+   "yellowHome": 3,
+   "yellowAway": 1,
+   "redHome": 1,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27983,
+   "home": "vitoria",
+   "away": "fluminense",
+   "homeGoals": 0,
+   "awayGoals": 3,
+   "yellowHome": 2,
+   "yellowAway": 0,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "partidaId": 27984,
+   "home": "chapecoense",
+   "away": "mirassol",
+   "homeGoals": 1,
+   "awayGoals": 2,
+   "yellowHome": 4,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  }
+ ]
+}

@@ -21,18 +21,29 @@ export const standings: Standing[] = currentClubs.map((club) => ({
   initials: club.initials,
 }))
 
-export const scorers: Scorer[] = [
-  { position: '1º', name: 'Kevin Viveros', club: 'Athletico Paranaense', goals: 21 },
-  { position: '2º', name: 'Pedro', club: 'Flamengo', goals: 18 },
-  { position: '3º', name: 'Gabriel Barbosa', club: 'Santos', goals: 15 },
-  { position: '4º', name: 'Kaio Jorge', club: 'Cruzeiro', goals: 13 },
-  { position: '5º', name: 'Samuel Lino', club: 'Flamengo', goals: 11 },
-  { position: '5º', name: 'Luciano Juba', club: 'Bahia', goals: 11 },
-  { position: '5º', name: 'Vinicius', club: 'Grêmio', goals: 11 },
-]
-
 import { ZONES } from './projectionConfig'
 import { currentClubs } from './projectionData'
+import { SCORERS_SOURCE, scorers2026 } from './scorers2026'
+
+export { SCORERS_SOURCE }
+
+// Artilharia derivada do módulo GERADO (API Futebol BR): a lista literal
+// manual (fonte ESPN sem metadados) foi substituída pela coleta automática
+// pós-rodada. Posições empatadas compartilham o número do primeiro lugar.
+const scorerClubNames = new Map(currentClubs.map(({ id, club }) => [id, club]))
+let lastGoals = -1
+let lastRank = 0
+export const scorers: Scorer[] = scorers2026.map((scorer, index) => {
+  const rank = scorer.goals === lastGoals ? lastRank : index + 1
+  lastGoals = scorer.goals
+  lastRank = rank
+  return {
+    position: `${rank}º`,
+    name: scorer.name,
+    club: scorerClubNames.get(scorer.club) ?? scorer.club,
+    goals: scorer.goals,
+  }
+})
 
 export type ClubFilter = 'all' | 'libertadores' | 'sudamericana' | 'sem-internacional' | 'relegation'
 
