@@ -186,3 +186,30 @@ consistente da literatura para modelos Poisson independentes.
 (ρ = 0 reproduz exatamente o comportamento anterior), mas a produção
 segue com ρ = 0. Se uma atualização futura quiser reabrir, rodar o
 mesmo experimento: estimar ρ na base vigente e comparar o Brier.
+
+
+## 16. Elo dinâmico e ensemble com o Poisson — **Testado e não adotado**
+
+Elo por clube (K=32, multiplicador de margem, mando +65) treinado
+sequencialmente sobre 2012–2025, H/E/F via expectativa logística com
+empate escalado pela taxa da liga. Ensemble por média com o Poisson
+de produção, varrendo o peso α.
+
+**Experimento (nov/2026), produção (339 jogos):**
+
+| α Poisson | Brier |
+|---|---|
+| 1,0 (só modelo) | **0,58125** |
+| 0,9 | 0,58226 |
+| 0,7 | 0,58659 |
+| 0,5 | 0,59402 |
+| 0,3 | 0,60455 |
+
+Monotônico: qualquer Elo dilui. Elo sozinho: 0,6485 (pior que o
+Poisson 0,6318 na varredura walk-forward por temporada). O Poisson
+com forças casa/fora + encolhimento já embute o que o Elo captura
+(força dinâmica), com menos ruído — o Elo adiciona variação sem
+informação nova.
+
+**Decisão:** não adotar. `eloModel.ts` permanece como utilidade
+testada para reabrir o experimento; produção segue 100% Poisson.
