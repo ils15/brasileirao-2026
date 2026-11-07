@@ -13,3 +13,7 @@ Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`
 
 - palmeiras 6–1 remo (football-data, csv-line-5658)
 - cruzeiro 3–2 bahia (espn, 401841303)
+
+## 2026-11-07 — 1 novo(s) resultado(s)
+
+- vitoria 0–3 fluminense (espn, 401841302)

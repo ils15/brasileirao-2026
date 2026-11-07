@@ -1,7 +1,7 @@
-// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-06T18:02:37.796Z.
+// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-07T00:58:14.422Z.
 // Fontes e hashes em CURRENT_SEASON_SOURCE; cópias brutas em data/source-snapshots/.
 // Football-Data: 338 linhas 2026 no CSV da coleta (sha256 8c901ae50d8633252522786c759f3cf9d41365ac4c0bab21df9edc408d9b56b4).
-// ESPN: 7 placares complementares com kickoff anterior ao corte.
+// ESPN: 1 placares complementares com kickoff anterior ao corte.
 export type CurrentSeasonMatch = {
   home: string
   away: string
@@ -15,7 +15,7 @@ export type CurrentSeasonMatch = {
 export const CURRENT_SEASON_SOURCE = {
   footballData: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
-    collectedAt: '2026-11-06T17:56:00-03:00',
+    collectedAt: '2026-11-07T00:58:00-03:00',
     timezone: 'not specified by the source; original date/time preserved',
     sha256: '8c901ae50d8633252522786c759f3cf9d41365ac4c0bab21df9edc408d9b56b4',
     file: 'data/source-snapshots/football-data-BR.csv',
@@ -23,20 +23,20 @@ export const CURRENT_SEASON_SOURCE = {
   },
   espn: {
     url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard',
-    collectedAt: '2026-11-06T17:56:00-03:00',
+    collectedAt: '2026-11-07T00:58:00-03:00',
     timezone: 'UTC (kickoff timestamps include Z)',
-    sha256: '1106ef24bcee1f71d6da1ef94e74d482e2a52a00d9b02ec07a3fa6a00ca028c1',
+    sha256: 'ee2997a36cce5a3dd3b54ccaaa9c173cfc6fb097b7edc9dfea9eac8e8ea8fc24',
     file: 'data/source-snapshots/',
-    completedMatches: 7,
+    completedMatches: 1,
   },
   historical: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
-    sha256: 'ed5c0925007f9ae35f97558993e597d41807e3f1507fae9d7e555bbab5b02bcf',
+    sha256: '05588b9b41b919a2457fe5a355a7e1b38227ead60ebfbd709d42a599e477aa9b',
     sourceAcquisitionForPriorPack: 'not independently established; local mtime/hash are the earlier supplied metadata',
   },
   cbfStandings: {
     url: 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026',
-    collectedAt: '2026-11-06T17:56:00-03:00',
+    collectedAt: '2026-11-07T00:58:00-03:00',
     displayedTimestamp: '04/11/2026 - 19:41',
     displayedTimestampTimezone: 'not specified',
     sha256: 'undefined',
@@ -384,4 +384,5 @@ export const currentSeasonResults: CurrentSeasonMatch[] = [
   { home: "sao-paulo", away: "corinthians", homeGoals: 0, awayGoals: 0, kickoff: "2026-11-05T00:30Z", source: "espn", sourceRef: "401841298" },
   { home: "palmeiras", away: "remo", homeGoals: 6, awayGoals: 1, kickoff: "2026-11-05T22:30", source: "football-data", sourceRef: "csv-line-5658" },
   { home: "cruzeiro", away: "bahia", homeGoals: 3, awayGoals: 2, kickoff: "2026-11-06T00:30Z", source: "espn", sourceRef: "401841303" },
+  { home: "vitoria", away: "fluminense", homeGoals: 0, awayGoals: 3, kickoff: "2026-11-06T23:00Z", source: "espn", sourceRef: "401841302" },
 ]
