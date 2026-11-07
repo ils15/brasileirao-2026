@@ -4,6 +4,7 @@ import { getCurrentVenueStats } from './seasonStats'
 import { Crest } from './Crest'
 import { HomeIcon, AwayIcon, CalendarIcon } from './icons'
 import { recentForm, currentStreaks, attackDefenseLeaders } from './rounds'
+import { matchProbabilities } from './matchProbabilities'
 import { useProjection } from './ProjectionContext'
 import { VenueStatsCard } from './FixtureCalendar'
 import { ZONES } from './projectionConfig'
@@ -19,6 +20,14 @@ const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFracti
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const integer = new Intl.NumberFormat('pt-BR')
 const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
+
+/** Pontos esperados do clube num confronto: 3×V + 1×E com as probabilidades do modelo. */
+function expectedPointsLabel(clubId: string, homeId: string, awayId: string): string {
+  const isHome = homeId === clubId
+  const [homeWin, draw, awayWin] = matchProbabilities(homeId, awayId).probabilities
+  const expected = 3 * (isHome ? homeWin : awayWin) + draw
+  return `+${expected.toFixed(2)} pts`
+}
 
 const FORM_LABELS = { W: 'V', D: 'E', L: 'D' } as const
 
@@ -95,7 +104,12 @@ function FinalProjection({ clubId, clubName }: { clubId: string; clubName: strin
   return (
     <div className="team-kpi team-kpi--wide">
       <strong>{club.pointsStats.median} pts <small className="cell-ci">mediana · {signedDecimal.format(delta)} vs hoje</small></strong>
-      <span>Destinos de {clubName} nas {integer.format(result.simulations)} simulações (faixa típica {club.pointsStats.p25}–{club.pointsStats.p75} · P90 {club.pointsStats.p90})</span>
+      <span>Destinos de {clubName} nas {integer.format(result.simulations)} simulações</span>
+      <div className="projection-zone-strip">
+        <div className="projection-zone-chip"><strong>+{delta.toFixed(1)}</strong><span>Δ esperado vs hoje (mediana)</span></div>
+        <div className="projection-zone-chip"><strong>{club.pointsStats.p90}</strong><span>P90 — cenário alto</span></div>
+        <div className="projection-zone-chip"><strong>{club.pointsStats.p25}–{club.pointsStats.p75}</strong><span>Faixa típica</span></div>
+      </div>
       <div className="projection-zone-strip">
         {zoneChips.map((chip) => (
           <div className="projection-zone-chip" key={chip.label}>
@@ -125,7 +139,7 @@ function FutureFixtures({ clubId, clubName }: { clubId: string; clubName: string
               <span className="team-future-venue" title={isHome ? 'Em casa' : 'Fora de casa'}>{isHome ? <HomeIcon /> : <AwayIcon />}</span>
               <Crest clubId={opponentId} size="xs" />
               <strong>× {opponent}</strong>
-              <span className="team-future-meta">R{fixture.round} · {fixture.cbfRef}</span>
+              <span className="team-future-meta">R{fixture.round} · {expectedPointsLabel(clubId, fixture.home, fixture.away)}</span>
             </li>
           )
         })}

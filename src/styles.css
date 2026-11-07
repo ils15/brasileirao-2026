@@ -952,3 +952,11 @@ th.numeric .sort-button { justify-content: flex-end; }
   .source-strip { grid-template-columns: minmax(0, 1fr); }
   .source-strip-right { justify-content: flex-start; }
 }
+
+/* Probabilidades e pontos esperados por jogo restante */
+.fixture-probs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 7px; }
+.fixture-prob { display: inline-block; padding: 3px 8px; border-radius: 3px; font: 600 12px var(--mono); }
+.fixture-prob--win { color: #4a7c35; background: #e3f0db; }
+.fixture-prob--draw { color: var(--text-secondary); background: var(--surface-tint); }
+.fixture-prob--loss { color: #9c4534; background: #f6ded7; }
+.fixture-prob-pts { margin-left: auto; color: var(--ink); font: 700 12px var(--mono); }

@@ -3,6 +3,7 @@ import { HomeIcon, AwayIcon, BallIcon } from './icons'
 import { ScoreLine } from './ScoreLine'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type VenueStats } from './seasonStats'
+import { matchProbabilities } from './matchProbabilities'
 
 const pointsPerMatchFormat = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -89,6 +90,22 @@ export function FixtureCalendar(): JSX.Element {
               <strong>{home} <span aria-label="contra">×</span> {away}</strong>
               <p>Adversário: {opponent} · {isHome ? 'jogo em casa' : 'jogo fora'}</p>
               <small>Referência CBF {fixture.cbfRef}</small>
+              {(() => {
+                const { probabilities } = matchProbabilities(fixture.home, fixture.away)
+                const clubWin = isHome ? probabilities[0] : probabilities[2]
+                const clubDraw = probabilities[1]
+                const clubLoss = isHome ? probabilities[2] : probabilities[0]
+                const expectedPoints = 3 * clubWin + clubDraw
+                const pct = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
+                return (
+                  <div className="fixture-probs" aria-label={`Probabilidades para ${clubNames.get(fixture.home) ?? fixture.home} × ${clubNames.get(fixture.away) ?? fixture.away}: vitória de ${clubNames.get(fixture.home) ?? fixture.home} ${pct.format(probabilities[0])}, empate ${pct.format(probabilities[1])}, vitória de ${clubNames.get(fixture.away) ?? fixture.away} ${pct.format(probabilities[2])}`}>
+                    <span className="fixture-prob fixture-prob--win">V {pct.format(clubWin)}</span>
+                    <span className="fixture-prob fixture-prob--draw">E {pct.format(clubDraw)}</span>
+                    <span className="fixture-prob fixture-prob--loss">D {pct.format(clubLoss)}</span>
+                    <span className="fixture-prob-pts">+{expectedPoints.toFixed(2)} pts esperados</span>
+                  </div>
+                )
+              })()}
               <div className="head-to-head-context">
                 <p>Retrospecto H2H · informativo; sem peso na projeção. Resultados históricos, não previsão.</p>
                 <div className="h2h-mini-grid" aria-label={`Estatísticas H2H de ${home} contra ${away}`}>
@@ -124,7 +141,7 @@ export function FixtureCalendar(): JSX.Element {
           )
         })}
       </ol>
-      <p className="fixture-calendar-note">Sem índice de dificuldade: os adversários e o mando ficam explícitos; a força relativa vem das taxas casa/fora regularizadas e dos jogos históricos, não de um rótulo de calendário.</p>
+      <p className="fixture-calendar-note">Sem índice de dificuldade: os adversários e o mando ficam explícitos; a força relativa vem das taxas casa/fora regularizadas e dos jogos históricos, não de um rótulo de calendário. As probabilidades de V/E/D são do modelo (não são odds). A classificação final simulada aplica os critérios REC de desempate: pontos → vitórias → saldo → gols pró → confronto direto entre os empatados → sorteio.</p>
     </section>
   )
 }
