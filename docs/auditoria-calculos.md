@@ -234,3 +234,77 @@ do sorteio oficial na ausência de cartões: aleatória.
 **Vascone**: clubes médios em Z4 disputada que ganham seus confrontos
 diretos ganham menos que na versão anterior com mini-tabela — a versão
 com mini-tabela era mais generosa do que o regulamento prevê.
+
+
+## 18. Blend xG × gols e cartões no desempate — **Adotado**
+
+**Contexto:** gols são a métrica mais ruidosa do futebol (~2,7/jogo; um
+clube tem ~38 "eventos de gol" por temporada). O xG agrega a qualidade de
+todas as chances, convergindo mais rápido para a força real. Foi a última
+melhoria de grande porte candidata para o modelo (Dixon-Coles §15 e Elo
+§16 já haviam falhado na medição).
+
+**Fonte:** FBref/SofaScore/FotMob estão atrás de Cloudflare para clientes
+sem navegador (403 testado em nov/2026). A API pública **365scores**
+responde JSON estável, sem key, com xG por chute (`chartEvents.events[].xg`,
+competitorNum 1/2) e cartões por partida (`events[].eventType.name` +
+`competitorId`). Validada na adesão: **339/339 pares ordenados e placares
+idênticos** aos resultados empacotados; ΣxG auditado contra Σgols
+(±25%) a cada coleta. **Cartões:** a fonte tem duas visões que contam
+diferente — a soma dos eventos por partida é sistematicamente ~4–6
+amarelos por clube maior que a tabela agregada "Yellow Cards" (19/20
+clubes), consistente com a tabela excluir cartões de banco/comissão
+técnica. Adotamos a soma por partida (granular, internamente
+consistente, sempre ≥ agregado) como fonte única; a tabela agregada
+fica como aviso no log e como guarda inferior (a soma por jogo jamais
+pode ser menor que o agregado). Parser: `scripts/lib/threesixfive.mjs`;
+coleta incremental: `scripts/backfill-xg-cards.mjs`, chamado pelo updater
+(falha da fonte não bloqueia o resultado — mantém snapshot anterior).
+
+**Blend:** λ final = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub>, com o λ em
+xG usando a MESMA mecânica de taxas por mando regularizadas (k=20), com os
+"gols" das partidas 2026 substituídos pelo xG somado dos chutes. A base
+longa 2012–2025 permanece só em gols (xG aberto do Brasileirão não existe
+para esse período).
+
+**Protocolo:** walk-forward POR RODADA de 2026 — treino até a rodada t−1
+(gols da base longa + xG das rodadas anteriores), teste na rodada t com
+Brier de resultado H/E/F; o xG da própria rodada nunca entra no treino.
+Candidatos w ∈ {0, 0.15, 0.25, 0.33, 0.5, 0.67, 0.75, 1}.
+
+**Resultado (corte nov/2026, 33 rodadas, 327 jogos de teste):**
+Brier acumulado por peso — w=0 (só gols) 0,60789 · **w=0,15 → 0,60772
+(melhor)** · 0,25 → 0,60799 · 0,33 → 0,60843 · 0,5 → 0,61003 ·
+0,67 → 0,61256 · 0,75 → 0,61408 · w=1 (só xG) 0,62018. Direção
+consistente: um pouco de xG melhora, muito piora — o resultado final
+depende da finalização, não só da qualidade das chances. A tabela viva
+peso→Brier fica na aba Metodologia & Validação (bloco "xG × gols"),
+recalculada a cada coleta.
+
+**Ressalva honesta (in-sample):** o peso é escolhido e medido nas MESMAS
+rodadas de 2026 — não há temporada anterior com xG para validação fora
+da amostra (limitação análoga à do §14, sem alternativa disponível). O
+ganho de 0,00017 pode ser ruído; a adoção de w=0,15 é o mínimo
+não-nulo, teoricamente motivado, e o modelo de gols puro permanece
+disponível com w=0. **Plano de recalibração:** na temporada 2027, com
+duas temporadas de xG, o peso passa a ser validado walk-forward ENTRE
+temporadas (mesma política do k de produção). O peso fixo de produção
+`XG_BLEND_WEIGHT` (projectionConfig.ts) NÃO é recalibrado
+automaticamente; atualizações de dados podem mover o vencedor sem
+invalidar a decisão original (o painel exibe o vencedor corrente).
+
+**Cartões no desempate (itens 5/6 do Art. 15):** cartões reais da fonte +
+taxa por jogo da temporada × jogos restantes = total projetado por clube
+(determinístico, constante por temporada — `src/discipline.ts`). Menor
+vermelho resolve primeiro; menor amarelo em seguida; ainda empatados,
+sorteio reprodutível. Cartões NÃO são simulados jogo a jogo: o regulamento
+usa apenas a contagem agregada para desempatar, e a taxa média do clube é
+a estimativa honesta disponível. Impacto esperado pequeno: só resolve
+empates de 3+ clubes idênticos em pontos, vitórias, saldo e gols pró —
+vermelhos por clube (~4–6/temporada) são quase puro ruído; o ganho é de
+fidelidade regulamentar (eliminar a queda direta para o sorteio do §17).
+
+**Guardas de publicação:** pares únicos no calendário; ΣxG ≈ Σgols; cartões
+conferidos com tabela agregada; sem cobertura de xG (placeholder "-" na
+fonte) o jogo entra nos cartões mas sai do dataset xG; módulo
+`src/advancedStats2026.ts` é GERADO — nunca editado à mão.

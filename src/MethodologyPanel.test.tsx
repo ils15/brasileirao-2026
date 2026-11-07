@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { MethodologyPanel } from './MethodologyPanel'
-import { runProjection } from './projection'
+import { estimateExpectedGoals, runProjection } from './projection'
 import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { expectedGoalsBreakdown } from './matchModel'
@@ -20,8 +20,11 @@ describe('aba metodologia & validação', () => {
     expect(screen.getByText(/base de treino efetiva/i)).toBeInTheDocument()
     expect(screen.getByText(new RegExp(HISTORICAL_SOURCE.sha256))).toBeInTheDocument()
     expect(screen.getByText(/A validação agregada contra tabelas finais CBF cobre 2021–2025/)).toBeInTheDocument()
-    expect(screen.getByText(/resultados H2H concluídos de 2026 nos snapshots disponíveis são acumulados com os resultados simulados/)).toBeInTheDocument()
+    // Art. 15 completo: confronto direto só para 2 clubes; cartões projetados para 3+; sorteio por último
+    expect(screen.getByText(/As posições seguem o Art\. 15 do REC 2026/)).toBeInTheDocument()
+    expect(screen.getByText(/cartões vermelhos e amarelos projetados pela taxa por jogo da temporada/)).toBeInTheDocument()
     expect(screen.getByText(/o H2H 2026 disponível entra somente no desempate entre dois clubes/)).toBeInTheDocument()
+    expect(screen.getByText(/cartões reais e projetados entram no desempate de três ou mais clubes/)).toBeInTheDocument()
   })
 
   it('apresenta os quatro modelos de ablação em cada dobra temporal sem sugerir ganho consistente', () => {
@@ -45,7 +48,21 @@ describe('aba metodologia & validação', () => {
     expect(screen.getByText(/média da liga na base de treino/i)).toBeInTheDocument()
   })
 
-  it('o exemplo numérico do λ é rastreável e bate com o λ de produção', () => {
+  it('exibe o bloco do blend xG × gols com os pesos candidatos e o peso de produção', { timeout: 30_000 }, () => {
+    render(<MethodologyPanel result={runProjection({ simulations: 8, seed: 123 })} status="ready" onRetry={vi.fn()} />)
+
+    const region = screen.getByRole('region', { name: /Brier do blend xG por peso/ })
+    expect(within(region).getByRole('columnheader', { name: /PESO DO xG/ })).toBeInTheDocument()
+    expect(within(region).getByRole('columnheader', { name: /BRIER ACUMULADO/ })).toBeInTheDocument()
+    // Modelos puros delimitam a tabela; o melhor peso medido aparece marcado
+    expect(within(region).getByRole('row', { name: /só gols/ })).toBeInTheDocument()
+    expect(within(region).getByRole('row', { name: /só xG/ })).toBeInTheDocument()
+    expect(within(region).getAllByRole('row', { name: /melhor/ }).length).toBe(1)
+    // Produção declara o peso fixado (w = 0,15 adotado no corte nov/2026)
+    expect(screen.getByText(/Produção usa w = 0,150/)).toBeInTheDocument()
+  })
+
+  it('o exemplo numérico do λ é rastreável e bate com o λ de produção (blend incluído)', () => {
     const result = runProjection({ simulations: 8, seed: 123 })
     render(<MethodologyPanel result={result} status="ready" onRetry={vi.fn()} />)
 
@@ -57,8 +74,11 @@ describe('aba metodologia & validação', () => {
     // O λ exibido no exemplo é o mesmo caminho da produção
     const breakdown = expectedGoalsBreakdown(fixture.home, fixture.away, productionTrainingMatches, 2026, result.featureBacktest.productionShrinkageMatches)
     const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
-    const steps = screen.getByText(/Decomposição:/).closest('li')!
+    const steps = screen.getByText(/Decomposição em gols:/).closest('li')!
     expect(steps).toHaveTextContent(`= ${decimal.format(breakdown.expected.home)}`)
+    // Blend ativo: o exemplo mostra o λ final de produção (gols + xG)
+    const blendStep = screen.getByText(/Blend com xG:/).closest('li')!
+    expect(blendStep).toHaveTextContent(`= ${decimal.format(estimateExpectedGoals(fixture.home, fixture.away).home)}`)
   })
 
   it('mantém o destino #estatisticas disponível nos estados loading e error', () => {

@@ -1,13 +1,14 @@
 import { useMemo, type JSX } from 'react'
-import { POINT_CURVE_LOW_SAMPLE_WIDTH, SHRINKAGE_CANDIDATES, SIMULATION_SEED } from './projectionConfig'
-import type { ProjectionResult } from './projection'
+import { POINT_CURVE_LOW_SAMPLE_WIDTH, SHRINKAGE_CANDIDATES, SIMULATION_SEED, XG_BLEND_CANDIDATES, XG_BLEND_WEIGHT } from './projectionConfig'
+import { estimateExpectedGoals, type ProjectionResult } from './projection'
 import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { CURRENT_SEASON_SOURCE } from './currentSeasonResults'
 import { ANALYTICAL_CUTOFF_LOCAL, ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
-import { productionTrainingMatches } from './modelBacktest'
-import { expectedGoalsBreakdown, teamStrengthTable, historicalGoalAverages } from './matchModel'
+import { productionTrainingMatches, productionXgMatches, runXgBlendAblation } from './modelBacktest'
+import { expectedGoalsBreakdown, expectedGoalsFromXg, teamStrengthTable, historicalGoalAverages } from './matchModel'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { seasonFacts, historicalFacts } from './seasonFacts'
+import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
 import type { ProjectionStatus } from './ProjectionContext'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
@@ -67,12 +68,69 @@ function StrengthTable({ result }: { result: ProjectionResult }): JSX.Element {
   )
 }
 
+/** Ablação do blend xG × gols: Brier por peso candidato (walk-forward por rodada de 2026). */
+function XgBlendBlock(): JSX.Element | null {
+  const ablation = useMemo(() => runXgBlendAblation(), [])
+  const sortedWeights = [...XG_BLEND_CANDIDATES]
+  const productionWeight = ablation.eligible ? XG_BLEND_WEIGHT : 0
+  if (ablation.rounds.length === 0) return null
+  const coveredClubs = new Set(advancedMatches.flatMap(({ home, away }) => [home, away])).size
+  const productionUsesXg = productionWeight > 0 && ablation.brierByWeight.get(productionWeight)! < ablation.brierByWeight.get(0)!
+
+  return (
+    <section className="projection-block ablation-block" aria-labelledby="xg-title">
+      <div className="projection-block-heading">
+        <div><p className="eyebrow eyebrow-dark">xG × GOLS</p><h3 id="xg-title">Blend xG × gols — teste walk-forward por rodada de 2026</h3></div>
+        <span>{ADVANCED_STATS_SOURCE.name} · menor Brier é melhor</span>
+      </div>
+      <p className="projection-table-note">
+        Gols são eventos raros; o xG soma a qualidade de todas as chances. Recalculamos as taxas de ataque/defesa da
+        temporada em xG ({ablation.coveredMatches} jogos com cobertura, {coveredClubs} clubes) e misturamos com o
+        modelo de gols da base longa: λ final = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub>. O teste treina até a rodada
+        t−1 (o xG da própria rodada nunca entra) e mede o Brier de resultado H/empate/F na rodada t, acumulado sobre
+        {' '}{ablation.rounds.length} rodadas. Pesos 0 e 1 delimitam os modelos puros.
+      </p>
+      <div className="table-scroll projection-table-scroll" role="region" aria-label="Brier do blend xG por peso" tabIndex={0}>
+        <table className="projection-table backtest-table ablation-table">
+          <thead><tr><th scope="col">PESO DO xG (w)</th><th scope="col" className="numeric">BRIER ACUMULADO</th><th scope="col" className="numeric">DIFERENÇA VS SÓ GOLS</th></tr></thead>
+          <tbody>
+            {sortedWeights.map((weight) => {
+              const brier = ablation.brierByWeight.get(weight)
+              if (brier == null) return null
+              const delta = brier - ablation.brierByWeight.get(0)!
+              const isBest = weight === ablation.bestWeight
+              return (
+                <tr key={weight} className={isBest ? 'xg-row--best' : undefined}>
+                  <th scope="row">{weight === 0 ? '0 (só gols)' : weight === 1 ? '1 (só xG)' : decimal.format(weight)}{isBest ? ' · melhor' : ''}</th>
+                  <td className="numeric">{decimal.format(brier)}</td>
+                  <td className="numeric">{delta === 0 ? '—' : `${delta > 0 ? '+' : ''}${decimal.format(delta)}`}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="projection-table-note">
+        {productionWeight > 0 && ablation.eligible
+          ? `Produção usa w = ${decimal.format(productionWeight)}${productionUsesXg ? ` — melhora o Brier de só gols (${decimal.format(ablation.brierByWeight.get(0)!)} → ${decimal.format(ablation.brierByWeight.get(productionWeight)!)})` : ' (peso fixo; empate técnico com só gols neste corte)'}.`
+          : 'Produção segue só em gols: o peso do xG não melhorou o Brier walk-forward de forma consistente neste corte.'}
+        {ablation.unmatchedMatches > 0 && ` ${ablation.unmatchedMatches} jogo(s) da fonte ficaram fora do calendário e entram só na próxima coleta.`}
+        Confira a auditoria §18 para o protocolo completo e o histórico da decisão.
+      </p>
+    </section>
+  )
+}
+
 function NumericExample({ result }: { result: ProjectionResult }): JSX.Element {
   const example = useMemo(() => {
     const fixture = remainingFixtures[0]!
     const k = result.featureBacktest.productionShrinkageMatches
     const breakdown = expectedGoalsBreakdown(fixture.home, fixture.away, productionTrainingMatches, 2026, k)
-    return { fixture, k, breakdown }
+    const xgAblation = runXgBlendAblation()
+    const xgExpected = xgAblation.eligible ? expectedGoalsFromXg(fixture.home, fixture.away, productionXgMatches, k) : null
+    const weight = xgAblation.eligible ? XG_BLEND_WEIGHT : 0
+    const production = estimateExpectedGoals(fixture.home, fixture.away)
+    return { fixture, k, breakdown, xgExpected, weight, production }
   }, [result])
   const nameFor = new Map(currentClubs.map(({ id, club }) => [id, club]))
   const home = nameFor.get(example.fixture.home) ?? example.fixture.home
@@ -89,10 +147,14 @@ function NumericExample({ result }: { result: ProjectionResult }): JSX.Element {
         <li><strong>Base de treino:</strong> média de gols por mando na base efetiva — μ<sub>casa</sub> = {decimal.format(averages.home)}, μ<sub>fora</sub> = {decimal.format(averages.away)} (histórico {historicalFacts.firstYear}–{historicalFacts.lastYear} + {seasonFacts.playedCount} jogos de 2026 até o corte).</li>
         <li><strong>Força de {home} em casa:</strong> taxa de ataque regularizada = {decimal.format(homeAttackRate)} gols/jogo (média da liga como mandante: {decimal.format(averages.home)}).</li>
         <li><strong>Defesa de {away} fora:</strong> taxa de gols sofridos como visitante = {decimal.format(awayDefenseRate)} gols/jogo.</li>
-        <li><strong>Decomposição:</strong> λ<sub>{home}</sub> = μ<sub>casa</sub> × (ataque<sub>{home}</sub>/μ<sub>casa</sub>) × (defesa<sub>{away}</sub>/μ<sub>casa</sub>) = {decimal.format(averages.home)} × ({decimal.format(homeAttackRate)}/{decimal.format(averages.home)}) × ({decimal.format(awayDefenseRate)}/{decimal.format(averages.home)}) = <strong>{decimal.format(expected.home)}</strong>.</li>
-        <li><strong>Resultado:</strong> λ de {home} = {decimal.format(expected.home)} e λ de {away} = {decimal.format(expected.away)} alimentam duas Poisson independentes; os marginais H/E/F viram as barras do painel de Confrontos.</li>
+        <li><strong>Decomposição em gols:</strong> λ<sub>{home}</sub> = μ<sub>casa</sub> × (ataque<sub>{home}</sub>/μ<sub>casa</sub>) × (defesa<sub>{away}</sub>/μ<sub>casa</sub>) = {decimal.format(averages.home)} × ({decimal.format(homeAttackRate)}/{decimal.format(averages.home)}) × ({decimal.format(awayDefenseRate)}/{decimal.format(averages.home)}) = {decimal.format(expected.home)}.</li>
+        {example.xgExpected && example.weight > 0 ? (
+          <li><strong>Blend com xG:</strong> λ<sub>{home}</sub> = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub> = (1−{decimal.format(example.weight)})·{decimal.format(expected.home)} + {decimal.format(example.weight)}·{decimal.format(example.xgExpected.home)} = <strong>{decimal.format(example.production.home)}</strong> (λ<sub>xG</sub> de {away} = {decimal.format(example.xgExpected.away)}). Este é o λ exibido no painel de Confrontos.</li>
+        ) : (
+          <li><strong>Resultado:</strong> λ de {home} = {decimal.format(expected.home)} e λ de {away} = {decimal.format(expected.away)} alimentam duas Poisson independentes; os marginais H/E/F viram as barras do painel de Confrontos.</li>
+        )}
       </ol>
-      <p className="projection-table-note">Piso de 0,05 gols aplicado a cada λ; encadeamento idêntico ao usado nos 48 confrontos da simulação.</p>
+      <p className="projection-table-note">Piso de 0,05 aplicado a cada λ; encadeamento idêntico ao usado nos 48 confrontos da simulação.</p>
     </section>
   )
 }
@@ -154,6 +216,7 @@ export function MethodologyPanel({ result, status, onRetry }: MethodologyPanelPr
             </div>
           </section>
 
+          <XgBlendBlock />
           <StrengthTable result={result} />
           <NumericExample result={result} />
 
@@ -162,11 +225,11 @@ export function MethodologyPanel({ result, status, onRetry }: MethodologyPanelPr
             <div className="method-copy">
               <h3>Método de gols esperados</h3>
               <p>Na base de treino efetiva ({historicalFacts.totalMatches} placares de {historicalFacts.firstYear}–{historicalFacts.lastYear} mais os {seasonFacts.playedCount} resultados de 2026 até o corte), μ<sub>casa</sub> = {decimal.format(result.trainingGoalAverages.home)} e μ<sub>fora</sub> = {decimal.format(result.trainingGoalAverages.away)} são as médias por mando usadas pelo modelo; no histórico puro de {historicalFacts.firstYear}–{historicalFacts.lastYear}, μ<sub>casa</sub> = {decimal.format(result.leagueAverageGoals.home)} e μ<sub>fora</sub> = {decimal.format(result.leagueAverageGoals.away)}. Para cada clube e mando v, as taxas de ataque e gols sofridos usam (gols 2026<sub>c,v</sub> + k × taxa histórica<sub>c,v</sub>)/(jogos 2026<sub>c,v</sub> + k), com k = {result.featureBacktest.productionShrinkageMatches}. As taxas históricas específicas por clube/mando são ponderadas por recência (meia-vida de 2,5 temporadas) e regularizadas para a média da liga com 20 jogos ponderados prévios. λ<sub>casa</sub> = μ<sub>casa</sub> × ataque<sub>mandante,casa</sub>/μ<sub>casa</sub> × defesa<sub>visitante,fora</sub>/μ<sub>casa</sub>; λ<sub>fora</sub> = μ<sub>fora</sub> × ataque<sub>visitante,fora</sub>/μ<sub>fora</sub> × defesa<sub>mandante,casa</sub>/μ<sub>fora</sub>. Placares são amostrados de Poisson independentes.</p>
-              <p>Foram simulados {integer.format(result.simulations)} campeonatos com semente fixa {SIMULATION_SEED}; cada um incorpora os {seasonFacts.remainingCount} confrontos informados (incluindo os adiados) e os pontos, vitórias e gols do snapshot. As posições usam pontos, vitórias, saldo e gols pró. Para empate de dois clubes, os resultados H2H concluídos de 2026 nos snapshots disponíveis são acumulados com os resultados simulados (pontos, saldo e gols marcados no confronto); placares individuais não foram conferidos contra a CBF. O REC também considera cartões e sorteio, ausentes dos dados. Empates ainda não resolvidos usam desempate uniforme reprodutível, então não há aplicação integral dos critérios oficiais.</p>
+              <p>Foram simulados {integer.format(result.simulations)} campeonatos com semente fixa {SIMULATION_SEED}; cada um incorpora os {seasonFacts.remainingCount} confrontos informados (incluindo os adiados) e os pontos, vitórias e gols do snapshot. As posições seguem o Art. 15 do REC 2026: pontos, vitórias, saldo e gols pró; para empate de dois clubes, o confronto direto (pontos, saldo e gols marcados no confronto, reais + simulados); para três ou mais, cartões vermelhos e amarelos projetados pela taxa por jogo da temporada (fonte 365scores — cartões não são simulados jogo a jogo) e, por fim, sorteio reprodutível. Placares individuais não foram conferidos contra a CBF.</p>
               <p>O backtest usa o limite dos primeiros 300 jogos em ordem cronológica como corte e as partidas seguintes como teste; kickoffs idênticos não são separados, portanto o tamanho do conjunto de teste pode variar. Médias, forças e frequências são estimadas sem jogos posteriores ao corte; a política anual de k usa somente os anos anteriores (2021 usa k=12 pré-fixado). Para 2026, k = {result.featureBacktest.productionShrinkageMatches} foi herdado da seleção walk-forward da temporada 2025 (escolhido apenas com os anos anteriores, entre {SHRINKAGE_CANDIDATES.join(', ')}); não há validação independente adicional. As ablações de casa/fora e H2H estão expostas acima; H2H não entra na previsão de 2026 porque não melhorou de modo consistente.</p>
               <p>A distribuição P(pontuação exata | resultado) conta clubes×simulação em cada total inteiro observado dentro de categorias finais exclusivas; cada valor exibe K/N, em que N é o total de clubes-simulações da categoria, e pontos com K=0 são omitidos. A curva separada P(resultado | pontuação exata) usa Libertadores 1º–5º e Sul-Americana 6º–11º. Nela, cada simulação é um cluster no IC de 95%, para não tratar os 20 clubes da mesma tabela como independentes. “Amostra baixa” significa intervalo com largura de ao menos {percent.format(POINT_CURVE_LOW_SAMPLE_WIDTH)}; resultados com K=0 não são estimados.</p>
-              <p>Por que nossos números podem diferir de outros sites: (1) nosso modelo é baseado em <strong>gols</strong> (Poisson com forças casa/fora de 2012–2026) — sites que usam xG, odds de mercado ou dados de chutes podem avaliar os clubes de forma diferente; (2) empates entre três ou mais clubes caem no <strong>sorteio reprodutível</strong> — o Art. 15 do REC 2026 prevê cartões antes do sorteio, mas cartões não existem nos nossos snapshots; (3) com 500.000 simulações, o ruído de Monte Carlo é de ±0,14 p.p. em probabilidades próximas de 50%. O exemplo do Vasco na rodada 34: com 41 pts e 5 jogos (Chape fora, Inter em casa, Bragantino fora, Atlético-MG fora, Vitória em casa), a mediana simulada foi 48 pts e o rebaixamento 2,47% — a vitória por 3–1 sobre o Athletico-PR derrubou o número de ~7% para 2,47% na atualização seguinte.</p>
-              <p>As regras históricas eram: 1º campeão; 2º–6º Libertadores; 7º–12º Sul-Americana; 13º–16º meio; 17º–20º rebaixamento. Para 2026: 1º–4º Libertadores direta, 5º preliminar, 6º–11º Sul-Americana e quatro últimos rebaixados. Vagas de copas nacionais/CONMEBOL e suas redistribuições não são simuladas. O desempate usa pontos, vitórias, saldo e gols pró; o H2H 2026 disponível entra somente no desempate entre dois clubes, nunca nas probabilidades. H2H de {historicalFacts.firstYear}–{historicalFacts.lastYear} é exibido como contexto; cartões e sorteio não são simulados.</p>
+              <p>Por que nossos números podem diferir de outros sites: (1) o núcleo do modelo é Poisson com forças casa/fora de 2012–2026 <strong>em gols</strong> — quando o blend de xG está ativo (bloco acima), ele corrige a leitura da temporada sem substituir a base longa, mas sites com xG de outras provedoras ou odds de mercado ainda podem divergir; (2) cartões no desempate são <strong>projetados pela taxa média do clube</strong> (não simulados jogo a jogo), então empates de três ou mais clubes que os cartões não resolvem caem no sorteio reprodutível; (3) com 500.000 simulações, o ruído de Monte Carlo é de ±0,14 p.p. em probabilidades próximas de 50%. O exemplo do Vasco na rodada 34: com 41 pts e 5 jogos (Chape fora, Inter em casa, Bragantino fora, Atlético-MG fora, Vitória em casa), a mediana simulada foi 48 pts e o rebaixamento 2,47% — a vitória por 3–1 sobre o Athletico-PR derrubou o número de ~7% para 2,47% na atualização seguinte.</p>
+              <p>As regras históricas eram: 1º campeão; 2º–6º Libertadores; 7º–12º Sul-Americana; 13º–16º meio; 17º–20º rebaixamento. Para 2026: 1º–4º Libertadores direta, 5º preliminar, 6º–11º Sul-Americana e quatro últimos rebaixados. Vagas de copas nacionais/CONMEBOL e suas redistribuições não são simuladas. O desempate usa pontos, vitórias, saldo e gols pró; o H2H 2026 disponível entra somente no desempate entre dois clubes, nunca nas probabilidades. H2H de {historicalFacts.firstYear}–{historicalFacts.lastYear} é exibido como contexto; cartões reais e projetados entram no desempate de três ou mais clubes (itens 5/6 do Art. 15) e o sorteio reprodutível é o último passo.</p>
               <p>O corte de projeção é {ANALYTICAL_CUTOFF_LOCAL.replace('T', ' ').replace('-03:00', ' BRT')} ({ANALYTICAL_CUTOFF_UTC}); a coleta é distinta: Football-Data, ESPN e página CBF foram capturados em {CURRENT_SEASON_SOURCE.cbfStandings.collectedAt.replace('T', ' ')}. O HTML CBF arquivado imprime “{CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp}”; fuso e semântica de publicação/atualização não são indicados. A CBF foi usada somente para conferir agregados, não para validar resultados individuais. Dos {CURRENT_SEASON_SOURCE.footballData.rows2026} resultados de Football-Data, somam-se os placares ESPN com kickoffs anteriores ao corte, totalizando {seasonFacts.playedCount} resultados. Os snapshots e hashes estão em <code>data/source-snapshots/</code>. O calendário contém {seasonFacts.scheduledCount} jogos da tabela básica CBF, dos quais {seasonFacts.remainingCount} permanecem. Football-Data não informa fuso horário no campo Time e alerta para erros de compilação; é fonte secundária.</p>
               <p>Os {historicalFacts.totalMatches} placares históricos ({historicalFacts.seasons} temporadas, {historicalFacts.firstYear}–{historicalFacts.lastYear}) foram empacotados com data/hora do CSV e ordinal original por temporada. A validação agregada contra tabelas finais CBF cobre {historicalFacts.verifiedRange}; as temporadas anteriores não foram verificadas contra fonte independente. O pacote histórico informa mtime local {HISTORICAL_SOURCE.localFileMtime} (metadado de arquivo, não timestamp de publicação) e SHA-256 <code className="source-hash">{HISTORICAL_SOURCE.sha256}</code>; a cópia bruta está preservada em <code>data/source-snapshots/football-data-BR.csv</code>, fora dos ativos de runtime.</p>
               <p>Fontes: <a href={CBF_URL} target="_blank" rel="noreferrer">tabela CBF 2026</a> · <a href={FIXTURES_URL} target="_blank" rel="noreferrer">tabela básica CBF de jogos 2026</a> · <a href={REC_URL} target="_blank" rel="noreferrer">REC CBF 2026, arts. 6º–8º e 15</a> · <a href={HISTORICAL_URL} target="_blank" rel="noreferrer">Football-Data — placares históricos</a> · <a href="/brasileirao-2026/" className="text-link">auditoria de cálculos e dicionário de dados em docs/</a>.</p>

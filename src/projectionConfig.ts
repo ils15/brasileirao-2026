@@ -8,6 +8,18 @@ export const POINT_CURVE_LOW_SAMPLE_WIDTH = 0.10
 export const SHRINKAGE_CANDIDATES = [0, 2, 4, 6, 8, 10, 12, 15, 20, 25, 30] as const
 
 /**
+ * Blend xG × gols (§18 da auditoria): o λ de produção mistura o modelo em
+ * gols (base longa 2012–2026) com o modelo estimado em xG da temporada 2026
+ * (fonte 365scores). O peso fixo é o vencedor do walk-forward por rodada de
+ * 2026 (Brier de resultado V/E/D), medido por `runXgBlendAblation` — se o
+ * empate técnico persistir, 0 mantém o modelo só em gols.
+ */
+export const XG_BLEND_CANDIDATES = [0, 0.15, 0.25, 0.33, 0.5, 0.67, 0.75, 1] as const
+export const XG_BLEND_WEIGHT = 0.15 as const
+/** Mínimo de jogos com cobertura de xG para o blend ser aplicado em produção. */
+export const XG_MIN_COVERED_MATCHES = 40
+
+/**
  * Fronteiras de zona usadas em TODA a aplicação (classificação exibida,
  * contagem por clube na simulação e rótulos). Antes da auditoria existiam
  * três definições convivendo: probabilidades por clube (1º–5º), categorias

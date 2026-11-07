@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
+  blendExpectedGoals,
   estimateHeadToHeadAdjustment,
   expectedGoalsFromTeamTotals,
+  expectedGoalsFromXg,
   historicalGoalAverages,
   poissonResultProbabilities,
   type ModelMatch,
@@ -42,6 +44,37 @@ describe('fórmulas de gols esperados e probabilidades', () => {
     }
     // Time da casa mais forte deve ter probabilidade de vitória maior.
     expect(probabilities[0]).toBeGreaterThan(probabilities[2])
+  })
+})
+
+describe('blend xG × gols (§18)', () => {
+  const goalsExpected = { home: 1.8, away: 0.9 }
+  const xgExpected = { home: 1.2, away: 1.4 }
+
+  it('peso 0 devolve o modelo de gols sem transformação', () => {
+    expect(blendExpectedGoals(goalsExpected, xgExpected, 0)).toEqual(goalsExpected)
+  })
+
+  it('peso 1 devolve o modelo só em xG com piso de segurança', () => {
+    expect(blendExpectedGoals(goalsExpected, xgExpected, 1)).toEqual(xgExpected)
+    expect(blendExpectedGoals(goalsExpected, { home: -2, away: 0 }, 1)).toEqual({ home: 0.05, away: 0.05 })
+  })
+
+  it('peso intermediário interpola linearmente os dois λ', () => {
+    const blended = blendExpectedGoals(goalsExpected, xgExpected, 0.5)
+    expect(blended.home).toBeCloseTo(1.5, 12)
+    expect(blended.away).toBeCloseTo(1.15, 12)
+  })
+
+  it('λ em xG usa a mesma mecânica de taxas regularizadas (escala de gols)', () => {
+    const xgMatches: ModelMatch[] = [
+      { home: 'casa-forte', away: 'visitante-fraco', homeGoals: 2.4, awayGoals: 0.6, kickoff: '', seasonYear: 2026, sourceOrdinal: 1 },
+      { home: 'visitante-fraco', away: 'casa-forte', homeGoals: 1.1, awayGoals: 0.9, kickoff: '', seasonYear: 2026, sourceOrdinal: 2 },
+    ]
+    const expected = expectedGoalsFromXg('casa-forte', 'visitante-fraco', xgMatches, 20)
+    // Mando somado ao ataque superior: mandante tem λ claramente maior
+    expect(expected.home).toBeGreaterThan(expected.away)
+    expect(expected.home).toBeGreaterThan(0.05)
   })
 })
 

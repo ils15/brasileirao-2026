@@ -1,5 +1,7 @@
 import type { ExpectedGoals } from './projection'
 
+export type { ExpectedGoals }
+
 export interface ModelMatch {
   home: string
   away: string
@@ -169,6 +171,41 @@ export function expectedGoalsHomeAway(
   return {
     home: Math.max(0.05, averages.home * (homeAttack / averages.home) * (awayDefense / averages.home)),
     away: Math.max(0.05, averages.away * (awayAttack / averages.away) * (homeDefense / averages.away)),
+  }
+}
+
+/**
+ * λ estimado em espaço xG: mesma mecânica de taxas por mando regularizadas,
+ * com os "gols" de cada partida substituídos pelo xG somado dos chutes
+ * (fonte 365scores). Gols são eventos raros e ruidosos; o xG convergira mais
+ * rápido para a força real do clube (§18 da auditoria).
+ *
+ * A média da liga em xG (≈1,2–1,3) vive na mesma escala dos gols, então os
+ * multiplicadores e a regularização k são reutilizados sem reescala.
+ */
+export function expectedGoalsFromXg(
+  homeId: string,
+  awayId: string,
+  xgMatches: readonly ModelMatch[],
+  shrinkageMatches: number,
+): ExpectedGoals {
+  return expectedGoalsHomeAway(homeId, awayId, xgMatches, 2026, shrinkageMatches)
+}
+
+/**
+ * Blend linear entre o λ em gols (base longa) e o λ em xG (2026).
+ * Peso 0 devolve o modelo de gols puro; peso 1, o modelo só em xG.
+ */
+export function blendExpectedGoals(
+  goalsExpected: ExpectedGoals,
+  xgExpected: ExpectedGoals,
+  weight: number,
+): ExpectedGoals {
+  if (weight <= 0) return goalsExpected
+  if (weight >= 1) return { home: Math.max(0.05, xgExpected.home), away: Math.max(0.05, xgExpected.away) }
+  return {
+    home: Math.max(0.05, (1 - weight) * goalsExpected.home + weight * xgExpected.home),
+    away: Math.max(0.05, (1 - weight) * goalsExpected.away + weight * xgExpected.away),
   }
 }
 

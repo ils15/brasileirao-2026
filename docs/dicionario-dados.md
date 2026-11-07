@@ -17,7 +17,7 @@ com fórmula explícita e base amostral declarada.
 | **Libertadores (zona)** | Posições 1º–5º (1º–4º direto; 5º preliminar), somente pela tabela | Legenda, filtros, projeções, curvas |
 | **Sul-Americana (zona)** | Posições 6º–11º | Legenda, filtros, projeções, curvas |
 | **Zona de Rebaixamento** | Posições 17º–20º | Legenda, filtros, projeções |
-| **Desempate (REC incompleto)** | Pontos → Vitórias → Saldo → Gols Pró; entre 2 clubes: pontos/saldo/gols pró **no confronto**; empates restantes por sorteio reprodutível (cartões e sorteio oficial não existem nos dados) | Metodologia |
+| **Desempate (Art. 15 REC 2026)** | Pontos → Vitórias → Saldo → Gols Pró; entre 2 clubes: confronto direto (pontos/saldo/gols pró no confronto); entre 3+: cartões vermelhos projetados → cartões amarelos projetados; empates restantes por sorteio reprodutível | Metodologia · Auditoria §17–18 |
 
 ## Análises por rodada
 
@@ -35,7 +35,8 @@ com fórmula explícita e base amostral declarada.
 
 | Termo padronizado | Definição / fórmula | Onde aparece |
 |---|---|---|
-| **λ (gols esperados)** | Média de gols do modelo para um confronto; λ = μ × (ataque mandante/μ) × (defesa visitante/μ) com taxas regulares por mando | Aba Confrontos, Metodologia |
+| **λ (gols esperados)** | Média de gols do modelo para um confronto; λ = μ × (ataque mandante/μ) × (defesa visitante/μ) com taxas regulares por mando; quando ativo, λ = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub> (blend §18) | Aba Confrontos, Metodologia |
+| **xG (gols esperados do jogo)** | Soma do valor xG de cada chute do clube na partida (fonte 365scores); alimenta o blend e o desempate disciplinar | Metodologia, Auditoria §18 |
 | **Força por clube/mando** | Taxas de ataque e defesa (gols/jogo) regularizadas para a média da liga; a mesma tabela alimenta os 48 confrontos da simulação | Aba Metodologia & Validação |
 | **Probabilidade de resultado** | Marginais H/E/F de duas Poisson independentes com os λ do confronto; barras somam 100% | Aba Confrontos |
 | **Retrospecto direto** | Barra V-E-D + timeline dos encontros 2021–2026 disponíveis; histórico, nunca altera probabilidades | Aba Confrontos |

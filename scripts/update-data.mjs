@@ -15,6 +15,7 @@ import { createHash } from 'node:crypto'
 import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
 import {
   parseEspnStandings,
   parseValorfinalClubes,
@@ -168,6 +169,20 @@ async function main() {
     console.warn(`  Conciliação externa indisponível (${error.message.split('\n')[0]}); seguindo só com a integridade interna.`)
   }
 
+  // 4b. Dados avançados 2026 (xG por jogo + cartões) para os jogos novos.
+  //     Segue o mesmo padrão de rede das outras fontes: em dry-run local sem
+  //     FETCH, usa o snapshot existente e não coleta nada.
+  const networkAvailable = !dryRun || Boolean(process.env.FETCH)
+  if (networkAvailable) {
+    try {
+      await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`) })
+    } catch (error) {
+      // xG/cartões são um bem de segunda ordem: se a fonte falhar HOJE, os
+      // dados já empacotados continuam válidos — não bloquear o resultado.
+      console.warn(`  Dados avançados indisponíveis nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
+    }
+  }
+
   // 5. Regeneração dos módulos TS.
   const now = new Date().toISOString()
   const cutoffLocalDate = today
@@ -229,7 +244,7 @@ async function main() {
   console.log('Executando suíte de testes...')
   run('npm', ['test'])
 
-  run('git', ['add', 'src/currentSeasonResults.ts', 'src/projectionData.ts', 'src/sourceMetadata.ts', 'data/source-snapshots', 'docs/atualizacoes.md'])
+  run('git', ['add', 'src/currentSeasonResults.ts', 'src/projectionData.ts', 'src/sourceMetadata.ts', 'src/advancedStats2026.ts', 'data/source-snapshots', 'docs/atualizacoes.md'])
   run('git', ['commit', '-m', `data: atualização pós-rodada ${cutoffLocalDate} (+${added.length} resultados)`])
   console.log(`Commit criado. O workflow faz push, build e deploy.`)
 }

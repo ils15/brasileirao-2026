@@ -42,6 +42,7 @@ O destino previsto é o project site público `https://ils15.github.io/brasileir
 - [REC CBF 2026](https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf)
 - [Football-Data — placares](https://www.football-data.co.uk/new/BR.csv), fonte secundária para 2021–2026; a compilação pode conter erros.
 - [ESPN scoreboard — 03/11/2026](https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates=20261103), usado para completar os dois resultados ausentes no CSV.
+- 365scores — xG por chute e cartões por partida de 2026 (JSON público, sem key); validado 339/339 contra os placares empacotados na adesão. Coleta por `scripts/backfill-xg-cards.mjs`; FBref/SofaScore/FotMob estão atrás de Cloudflare para clientes sem navegador.
 
 O dataset atual contém 332 resultados (330 Football-Data + 2 ESPN), 20 clubes e 48 jogos pendentes de um calendário CBF de 380 jogos. As duas partidas ESPN, ambas antes do corte, são Chapecoense 1–2 Mirassol (`2026-11-03T22:30Z`, evento `401841304`) e Internacional 1–0 Coritiba (`2026-11-04T00:30Z`, evento `401841301`). Para o CSV, Football-Data não especifica o fuso de `Time`; suas linhas de 2026 acabam em 02/11. A guarda de corte é aplicada em runtime ao treino de produção, estatísticas e H2H 2026. ESPN usa seus kickoffs explícitos com fuso; partidas Football-Data no dia limítrofe inteiro são excluídas conservadoramente por fuso desconhecido. Registros com kickoff idêntico são mantidos/excluídos como bloco, assim como nas dobras walk-forward. A hora de captura da fonte não substitui o corte por kickoff.
 
@@ -60,6 +61,10 @@ taxa_c,v = (gols 2026_c,v + k × taxa histórica ponderada_c,v) / (jogos 2026_c,
 ```
 
 As taxas históricas usam 2012–2025, ponderação por recência com meia-vida de 2,5 temporadas e regularização para a média da liga com 20 jogos ponderados prévios. `k=20` para a produção segue a política walk-forward: é o k selecionado para a temporada 2025 usando apenas os anos anteriores, entre `{0, 2, 4, 6, 8, 10, 12, 15, 20, 25, 30}` pelo Brier da variante casa/fora (antes da auditoria, o k era escolhido in-sample — ver `docs/auditoria-calculos.md`); não há validação externa independente desse k. A μ exibida como base de treino cobre histórico + jogos de 2026 até o corte (o histórico puro é referência editorial). Gols são amostrados de Poisson independentes.
+
+### Blend xG × gols e desempate por cartões
+
+O λ de produção mistura o modelo em gols com um segundo modelo estimado em **xG** da temporada 2026 (xG somado por chute, fonte 365scores): `λ = (1−w)·λ_gols + w·λ_xG`. O peso `w` foi fixado no vencedor do walk-forward **por rodada** de 2026 (treino até t−1, Brier de resultado em t) e vive em `src/projectionConfig.ts` (`XG_BLEND_WEIGHT`); a tabela viva peso→Brier está na aba Metodologia e o protocolo no §18 da auditoria. Nos critérios de desempate (Art. 15 REC 2026), cartões vermelhos/amarelos usam os totais reais + taxa por jogo projetada para os jogos restantes (determinístico por clube, `src/discipline.ts`); cartões não são simulados jogo a jogo, e o sorteio reprodutível segue como último passo.
 
 ### Walk-forward e ablações
 

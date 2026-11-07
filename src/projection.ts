@@ -3,13 +3,17 @@ import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonRe
 import type { HistoricalMatch } from './historicalSeasons'
 import {
   runFeatureBacktest,
+  runXgBlendAblation,
   productionTrainingMatches,
+  productionXgMatches,
   splitWalkForwardByKickoff,
   type FeatureBacktest,
 } from './modelBacktest'
 import {
+  blendExpectedGoals,
   expectedGoalsForVariant,
   expectedGoalsFromTeamTotals,
+  expectedGoalsFromXg,
   historicalGoalAverages,
   poissonResultProbabilities,
 } from './matchModel'
@@ -17,6 +21,7 @@ import { PointOutcomeCurveAccumulator, type PointCurveOutcome } from './pointCur
 import { PointsDistributionAccumulator, probabilityWithInterval, type PointsStats, type ProbabilityInterval } from './pointsDistribution'
 import { normalizeTeamId } from './clubIds'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
+import { disciplineTable, disciplineTiebreak } from './discipline'
 import {
   BACKTEST_CUTOFF,
   BACKTEST_SIMULATIONS,
@@ -24,6 +29,7 @@ import {
   SHRINKAGE_CANDIDATES,
   SIMULATION_COUNT,
   SIMULATION_SEED,
+  XG_BLEND_WEIGHT,
   ZONES,
   type ResultGroupId,
 } from './projectionConfig'
@@ -270,7 +276,7 @@ export function estimateExpectedGoals(homeId: string, awayId: string): ExpectedG
   if (!home || !away) throw new Error(`Clube desconhecido no confronto: ${homeId}–${awayId}`)
   const backtest = runFeatureBacktest()
   const variant = backtest.productionUsesH2H ? 'combined' : 'home-away'
-  return expectedGoalsForVariant(
+  const goalsExpected = expectedGoalsForVariant(
     homeId,
     awayId,
     productionTrainingMatches,
@@ -278,6 +284,12 @@ export function estimateExpectedGoals(homeId: string, awayId: string): ExpectedG
     variant,
     backtest.productionShrinkageMatches,
   )
+  // Blend xG × gols (§18): peso fixo calibrado pelo walk-forward por rodada;
+  // sem cobertura suficiente de xG, o modelo permanece só em gols.
+  if (XG_BLEND_WEIGHT <= 0) return goalsExpected
+  const xgAblation = runXgBlendAblation()
+  if (!xgAblation.eligible) return goalsExpected
+  return blendExpectedGoals(goalsExpected, expectedGoalsFromXg(homeId, awayId, productionXgMatches, backtest.productionShrinkageMatches), XG_BLEND_WEIGHT)
 }
 
 function getOutcome(position: number): ResultGroupId {
@@ -321,6 +333,13 @@ export function buildPointsAnalysis(samples: readonly PointOutcomeSample[]): Poi
   }
   return analysisFromAccumulator(accumulator)
 }
+
+/**
+ * Disciplina projetada para o desempate (Art. 15, itens 5/6): constante por
+ * temporada — cartões reais + taxa por jogo × jogos restantes — derivada uma
+ * única vez, fora do loop de simulação.
+ */
+const PROJECTED_DISCIPLINE = disciplineTable()
 
 function baseTie(a: TeamState, b: TeamState): number {
   return b.points - a.points
@@ -373,10 +392,10 @@ function finalTable(states: TeamState[]): SimulatedClub[] {
       ) || a.drawOrder - b.drawOrder)
     } else {
       // Art. 15 do REC 2026 (CBF): para 3+ empatados, após gols pró vêm
-      // cartões vermelhos e amarelos — dados que não existem nos nossos
-      // snapshots — e então o sorteio. Sem cartões, o sorteio reprodutível
-      // é o último passo implementável da sequência oficial.
-      group.sort((a, b) => a.drawOrder - b.drawOrder)
+      // cartões vermelhos (menor) e amarelos (menor) — projetados pela taxa
+      // por jogo da temporada (fonte 365scores); restam empatados, o sorteio
+      // reprodutível é o passo final da sequência oficial.
+      group.sort((a, b) => disciplineTiebreak(PROJECTED_DISCIPLINE, a.id, b.id) || a.drawOrder - b.drawOrder)
     }
     sorted.push(...group)
     start = end

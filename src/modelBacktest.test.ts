@@ -2,10 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { splitWalkForwardByKickoff } from './chronology'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 import { currentSeasonResults } from './currentSeasonResults'
-import { buildProductionTrainingMatches, runFeatureBacktest } from './modelBacktest'
+import { advancedMatches } from './advancedStats2026'
+import { buildProductionTrainingMatches, buildProductionXgMatches, productionXgMatches, runFeatureBacktest, runXgBlendAblation } from './modelBacktest'
 import { expectedGoalsForVariant } from './matchModel'
 import { runTemporalBacktest } from './projection'
-import { SHRINKAGE_CANDIDATES } from './projectionConfig'
+import { SHRINKAGE_CANDIDATES, XG_BLEND_CANDIDATES, XG_MIN_COVERED_MATCHES, XG_BLEND_WEIGHT } from './projectionConfig'
 
 describe('corte temporal do walk-forward', () => {
   it('mantém todos os jogos com o mesmo kickoff no mesmo lado do corte', () => {
@@ -62,5 +63,36 @@ describe('corte temporal do walk-forward', () => {
       .toEqual(expectedGoalsForVariant('flamengo', 'palmeiras', withBeforeCutoff, 2026, 'home-away', 15))
     expect(runFeatureBacktest()).toEqual(featureBacktestBefore)
     expect(runTemporalBacktest()).toEqual(temporalBacktestBefore)
+  })
+})
+
+describe('blend xG × gols (§18)', () => {
+  it('dataset xG de produção cobre apenas jogos com xG e pertence ao calendário', () => {
+    expect(advancedMatches.length).toBeGreaterThanOrEqual(XG_MIN_COVERED_MATCHES)
+    expect(productionXgMatches).toHaveLength(advancedMatches.filter((record) => record.xgHome != null && record.xgAway != null).length)
+    expect(productionXgMatches.every((match) => Number.isFinite(match.homeGoals) && match.homeGoals >= 0 && Number.isFinite(match.awayGoals) && match.awayGoals >= 0)).toBe(true)
+    expect(buildProductionXgMatches()).toEqual(productionXgMatches)
+  })
+
+  it('ablação walk-forward: pesos delimitam os modelos puros e o melhor é um candidato', () => {
+    const ablation = runXgBlendAblation()
+    expect(ablation.eligible).toBe(true)
+    expect(ablation.unmatchedMatches).toBe(0)
+    // Todas as rodadas completas (≥ 2) aparecem no teste, cada uma com todos os pesos
+    expect(ablation.rounds.length).toBeGreaterThanOrEqual(25)
+    expect(ablation.rounds.every(({ matches }) => matches > 0 && matches <= 11)).toBe(true)
+    for (const round of ablation.rounds) {
+      expect([...round.brierByWeight.keys()]).toEqual([...XG_BLEND_CANDIDATES])
+      expect([...round.brierByWeight.values()].every(Number.isFinite)).toBe(true)
+    }
+    expect(XG_BLEND_CANDIDATES).toContain(ablation.bestWeight)
+    for (const [weight, brier] of ablation.brierByWeight) {
+      expect(brier).toBe(ablation.rounds.reduce((sum, round) => sum + round.brierByWeight.get(weight)! * round.matches, 0) / ablation.rounds.reduce((sum, round) => sum + round.matches, 0))
+    }
+    // O peso de produção é uma decisão documentada (§18) tomada no corte da
+    // adoção: precisa ser candidato válido. Igualdade com `bestWeight` não é
+    // fixada — atualizações de dados podem mover o vencedor sem invalidar a
+    // decisão original; o painel acima exibe o vencedor corrente.
+    expect(XG_BLEND_CANDIDATES).toContain(XG_BLEND_WEIGHT)
   })
 })
