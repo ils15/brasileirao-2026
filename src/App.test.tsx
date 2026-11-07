@@ -114,15 +114,14 @@ describe('painel do Brasileirão 2026', () => {
 
     await user.click(screen.getByRole('button', { name: /^Pts/ }))
     const table = screen.getByRole('region', { name: /Tabela classificatória/ })
-    // Ascendente: menor pontuação primeiro (lanterna)
-    const lastPlace = currentClubs[currentClubs.length - 1]!
-    expect(within(table).getAllByRole('row')[1]!).toHaveTextContent(lastPlace.club)
-    expect(within(table).getByRole('columnheader', { name: /Pts/ })).toHaveAttribute('aria-sort', 'ascending')
+    // Numéricas começam descendente: líder primeiro
+    expect(within(table).getAllByRole('row')[1]!).toHaveTextContent(currentClubs[0]!.club)
+    expect(within(table).getByRole('columnheader', { name: /Pts/ })).toHaveAttribute('aria-sort', 'descending')
 
     await user.click(screen.getByRole('button', { name: /^Pts/ }))
-    // Descendente: líder primeiro
-    expect(within(table).getAllByRole('row')[1]).toHaveTextContent(currentClubs[0]!.club)
-    expect(within(table).getByRole('columnheader', { name: /Pts/ })).toHaveAttribute('aria-sort', 'descending')
+    // Segundo clique: ascendente (lanterna primeiro)
+    expect(within(table).getAllByRole('row')[1]).toHaveTextContent(currentClubs[currentClubs.length - 1]!.club)
+    expect(within(table).getByRole('columnheader', { name: /Pts/ })).toHaveAttribute('aria-sort', 'ascending')
   })
 
   it('mostra os 20 clubes na ordem oficial, com pontos e jogos do snapshot', () => {
@@ -203,10 +202,12 @@ describe('painel do Brasileirão 2026', () => {
   it('identifica as fontes oficiais e a conferência secundária', () => {
     render(<App />)
 
-    expect(screen.getByRole('link', { name: /Fonte oficial: CBF/ })).toHaveAttribute(
-      'href',
-      'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026',
-    )
+    for (const cbfLink of screen.getAllByRole('link', { name: /CBF/ })) {
+      expect(cbfLink).toHaveAttribute(
+        'href',
+        'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026',
+      )
+    }
     expect(screen.getByRole('link', { name: /ESPN · Conferência de artilharia/ })).toHaveAttribute(
       'href',
       'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols',

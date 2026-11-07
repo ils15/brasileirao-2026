@@ -89,7 +89,7 @@ describe('tabela de resultados 2026', () => {
     const firstRow = within(table).getAllByRole('row')[1]!
     // Ordem ascendente por saldo: derrota do mandante mais pesada primeiro
     expect(firstRow).toHaveTextContent(/–/)
-    expect(screen.getByRole('columnheader', { name: /Placar/ })).toHaveAttribute('aria-sort', 'ascending')
+    expect(screen.getByRole('columnheader', { name: /Placar/ })).toHaveAttribute('aria-sort', 'descending')
   })
 })
 

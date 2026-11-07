@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { SIMULATION_COUNT, SIMULATION_SEED } from './projectionConfig'
 import type { ClubProbability, ProjectionResult } from './projection'
 import { useProjection, type ProjectionStatus } from './ProjectionContext'
+import { Crest } from './Crest'
 import { wilsonInterval } from './pointCurve'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { useTableSort, type SortableColumn } from './useTableSort'
@@ -577,7 +578,6 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                         <button type="button" className="sort-button" onClick={() => toggleZoneSort(column.id)}>
                           {column.id === 'libertadores' ? 'LIBERTADORES¹' : column.header}
                           <span className="sort-indicator" aria-hidden="true">{zoneAriaSort(column.id) === 'ascending' ? ' ↑' : zoneAriaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
-                          <span className="sr-only">{zoneAriaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${zoneAriaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
                         </button>
                       </th>
                     ))}
@@ -586,7 +586,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                 <tbody>
                   {sortedZones.map((club) => (
                     <tr key={club.id}>
-                      <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span>{club.club}</th>
+                      <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span><Crest clubId={club.id} /><span>{club.club}</span></th>
                       <td className="zone-bar-cell"><ZoneStackedBar club={club} /></td>
                       <ProbabilityCell value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
                       <ProbabilityCell value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
@@ -609,7 +609,6 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                         <button type="button" className="sort-button" onClick={() => togglePointsSort(column.id)}>
                           {column.header}
                           <span className="sort-indicator" aria-hidden="true">{pointsAriaSort(column.id) === 'ascending' ? ' ↑' : pointsAriaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
-                          <span className="sr-only">{pointsAriaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${pointsAriaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
                         </button>
                       </th>
                     ))}
@@ -621,7 +620,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                     const deltaPercent = club.currentPoints === 0 ? 0 : delta / club.currentPoints
                     return (
                       <tr key={club.id}>
-                        <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span>{club.club}</th>
+                        <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span><Crest clubId={club.id} /><span>{club.club}</span></th>
                         <td className="numeric games-cell">{club.currentPoints}</td>
                         <td className="numeric probability-cell"><strong>{club.pointsStats.median}</strong><span className="cell-ci">média {decimal.format(club.pointsStats.mean)}</span></td>
                         <td className="numeric range-cell">{club.pointsStats.p25}–{club.pointsStats.p75}</td>

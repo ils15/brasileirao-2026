@@ -113,9 +113,9 @@ describe('painel de projeções', () => {
     // Ordenação por título troca o estado do cabeçalho
     const titleHeaderButton = within(zones).getByRole('button', { name: /^Título/ })
     await user.click(titleHeaderButton)
-    expect(within(zones).getByRole('columnheader', { name: /^Título/ })).toHaveAttribute('aria-sort', 'ascending')
-    await user.click(titleHeaderButton)
     expect(within(zones).getByRole('columnheader', { name: /^Título/ })).toHaveAttribute('aria-sort', 'descending')
+    await user.click(titleHeaderButton)
+    expect(within(zones).getByRole('columnheader', { name: /^Título/ })).toHaveAttribute('aria-sort', 'ascending')
   })
 
   it('informa quando as simulações ainda estão em processamento', () => {

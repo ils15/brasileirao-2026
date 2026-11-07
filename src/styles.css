@@ -127,8 +127,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .hero-foot > span:last-child { color: #c8d2cc; }
 .hero-foot > span:last-child span { color: var(--lime); }
 
-.source-strip { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; min-height: 68px; padding: 10px max(5vw, calc((100vw - 1320px) / 2)); background: var(--surface-soft); color: var(--text); }
-.snapshot-summary { display: flex; flex: 1 1 560px; align-items: flex-start; gap: 12px; min-width: 0; }
+.source-strip { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px 20px; padding: 12px max(5vw, calc((100vw - 1320px) / 2)); background: var(--surface-soft); color: var(--text); }
+.snapshot-summary { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
 .snapshot-badge { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 7px; padding: 7px 9px; border: 1px solid #bfdc55; border-radius: 3px; color: #17241f; background: var(--lime); font: 700 12px var(--mono); letter-spacing: .04em; white-space: nowrap; }
 .snapshot-badge::before { width: 6px; height: 6px; border-radius: 50%; background: #254a32; content: ''; }
 .snapshot-copy { display: grid; gap: 3px; min-width: 0; }
@@ -936,3 +936,17 @@ th.numeric .sort-button { justify-content: flex-end; }
 .streak-text--win { color: #6fc24a; }
 .streak-text--loss { color: #e0805f; }
 .streak-text--draw { color: inherit; }
+
+/* Faixa de fonte: cluster direito sem sobreposição */
+.source-strip-right { display: flex; align-items: center; justify-content: flex-end; gap: 18px; flex-wrap: wrap; }
+.source-separator { display: none; }
+.update-clock { display: flex; gap: 16px; }
+.update-clock > div { display: grid; gap: 2px; }
+.update-clock strong { color: var(--text-muted); font: 600 11px var(--mono); letter-spacing: .04em; }
+.update-clock span { color: var(--ink); font: 700 13px var(--mono); white-space: nowrap; }
+.cbf-source { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+
+@media (max-width: 1023px) {
+  .source-strip { grid-template-columns: minmax(0, 1fr); }
+  .source-strip-right { justify-content: flex-start; }
+}

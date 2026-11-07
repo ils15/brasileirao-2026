@@ -135,7 +135,6 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
                       <button type="button" className="sort-button" onClick={() => toggleSort(column.id)}>
                         {column.header}
                         <span className="sort-indicator" aria-hidden="true">{ariaSort(column.id) === 'ascending' ? ' ↑' : ariaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
-                        <span className="sr-only">{ariaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${ariaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
                       </button>
                     </th>
                   ))}

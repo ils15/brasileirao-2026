@@ -35,8 +35,11 @@ export function useTableSort<T>(rows: readonly T[], columns: readonly SortableCo
       setDirection((current) => (current === 'ascending' ? 'descending' : 'ascending'))
       return
     }
+    // Números: o interesse do usuário é quase sempre o maior primeiro (descendente);
+    // posição e colunas de texto sobem do menor.
+    const column = columns.find(({ id }) => id === columnId)
     setSortColumnId(columnId)
-    setDirection('ascending')
+    setDirection(column?.numeric && columnId !== 'position' ? 'descending' : 'ascending')
   }
 
   function ariaSort(columnId: string): 'none' | SortDirection | undefined {

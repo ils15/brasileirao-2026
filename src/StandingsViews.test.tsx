@@ -56,9 +56,9 @@ describe('aba classificações', () => {
     render(<StandingsViews />)
     await user.click(screen.getByRole('button', { name: /^GP/ }))
     const table = screen.getByRole('region', { name: /Classificação geral/ })
-    // Ascendente: menor GP primeiro (Chapecoense, 33 gols)
-    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Chapecoense')
-    expect(within(table).getByRole('columnheader', { name: /^GP/ })).toHaveAttribute('aria-sort', 'ascending')
+    // Numéricas começam descendente: maior GP primeiro (Flamengo, 71)
+    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
+    expect(within(table).getByRole('columnheader', { name: /^GP/ })).toHaveAttribute('aria-sort', 'descending')
   })
 
   it('mostra o gráfico de evolução com seleção de foco, faixas de zona e acessibilidade', async () => {

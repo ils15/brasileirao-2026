@@ -255,28 +255,28 @@ function App(): JSX.Element {
               <p>{cutoffSummaryLine}</p>
             </div>
           </div>
-          <span className="source-separator" aria-hidden="true" />
-          <div className="update-clock" aria-label="Relógio de atualização dos dados">
-            <div><strong>Frescor</strong><span>{updateClock.daysSinceCutoff === 0 ? 'hoje' : updateClock.daysSinceCutoff === 1 ? 'ontem' : `${updateClock.daysSinceCutoff} dias atrás`}</span></div>
-            <div><strong>Próxima verificação</strong><span>a cada 2 horas</span></div>
+          <div className="source-strip-right">
+            <div className="update-clock" aria-label="Relógio de atualização dos dados">
+              <div><strong>Frescor</strong><span>{updateClock.daysSinceCutoff === 0 ? 'hoje' : updateClock.daysSinceCutoff === 1 ? 'ontem' : `${updateClock.daysSinceCutoff} dias atrás`}</span></div>
+              <div><strong>Próxima verificação</strong><span>a cada 2 horas</span></div>
+            </div>
+            <a className="cbf-source" href={CBF_URL} target="_blank" rel="noreferrer">
+              <img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
+              CBF <span aria-hidden="true">↗</span>
+            </a>
+            <label className="theme-control">
+              <span>Tema</span>
+              <select
+                aria-label="Tema de exibição"
+                value={theme}
+                onChange={(event) => setTheme(parseTheme(event.currentTarget.value))}
+              >
+                <option value="system">Sistema</option>
+                <option value="light">Claro</option>
+                <option value="dark">Escuro</option>
+              </select>
+            </label>
           </div>
-          <span className="source-separator" aria-hidden="true" />
-          <a className="cbf-source" href={CBF_URL} target="_blank" rel="noreferrer">
-            <img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
-            Fonte oficial: CBF <span aria-hidden="true">↗</span>
-          </a>
-          <label className="theme-control">
-            <span>Tema</span>
-            <select
-              aria-label="Tema de exibição"
-              value={theme}
-              onChange={(event) => setTheme(parseTheme(event.currentTarget.value))}
-            >
-              <option value="system">Sistema</option>
-              <option value="light">Claro</option>
-              <option value="dark">Escuro</option>
-            </select>
-          </label>
         </section>
 
         <nav className="app-tabs" role="tablist" aria-label="Navegação principal">
@@ -343,7 +343,6 @@ function App(): JSX.Element {
                             <button type="button" className="sort-button" onClick={() => toggleSort(column.id)}>
                               {column.header}
                               <span className="sort-indicator" aria-hidden="true">{ariaSort(column.id) === 'ascending' ? ' ↑' : ariaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
-                              <span className="sr-only">{ariaSort(column.id) === 'none' ? 'ative para ordenar' : `ordenado ${ariaSort(column.id) === 'ascending' ? 'ascendente' : 'descendente'}`}</span>
                             </button>
                           </th>
                         ))}
