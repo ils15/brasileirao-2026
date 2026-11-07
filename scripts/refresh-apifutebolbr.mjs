@@ -14,7 +14,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseMatchCards, parseScorers, parseTable, reconcileTable, mergeMatches, renderScorersModule } from './lib/apifutebolbr.mjs'
+import { parseMatchDetail, parseScorers, parseTable, reconcileTable, mergeMatches, renderScorersModule } from './lib/apifutebolbr.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const BASE = 'https://api.api-futebol.com.br/v1'
@@ -23,6 +23,9 @@ const SCORERS_SNAPSHOT = join(SNAPSHOT_DIR, 'apifb-artilharia-2026.json')
 const MATCHES_SNAPSHOT = join(SNAPSHOT_DIR, 'apifb-partidas-2026.json')
 const SCORERS_MODULE = join(root, 'src/scorers2026.ts')
 const PER_RUN = Number(process.env.API_FUTEBOL_BR_PER_RUN ?? 25)
+// Rodadas listadas por ciclo: 4 cobre o incremental pós-rodada; colheita
+// completa do trial usa API_FUTEBOL_BR_MAX_ROUNDS=38.
+const MAX_ROUNDS = Number(process.env.API_FUTEBOL_BR_MAX_ROUNDS ?? 4)
 const REQUEST_PAUSE_MS = Number(process.env.API_FUTEBOL_BR_PAUSE_MS ?? 700)
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -93,7 +96,7 @@ export async function refreshApiFutebolBr({ log = console.log, ourStandings = []
     const rodadasPayload = await fetchJson('/campeonatos/10/rodadas', key)
     budget -= 1
     const covered = new Set(snapshot.matches.map((match) => `${match.home}|${match.away}|${match.homeGoals}-${match.awayGoals}`))
-    for (const roundNumber of pendingEnclosedRounds(rodadasPayload)) {
+    for (const roundNumber of pendingEnclosedRounds(rodadasPayload, { maxRounds: MAX_ROUNDS })) {
       if (budget <= 0) break
       await sleep(REQUEST_PAUSE_MS)
       const roundPayload = await fetchJson(`/campeonatos/10/rodadas/${roundNumber}`, key)
@@ -108,7 +111,7 @@ export async function refreshApiFutebolBr({ log = console.log, ourStandings = []
         const coverageKey = `${homeName}|${awayName}|${game.placar_mandante}-${game.placar_visitante}`
         if (covered.has(coverageKey)) continue
         await sleep(REQUEST_PAUSE_MS)
-        incoming.push(parseMatchCards(JSON.stringify(await fetchJson(`/partidas/${game.partida_id}`, key))))
+        incoming.push(parseMatchDetail(JSON.stringify(await fetchJson(`/partidas/${game.partida_id}`, key))))
         budget -= 1
       }
     }

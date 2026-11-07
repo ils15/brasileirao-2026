@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   mergeMatches,
-  parseMatchCards,
+  parseMatchDetail,
   parseScorers,
   parseTable,
   reconcileTable,
@@ -25,10 +25,25 @@ const matchPayload = JSON.stringify({
   placar_visitante: 1,
   time_mandante: { time_id: 64, nome_popular: 'Bragantino' },
   time_visitante: { time_id: 24, nome_popular: 'Santos' },
+  data_realizacao_iso: '2026-11-05T22:30:00-03:00',
+  estadio: { nome: 'Estádio Nabi Abi Chedid' },
+  rodada: 34,
+  gols: {
+    mandante: [
+      { atleta: { atleta_id: 5, nome_popular: 'Vitinho' }, minuto: '10:00', penalti: false, gol_contra: false },
+      { atleta: { atleta_id: 6, nome_popular: 'Zé Marcos' }, minuto: '80:00', penalti: true, gol_contra: false },
+    ],
+    visitante: [{ atleta: { atleta_id: 7, nome_popular: 'Guilherme' }, minuto: '23:00', penalti: false, gol_contra: true }],
+  },
   cartoes: {
     amarelo: { mandante: [{ cartao_id: 1 }, { cartao_id: 2 }], visitante: [{ cartao_id: 3 }] },
     vermelho: { mandante: [], visitante: [{ cartao_id: 9 }] },
   },
+  estatisticas: {
+    mandante: { posse_de_bola: '52%', escanteios: 5, finalizacao: { total: 12, no_gol: 5, bloqueado: 3, na_trave: 1 }, passes: { total: 400, precisao: '81%' }, desarmes: 14, defensivo: { defesas: 3 } },
+    visitante: { posse_de_bola: '48%', escanteios: 4, finalizacao: { total: 9, no_gol: 3, bloqueado: 4, na_trave: 0 }, passes: { total: 380, precisao: '79%' }, desarmes: 11, defensivo: { defesas: 6 } },
+  },
+  arbitros: [{ papel: 'árbitro', arbitro: { nome_popular: 'Raphael Claus' } }],
 })
 
 describe('parseScorers', () => {
@@ -78,26 +93,43 @@ describe('parseTable e reconcileTable', () => {
   })
 })
 
-describe('parseMatchCards e mergeMatches', () => {
-  it('extrai cartões por clube e placar da partida', () => {
-    expect(parseMatchCards(matchPayload)).toEqual({
+describe('parseMatchDetail e mergeMatches', () => {
+  it('extrai gols por atleta, cartões por clube, estatísticas, árbitros e metadados', () => {
+    const detail = parseMatchDetail(matchPayload)
+    expect(detail).toMatchObject({
       partidaId: 27979,
       home: 'bragantino',
       away: 'santos',
       homeGoals: 2,
       awayGoals: 1,
+      date: '2026-11-05T22:30:00-03:00',
+      stadium: 'Estádio Nabi Abi Chedid',
+      round: 34,
       yellowHome: 2,
       yellowAway: 1,
       redHome: 0,
       redAway: 1,
     })
+    expect(detail.goals.home).toEqual([
+      { atletaId: 5, atleta: 'Vitinho', minuto: '10:00', penalti: false, contra: false },
+      { atletaId: 6, atleta: 'Zé Marcos', minuto: '80:00', penalti: true, contra: false },
+    ])
+    expect(detail.goals.away).toEqual([
+      { atletaId: 7, atleta: 'Guilherme', minuto: '23:00', penalti: false, contra: true },
+    ])
+    expect(detail.stats.home).toMatchObject({ posse: '52%', finalizacoes: 12, finalizacoesNoGol: 5, passes: 400, passesPrecisao: '81%', desarmes: 14, defesas: 3 })
+    expect(detail.referees).toEqual([{ role: 'árbitro', name: 'Raphael Claus' }])
   })
 
   it('funde por partidaId e NUNCA sobrescreve o que já foi coletado', () => {
-    const existing = [{ ...parseMatchCards(matchPayload), yellowHome: 9 }]
-    const merged = mergeMatches(existing, [parseMatchCards(matchPayload)])
+    const existing = [{ ...parseMatchDetail(matchPayload), yellowHome: 9 }]
+    const merged = mergeMatches(existing, [parseMatchDetail(matchPayload)])
     expect(merged).toHaveLength(1)
     expect(merged[0].yellowHome).toBe(9)
+  })
+
+  it('falha sem partida_id', () => {
+    expect(() => parseMatchDetail('{}')).toThrow(/sem partida_id/)
   })
 })
 

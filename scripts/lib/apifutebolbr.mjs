@@ -102,8 +102,13 @@ export function reconcileTable(apiRows, ourRows) {
   return { divergences, report }
 }
 
-/** Detalhe de partida → cartões por clube (cross-check com 365scores). */
-export function parseMatchCards(jsonText) {
+/**
+ * Detalhe de partida → registro RICO para o banco próprio (trial do plano
+ * Premium: colher o máximo enquanto dura). Guarda gols por atleta (minuto,
+ * pênalti, gol contra), cartões por clube, estatísticas compactas, árbitros,
+ * estádio e data — tudo cru da fonte, com slugs para join.
+ */
+export function parseMatchDetail(jsonText) {
   const payload = typeof jsonText === 'string' ? JSON.parse(jsonText) : jsonText
   const match = payload?.partida_id != null ? payload : payload?.partida
   if (!match?.partida_id) throw new Error('Detalhe de partida sem partida_id.')
@@ -111,16 +116,47 @@ export function parseMatchCards(jsonText) {
   const away = teamSlug(match.time_visitante?.nome_popular)
   const cards = match.cartoes ?? {}
   const count = (list) => Array.isArray(list) ? list.length : 0
+  const goalsOf = (list) => Array.isArray(list) ? list.map((goal) => ({
+    atletaId: goal.atleta?.atleta_id ?? null,
+    atleta: goal.atleta?.nome_popular ?? null,
+    minuto: goal.minuto ?? null,
+    penalti: goal.penalti === true,
+    contra: goal.gol_contra === true,
+  })) : []
+  const statsOf = (side) => {
+    const stats = side ?? {}
+    return {
+      posse: stats.posse_de_bola ?? null,
+      escanteios: stats.escanteios ?? null,
+      impedimentos: stats.impedimentos ?? null,
+      faltas: stats.faltas ?? null,
+      passes: stats.passes?.total ?? null,
+      passesPrecisao: stats.passes?.precisao ?? null,
+      finalizacoes: stats.finalizacao?.total ?? null,
+      finalizacoesNoGol: stats.finalizacao?.no_gol ?? null,
+      finalizacoesBloqueadas: stats.finalizacao?.bloqueado ?? null,
+      finalizacoesNaTrave: stats.finalizacao?.na_trave ?? null,
+      desarmes: stats.desarmes ?? null,
+      defesas: stats.defensivo?.defesas ?? null,
+    }
+  }
+  const goals = match.gols ?? {}
   return {
     partidaId: match.partida_id,
     home,
     away,
     homeGoals: Number(match.placar_mandante),
     awayGoals: Number(match.placar_visitante),
+    date: match.data_realizacao_iso ?? match.data_realizacao ?? null,
+    stadium: match.estadio?.nome ?? null,
+    round: Number(match.rodada) || null,
+    goals: { home: goalsOf(goals.mandante), away: goalsOf(goals.visitante) },
     yellowHome: count(cards.amarelo?.mandante),
     yellowAway: count(cards.amarelo?.visitante),
     redHome: count(cards.vermelho?.mandante),
     redAway: count(cards.vermelho?.visitante),
+    stats: { home: statsOf(match.estatisticas?.mandante), away: statsOf(match.estatisticas?.visitante) },
+    referees: Array.isArray(match.arbitros) ? match.arbitros.map((referee) => ({ role: referee.papel ?? referee.funcao ?? null, name: referee.arbitro?.nome_popular ?? referee.nome_popular ?? null })) : [],
   }
 }
 
