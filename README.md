@@ -29,7 +29,7 @@ npm test
 npm run build
 ```
 
-As 100.000 simulações usam Web Worker e a semente fixa `20261104`.
+As 500.000 simulações usam Web Worker e a semente fixa `20261104`.
 
 ## Publicação no GitHub Pages
 
