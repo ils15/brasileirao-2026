@@ -254,8 +254,16 @@ export function StandingsViews(): JSX.Element {
     tabRefs.current[nextIndex]?.focus()
   }
 
+  const generalLegend = (
+    <div className="zone-legend" aria-label="Legenda das zonas da classificação">
+      <span><i className="legend-dot qualification" />Libertadores · 1º–5º</span>
+      <span><i className="legend-dot sudamericana" />Sul-Americana · 6º–11º</span>
+      <span><i className="legend-dot middle" />Meio de tabela · 12º–16º</span>
+      <span><i className="legend-dot relegation" />Rebaixamento · 17º–20º</span>
+    </div>
+  )
   const viewContent: Record<ViewId, JSX.Element> = {
-    geral: <StandingsTableView rows={standingsFromResults()} columns={FULL_COLUMNS} initialSort="position" caption="Classificação geral; role para rolagem horizontal em telas pequenas" />,
+    geral: <>{generalLegend}<StandingsTableView rows={standingsFromResults()} columns={FULL_COLUMNS} initialSort="position" caption="Classificação geral; role para rolagem horizontal em telas pequenas" /></>,
     ultimas: <StandingsTableView rows={standingsFromResults({ rounds: lastTenRounds })} columns={SHORT_COLUMNS} initialSort="points" caption={`Classificação nas últimas 10 rodadas completas (${lastTenRounds[0]}ª à ${lastTenRounds.at(-1)}ª)`} />,
     mandante: <StandingsTableView rows={standingsFromResults({ venue: 'home' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só com jogos como mandante" />,
     visitante: <StandingsTableView rows={standingsFromResults({ venue: 'away' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só jogos como visitante" />,

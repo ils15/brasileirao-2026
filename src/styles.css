@@ -444,7 +444,9 @@ th.numeric .sort-button { justify-content: flex-end; }
 .points-table-title { margin-top: 26px; }
 .points-final-table tbody td, .zones-table tbody td { height: 50px; }
 .zones-table { min-width: 1020px; }
-.points-final-table { min-width: 880px; }
+.points-final-table { min-width: 980px; }
+.points-final-table .club-cell, .zones-table .club-cell { white-space: nowrap; }
+.points-final-table .club-cell span:last-child, .zones-table .club-cell span:last-child { white-space: nowrap; }
 
 /* Sequências e extremos */
 .streaks-view { display: grid; gap: 16px; }

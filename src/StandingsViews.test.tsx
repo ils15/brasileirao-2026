@@ -100,9 +100,10 @@ describe('aba classificações', () => {
     render(<StandingsViews />)
     await user.click(screen.getByRole('tab', { name: 'Turno (1º–19º)' }))
     const turno = screen.getByRole('region', { name: /turno/ })
+    // Vista começa ordenada por pontos ascendente: o líder fica na ÚLTIMA linha
     const expectedLeader = standingsFromResults({ fromRound: 1, toRound: 19 })[0]!
-    expect(within(turno).getAllByRole('row')[1]).toHaveTextContent(expectedLeader.club)
-    const expectedPoints = within(turno).getAllByRole('row')[1]!.textContent ?? ''
-    expect(expectedPoints).toContain(String(expectedLeader.points))
+    const rows = within(turno).getAllByRole('row')
+    expect(rows.at(-1)).toHaveTextContent(expectedLeader.club)
+    expect(rows.at(-1)!.textContent).toContain(String(expectedLeader.points))
   })
 })

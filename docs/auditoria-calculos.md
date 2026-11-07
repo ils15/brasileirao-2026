@@ -213,3 +213,18 @@ informação nova.
 
 **Decisão:** não adotar. `eloModel.ts` permanece como utilidade
 testada para reabrir o experimento; produção segue 100% Poisson.
+
+
+## 17. Mini-tabela de confronto direto para 3+ empatados — **Adotado**
+
+Antes: empates entre 3+ clubes iam direto ao sorteio aleatório (os
+critérios REC seguintes não tinham dados — cartões). O REC prevê
+mini-tabela de confronto direto entre os empatados antes dos cartões.
+
+**Agora:** para grupos de 3+ clubes empatados nos quatro primeiros
+critérios, a simulação ordena pelos pontos, saldo e gols pró **nos jogos
+entre os empatados** (incluindo os simulados), e o sorteio reprodutível
+fica como último recurso. Isso remove uma fonte de arbitrariedade que
+inflava rebaixamento de clubes que ganham seus confrontos diretos —
+exatamente o caso de clubes médios em Z4 disputada (ex.: Vasco ×
+Internacional/Vitória nos jogos restantes).

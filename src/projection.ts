@@ -372,10 +372,29 @@ function finalTable(states: TeamState[]): SimulatedClub[] {
         { points: b.h2hPoints[a.index]!, goalDifference: b.h2hGoalDifference[a.index]!, goalsFor: b.h2hGoalsFor[a.index]! },
       ) || a.drawOrder - b.drawOrder)
     } else {
-      // Limitação documentada: empates entre 3+ clubes não implementam os
-      // critérios REC seguintes (cartões, sorteio oficial) — sem dados de
-      // cartões, mantém-se o sorteio reprodutível por simulação.
-      group.sort((a, b) => a.drawOrder - b.drawOrder)
+      // REC para 3+ empatados: mini-tabela de confronto direto entre os
+      // membros do grupo (pontos → saldo → gols pró nos jogos entre eles),
+      // depois sorteio reprodutível. Cartões/amarelos não existem nos dados.
+      const mini = (state: TeamState): { points: number; goalDiff: number; goalsFor: number } => {
+        let points = 0
+        let goalsFor = 0
+        let goalDiff = 0
+        for (const other of group) {
+          if (other.index === state.index) continue
+          points += state.h2hPoints[other.index] ?? 0
+          goalsFor += state.h2hGoalsFor[other.index] ?? 0
+          goalDiff += state.h2hGoalDifference[other.index] ?? 0
+        }
+        return { points, goalDiff, goalsFor }
+      }
+      group.sort((a, b) => {
+        const aMini = mini(a)
+        const bMini = mini(b)
+        return bMini.points - aMini.points
+          || bMini.goalDiff - aMini.goalDiff
+          || bMini.goalsFor - aMini.goalsFor
+          || a.drawOrder - b.drawOrder
+      })
     }
     sorted.push(...group)
     start = end
