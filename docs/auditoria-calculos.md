@@ -165,3 +165,24 @@ pró (item 4). Diferenças ≤ 1,1 ponto percentual:
 - Novos testes de borda: base vazia, denominador zero, pontos negativos,
   percentis em amostra ímpar com valores repetidos, conservação de pontos e
   desempate H2H nos três critérios.
+
+
+## 15. Dixon-Coles (correção de placares baixos) — **Testado e não adotado**
+
+O ajuste de Dixon-Coles aplica um fator τ aos quatro placares baixos
+(0-0, 1-0, 0-1, 1-1) do Poisson independente, com coeficiente ρ estimado
+por máxima verossimilhança no treino. É a melhoria documentada mais
+consistente da literatura para modelos Poisson independentes.
+
+**Experimento (out/2026):**
+- ρ por temporada oscila entre −0,105 e +0,1 **sem sinal consistente** —
+  assinatura de ruído, não de parâmetro estável
+- ρ da base de produção (2012–2026 até o corte): **+0,01** (praticamente zero)
+- Brier na produção (339 jogos): **0,58125 sem DC → 0,58143 com DC** — piora marginal
+
+**Decisão:** não adotar. O código (estimador `estimateDixonColesRho`,
+`poissonResultProbabilities(expected, rho)`, grelha conjunta
+`dcJointGrid`) permanece em `matchModel.ts` como utilidade testada
+(ρ = 0 reproduz exatamente o comportamento anterior), mas a produção
+segue com ρ = 0. Se uma atualização futura quiser reabrir, rodar o
+mesmo experimento: estimar ρ na base vigente e comparar o Brier.

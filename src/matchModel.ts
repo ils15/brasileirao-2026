@@ -305,22 +305,139 @@ export function teamStrengthTable(
   }))
 }
 
-export function poissonResultProbabilities(expected: ExpectedGoals): [number, number, number] {
-  const probabilities = (mean: number): number[] => {
+const MAX_GOALS = 12
+
+/** Fator τ de Dixon-Coles para os quatro placares baixos; 1 nos demais. */
+function tauFactor(homeGoals: number, awayGoals: number, rho: number, homeMean: number, awayMean: number): number {
+  if (rho === 0) return 1
+  if (homeGoals === 0 && awayGoals === 0) return 1 - homeMean * awayMean * rho
+  if (homeGoals === 0 && awayGoals === 1) return 1 + homeMean * rho
+  if (homeGoals === 1 && awayGoals === 0) return 1 + awayMean * rho
+  if (homeGoals === 1 && awayGoals === 1) return 1 - rho
+  return 1
+}
+
+/** Grelha conjunta 13×13 de placares com ajuste DC, como cumulativa normalizada. */
+export function dcJointGrid(expected: ExpectedGoals, rho = 0): { cumulative: number[]; size: number } {
+  const pmf = (mean: number): number[] => {
     const values = [Math.exp(-mean)]
-    for (let goals = 0; goals < 12; goals += 1) values.push(values[goals]! * mean / (goals + 1))
+    for (let goals = 0; goals < MAX_GOALS; goals += 1) values.push(values[goals]! * mean / (goals + 1))
     const total = values.reduce((sum, value) => sum + value, 0)
     return values.map((value) => value / total)
   }
-  const home = probabilities(expected.home)
-  const away = probabilities(expected.away)
-  const result: [number, number, number] = [0, 0, 0]
-  for (let homeGoals = 0; homeGoals < home.length; homeGoals += 1) {
-    for (let awayGoals = 0; awayGoals < away.length; awayGoals += 1) {
-      const index = homeGoals > awayGoals ? 0 : homeGoals === awayGoals ? 1 : 2
-      result[index] += home[homeGoals]! * away[awayGoals]!
+  const home = pmf(expected.home)
+  const away = pmf(expected.away)
+  const size = MAX_GOALS + 1
+  const cumulative: number[] = []
+  let accumulated = 0
+  for (let h = 0; h < size; h += 1) {
+    for (let a = 0; a < size; a += 1) {
+      accumulated += home[h]! * away[a]! * tauFactor(h, a, rho, expected.home, expected.away)
+      cumulative.push(accumulated)
     }
   }
-  const total = result.reduce((sum, value) => sum + value, 0)
-  return result.map((value) => value / total) as [number, number, number]
+  const total = accumulated
+  return { cumulative: cumulative.map((value) => value / total), size }
+}
+
+/** Amostra (mandante, visitante) de uma grelha DC via uniforme em [0,1). */
+export function sampleFromGrid(grid: { cumulative: readonly number[]; size: number }, uniform: number): { homeGoals: number; awayGoals: number } {
+  const target = uniform * grid.cumulative[grid.cumulative.length - 1]!
+  let low = 0
+  let high = grid.cumulative.length - 1
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2)
+    if (grid.cumulative[mid]! < target) low = mid + 1
+    else high = mid
+  }
+  return { homeGoals: Math.floor(low / grid.size), awayGoals: low % grid.size }
+}
+
+/** Marginais H/E/F com ajuste DC nos placares baixos (rho = 0 → Poisson independente). */
+export function poissonResultProbabilities(expected: ExpectedGoals, rho = 0): [number, number, number] {
+  const grid = dcJointGrid(expected, rho)
+  const result: [number, number, number] = [0, 0, 0]
+  for (let cell = 0; cell < grid.cumulative.length; cell += 1) {
+    const previous = cell > 0 ? grid.cumulative[cell - 1]! : 0
+    const mass = grid.cumulative[cell]! - previous
+    const homeGoals = Math.floor(cell / grid.size)
+    const awayGoals = cell % grid.size
+    const index = homeGoals > awayGoals ? 0 : homeGoals === awayGoals ? 1 : 2
+    result[index] += mass
+  }
+  return result
+}
+
+/**
+ * ρ de Dixon-Coles estimado por máxima verossimilhança sobre a base de
+ * treino: λ/μ de cada partida vêm das forças casa/fora (mesma fórmula da
+ * produção) e ρ entra apenas nos quatro placares baixos via τ.
+ * Busca em grade [-0,15, 0,10]; devolve 0 para bases pequenas.
+ */
+export function estimateDixonColesRho(
+  trainingMatches: readonly ModelMatch[],
+  referenceYear: number,
+  shrinkageMatches: number,
+): number {
+  if (trainingMatches.length < 40) return 0
+  const averages = historicalGoalAverages(trainingMatches)
+  const slugs = [...new Set(trainingMatches.flatMap(({ home, away }) => [home, away]))]
+  const table = teamStrengthTable(trainingMatches, referenceYear, shrinkageMatches, slugs, averages)
+  const strengthById = new Map(table.map((row) => [row.clubId, row]))
+
+  const pmf = (mean: number): number[] => {
+    const values = [Math.exp(-mean)]
+    for (let goals = 0; goals < MAX_GOALS; goals += 1) values.push(values[goals]! * mean / (goals + 1))
+    const total = values.reduce((sum, value) => sum + value, 0)
+    return values.map((value) => value / total)
+  }
+
+  // Pré-computa por partida o que é constante em ρ.
+  const prepared: { ph: number[]; pa: number[]; rest: number; homeMean: number; awayMean: number; observedHome: number; observedAway: number }[] = []
+  for (const match of trainingMatches) {
+    const homeStrength = strengthById.get(match.home)
+    const awayStrength = strengthById.get(match.away)
+    if (!homeStrength || !awayStrength) continue
+    const homeMean = Math.max(0.05, averages.home * (homeStrength.attackHome / averages.home) * (awayStrength.defenseAway / averages.home))
+    const awayMean = Math.max(0.05, averages.away * (awayStrength.attackAway / averages.away) * (homeStrength.defenseHome / averages.away))
+    const ph = pmf(homeMean)
+    const pa = pmf(awayMean)
+    let rest = 0
+    for (let h = 0; h < ph.length; h += 1) {
+      for (let a = 0; a < pa.length; a += 1) {
+        if (h <= 1 && a <= 1) continue
+        rest += ph[h]! * pa[a]!
+      }
+    }
+    prepared.push({ ph, pa, rest, homeMean, awayMean, observedHome: match.homeGoals, observedAway: match.awayGoals })
+  }
+  if (prepared.length === 0) return 0
+
+  const logLikelihoodAt = (rho: number): number => {
+    let total = 0
+    for (const match of prepared) {
+      const tau = tauFactor(match.observedHome, match.observedAway, rho, match.homeMean, match.awayMean)
+      if (tau <= 0) return Number.NEGATIVE_INFINITY
+      const z = match.rest
+        + match.ph[0]! * match.pa[0]! * tauFactor(0, 0, rho, match.homeMean, match.awayMean)
+        + match.ph[0]! * match.pa[1]! * tauFactor(0, 1, rho, match.homeMean, match.awayMean)
+        + match.ph[1]! * match.pa[0]! * tauFactor(1, 0, rho, match.homeMean, match.awayMean)
+        + match.ph[1]! * match.pa[1]! * tauFactor(1, 1, rho, match.homeMean, match.awayMean)
+      if (z <= 0) return Number.NEGATIVE_INFINITY
+      const observedMass = match.ph[match.observedHome]! * match.pa[match.observedAway]! * tau
+      total += Math.log(observedMass / z)
+    }
+    return total
+  }
+
+  let bestRho = 0
+  let bestLL = logLikelihoodAt(0)
+  for (let rho = -0.15; rho <= 0.1001; rho += 0.005) {
+    const ll = logLikelihoodAt(rho)
+    if (ll > bestLL) {
+      bestLL = ll
+      bestRho = Math.round(rho * 1000) / 1000
+    }
+  }
+  return bestRho
 }
