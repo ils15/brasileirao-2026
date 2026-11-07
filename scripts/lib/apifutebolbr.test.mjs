@@ -43,6 +43,20 @@ const matchPayload = JSON.stringify({
     mandante: { posse_de_bola: '52%', escanteios: 5, finalizacao: { total: 12, no_gol: 5, bloqueado: 3, na_trave: 1 }, passes: { total: 400, precisao: '81%' }, desarmes: 14, defensivo: { defesas: 3 } },
     visitante: { posse_de_bola: '48%', escanteios: 4, finalizacao: { total: 9, no_gol: 3, bloqueado: 4, na_trave: 0 }, passes: { total: 380, precisao: '79%' }, desarmes: 11, defensivo: { defesas: 6 } },
   },
+  escalacoes: {
+    mandante: {
+      esquema_tatico: '4-3-3',
+      tecnico: { tecnico_id: 1, nome_popular: 'Marcão' },
+      titulares: [{ atleta: { atleta_id: 5, nome_popular: 'Vitinho' }, camisa: '7', posicao: { nome: 'Atacante', sigla: 'ATA' } }],
+      reservas: [{ atleta: { atleta_id: 8, nome_popular: 'Reserva Um' }, camisa: '15', posicao: [] }],
+    },
+    visitante: {
+      esquema_tatico: '4-4-2',
+      tecnico: { tecnico_id: 2, nome_popular: 'Técnico Visitante' },
+      titulares: [{ atleta: { atleta_id: 7, nome_popular: 'Guilherme' }, camisa: '9', posicao: { nome: 'Atacante', sigla: 'ATA' } }],
+      reservas: [],
+    },
+  },
   arbitros: [{ papel: 'árbitro', arbitro: { nome_popular: 'Raphael Claus' } }],
 })
 
@@ -118,6 +132,9 @@ describe('parseMatchDetail e mergeMatches', () => {
       { atletaId: 7, atleta: 'Guilherme', minuto: '23:00', penalti: false, contra: true },
     ])
     expect(detail.stats.home).toMatchObject({ posse: '52%', finalizacoes: 12, finalizacoesNoGol: 5, passes: 400, passesPrecisao: '81%', desarmes: 14, defesas: 3 })
+    expect(detail.lineups.home).toMatchObject({ esquema: '4-3-3', tecnico: 'Marcão' })
+    expect(detail.lineups.home.titulares).toEqual([{ atletaId: 5, atleta: 'Vitinho', camisa: '7', posicao: 'Atacante' }])
+    expect(detail.lineups.away.reservas).toEqual([])
     expect(detail.referees).toEqual([{ role: 'árbitro', name: 'Raphael Claus' }])
   })
 

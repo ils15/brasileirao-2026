@@ -141,6 +141,21 @@ export function parseMatchDetail(jsonText) {
     }
   }
   const goals = match.gols ?? {}
+  const lineupOf = (side) => {
+    const lineup = side ?? {}
+    const playersOf = (list) => Array.isArray(list) ? list.map((entry) => ({
+      atletaId: entry.atleta?.atleta_id ?? null,
+      atleta: entry.atleta?.nome_popular ?? null,
+      camisa: entry.camisa ?? null,
+      posicao: entry.posicao?.nome ?? null,
+    })) : []
+    return {
+      esquema: lineup.esquema_tatico ?? null,
+      tecnico: lineup.tecnico?.nome_popular ?? null,
+      titulares: playersOf(lineup.titulares),
+      reservas: playersOf(lineup.reservas),
+    }
+  }
   return {
     partidaId: match.partida_id,
     home,
@@ -156,6 +171,7 @@ export function parseMatchDetail(jsonText) {
     redHome: count(cards.vermelho?.mandante),
     redAway: count(cards.vermelho?.visitante),
     stats: { home: statsOf(match.estatisticas?.mandante), away: statsOf(match.estatisticas?.visitante) },
+    lineups: { home: lineupOf(match.escalacoes?.mandante), away: lineupOf(match.escalacoes?.visitante) },
     referees: Array.isArray(match.arbitros) ? match.arbitros.map((referee) => ({ role: referee.papel ?? referee.funcao ?? null, name: referee.arbitro?.nome_popular ?? referee.nome_popular ?? null })) : [],
   }
 }
