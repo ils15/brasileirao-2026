@@ -372,29 +372,11 @@ function finalTable(states: TeamState[]): SimulatedClub[] {
         { points: b.h2hPoints[a.index]!, goalDifference: b.h2hGoalDifference[a.index]!, goalsFor: b.h2hGoalsFor[a.index]! },
       ) || a.drawOrder - b.drawOrder)
     } else {
-      // REC para 3+ empatados: mini-tabela de confronto direto entre os
-      // membros do grupo (pontos → saldo → gols pró nos jogos entre eles),
-      // depois sorteio reprodutível. Cartões/amarelos não existem nos dados.
-      const mini = (state: TeamState): { points: number; goalDiff: number; goalsFor: number } => {
-        let points = 0
-        let goalsFor = 0
-        let goalDiff = 0
-        for (const other of group) {
-          if (other.index === state.index) continue
-          points += state.h2hPoints[other.index] ?? 0
-          goalsFor += state.h2hGoalsFor[other.index] ?? 0
-          goalDiff += state.h2hGoalDifference[other.index] ?? 0
-        }
-        return { points, goalDiff, goalsFor }
-      }
-      group.sort((a, b) => {
-        const aMini = mini(a)
-        const bMini = mini(b)
-        return bMini.points - aMini.points
-          || bMini.goalDiff - aMini.goalDiff
-          || bMini.goalsFor - aMini.goalsFor
-          || a.drawOrder - b.drawOrder
-      })
+      // Art. 15 do REC 2026 (CBF): para 3+ empatados, após gols pró vêm
+      // cartões vermelhos e amarelos — dados que não existem nos nossos
+      // snapshots — e então o sorteio. Sem cartões, o sorteio reprodutível
+      // é o último passo implementável da sequência oficial.
+      group.sort((a, b) => a.drawOrder - b.drawOrder)
     }
     sorted.push(...group)
     start = end

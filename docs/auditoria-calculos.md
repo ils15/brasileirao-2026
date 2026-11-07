@@ -215,16 +215,22 @@ informação nova.
 testada para reabrir o experimento; produção segue 100% Poisson.
 
 
-## 17. Mini-tabela de confronto direto para 3+ empatados — **Adotado**
+## 17. Critérios de desempate alinhados ao Art. 15 do REC 2026 — **Corrigido**
 
-Antes: empates entre 3+ clubes iam direto ao sorteio aleatório (os
-critérios REC seguintes não tinham dados — cartões). O REC prevê
-mini-tabela de confronto direto entre os empatados antes dos cartões.
+Versão anterior tinha uma mini-tabela de confronto direto para 3+
+empatados — que **não existe no REC 2026**: o Art. 15 aplica confronto
+direto **exclusivamente para empate entre dois clubes**.
 
-**Agora:** para grupos de 3+ clubes empatados nos quatro primeiros
-critérios, a simulação ordena pelos pontos, saldo e gols pró **nos jogos
-entre os empatados** (incluindo os simulados), e o sorteio reprodutível
-fica como último recurso. Isso remove uma fonte de arbitrariedade que
-inflava rebaixamento de clubes que ganham seus confrontos diretos —
-exatamente o caso de clubes médios em Z4 disputada (ex.: Vasco ×
-Internacional/Vitória nos jogos restantes).
+**Ordem oficial (Art. 15, CBF):** 1) vitórias; 2) saldo; 3) gols pró;
+4) confronto direto (só 2 clubes: pontos → saldo → gols pró no
+confronto); 5) cartões vermelhos; 6) cartões amarelos; 7) sorteio.
+
+**Na simulação:** pontos → vitórias → saldo → gols pró → confronto
+direto (2 clubes, incluindo os simulados) → **sorteio reprodutível**.
+Os itens 5 e 6 exigem cartões, ausentes dos nossos snapshots — a queda
+para o item 7 é declarada. Para 3+ empatados a consequência é a mesma
+do sorteio oficial na ausência de cartões: aleatória.
+
+**Vascone**: clubes médios em Z4 disputada que ganham seus confrontos
+diretos ganham menos que na versão anterior com mini-tabela — a versão
+com mini-tabela era mais generosa do que o regulamento prevê.
