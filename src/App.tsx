@@ -13,10 +13,11 @@ import { HeadToHeadPanel } from './HeadToHeadPanel'
 import { espnLogoUrlByClub } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
-import { seasonFacts, cutoffSummaryLine, updateClock } from './seasonFacts'
+import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, updateClock } from './seasonFacts'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const ESPN_URL = 'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols'
+const SCORERS_PER_PAGE = 20
 type ThemeMode = 'system' | 'light' | 'dark'
 
 const TABS = [
@@ -139,9 +140,15 @@ function App(): JSX.Element {
   const [clubFilter, setClubFilter] = useState<ClubFilter>('all')
   const [theme, setTheme] = useState<ThemeMode>(getSavedTheme)
   const [activeTab, setActiveTab] = useState<TabId>('visao-geral')
+  const [scorerPage, setScorerPage] = useState(0)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const leader = standings[0]!
   const normalizedQuery = normalizeText(query.trim())
+  const scorerPageCount = Math.max(1, Math.ceil(scorers.length / SCORERS_PER_PAGE))
+  const scorerPageStart = scorerPage * SCORERS_PER_PAGE
+  const visibleScorers = scorers.slice(scorerPageStart, scorerPageStart + SCORERS_PER_PAGE)
+  const scorerRangeStart = scorers.length === 0 ? 0 : scorerPageStart + 1
+  const scorerRangeEnd = Math.min(scorerPageStart + SCORERS_PER_PAGE, scorers.length)
 
   const filteredStandings = useMemo(
     () => standings.filter((team) => normalizeText(team.club).includes(normalizedQuery)),
@@ -239,7 +246,7 @@ function App(): JSX.Element {
               <div className="leader-stats">
                 <div><strong>{leader.points}</strong><span>Pontos</span></div>
                 <div><strong>{leader.played}</strong><span>Jogos</span></div>
-                <span className="leader-stat-caption">Classificação oficial<br />CBF</span>
+              <span className="leader-stat-caption">Classificação derivada do pacote</span>
               </div>
               <span className="leader-watermark" aria-hidden="true">26</span>
             </aside>
@@ -363,7 +370,7 @@ function App(): JSX.Element {
                     </tbody>
                   </table>
                 </div>
-                <p className="table-note">Posições oficiais mantidas conforme a CBF. O número de jogos varia entre os clubes.</p>
+                <p className="table-note">Classificação calculada dos resultados do pacote; a cópia CBF arquivada soma 332 jogos e não valida este conjunto. O número de jogos varia entre os clubes.</p>
               </div>
 
               <section className="scorers-panel panel" id="artilharia" aria-labelledby="scorers-title">
@@ -371,18 +378,40 @@ function App(): JSX.Element {
                   <div><p className="eyebrow eyebrow-dark">QUEM FAZ A DIFERENÇA</p><h2 id="scorers-title">Artilharia</h2></div>
                   <span className="section-index">02 <span>/ GOLS</span></span>
                 </div>
-                <p className="scorers-caption">Os goleadores da temporada</p>
-                <ol className="scorer-list" aria-label="Artilharia">
-                  {scorers.map((scorer, index) => (
+                <p className="scorers-caption">Lista informativa da temporada; captura pós-corte, não representa a artilharia no corte.</p>
+                <ol className="scorer-list" id="scorer-list" aria-label="Artilharia">
+                  {visibleScorers.map((scorer, index) => (
                     <li className="scorer-item" key={`${scorer.name}-${scorer.club}`}>
                       <span className="scorer-rank">{scorer.position}</span>
-                      <span className={`scorer-avatar scorer-avatar--${index + 1}`} aria-hidden="true">{scorer.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span>
+                      <span className={`scorer-avatar scorer-avatar--${scorerPageStart + index + 1}`} aria-hidden="true">{scorer.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span>
                       <span className="scorer-info"><strong>{scorer.name}</strong><small>{scorer.club}</small></span>
                       <span className="goal-count"><strong>{scorer.goals}</strong><small>gols</small></span>
                     </li>
                   ))}
                 </ol>
-                <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {SCORERS_SOURCE.fetchedAt.slice(0, 16).replace('T', ' ')} UTC · atualizada automaticamente após cada rodada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
+                <nav className="scorer-pagination" aria-label="Paginação da artilharia">
+                  <button
+                    className="filter-button"
+                    type="button"
+                    aria-label="Página anterior da artilharia"
+                    aria-controls="scorer-list"
+                    disabled={scorerPage === 0}
+                    onClick={() => setScorerPage((page) => Math.max(0, page - 1))}
+                  >Anterior</button>
+                  <button
+                    className="filter-button"
+                    type="button"
+                    aria-label="Próxima página da artilharia"
+                    aria-controls="scorer-list"
+                    disabled={scorerPage >= scorerPageCount - 1}
+                    onClick={() => setScorerPage((page) => Math.min(scorerPageCount - 1, page + 1))}
+                  >Próxima</button>
+                  <span className="scorer-pagination-status" aria-live="polite" aria-atomic="true">
+                    <span>{scorerRangeStart}–{scorerRangeEnd} de {scorers.length}</span>
+                    <span aria-current="page">Página {scorerPage + 1} de {scorerPageCount}</span>
+                  </span>
+                </nav>
+                <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {scorersCaptureLabel} · posterior ao corte analítico; sem timestamp por partida, cobertura temporal não verificada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
                 <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
                 <a className="text-link" href={ESPN_URL} target="_blank" rel="noreferrer">Ver estatísticas na ESPN <span aria-hidden="true">↗</span></a>
               </section>
@@ -451,8 +480,8 @@ function App(): JSX.Element {
       <footer className="site-footer">
         <div className="footer-brand"><BrandMark /><strong>BRASILEIRÃO <span>2026</span></strong></div>
         <p>Snapshot estático · Simulações em segundo plano · Sem dados ao vivo.</p>
-        <div className="footer-sources"><a href={CBF_URL} target="_blank" rel="noreferrer"><img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} /> CBF · Classificação oficial ↗</a><a href={ESPN_URL} target="_blank" rel="noreferrer">ESPN · Conferência de artilharia ↗</a></div>
-        <small>A classificação foi reconciliada em agregado ao conjunto de jogos até 04/11/2026 13:00 BRT; a cópia CBF foi capturada depois e não valida placares individuais. Artilharia de fonte secundária · sem atualização em tempo real.</small>
+        <div className="footer-sources"><a href={CBF_URL} target="_blank" rel="noreferrer"><img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} /> CBF · Página atual de classificação ↗</a><a href={ESPN_URL} target="_blank" rel="noreferrer">ESPN · Consulta externa ↗</a></div>
+        <small>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; o HTML CBF arquivado soma 332 jogos e não valida o conjunto. A página atual consultada em 08/11 é pós-corte. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, posterior ao corte; sem timestamp por partida, cobertura temporal não verificada.</small>
       </footer>
     </>
   )

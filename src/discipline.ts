@@ -2,7 +2,7 @@ import { advancedMatches, type AdvancedMatchRecord } from './advancedStats2026'
 import { remainingFixtures, currentClubs } from './projectionData'
 
 /**
- * Disciplina por clube: cartões reais (fonte 365scores) e a projeção para os
+ * Disciplina por clube: cartões do snapshot 365scores e a projeção para os
  * jogos restantes, usada nos critérios 5/6 do Art. 15 do REC 2026
  * (menor número de cartões vermelhos, depois amarelos).
  *
@@ -14,7 +14,7 @@ import { remainingFixtures, currentClubs } from './projectionData'
 
 export interface DisciplineRow {
   clubId: string
-  /** Cartões reais até o corte (nos jogos com cobertura da fonte). */
+  /** Cartões contados pelo snapshot 365scores; cobertura temporal no corte não verificada. */
   yellows: number
   reds: number
   /** Jogos do clube presentes na fonte avançada (denominador das taxas). */

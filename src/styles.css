@@ -215,6 +215,11 @@ th.numeric .sort-button { justify-content: flex-end; }
 .goal-count { display: grid; gap: 2px; margin-left: auto; text-align: right; }
 .goal-count strong { color: var(--ink); font: 700 20px/1 var(--display); }
 .goal-count small { color: var(--text-muted); font: 12px var(--mono); }
+.scorer-pagination { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 8px; margin: 14px 0 0; }
+.scorer-pagination button:first-of-type { grid-column: 1; grid-row: 1; justify-self: start; }
+.scorer-pagination button:last-of-type { grid-column: 2; grid-row: 1; justify-self: end; }
+.scorer-pagination-status { display: grid; grid-column: 1 / -1; grid-row: 2; justify-self: center; gap: 3px; color: var(--text-secondary); font: 12px/1.35 var(--mono); text-align: center; white-space: nowrap; }
+.scorer-pagination-status [aria-current='page'] { color: var(--text-muted); }
 .scorers-source-note { margin: 12px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.55; }
 .tie-note { display: flex; align-items: center; gap: 8px; margin: 15px 0 17px; padding: 12px; color: var(--callout-text); background: var(--callout-bg); font-size: 13px; line-height: 1.5; }
 .tie-note span { color: #759448; font-size: 15px; }
@@ -330,7 +335,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 
 /* Aba Dados & Auditoria */
 .audit-section { margin-top: 34px; }
-.audit-grid { display: grid; gap: 18px; padding-bottom: 40px; }
+.audit-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding-bottom: 40px; } /* Evita que o min-content da tabela rolável de 640px alargue a grade no mobile. */
 .audit-block { padding: 25px; }
 .audit-block h3 { margin: 0 0 14px; color: var(--ink); font: 800 18px/1.2 var(--display); }
 .source-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -342,8 +347,10 @@ th.numeric .sort-button { justify-content: flex-end; }
 .source-card dl > div { display: flex; justify-content: space-between; gap: 10px; }
 .source-card dt { color: var(--text-muted); font-size: 12px; }
 .source-card dd { margin: 0; color: var(--text); font: 12px var(--mono); text-align: right; overflow-wrap: anywhere; }
+.source-card-note { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
 .audit-note { margin: 14px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
 .validations-table { min-width: 720px; }
+.validations-table th:last-child { position: relative; } /* Mantém o rótulo sr-only no contêiner rolável, sem ampliar o documento. */
 .validations-table tbody td { height: 52px; padding: 8px 12px; color: var(--text); font-size: 14px; }
 .validations-table tbody th { font-size: 14px; font-weight: 600; }
 .validation-badge { display: inline-block; padding: 4px 10px; border-radius: 3px; font: 700 12px var(--mono); letter-spacing: .05em; }
@@ -366,6 +373,8 @@ th.numeric .sort-button { justify-content: flex-end; }
 .standings-view-table { min-width: 560px; }
 .standings-view-table tbody td { height: 48px; padding: 6px 12px; font: 14px var(--mono); }
 .standings-view-table tbody th.club-cell { padding: 6px 10px; }
+.tiebreaker-note { margin: 16px 0; padding: 12px 14px; border-left: 3px solid #a7c34b; color: var(--callout-text); background: var(--callout-bg); font-size: 13px; line-height: 1.6; }
+.tiebreaker-note strong { color: var(--ink); }
 
 /* Barras de probabilidade de resultado (próxima rodada + H2H) */
 .result-bar-block { display: grid; gap: 7px; margin-top: 10px; }
@@ -579,6 +588,14 @@ th.numeric .sort-button { justify-content: flex-end; }
   .site-footer > small { grid-row: 3; }
   .venue-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .source-cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 1280px) {
+  .scorer-pagination { grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px; }
+  .scorer-pagination button:first-of-type { grid-column: 1; grid-row: 1; }
+  .scorer-pagination button:last-of-type { grid-column: 3; grid-row: 1; }
+  .scorer-pagination-status { grid-column: 2; grid-row: 1; }
+  .scorer-pagination .filter-button { padding-right: 10px; padding-left: 10px; }
 }
 
 @media (max-width: 767px) {

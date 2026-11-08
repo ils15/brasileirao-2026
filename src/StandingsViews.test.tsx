@@ -12,8 +12,21 @@ describe('aba classificações', () => {
     expect(within(table).getAllByRole('row')).toHaveLength(21)
     expect(within(table).getByRole('columnheader', { name: /^Pts/ })).toBeInTheDocument()
     expect(within(table).getByRole('columnheader', { name: /^GP/ })).toBeInTheDocument()
-    // Líder oficial na primeira linha de dados
+    // Líder da tabela derivada na primeira linha de dados
     expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
+  })
+
+  it('separa a norma oficial, a ordem desta tabela e o limite temporal de cartões antes das vistas', () => {
+    render(<StandingsViews />)
+    const limitation = screen.getByRole('note', { name: 'Limitação do desempate pelo Art. 15 da CBF' })
+    const viewTabs = screen.getByRole('tablist', { name: 'Vistas da classificação' })
+
+    expect(limitation).toBeVisible()
+    expect(limitation).toHaveTextContent(/Art\. 15 — norma oficial:.*confronto direto.*menos cartões vermelhos.*menos cartões amarelos.*sorteio/)
+    expect(limitation).toHaveTextContent(/para três ou mais, H2H não se aplica/)
+    expect(limitation).toHaveTextContent(/Nesta tabela:.*pontos.*nome do clube; não aplica integralmente o Art\. 15 nem representa uma classificação oficial da CBF/)
+    expect(limitation).toHaveTextContent(/Limite temporal:.*posterior ao corte analítico 2026-11-07T00:58:14\.422Z.*não tem cobertura temporal por partida suficiente.*naquele corte/)
+    expect(limitation.compareDocumentPosition(viewTabs) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('troca entre as oito vistas por clique e teclado', async () => {
@@ -72,7 +85,7 @@ describe('aba classificações', () => {
     expect(chart).toBeInTheDocument()
     expect(chart.querySelectorAll('polyline')).toHaveLength(20)
     expect(chart.querySelectorAll('.evolution-band')).toHaveLength(2)
-    expect(screen.getByText(/o último ponto coincide com a classificação oficial/)).toBeInTheDocument()
+    expect(screen.getByText(/o último ponto coincide com a tabela derivada do pacote/)).toBeInTheDocument()
 
     // Clique destaca/desdestaca
     await user.click(within(picker).getByRole('button', { name: /Cruzeiro/ }))

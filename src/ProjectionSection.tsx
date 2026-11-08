@@ -620,10 +620,12 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                     const deltaPercent = club.currentPoints === 0 ? 0 : delta / club.currentPoints
                     return (
                       <tr key={club.id}>
-                        <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span><Crest clubId={club.id} /><span>{club.club}</span></th>
+                        <td className="numeric position-cell">{String(club.currentPosition).padStart(2, '0')}</td>
+                        <th scope="row" className="club-cell"><Crest clubId={club.id} /><span>{club.club}</span></th>
                         <td className="numeric games-cell">{club.currentPoints}</td>
                         <td className="numeric probability-cell"><strong>{club.pointsStats.median}</strong><span className="cell-ci">média {decimal.format(club.pointsStats.mean)}</span></td>
-                        <td className="numeric range-cell">{club.pointsStats.p25}–{club.pointsStats.p75}</td>
+                        <td className="numeric range-cell">{club.pointsStats.p25}</td>
+                        <td className="numeric range-cell">{club.pointsStats.p75}</td>
                         <td className="numeric games-cell">{club.pointsStats.p90}<span className="cell-ci">mínimo {club.pointsStats.min}</span></td>
                         <td className="numeric">
                           <span className={`delta-badge ${delta > 0 ? 'delta-badge--up' : delta < 0 ? 'delta-badge--down' : 'delta-badge--flat'}`}>

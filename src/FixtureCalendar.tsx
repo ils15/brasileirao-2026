@@ -141,7 +141,7 @@ export function FixtureCalendar(): JSX.Element {
           )
         })}
       </ol>
-      <p className="fixture-calendar-note">Sem índice de dificuldade: os adversários e o mando ficam explícitos; a força relativa vem das taxas casa/fora regularizadas e dos jogos históricos, não de um rótulo de calendário. As probabilidades de V/E/D são do modelo (não são odds). A classificação final simulada segue o Art. 15 do REC 2026: vitórias → saldo → gols pró → confronto direto (só 2 clubes) → cartões vermelhos → cartões amarelos → sorteio. Os cartões usam os totais reais da temporada mais a taxa por jogo projetada para os jogos restantes (fonte 365scores).</p>
+      <p className="fixture-calendar-note">Sem índice de dificuldade: adversários, mando e forças casa/fora são explícitos. Probabilidades de V/E/D são do modelo, não odds. O desempate simulado (não é classificação oficial) usa pontos → vitórias → saldo → gols pró; confronto direto entre dois clubes; disciplina estimada em grupos de três ou mais e sorteio residual. O snapshot 365scores de 07/11/2026 15:25:20 UTC é pós-corte e não tem timestamp por partida; não comprova cartões no corte nem aplicação integral do Art. 15.</p>
     </section>
   )
 }

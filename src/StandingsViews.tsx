@@ -178,7 +178,7 @@ function PositionEvolutionChart(): JSX.Element {
         })}
       </svg>
       <figcaption>
-        Posição ao fim de cada rodada com jogos (adiados podem deixar rodadas parciais; o último ponto coincide com a classificação oficial).
+        Posição ao fim de cada rodada com jogos (adiados podem deixar rodadas parciais; o último ponto coincide com a tabela derivada do pacote).
         Clique nos chips para destacar clubes; as 20 linhas ficam de fundo em traço fino.
       </figcaption>
     </figure>
@@ -279,6 +279,9 @@ export function StandingsViews(): JSX.Element {
         <div><p className="eyebrow eyebrow-dark">ANÁLISES DA TABELA</p><h2 id="standings-views-title">Classificações</h2></div>
         <span className="section-index">02 <span>/ TABELAS</span></span>
       </div>
+      <p role="note" aria-label="Limitação do desempate pelo Art. 15 da CBF" className="tiebreaker-note">
+        <strong>Art. 15 — norma oficial:</strong> pontos → vitórias → saldo de gols → gols pró → confronto direto → menos cartões vermelhos → menos cartões amarelos → sorteio. No H2H entre dois clubes, somam-se os pontos dos jogos de ida e volta e depois se compara o saldo; para três ou mais, H2H não se aplica. <strong>Nesta tabela:</strong> a ordem analítica é pontos → vitórias → saldo → gols pró → nome do clube; não aplica integralmente o Art. 15 nem representa uma classificação oficial da CBF. <strong>Limite temporal:</strong> o snapshot 365scores (07/11/2026 15:25 UTC) é posterior ao corte analítico 2026-11-07T00:58:14.422Z e não tem cobertura temporal por partida suficiente para confirmar o estado dos cartões naquele corte.
+      </p>
       <div className="subtabs" role="tablist" aria-label="Vistas da classificação">
         {VIEWS.map((view, index) => (
           <button
@@ -299,7 +302,7 @@ export function StandingsViews(): JSX.Element {
       <div id={`painel-vista-${activeView}`} role="tabpanel" aria-labelledby={`vista-${activeView}`}>
         {viewContent[activeView]}
       </div>
-      <p className="table-note">Todas as vistas agregam os resultados até o corte analítico; critérios de ordem: pontos → vitórias → saldo → gols pró. Nas vistas parciais, clubes com jogos adiados podem ter um jogo a menos.</p>
+      <p className="table-note">Todas as vistas agregam os resultados até o corte. Nas vistas parciais, clubes com jogos adiados podem ter um jogo a menos.</p>
     </section>
   )
 }

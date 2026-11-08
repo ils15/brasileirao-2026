@@ -185,10 +185,14 @@ export function mergeMatches(existing, incoming) {
 
 /** Módulo TS gerado (src/scorers2026.ts) com posições por empate. */
 export function renderScorersModule({ scorers, fetchedAt, sourceSha }) {
-  const lines = scorers.slice(0, 30).map((scorer) => `  { name: '${scorer.name.replace(/'/g, "\\'")}', club: '${scorer.club}', goals: ${scorer.goals} },`)
+  const lines = scorers.map((scorer) => `  { name: '${scorer.name.replace(/'/g, "\\'")}', club: '${scorer.club}', goals: ${scorer.goals} },`)
   return `/**
  * Artilharia 2026 — GERADO por scripts/refresh-apifutebolbr.mjs a partir da
  * API Futebol BR (campeonato 10, edição atual). NÃO EDITAR À MÃO.
+ *
+ * fetchedAt é o instante de captura do snapshot, não timestamp por partida.
+ * A cobertura temporal por partida não foi confirmada; não tratar como
+ * artilharia no corte analítico.
  *
  * Fonte informativa: não alimenta o modelo de gols. Σgols de atletas ≈ gols
  * pró da tabela menos os gols contra; pequenas diferenças por clube são

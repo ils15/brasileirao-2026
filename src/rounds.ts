@@ -110,8 +110,8 @@ export function compareStandingsRows(left: StandingsRow, right: StandingsRow): n
 
 /**
  * Classificação agregada dos resultados até o corte, com filtros de rodada e
- * mando. Critérios de ordem: pontos → vitórias → saldo → gols pró (mesmos
- * quatro primeiros critérios da simulação; sem H2H/cartões aqui).
+ * mando. Ordem analítica: pontos → vitórias → saldo → gols pró → nome do clube.
+ * Não implementa o desempate completo do Art. 15 (H2H, cartões e sorteio).
  */
 export function standingsFromResults(filter: StandingsFilter = {}, matches: readonly CurrentSeasonMatch[] = currentSeasonResults): StandingsRow[] {
   const clubNames = new Map(currentClubs.map(({ id, club }) => [id, club]))
@@ -179,8 +179,8 @@ export interface ClubRoundPosition {
 
 /**
  * Classificação cumulativa após cada rodada com jogos — inclui rodadas
- * parciais (adiados), então o último ponto coincide com a classificação
- * oficial no corte.
+ * parciais (adiados), então o último ponto coincide com a tabela derivada
+ * do pacote no corte.
  */
 export function positionByRound(matches: readonly CurrentSeasonMatch[] = currentSeasonResults): { rounds: number[]; clubs: ClubRoundPosition[] } {
   const rounds = playedRounds(matches)

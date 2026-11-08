@@ -13,6 +13,31 @@
 
 import { readFileSync } from 'node:fs'
 
+/** Formata um instante como ISO local de Brasília, incluindo o offset vigente. */
+export function formatBrazilLocalIso(utcIso) {
+  const instant = new Date(utcIso)
+  if (Number.isNaN(instant.getTime())) throw new Error(`Instante UTC inválido: ${utcIso}`)
+
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(instant).map(({ type, value }) => [type, value]))
+  const localWallTime = Date.UTC(parts.year, Number(parts.month) - 1, parts.day, parts.hour, parts.minute, parts.second)
+  const utcSecond = Math.floor(instant.getTime() / 1000) * 1000
+  const offsetMinutes = (localWallTime - utcSecond) / 60_000
+  const sign = offsetMinutes < 0 ? '-' : '+'
+  const absoluteOffset = Math.abs(offsetMinutes)
+  const offset = `${sign}${String(Math.floor(absoluteOffset / 60)).padStart(2, '0')}:${String(absoluteOffset % 60).padStart(2, '0')}`
+
+  return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}${offset}`
+}
+
 const TEAM_SLUGS = {
   'Athletico-PR': 'athletico-pr',
   'Atletico-MG': 'atletico-mg',
@@ -120,7 +145,23 @@ export function parseFootballDataCsv(csvText, { seasonYear, cutoffDate }) {
   return matches
 }
 
-/** Resultados concluídos do(s) scoreboard(s) ESPN com kickoff ≤ corte. */
+/** Conta resultados ESPN empacotados sem correspondência de mandante, visitante e placar no Football-Data. */
+export function summarizeEspnFootballDataCoverage(packedResults, footballDataResults) {
+  const espnResults = packedResults.filter((match) => match.source === 'espn')
+  const footballDataScores = new Set(footballDataResults.map(({ home, away, homeGoals, awayGoals }) =>
+    JSON.stringify([home, away, homeGoals, awayGoals]),
+  ))
+  const missingFromFootballData = espnResults.filter(({ home, away, homeGoals, awayGoals }) =>
+    !footballDataScores.has(JSON.stringify([home, away, homeGoals, awayGoals])),
+  ).length
+
+  return {
+    espnCount: espnResults.length,
+    espnMissingFromFootballDataCount: missingFromFootballData,
+  }
+}
+
+/** Resultados concluídos do(s) scoreboard(s) ESPN com kickoff ≤ corte UTC. */
 export function parseEspnScoreboard(jsonText, { cutoffUtc }) {
   const payload = JSON.parse(jsonText)
   const events = payload.events ?? []
@@ -328,7 +369,7 @@ export function renderCurrentSeasonResults({ results, metadata }) {
   return `// Empacotado automaticamente por scripts/update-data.mjs em ${metadata.generatedAt}.
 // Fontes e hashes em CURRENT_SEASON_SOURCE; cópias brutas em data/source-snapshots/.
 // Football-Data: ${metadata.rows2026} linhas 2026 no CSV da coleta (sha256 ${metadata.sha256}).
-// ESPN: ${metadata.espnCount} placares complementares com kickoff anterior ao corte.
+// ESPN: ${metadata.espnCount} resultados atribuídos à fonte no conjunto empacotado.
 export type CurrentSeasonMatch = {
   home: string
   away: string
@@ -338,6 +379,8 @@ export type CurrentSeasonMatch = {
   source: 'football-data' | 'espn'
   sourceRef: string
 }
+
+export const CURRENT_SEASON_PACK_GENERATED_AT = '${metadata.generatedAt}'
 
 export const CURRENT_SEASON_SOURCE = {
   footballData: {
@@ -353,8 +396,9 @@ export const CURRENT_SEASON_SOURCE = {
     collectedAt: '${metadata.collectedAt}',
     timezone: 'UTC (kickoff timestamps include Z)',
     sha256: '${metadata.espnSha256}',
-    file: 'data/source-snapshots/',
+    file: '${metadata.espnFiles}',
     completedMatches: ${metadata.espnCount},
+    withoutFootballDataScore: ${metadata.espnMissingFromFootballDataCount},
   },
   historical: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
@@ -363,12 +407,12 @@ export const CURRENT_SEASON_SOURCE = {
   },
   cbfStandings: {
     url: 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026',
-    collectedAt: '${metadata.collectedAt}',
+    collectedAt: '${metadata.cbfCollectedAt}',
     displayedTimestamp: '${metadata.cbfDisplayed}',
     displayedTimestampTimezone: 'not specified',
-    sha256: '${metadata.cbfSha256 ?? metadata.lastCbfSha256}',
+    sha256: '${metadata.cbfSha256}',
     file: 'data/source-snapshots/cbf-table-2026.html',
-    validation: 'aggregate standings only; snapshot reconciled with packed results',
+    validation: '${metadata.cbfValidation}',
   },
 } as const
 
@@ -438,7 +482,7 @@ export function espnLogoUrlByClub(clubName: string): string | undefined {
 }
 
 export function renderSourceMetadata({ cutoffLocal, cutoffUtc }) {
-  return `// Corte analítico regenerado por scripts/update-data.mjs: fim dos jogos da última rodada coletada.
+  return `// Corte analítico do pacote gerado; não é kickoff, captura individual nem horário de publicação.
 // Football-Data não informa fuso; o dia-limite inteiro permanece de fora (política conservadora).
 export const ANALYTICAL_CUTOFF_LOCAL = '${cutoffLocal}'
 export const ANALYTICAL_CUTOFF_UTC = '${cutoffUtc}'

@@ -1,10 +1,13 @@
 import { useMemo, useState, type JSX } from 'react'
-import { CURRENT_SEASON_SOURCE, currentSeasonResults } from './currentSeasonResults'
+import { CURRENT_SEASON_PACK_GENERATED_AT, CURRENT_SEASON_SOURCE, currentSeasonResults } from './currentSeasonResults'
+import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
 import { HISTORICAL_SOURCE, historicalSeasons } from './historicalSeasons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { validateHistoricalSeason } from './projection'
 import { validateCurrentSeason } from './seasonStats'
 import { filterAtOrBeforeAnalyticalCutoff, ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
+import { cutoffLabel, scorersCaptureLabel } from './seasonFacts'
+import { SCORERS_SOURCE } from './data'
 import { buildXlsx, downloadFile, toCSV, toJson, type ExportSheet } from './exporters'
 
 interface DatasetDefinition {
@@ -66,8 +69,8 @@ const datasets: DatasetDefinition[] = [
   },
   {
     id: 'classificacao',
-    title: 'Classificação oficial no corte (20 clubes)',
-    description: 'Snapshot reconciliado com a tabela CBF em agregado.',
+    title: 'Classificação derivada do pacote (20 clubes)',
+    description: 'Agregados reconciliados internamente; a cópia CBF arquivada soma 332 jogos e não valida o pacote atual.',
     filename: 'brasileirao-2026-classificacao',
     build: () => ({
       name: 'Classificação',
@@ -164,15 +167,34 @@ function useValidations(): ValidationRow[] {
   }, [])
 }
 
-function SourceCard({ title, url, collectedAt, hash }: { title: string; url: string; collectedAt: string; hash: string }): JSX.Element {
+interface SourceCardProps {
+  title: string
+  url: string
+  timestamp: string
+  hash: string
+  timestampLabel?: string
+  hashLabel?: string
+  note?: string
+}
+
+function SourceCard({
+  title,
+  url,
+  timestamp,
+  hash,
+  timestampLabel = 'Captura da fonte',
+  hashLabel = 'SHA-256',
+  note,
+}: SourceCardProps): JSX.Element {
   return (
     <div className="source-card">
-      <h3>{title}</h3>
+      <h4>{title}</h4>
       <a href={url} target="_blank" rel="noreferrer">{url.replace(/^https?:\/\//, '')} ↗</a>
       <dl>
-        <div><dt>Coletado em</dt><dd>{collectedAt.replace('T', ' ')}</dd></div>
-        <div><dt>SHA-256</dt><dd><code>{hash}</code></dd></div>
+        <div><dt>{timestampLabel}</dt><dd>{timestamp.replace('T', ' ').replace(/Z$/, ' UTC')}</dd></div>
+        <div><dt>{hashLabel}</dt><dd><code>{hash}</code></dd></div>
       </dl>
+      {note ? <p className="source-card-note">{note}</p> : null}
     </div>
   )
 }
@@ -184,6 +206,10 @@ function SourceCard({ title, url, collectedAt, hash }: { title: string; url: str
 export function AuditPanel(): JSX.Element {
   const validations = useValidations()
   const [lastExport, setLastExport] = useState('')
+  const currentScoreKeys = new Set(currentSeasonResults.map((match) => `${match.home}|${match.away}|${match.homeGoals}-${match.awayGoals}`))
+  const matchingAdvancedScoreCount = advancedMatches.filter((match) =>
+    currentScoreKeys.has(`${match.home}|${match.away}|${match.homeScore}-${match.awayScore}`),
+  ).length
 
   function handleExport(dataset: DatasetDefinition, format: 'csv' | 'xlsx' | 'json'): void {
     exportDataset(dataset, format)
@@ -197,8 +223,8 @@ export function AuditPanel(): JSX.Element {
         <span className="section-index">04 <span>/ DADOS</span></span>
       </div>
       <p className="table-note">
-        Snapshot estático com corte em 04/11/2026 13:00 BRT ({ANALYTICAL_CUTOFF_UTC}). Cada conjunto abaixo pode ser
-        exportado com bloco de proveniência (fonte, SHA-256, corte e horário de geração).
+        Corte analítico: {cutoffLabel} ({ANALYTICAL_CUTOFF_UTC}). Pacote gerado em {CURRENT_SEASON_PACK_GENERATED_AT}. Captura individual de Football-Data, ESPN e CBF: não registrada no snapshot.
+        Cada conjunto abaixo pode ser exportado com bloco de proveniência (fonte, SHA-256, corte e horário de geração).
       </p>
 
       <div className="audit-grid">
@@ -206,17 +232,22 @@ export function AuditPanel(): JSX.Element {
           <h3 id="sources-title">Fontes e captura</h3>
           <div className="source-cards">
             <SourceCard title="Football-Data (placares 2021–2026)" url={CURRENT_SEASON_SOURCE.footballData.url}
-              collectedAt={CURRENT_SEASON_SOURCE.footballData.collectedAt} hash={CURRENT_SEASON_SOURCE.footballData.sha256} />
-            <SourceCard title="ESPN (2 resultados ausentes no CSV)" url={CURRENT_SEASON_SOURCE.espn.url}
-              collectedAt={CURRENT_SEASON_SOURCE.espn.collectedAt} hash={CURRENT_SEASON_SOURCE.espn.sha256} />
-            <SourceCard title="CBF (classificação oficial)" url={CURRENT_SEASON_SOURCE.cbfStandings.url}
-              collectedAt={CURRENT_SEASON_SOURCE.cbfStandings.collectedAt} hash={CURRENT_SEASON_SOURCE.cbfStandings.sha256} />
+              timestamp={CURRENT_SEASON_SOURCE.footballData.collectedAt} hash={CURRENT_SEASON_SOURCE.footballData.sha256} />
+            <SourceCard title={`ESPN (${CURRENT_SEASON_SOURCE.espn.withoutFootballDataScore} de ${CURRENT_SEASON_SOURCE.espn.completedMatches} resultados atribuídos à ESPN no pacote sem correspondência no CSV Football-Data)`} url={CURRENT_SEASON_SOURCE.espn.url}
+              timestamp={CURRENT_SEASON_SOURCE.espn.collectedAt} hash={CURRENT_SEASON_SOURCE.espn.sha256} />
+            <SourceCard title="CBF (HTML de classificação arquivado)" url={CURRENT_SEASON_SOURCE.cbfStandings.url}
+              timestamp={CURRENT_SEASON_SOURCE.cbfStandings.collectedAt} hash={CURRENT_SEASON_SOURCE.cbfStandings.sha256}
+              note="Exibe 04/11/2026 - 19:41 (fuso e significado não declarados); soma 332 jogos. A captura individual não foi registrada e o arquivo não valida o pacote nem placares individuais." />
             <SourceCard title="Football-Data (histórico empacotado)" url={HISTORICAL_SOURCE.url}
-              collectedAt={HISTORICAL_SOURCE.localFileMtime} hash={HISTORICAL_SOURCE.sha256} />
+              timestamp={HISTORICAL_SOURCE.localFileMtime} timestampLabel="mtime do arquivo" hash={HISTORICAL_SOURCE.sha256}
+              note="Última modificação local; não comprova captura ou coleta." />
+            <SourceCard title="365scores (xG e cartões)" url="https://webws.365scores.com/web/games/results/?appvid=365&competitions=113&showOdds=false"
+              timestamp={ADVANCED_STATS_SOURCE.fetchedAt} timestampLabel="Obtido em" hash={ADVANCED_STATS_SOURCE.sha256}
+              hashLabel="SHA-256 do JSON canônico" />
           </div>
           <p className="audit-note">
-            CBF serve apenas à reconciliação agregada da tabela; placares individuais não foram conferidos jogo a jogo
-            contra a fonte oficial. A artilharia (aba Visão Geral) é fonte secundária ESPN sem metadados de captura próprios.
+            A cópia CBF arquivada soma 332 jogos e não valida este pacote; placares individuais não foram conferidos jogo a jogo
+            contra a fonte oficial. Correspondência de placares 365scores ↔ pacote: {matchingAdvancedScoreCount}/{advancedMatches.length}; isso não comprova cobertura temporal por partida. O snapshot 365scores foi obtido em {ADVANCED_STATS_SOURCE.fetchedAt} (posterior ao corte e à geração do pacote); sem timestamps por partida, dados pós-corte não são garantidos como parte do corte analítico. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, posterior ao corte; sem timestamp por partida, cobertura temporal não verificada.
           </p>
         </section>
 

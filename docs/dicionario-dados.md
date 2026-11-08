@@ -13,11 +13,13 @@ com fórmula explícita e base amostral declarada.
 | **Jogos Restantes** | Partidas da tabela básica CBF sem placar | KPIs, calendário, exportações |
 | **Saldo de Gols** | Gols Pró − Gols Contra | Metodologia, critérios de desempate |
 | **Aproveitamento (%)** | Pontos ÷ (3 × Jogos Disputados) | Estatísticas por mando |
-| **Corte Analítico** | Fim dos jogos coletados (BRT e UTC); kickoffs no limite ficam do lado "concluído"; registros Football-Data sem fuso do dia-limite são excluídos por conservadorismo | Todas as telas (badge snapshot), exportações (bloco de proveniência) |
+| **Corte Analítico** | Instante UTC de referência do pacote (com equivalente local BRT); aplica-se por kickoff explícito ESPN e, conservadoramente, por data para Football-Data sem fuso. Não é captura, geração ou publicação | Todas as telas (badge snapshot), exportações (bloco de proveniência) |
 | **Libertadores (zona)** | Posições 1º–5º (1º–4º direto; 5º preliminar), somente pela tabela | Legenda, filtros, projeções, curvas |
 | **Sul-Americana (zona)** | Posições 6º–11º | Legenda, filtros, projeções, curvas |
 | **Zona de Rebaixamento** | Posições 17º–20º | Legenda, filtros, projeções |
-| **Desempate (Art. 15 REC 2026)** | Pontos → Vitórias → Saldo → Gols Pró; entre 2 clubes: confronto direto (pontos/saldo/gols pró no confronto); entre 3+: cartões vermelhos projetados → cartões amarelos projetados; empates restantes por sorteio reprodutível | Metodologia · Auditoria §17–18 |
+| **Desempate oficial (Art. 15, §§1–2, REC 2026)** | [Regra CBF (PDF p. 10)](https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf): pontos → mais vitórias → maior saldo → mais gols pró → H2H somente entre dois clubes (pontos dos jogos de ida/volta; persistindo, saldo desses jogos) → menos vermelhos → menos amarelos → sorteio. Para 3+ clubes, §2 exclui H2H e a ordem segue para disciplina. | Auditoria §17 |
+| **Classificação derivada localmente** | Ordenação analítica por pontos → vitórias → saldo → gols pró → nome do clube. Não aplica H2H, cartões ou sorteio e não representa classificação CBF oficial no corte. | Visão Geral · Classificações · Auditoria §17 |
+| **Desempate analítico da tabela simulada** | Quatro critérios gerais (pontos → vitórias → saldo → gols pró). Para 2 clubes, H2H por pontos → saldo → gols pró (passo adicional não previsto pelo Art. 15) e sorteio sem cartões; para 3+, pula H2H, usa cartões estimados (menos vermelhos → menos amarelos) e sorteio reprodutível. Não é aplicação oficial do Art. 15; cartões vêm de capturas pós-corte sem timestamp por partida suficiente para certificar o estado histórico (Auditoria §17, §20). | Projeções · Auditoria §17–18, §20 |
 
 ## Análises por rodada
 
@@ -26,7 +28,7 @@ com fórmula explícita e base amostral declarada.
 | **Rodada nominal** | Número 1–38 impresso na tabela básica CBF (ref. única por par ordenado); a rodada 33 tem 9 jogos e a 34 tem 11 no calendário oficial | Aba Jogos, exportações |
 | **Últimas 10 rodadas** | Classificação agregada apenas das 10 rodadas completas mais recentes | Aba Classificações |
 | **Turno / Returno** | Agregados das rodadas 1–19 e 20–38 | Aba Classificações |
-| **Evolução por rodada** | Posição cumulativa do clube após cada rodada com jogos (adiados deixam rodadas parciais; o último ponto coincide com a classificação oficial) | Aba Classificações (gráfico) |
+| **Evolução por rodada** | Posição cumulativa do clube após cada rodada com jogos (adiados deixam rodadas parciais; o último ponto coincide com a classificação/tabela derivada localmente do pacote de resultados até o corte, não com classificação oficial CBF validada no corte) | Aba Classificações (gráfico) |
 | **Sequência vigente** | Corrente de vitórias/empates/derrotas nos resultados em ordem cronológica; “invicto” = vitórias+empates seguidos, “sem vitória” = empates+derrotas seguidos | Aba Classificações |
 | **Melhor ataque / defesa** | Maior gols marcados ÷ jogos; menor gols sofridos ÷ jogos, entre os disputados | Aba Classificações |
 | **Próxima rodada pendente** | Menor rodada nominal com jogos pendentes (adiados aparecem como "Rodada N (adiado)") | Aba Confrontos |
@@ -36,7 +38,7 @@ com fórmula explícita e base amostral declarada.
 | Termo padronizado | Definição / fórmula | Onde aparece |
 |---|---|---|
 | **λ (gols esperados)** | Média de gols do modelo para um confronto; λ = μ × (ataque mandante/μ) × (defesa visitante/μ) com taxas regulares por mando; quando ativo, λ = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub> (blend §18) | Aba Confrontos, Metodologia |
-| **xG (gols esperados do jogo)** | Soma do valor xG de cada chute do clube na partida (fonte 365scores); alimenta o blend e o desempate disciplinar | Metodologia, Auditoria §18 |
+| **xG (gols esperados do jogo)** | Soma do valor xG de cada chute do clube na partida (fonte 365scores); alimenta o blend de gols. Não é dado disciplinar. A captura foi pós-corte e não tem timestamp por partida suficiente para certificar disponibilidade histórica | Metodologia, Auditoria §18 |
 | **Força por clube/mando** | Taxas de ataque e defesa (gols/jogo) regularizadas para a média da liga; a mesma tabela alimenta os 48 confrontos da simulação | Aba Metodologia & Validação |
 | **Probabilidade de resultado** | Marginais H/E/F de duas Poisson independentes com os λ do confronto; barras somam 100% | Aba Confrontos |
 | **Retrospecto direto** | Barra V-E-D + timeline dos encontros 2021–2026 disponíveis; histórico, nunca altera probabilidades | Aba Confrontos |
@@ -60,17 +62,17 @@ com fórmula explícita e base amostral declarada.
 | **Amostra baixa** | Célula da curva cujo IC 95% tem largura ≥ 0,10 | Aba Projeções |
 | **Brier H/E/F** | Σ (pᵢ − 1[i=real])² por partida, médio por temporada; menor é melhor | Backtest, ablação |
 | **k (encolhimento)** | Jogos de peso prévio na regularização das taxas de ataque/defesa; produção usa k=20 escolhido por walk-forward (temporada 2025, apenas anos anteriores) | Metodologia |
-| **μ casa/fora (base de treino)** | Média de gols por mando na base efetiva (1.900 jogos históricos + 332 de 2026 até o corte); o histórico puro é exibido como referência editorial | Metodologia |
+| **μ casa/fora (base de treino)** | Média de gols por mando na base efetiva (1.900 jogos históricos + 339 de 2026 até o corte); o histórico puro é exibido como referência editorial | Metodologia |
 
 ## Dados e auditoria
 
 | Termo padronizado | Definição / fórmula | Onde aparece |
 |---|---|---|
 | **Referência da Fonte** | Linha do CSV Football-Data (`csv-line-N`) ou ID de evento ESPN | Log de resultados, exportações |
-| **Proveniência (bloco de exportação)** | `fonte` (URL + SHA-256 + coletado em), `corteAnalitico` e `geradoEm` embutidos em todo JSON e nas planilhas/CSVs da aba de dados | Aba Dados & Auditoria |
-| **Validação da temporada 2026** | 332 resultados + 48 pendentes = 380 jogos únicos do calendário CBF; estatísticas por mando fecham com o snapshot (pontos/V/E/D/GP/GC) | Aba Dados & Auditoria |
+| **Proveniência (bloco de exportação)** | `fonte` (URL + SHA-256 + captura, quando registrada), `corteAnalitico` e `geradoEm` do arquivo exportado; a geração do pacote não é a publicação | Aba Dados & Auditoria |
+| **Validação da temporada 2026** | 339 resultados + 41 pendentes = 380 pares únicos do calendário local CBF; estatísticas por mando fecham com o agregado derivado dos resultados (pontos/V/E/D/GP/GC). A cópia HTML da classificação CBF soma 332 jogos e não valida o conjunto atual | Aba Dados & Auditoria |
 | **Validação histórica** | Totais oficiais de cada temporada 2021–2025 conferem com os placares empacotados (100 clubes-temporada, sem divergências) | Aba Dados & Auditoria |
-| **Snapshot estático** | Sem API nem atualização em runtime; dados coletados em 04/11/2026 (~16:41 BRT) | Badge em todas as telas |
+| **Snapshot estático** | Sem API nem atualização em runtime; pacote gerado em 07/11/2026 00:58:14.422Z (06/11/2026 21:58:14.422 BRT). Captura individual das fontes e horário da publicação não foram registrados | Badge em todas as telas |
 
 ## Convenções de exibição
 

@@ -1,7 +1,7 @@
 // Empacotado automaticamente por scripts/update-data.mjs em 2026-11-07T00:58:14.422Z.
 // Fontes e hashes em CURRENT_SEASON_SOURCE; cópias brutas em data/source-snapshots/.
 // Football-Data: 338 linhas 2026 no CSV da coleta (sha256 8c901ae50d8633252522786c759f3cf9d41365ac4c0bab21df9edc408d9b56b4).
-// ESPN: 1 placares complementares com kickoff anterior ao corte.
+// ESPN: 8 resultados atribuídos à fonte no conjunto empacotado.
 export type CurrentSeasonMatch = {
   home: string
   away: string
@@ -12,10 +12,12 @@ export type CurrentSeasonMatch = {
   sourceRef: string
 }
 
+export const CURRENT_SEASON_PACK_GENERATED_AT = '2026-11-07T00:58:14.422Z'
+
 export const CURRENT_SEASON_SOURCE = {
   footballData: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
-    collectedAt: '2026-11-07T00:58:00-03:00',
+    collectedAt: 'não registrada no snapshot',
     timezone: 'not specified by the source; original date/time preserved',
     sha256: '8c901ae50d8633252522786c759f3cf9d41365ac4c0bab21df9edc408d9b56b4',
     file: 'data/source-snapshots/football-data-BR.csv',
@@ -23,11 +25,12 @@ export const CURRENT_SEASON_SOURCE = {
   },
   espn: {
     url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard',
-    collectedAt: '2026-11-07T00:58:00-03:00',
+    collectedAt: 'não registrada no snapshot',
     timezone: 'UTC (kickoff timestamps include Z)',
-    sha256: 'ee2997a36cce5a3dd3b54ccaaa9c173cfc6fb097b7edc9dfea9eac8e8ea8fc24',
-    file: 'data/source-snapshots/',
-    completedMatches: 1,
+    sha256: '0a556ba4ffdcaf19ab5af9e208396a18be4bb15ba215831ca941f18204bfd658',
+    file: 'data/source-snapshots/espn-scoreboard-2026-11-03.json | data/source-snapshots/espn-scoreboard-2026-11-04.json | data/source-snapshots/espn-scoreboard-2026-11-05.json | data/source-snapshots/espn-scoreboard-2026-11-06.json | data/source-snapshots/espn-scoreboard-2026-11-07.json',
+    completedMatches: 8,
+    withoutFootballDataScore: 1,
   },
   historical: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
@@ -36,12 +39,12 @@ export const CURRENT_SEASON_SOURCE = {
   },
   cbfStandings: {
     url: 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026',
-    collectedAt: '2026-11-07T00:58:00-03:00',
+    collectedAt: 'não registrada no snapshot',
     displayedTimestamp: '04/11/2026 - 19:41',
     displayedTimestampTimezone: 'not specified',
-    sha256: 'undefined',
+    sha256: '16b1c022581db4a1b1e0f323e8543b82f9178887c13c5151797f0bab45581819',
     file: 'data/source-snapshots/cbf-table-2026.html',
-    validation: 'aggregate standings only; snapshot reconciled with packed results',
+    validation: 'retained standings snapshot not reconciled with the current packed results; no individual scores verified',
   },
 } as const
 

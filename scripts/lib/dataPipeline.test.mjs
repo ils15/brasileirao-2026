@@ -1,12 +1,16 @@
+import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import {
   computeRemaining,
   computeStandings,
+  formatBrazilLocalIso,
   mergeResults,
   parseEspnScoreboard,
   parseFootballDataCsv,
   parseCbfSchedule,
+  renderCurrentSeasonResults,
+  summarizeEspnFootballDataCoverage,
   validateIntegrity,
 } from './dataPipeline.mjs'
 
@@ -16,6 +20,30 @@ const schedule = [
   { ref: '003', round: 2, home: 'b', away: 'c' },
   { ref: '004', round: 2, home: 'd', away: 'a' },
 ]
+
+describe('formatBrazilLocalIso', () => {
+  it('converts a UTC cutoff to the matching Brasília wall time and offset', () => {
+    expect(formatBrazilLocalIso('2026-11-07T00:58:14Z')).toBe('2026-11-06T21:58:14-03:00')
+  })
+})
+
+describe('hashes das fontes do pacote atual', () => {
+  it('confere os hashes publicados contra os snapshots locais retidos', () => {
+    const currentSource = readFileSync('src/currentSeasonResults.ts', 'utf8')
+    const sha256 = (content) => createHash('sha256').update(content).digest('hex')
+    const sourceBlock = (name) => currentSource.match(new RegExp(`${name}: \\{([\\s\\S]*?)\\n  \\}`))?.[1]
+    const value = (block, key) => block.match(new RegExp(`${key}: '([^']+)'`))?.[1]
+    const footballData = sourceBlock('footballData')
+    const espn = sourceBlock('espn')
+    const cbf = sourceBlock('cbfStandings')
+
+    expect(sha256(readFileSync(value(footballData, 'file')))).toBe(value(footballData, 'sha256'))
+    expect(sha256(readFileSync(value(cbf, 'file')))).toBe(value(cbf, 'sha256'))
+
+    const espnContent = value(espn, 'file').split(' | ').map((file) => readFileSync(file, 'utf8')).join('|')
+    expect(sha256(espnContent)).toBe(value(espn, 'sha256'))
+  })
+})
 
 describe('parseFootballDataCsv', () => {
   const csv = [
@@ -45,6 +73,37 @@ describe('parseFootballDataCsv', () => {
       'Brazil,Serie A,2026,05/11/2026,22:30,Nome Desconhecido,Palmeiras,1,0,H',
     ].join('\n')
     expect(() => parseFootballDataCsv(broken, { seasonYear: 2026, cutoffDate: '2026-11-07' })).toThrow(/sem slug conhecido/)
+  })
+})
+
+describe('metadados de atribuição ESPN contra Football-Data', () => {
+  it('gera denominador empacotado e ausências por placar sem inflar duplicatas/sobreposições', () => {
+    const csv = [
+      'Country,League,Season,Date,Time,Home,Away,HG,AG,Res',
+      'Brazil,Serie A,2026,01/11/2026,18:00,Flamengo RJ,Palmeiras,1,0,H',
+      'Brazil,Serie A,2026,01/11/2026,18:00,Flamengo RJ,Palmeiras,1,0,H',
+      'Brazil,Serie A,2026,02/11/2026,18:00,Sao Paulo,Gremio,2,2,D',
+      'Brazil,Serie A,2026,03/11/2026,18:00,Bahia,Cruzeiro,0,0,D',
+    ].join('\n')
+    const footballDataResults = parseFootballDataCsv(csv, { seasonYear: 2026, cutoffDate: '2026-11-04' })
+    const packedResults = [
+      { home: 'flamengo', away: 'palmeiras', homeGoals: 1, awayGoals: 0, source: 'espn' },
+      { home: 'flamengo', away: 'palmeiras', homeGoals: 1, awayGoals: 0, source: 'espn' },
+      // Mesmo par, placar diferente: sobreposição de jogo não é correspondência do placar.
+      { home: 'sao-paulo', away: 'gremio', homeGoals: 3, awayGoals: 2, source: 'espn' },
+      { home: 'bahia', away: 'cruzeiro', homeGoals: 0, awayGoals: 0, source: 'espn' },
+      { home: 'gremio', away: 'sao-paulo', homeGoals: 0, awayGoals: 0, source: 'football-data' },
+    ]
+
+    const coverage = summarizeEspnFootballDataCoverage(packedResults, footballDataResults)
+    const generated = renderCurrentSeasonResults({
+      results: packedResults,
+      metadata: { generatedAt: 'test', rows2026: 0, sha256: 'test', espnFiles: '', espnSha256: 'test', ...coverage },
+    })
+
+    expect(coverage).toEqual({ espnCount: 4, espnMissingFromFootballDataCount: 1 })
+    expect(generated).toContain('completedMatches: 4')
+    expect(generated).toContain('withoutFootballDataScore: 1')
   })
 })
 

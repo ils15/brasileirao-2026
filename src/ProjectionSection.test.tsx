@@ -101,7 +101,9 @@ describe('painel de projeções', () => {
     const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
     const flamengoPointsRow = within(points).getByRole('row', { name: /Flamengo/ })
     expect(flamengoPointsRow).toHaveTextContent(String(flamengo.pointsStats.median))
-    expect(flamengoPointsRow).toHaveTextContent(`${flamengo.pointsStats.p25}–${flamengo.pointsStats.p75}`)
+    const flamengoCells = flamengoPointsRow.querySelectorAll('th, td')
+    expect(flamengoCells[4]).toHaveTextContent(String(flamengo.pointsStats.p25))
+    expect(flamengoCells[5]).toHaveTextContent(String(flamengo.pointsStats.p75))
     expect(flamengoPointsRow).toHaveTextContent(String(flamengo.currentPoints))
     // Badge de variação: valor absoluto + percentual em todas as linhas
     expect(within(points).getAllByText(/ pts \(/)).toHaveLength(20)
@@ -118,6 +120,32 @@ describe('painel de projeções', () => {
     expect(within(zones).getByRole('columnheader', { name: /^Título/ })).toHaveAttribute('aria-sort', 'ascending')
   })
 
+  it('alinha cada valor projetado com seu cabeçalho sem descartar pontos presentes', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const points = screen.getByRole('region', { name: /Pontos finais projetados por clube/ })
+    const headerCount = within(points).getAllByRole('columnheader').length
+    const rows = within(points).getAllByRole('row').slice(1)
+    expect(headerCount).toBe(8)
+    expect(rows).toHaveLength(result.clubProbabilities.length)
+
+    for (const club of result.clubProbabilities) {
+      const row = within(points).getByRole('row', { name: new RegExp(club.club) })
+      const cells = [...row.querySelectorAll('th, td')]
+      expect(cells).toHaveLength(headerCount)
+      expect(cells[0]).toHaveTextContent(String(club.currentPosition).padStart(2, '0'))
+      expect(cells[1]).toHaveTextContent(club.club)
+      expect(cells[2]).toHaveTextContent(String(club.currentPoints))
+      expect(cells[3]).toHaveTextContent(String(club.pointsStats.median))
+      expect(cells[4]).toHaveTextContent(String(club.pointsStats.p25))
+      expect(cells[5]).toHaveTextContent(String(club.pointsStats.p75))
+      expect(cells[6]).toHaveTextContent(String(club.pointsStats.p90))
+      expect(cells[7]).toHaveTextContent(/pts \(/)
+      expect(cells.every((cell) => cell.textContent?.trim())).toBe(true)
+    }
+  })
+
   it('informa quando as simulações ainda estão em processamento', () => {
     render(<ProjectionPanel result={null} status="loading" onRetry={vi.fn()} />)
     expect(screen.getByRole('status')).toHaveTextContent('Calculando cenários em segundo plano')
@@ -131,5 +159,9 @@ describe('painel de projeções', () => {
     expect(screen.getByRole('heading', { name: 'Probabilidades por time' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Probabilidade por pontuação' })).toBeInTheDocument()
     expect(screen.getByRole(status === 'loading' ? 'status' : 'alert')).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: /Pontos finais projetados por clube/ })).not.toBeInTheDocument()
+    if (status === 'error') {
+      expect(screen.getByRole('alert')).toHaveTextContent('Nenhum percentual foi substituído por estimativa manual.')
+    }
   })
 })

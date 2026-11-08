@@ -21,7 +21,7 @@ const SOURCE_LABELS: Record<CurrentSeasonMatch['source'], string> = {
 type ResultRow = CurrentSeasonMatch
 
 const columns: SortableColumn<ResultRow>[] = [
-  { id: 'kickoff', header: 'Data/hora', accessor: ({ kickoff }) => kickoff, numeric: false },
+  { id: 'kickoff', header: 'Data/hora na fonte', accessor: ({ kickoff }) => kickoff, numeric: false },
   { id: 'home', header: 'Mandante', accessor: ({ home }) => home, numeric: false },
   { id: 'goals', header: 'Placar', accessor: ({ homeGoals, awayGoals }) => homeGoals - awayGoals, numeric: true },
   { id: 'away', header: 'Visitante', accessor: ({ away }) => away, numeric: false },
@@ -29,7 +29,7 @@ const columns: SortableColumn<ResultRow>[] = [
 ]
 
 /**
- * Log completo dos 332 resultados até o corte analítico, com filtros por
+ * Log completo dos resultados até o corte analítico, com filtros por
  * clube, fonte e período, colunas ordenáveis e paginação.
  */
 export function ResultsTable({ matches = currentSeasonResults }: { matches?: readonly CurrentSeasonMatch[] }): JSX.Element {
@@ -80,7 +80,9 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
       </div>
       <p className="table-note">
         Todos os {cutoffMatches.length} resultados até o corte analítico ({cutoffLabel}), com fonte de cada placar.
-        A base amarra cada linha à referência original (linha do CSV ou evento ESPN).
+        Data/hora na fonte não é programação CBF: ESPN usa UTC; Football-Data não declara fuso. A Tabela Básica prevê datas sujeitas a mudança.
+        REF 340: CBF lista 04/11 ou 05/11; o registro ESPN local informa 2026-11-03T22:30Z (19:30 BRT). O pacote não confirma o kickoff oficial.
+        Cada linha mantém sua referência original (linha do CSV ou evento ESPN).
       </p>
 
       <div className="results-filters" role="group" aria-label="Filtros dos resultados">
@@ -120,7 +122,7 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
       {filtered.length === 0 ? (
         <EmptyState
           title="Nenhum resultado para estes filtros"
-          description="Ajuste o clube, a fonte ou a data inicial — o log cobre 332 partidas até 04/11/2026."
+          description={`Ajuste o clube, a fonte ou a data inicial — o log cobre ${cutoffMatches.length} partidas até ${cutoffLabel}.`}
         >
           <button type="button" className="filter-button" onClick={resetFilters}>Limpar filtros</button>
         </EmptyState>
