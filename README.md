@@ -1,25 +1,98 @@
 # Brasileirão 2026 — painel Série A
 
-Dashboard responsivo em React, TypeScript e Vite. Os dados são locais e estáticos: não há API, atualização ao vivo ou busca de dados em runtime. O corte analítico é **04/11/2026 às 13:00 BRT** (`2026-11-04T16:00:00Z`); horário de corte, kickoff da partida e hora de captura das fontes são conceitos distintos.
+Dashboard responsivo em React, TypeScript e Vite. Os dados do site são locais e estáticos: não há API, atualização ao vivo nem busca de dados em runtime.
 
-## Navegação por abas
+O **corte analítico** é **06/11/2026 às 21:58:14 BRT** (`2026-11-07T00:58:14Z`). O pacote foi gerado nesse mesmo instante. Corte, data/hora de evento registrada pela fonte, data prevista no calendário, captura da fonte e publicação do site são coisas diferentes; a captura individual de várias fontes e o horário de publicação não foram registrados.
 
-O painel é organizado em sete abas acessíveis (role=tablist com navegação por teclado; âncoras antigas continuam abrindo a aba correspondente), no padrão de análises separadas por tema:
+## Sumário
 
-1. **Visão Geral** — KPIs da temporada, classificação oficial com colunas ordenáveis, artilharia e clubes por zona.
-2. **Classificações** — oito vistas em sub-abas: geral, últimas 10 rodadas, mandante, visitante, turno (1º–19º), returno (20º–38º), evolução da posição por rodada (gráfico) e sequências/extremos.
-3. **Jogos** — log dos resultados até o corte (filtros por clube/fonte/período, ordenação e paginação) e calendário dos jogos restantes por clube.
-4. **Confrontos** — próxima rodada pendente com λ e probabilidades de resultado por jogo (barras H/E/F) e confronto direto visual entre dois clubes selecionáveis (barra de retrospecto, timeline dos encontros, por mando).
-5. **Projeções** — probabilidades Monte Carlo por clube (IC 95% Wilson, mediana/percentis, badge Δ, exportação) e as duas leituras por pontuação, em sub-abas.
-6. **Metodologia & Validação** — backtest e ablação walk-forward 2012–2025, tabela de forças por clube/mando que alimenta cada λ, exemplo numérico rastreável e fórmulas/limitações.
-7. **Dados & Auditoria** — proveniência das fontes (URL, SHA-256, captura), validações em execução e exportação dos dados brutos com bloco de proveniência.
+- [Visão geral e navegação](#visao-geral)
+- [Como ler os dados e projeções](#como-ler)
+- [Fontes e proveniência](#fontes)
+- [Pacote local e integridade](#pacote-local)
+- [Atualização automática](#atualizacao)
+- [Executar e verificar](#executar)
+- [Publicação](#publicacao)
+- [Modelo, validação e limitações](#modelo)
+
+<a id="visao-geral"></a>
+## Visão geral e navegação
+
+O painel tem sete abas acessíveis, organizadas por assunto. A navegação principal usa `role="tablist"` e aceita teclado; âncoras antigas ainda abrem a aba correspondente.
+
+1. **Visão Geral** — indicadores, classificação **calculada localmente** a partir do pacote, artilharia informativa e clubes por zona.
+2. **Classificações** — oito vistas: geral, últimas 10 rodadas, mandante, visitante, turno (rodadas 1–19), returno (20–38), evolução por rodada e sequências/extremos.
+3. **Jogos** — resultados até o corte, com filtros, ordenação e paginação; abaixo, calendário restante por clube.
+4. **Confrontos** — próxima rodada pendente, gols esperados (λ) e probabilidades de V/E/D; também inclui confronto direto entre clubes.
+5. **Projeções** — simulações por clube e por pontuação, em sub-abas, com intervalos e exportação.
+6. **Metodologia & Validação** — backtest, ablações walk-forward, forças por clube/mando, exemplo numérico e limitações.
+7. **Dados & Auditoria** — fontes, hashes quando disponíveis, validações e exportação dos dados com proveniência.
 
 Documentação complementar: [auditoria de cálculos](docs/auditoria-calculos.md), [dicionário de dados](docs/dicionario-dados.md) e [log de atualizações](docs/atualizacoes.md).
 
+<a id="como-ler"></a>
+## Como ler os dados e projeções
+
+### Corte, captura e data de jogo
+
+- O corte delimita quais resultados locais entram nas análises. Ele não é a hora de captura das fontes nem a data de publicação.
+- Em **Jogos**, “Data/hora na fonte” reproduz o registro original: ESPN inclui timestamp UTC; Football-Data não declara o fuso do campo `Time`. Esse campo não é uma confirmação independente do kickoff oficial.
+- O calendário restante deriva da **Tabela Básica CBF**, que lista confrontos e datas planejadas por rodada; não é a programação detalhada definitiva e pode mudar.
+- Exemplo documentado: a Tabela Básica CBF, referência 340, indica Chapecoense–Mirassol na rodada 34 em **04/11 ou 05/11**. O registro ESPN local traz `2026-11-03T22:30Z` (**19:30 BRT**). São referências diferentes; o pacote não contém comprovação oficial suficiente para escolher uma data de kickoff real. O placar e a data do registro não devem ser reescritos como confirmação oficial.
+
+### Classificação e artilharia
+
+- A classificação exibida é derivada localmente dos resultados empacotados, não uma classificação CBF oficial no corte. Há reconciliação interna do pacote, mas não conferência independente atual da classificação; a ordem também não aplica integralmente o Art. 15 do REC.
+- A artilharia do painel inclui os **305 atletas** do snapshot da API Futebol BR, paginados em 20 por página (16 páginas; última com 5). O snapshot foi capturado em `2026-11-07T16:00:24.137Z`, depois do corte. Não há timestamp por partida para verificar cobertura temporal, então a lista é informativa e **não representa a artilharia no corte**; não foi confirmada como cobertura oficial CBF.
+
+### Critério oficial e ordenadores analíticos
+
+O [REC CBF da Série A 2026, Art. 15, §§1–2, PDF p. 10](https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf) determina, entre clubes empatados em pontos: mais vitórias → maior saldo de gols → mais gols pró → confronto direto apenas para dois clubes (pontos somados nos jogos de ida e volta; persistindo, saldo desses jogos) → menos cartões vermelhos → menos cartões amarelos → sorteio. Para grupos de três ou mais, o §2 exclui o confronto direto e a sequência segue para os critérios disciplinares.
+
+Isso é distinto das ordenações locais. A classificação derivada mostrada no painel usa pontos → vitórias → saldo → gols pró → nome do clube; não aplica H2H, disciplina ou sorteio. A tabela simulada também não é uma classificação oficial: para dois clubes, usa H2H por pontos → saldo → gols pró (passo adicional não previsto pelo Art. 15) e sorteio, sem cartões; para grupos de três ou mais, pula H2H e usa disciplina estimada (menos vermelhos → menos amarelos), depois sorteio reprodutível. Detalhes e limites estão em [§17 da auditoria](docs/auditoria-calculos.md#17-art-15-do-rec-2026-e-comparadores-locais).
+
+Os dados de cartões usados no comparador vêm de snapshots posteriores ao corte. A captura 365scores (`2026-11-07T15:25:20.960Z`) e a da API Futebol BR (`2026-11-07T16:02:11.037Z`) não trazem timestamps por partida suficientes para certificar o estado histórico. Não apresentar contagens atuais ou estimativas como cartões oficiais do corte.
+
+### Projeções
+
+- As 500.000 simulações estimam resultados condicionados aos dados e ao modelo deste pacote, com semente fixa `20261104`. As probabilidades são frequências simuladas, não odds nem recomendação de apostas.
+- **Por clube:** as zonas mostram a frequência de cada destino nas simulações; IC 95% Wilson expressa incerteza da estimativa Monte Carlo. Mediana e P25–P75 descrevem pontos finais típicos; P90 é um percentil alto. Δ compara a mediana aos pontos no corte.
+- **Por pontuação:** a curva mostra a chance de cada destino condicionada a terminar com aquela pontuação. Categorias sem ocorrência (`K=0`) não são estimadas. O IC trata cada tabela simulada como cluster.
+- O IC não cobre toda a incerteza de fontes e modelo. As vagas são condicionais às faixas usadas; títulos de Copa do Brasil e torneios CONMEBOL e redistribuições não são simulados.
+
+<a id="fontes"></a>
+## Fontes e proveniência
+
+| Fonte e uso | Referência temporal / captura | Cobertura | Status e limites |
+|---|---|---|---|
+| [Football-Data](https://www.football-data.co.uk/new/BR.csv) + [ESPN scoreboard](https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard) — resultados 2026 | Corte analítico: 06/11/2026 21:58:14 BRT. Captura individual do CSV e dos scoreboards não registrada; há arquivos ESPN datados de 03–07/11 UTC. Pacote gerado em 07/11 00:58:14.422Z. | 339 resultados locais: 331 atribuídos a Football-Data e 8 a ESPN. | Fontes secundárias; placares não foram conferidos linha a linha contra a CBF. Football-Data não informa fuso; ESPN registra UTC. |
+| [CBF — Tabela Básica 2026](https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/Tabela_BA_sica_Brasileiro_SA_rie_A_2026_d64996b4d8.pdf) — calendário de confrontos | Edição emitida em 15/12/2025; captura individual não registrada. Para a ref. 340, indica 04/11 ou 05/11. | 380 referências de jogos; datas por rodada, sem programação detalhada de horários. | Fonte oficial de programação básica; o próprio documento diz que a programação não é definitiva e pode mudar. Não confirma o resultado nem a data real de um evento. |
+| [CBF — página de classificação](https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026) e HTML local arquivado | Consulta da página atual em 08/11/2026 exibiu “08/11/2026 - 12:52”; fuso e semântica não declarados. O HTML arquivado exibe “04/11/2026 - 19:41”, também sem fuso/semântica; captura individual não registrada. | O HTML arquivado soma 332 jogos. | A página consultada é pós-corte; o HTML não concilia com os 339 resultados locais. Nenhum dos dois comprova a classificação histórica no corte nem verifica placares individuais. |
+| 365scores — xG por chute e cartões | Snapshot obtido em `2026-11-07T15:25:20.960Z`, após o corte. Sem timestamp temporal por partida suficiente. | Registros de xG/cartões correspondem em pares e placares a jogos do pacote; isso não prova disponibilidade no corte nem completude. | Dados pós-corte não validam retrospectivamente o corte nem desempate oficial. Não preencher lacunas com zero. SHA informado é do JSON canônico, não do snapshot bruto. |
+| API Futebol BR — artilharia | Snapshot capturado em `2026-11-07T16:00:24.137Z`, após o corte; sem timestamp por partida. | 305 registros de atletas. | Cobertura temporal por partida e cobertura oficial CBF não confirmadas. Não representa a artilharia no corte. SHA é do JSON canônico normalizado, não do snapshot bruto. |
+| Football-Data — histórico 2012–2025 | Origem/data de aquisição do CSV histórico não estabelecida independentemente. Mtime local do pacote: `2026-11-04T10:52:14-03:00` (não é captura/publicação). | 5.319 partidas em 14 temporadas. | Tabelas finais CBF verificadas agregadamente apenas para 2021–2025; 2012–2020 sem verificação independente. |
+
+## Dados pós-corte não são retrato histórico
+
+O modelo usa dados locais e fixos. O snapshot de xG/cartões e a lista de artilharia foram capturados depois do corte; sem timestamp por partida não é possível afirmar que cada valor estava disponível no corte. A correspondência de pares/placares não resolve essa limitação temporal. Esses dados não validam fatos históricos, a tabela local ou critérios oficiais, e lacunas não devem ser tratadas como zero.
+
+<a id="pacote-local"></a>
+## Pacote local e integridade
+
+O pacote atual reúne **339 resultados** (331 Football-Data, 8 ESPN), 20 clubes e **41 jogos pendentes**, conciliados internamente com 380 pares únicos da Tabela Básica CBF. O CSV local contém 338 linhas de 2026 com placar; pares sobrepostos com ESPN conservam uma atribuição por jogo. O timestamp do último kickoff incluído, `2026-11-06T23:00:00Z`, é anterior ao corte (`2026-11-07T00:58:14Z`) em cerca de 1h58; esse horário descreve o evento, não a captura das estatísticas. O snapshot 365scores de xG/cartões foi capturado em `2026-11-07T15:25:20.960Z`, após o corte, e não há timestamp por partida; portanto, não comprova que o xG de qualquer evento estivesse disponível ou observado no corte. ESPN usa instante explícito com fuso; para Football-Data, o corte conservador exclui datas iguais ou posteriores ao dia UTC do corte, pois o fuso de `Time` não é declarado. Registros com kickoff idêntico entram ou saem em bloco.
+
+Os totais dos 20 clubes fecham internamente em pontos, jogos, vitórias, empates, derrotas e gols pró/contra; isso não substitui validação independente da classificação contra a CBF. O HTML CBF arquivado soma 332 jogos e não valida os 339 resultados do pacote.
+
+Hashes conferidos contra artefatos locais: CSV Football-Data `8c901ae50d8633252522786c759f3cf9d41365ac4c0bab21df9edc408d9b56b4`; scoreboards ESPN (cinco arquivos, nomes em ordem, conteúdo unido por `|`) `0a556ba4ffdcaf19ab5af9e208396a18be4bb15ba215831ca941f18204bfd658`; HTML CBF `16b1c022581db4a1b1e0f323e8543b82f9178887c13c5151797f0bab45581819`; tabela básica CBF PDF `5fc7bccb00eabba0f60ba112e0fe36e8290230ab4883a06faea7c0d14629bcd3`; JSON canônico 365scores `4b50ef2ed0815af05dbd8ddb3edef1027d75e5121654234bf301ad673320b468`; JSON canônico API Futebol BR `d6f65e6dbec40f2fafd97fa5d3165fdbf9905e54e3c6c68c9d8b24f501bafae3`.
+
+Os 5.319 jogos históricos estão empacotados em `src/historicalSeasons.ts`, gerados por `scripts/pack-history.mjs` a partir do CSV Football-Data. Cada jogo mantém data/hora como fornecida no CSV e ordinal original; 2016 tem 379 jogos porque Chapecoense × Atlético-MG de 11/12/2016 consta sem placar (partida não disputada após a tragédia com o voo LaMia). Os cortes ordenam cronologicamente e não dividem kickoffs idênticos; o conjunto de teste pode ter 79, 80 ou 82 jogos. A cópia bruta em `data/source-snapshots/football-data-BR.csv` não entra nos ativos de runtime.
+
+<a id="atualizacao"></a>
 ## Atualização automática pós-rodada
 
-O site é um snapshot estático regenerado por pipeline: quando há jogos, um workflow agendado (`update-data.yml`, duas execuções diárias) coleta o CSV Football-Data e os scoreboards ESPN desde o último corte, **só publica resultados que conciliam com o calendário CBF de 380 jogos** (par ordenado único; disputados + pendentes = 380), regenera os módulos de dados, roda a suíte completa e faz commit + build + deploy no mesmo run. Sem dados novos conciliáveis, a execução é um no-op verde. A suíte de testes usa invariantes derivados dos dados (nada de contagens literais), então atualizações não quebram o CI. O histórico de cada atualização fica em `docs/atualizacoes.md`.
+O site é um snapshot estático regenerado por pipeline. Quando há jogos, o workflow agendado (`update-data.yml`, a cada duas horas) coleta o CSV Football-Data e scoreboards ESPN desde o último corte, só aceita resultados conciliáveis com o calendário CBF de 380 jogos (par ordenado único; disputados + pendentes = 380), regenera módulos, roda a suíte completa e faz commit; depois o workflow publica o build. Sem dados novos conciliáveis, a execução é um no-op verde. A suíte usa invariantes derivados dos dados, não contagens literais. Datas do log automático são dias UTC de processamento, não datas de kickoff, captura ou publicação. Captura individual e horário de publicação não são registrados no pacote. Histórico em [docs/atualizacoes.md](docs/atualizacoes.md).
 
+<a id="executar"></a>
 ## Executar e verificar
 
 ```sh
@@ -29,28 +102,22 @@ npm test
 npm run build
 ```
 
-As 500.000 simulações usam Web Worker e a semente fixa `20261104`.
+As 500.000 simulações usam Web Worker e semente fixa `20261104`.
 
+<a id="publicacao"></a>
 ## Publicação no GitHub Pages
 
-O destino previsto é o project site público `https://ils15.github.io/brasileirao-2026/`. No repositório, configure **Settings → Pages → Build and deployment → Source → GitHub Actions**. O workflow valida pushes e pull requests e publica somente em push para `main`; execução manual valida sem publicar. `npm run dev` e `npm run build` continuam usando a raiz `/`; para reproduzir o build publicado localmente, execute `GITHUB_PAGES=true npm run build` e `npm run smoke:pages`.
+O destino previsto é o project site público `https://ils15.github.io/brasileirao-2026/`. No repositório, configure **Settings → Pages → Build and deployment → Source → GitHub Actions**. O workflow valida pushes e pull requests e publica somente em push para `main`; execução manual valida sem publicar. `npm run dev` e `npm run build` usam a raiz `/`; para reproduzir o build publicado localmente, execute `GITHUB_PAGES=true npm run build` e `npm run smoke:pages`.
 
-## Dados e auditoria de fontes
+### Hooks locais de commit (opt-in)
 
-- [CBF — classificação 2026](https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026)
-- [CBF — tabela básica de jogos 2026](https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/Tabela_BA_sica_Brasileiro_SA_rie_A_2026_d64996b4d8.pdf)
-- [REC CBF 2026](https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf)
-- [Football-Data — placares](https://www.football-data.co.uk/new/BR.csv), fonte secundária para 2021–2026; a compilação pode conter erros.
-- [ESPN scoreboard — 03/11/2026](https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates=20261103), usado para completar os dois resultados ausentes no CSV.
-- 365scores — xG por chute e cartões por partida de 2026 (JSON público, sem key); validado 339/339 contra os placares empacotados na adesão. Coleta por `scripts/backfill-xg-cards.mjs`; FBref/SofaScore/FotMob estão atrás de Cloudflare para clientes sem navegador.
-- API Futebol BR — artilharia da edição atual e detalhes de partida (gols por atleta, cartões, estatísticas) via `scripts/refresh-apifutebolbr.mjs` (Bearer key no secret `API_FUTEBOL_BR_KEY`). Fonte de preenchimento: sem assistências, sem xG e sem edições antigas; o histórico rico se acumula organicamente temporada a temporada (§19 da auditoria).
+Para ativar os hooks neste repositório, execute explicitamente `node scripts/install-hooks.mjs`. A configuração é somente local (`core.hooksPath=.githooks`); o instalador não altera a configuração global e não é executado por `npm install`. É necessário ter Node.js/npm e as dependências já disponíveis localmente. Se elas estiverem ausentes, o hook falha com uma mensagem; nenhum pacote é instalado nem a rede é acessada automaticamente.
 
-O dataset atual contém 332 resultados (330 Football-Data + 2 ESPN), 20 clubes e 48 jogos pendentes de um calendário CBF de 380 jogos. As duas partidas ESPN, ambas antes do corte, são Chapecoense 1–2 Mirassol (`2026-11-03T22:30Z`, evento `401841304`) e Internacional 1–0 Coritiba (`2026-11-04T00:30Z`, evento `401841301`). Para o CSV, Football-Data não especifica o fuso de `Time`; suas linhas de 2026 acabam em 02/11. A guarda de corte é aplicada em runtime ao treino de produção, estatísticas e H2H 2026. ESPN usa seus kickoffs explícitos com fuso; partidas Football-Data no dia limítrofe inteiro são excluídas conservadoramente por fuso desconhecido. Registros com kickoff idêntico são mantidos/excluídos como bloco, assim como nas dobras walk-forward. A hora de captura da fonte não substitui o corte por kickoff.
+O `pre-commit` executa `npm test`, `GITHUB_PAGES=true npm run build` e `git diff --cached --check`; qualquer falha bloqueia o commit. O `commit-msg` rejeita assunto vazio ou só com whitespace e whitespace no fim de qualquer linha, sem exigir prefixo ou formato específico. Esses hooks locais complementam — não substituem — o workflow de CI, que valida testes, build para Pages e smoke test em pull requests; a publicação continua condicionada a push para `main`.
 
-Os arquivos foram capturados em **04/11/2026 por volta de 16:41 BRT**, depois do corte analítico de 13:00. O HTML CBF retido imprime `04/11/2026 - 19:41`; a página não identifica fuso nem diz se esse campo é atualização, publicação ou horário de captura. O registro anterior “19:31 BRT” não é sustentado pelo HTML arquivado e foi removido. A CBF serve à reconciliação agregada da tabela; não foi usada para verificar placares individuais nem para afirmar que os dados foram capturados às 13:00. Cópias e metadados estão em `data/source-snapshots/` e `src/currentSeasonResults.ts`. Hashes: Football-Data `ed5c0925007f9ae35f97558993e597d41807e3f1507fae9d7e555bbab5b02bcf`; ESPN `7d2563b0d6a068ba2d0f01850cd3181aaac09d3184af7af8b5b79ebd8571f72b`; tabela básica CBF PDF `5fc7bccb00eabba0f60ba112e0fe36e8290230ab4883a06faea7c0d14629bcd3`. Os 20 clubes reconciliam em pontos, jogos, vitórias, empates, derrotas e gols pró/contra; o calendário e os resultados têm paridade entre as fontes locais.
+Para desativar os hooks neste repositório, remova somente a configuração local com `git config --local --unset core.hooksPath`. Isso não apaga os arquivos versionados em `.githooks` nem altera configurações globais.
 
-Os 5.319 jogos históricos (14 temporadas, 2012–2025) estão empacotados em `src/historicalSeasons.ts`, gerados por `scripts/pack-history.mjs` a partir do CSV Football-Data completo. Cada jogo mantém data/hora como fornecida no CSV e ordinal original; 2016 tem 379 jogos porque Chapecoense × Atlético-MG de 11/12/2016 consta sem placar (partida não disputada após a tragédia com o voo LaMia). As tabelas finais oficiais (CBF) empacotadas cobrem somente 2021–2025 (100 clubes-temporada verificados, sem divergências nos totais); as temporadas 2012–2020 não foram verificadas contra fonte independente e ficam marcadas como `standingsVerified: false`. Os cortes ordenam cronologicamente; todos os jogos com kickoff idêntico ficam juntos, então o conjunto de teste pode ter 79, 80 ou 82 jogos. O mtime local associado ao pacote (`2026-11-04T10:52:14-03:00`) é metadado de arquivo, não data de publicação; a cópia bruta retida em `data/source-snapshots/football-data-BR.csv` não entra nos ativos de runtime.
-
+<a id="modelo"></a>
 ## Modelo de gols e simulação
 
 O modelo de produção usa taxas por clube e mando, encolhidas para um prior histórico de mando. Seja `v` casa/fora:
@@ -63,9 +130,9 @@ taxa_c,v = (gols 2026_c,v + k × taxa histórica ponderada_c,v) / (jogos 2026_c,
 
 As taxas históricas usam 2012–2025, ponderação por recência com meia-vida de 2,5 temporadas e regularização para a média da liga com 20 jogos ponderados prévios. `k=20` para a produção segue a política walk-forward: é o k selecionado para a temporada 2025 usando apenas os anos anteriores, entre `{0, 2, 4, 6, 8, 10, 12, 15, 20, 25, 30}` pelo Brier da variante casa/fora (antes da auditoria, o k era escolhido in-sample — ver `docs/auditoria-calculos.md`); não há validação externa independente desse k. A μ exibida como base de treino cobre histórico + jogos de 2026 até o corte (o histórico puro é referência editorial). Gols são amostrados de Poisson independentes.
 
-### Blend xG × gols e desempate por cartões
+### Blend xG × gols e disciplina estimada na projeção
 
-O λ de produção mistura o modelo em gols com um segundo modelo estimado em **xG** da temporada 2026 (xG somado por chute, fonte 365scores): `λ = (1−w)·λ_gols + w·λ_xG`. O peso `w` foi fixado no vencedor do walk-forward **por rodada** de 2026 (treino até t−1, Brier de resultado em t) e vive em `src/projectionConfig.ts` (`XG_BLEND_WEIGHT`); a tabela viva peso→Brier está na aba Metodologia e o protocolo no §18 da auditoria. Nos critérios de desempate (Art. 15 REC 2026), cartões vermelhos/amarelos usam os totais reais + taxa por jogo projetada para os jogos restantes (determinístico por clube, `src/discipline.ts`); cartões não são simulados jogo a jogo, e o sorteio reprodutível segue como último passo.
+O λ de produção mistura o modelo em gols com um segundo modelo estimado em **xG** da temporada 2026 (xG somado por chute, fonte 365scores): `λ = (1−w)·λ_gols + w·λ_xG`. O peso `w` foi fixado no vencedor do walk-forward **por rodada** de 2026 (treino até t−1, Brier de resultado em t) e vive em `src/projectionConfig.ts` (`XG_BLEND_WEIGHT`); a tabela viva peso→Brier está na aba Metodologia e o protocolo no §18 da auditoria. Importante: o snapshot de xG foi capturado após o corte (`2026-11-07T15:25:20.960Z`) e não há timestamp por partida que prove disponibilidade histórica; portanto, o xG usado no painel não é evidência do que se conhecia no corte. Na simulação final, apenas grupos de três ou mais clubes empatados nos quatro critérios gerais usam os cartões do snapshot mais taxa por jogo projetada para jogos restantes (`src/discipline.ts`), como detalhado acima. São estimativas locais pós-corte; não comprovam o desempate oficial no corte. Cartões não são simulados jogo a jogo.
 
 ### Walk-forward e ablações
 
@@ -81,7 +148,7 @@ A ablação de resultado H/empate/F compara os quatro recursos nos mesmos folds.
 | 2024 | 82 | 0,653626 | 0,648514 | 0,648141 | 0,642276 |
 | 2025 | 80 | 0,586711 | 0,595553 | 0,592434 | 0,598385 |
 
-Os resultados são mistos: nem as forças casa/fora nem H2H melhoram consistentemente o baseline. H2H tem peso zero na previsão de gols e nas probabilidades de 2026; no calendário, são exibidos os placares disponíveis de 2012–2025 e 2026, com N, V-E-D e pontos por mando para o mandante do próximo jogo. Esse retrospecto é informação histórica, não previsão. Para desempate de dois clubes, a simulação acumula os H2H concluídos de 2026 retidos nos snapshots e os placares futuros simulados; os registros não foram conferidos individualmente contra a CBF. Cartões não estão disponíveis e empates restantes seguem sorteio uniforme reprodutível, portanto não se aplica integralmente o REC.
+Os resultados são mistos: nem as forças casa/fora nem H2H melhoram consistentemente o baseline. H2H tem peso zero na previsão de gols e nas probabilidades de V/E/D de 2026; no calendário, são exibidos os placares disponíveis de 2012–2025 e 2026, com N, V-E-D e pontos por mando para o mandante do próximo jogo. Esse retrospecto é informação histórica, não previsão. No desempate da tabela simulada, dois clubes usam os resultados H2H de 2026 retidos no pacote e os placares futuros simulados; grupos de três ou mais usam disciplina estimada a partir do snapshot pós-corte. Os placares não foram conferidos individualmente contra a CBF, e a cobertura temporal de cartões não é verificável. Isso não comprova aplicação oficial integral do REC; empate ainda não resolvido usa sorteio reprodutível.
 
 ## Curva de pontuação, vagas e limitações
 
@@ -89,4 +156,4 @@ A curva é condicionada à pontuação final exata: `K/N` é clubes-simulações
 
 As 5.000 simulações de tabela por temporada avaliam grupos finais históricos pelas faixas de posição da época: 1º campeão; 2º–6º Libertadores; 7º–12º Sul-Americana; 13º–16º meio; 17º–20º rebaixamento. Para 2026, as probabilidades consideram 1º–4º Libertadores direta, 5º preliminar, 6º–11º Sul-Americana e quatro últimos rebaixados. Campeões da Copa do Brasil e de torneios CONMEBOL, que podem redistribuir vagas, não são simulados.
 
-O desempate usa pontos, vitórias, saldo e gols pró; para empate entre dois clubes, a simulação considera os critérios do confronto direto (pontos, saldo e gols marcados no confronto) sobre os jogos de 2026 concluídos no corte e os resultados simulados. Os placares concluídos são rastreáveis aos snapshots Football-Data/ESPN, mas não foram conferidos linha a linha contra a CBF. Cartões não estão disponíveis e o fallback para empates restantes é uniforme e reprodutível. O H2H nunca altera as probabilidades projetadas. As projeções não são odds nem recomendação de apostas; a variação Monte Carlo não representa toda a incerteza dos dados e do modelo.
+Na classificação derivada local, a ordenação é analítica (pontos → vitórias → saldo → gols pró → nome do clube), não a ordem oficial CBF no corte. Na tabela simulada, empates entre dois clubes usam confronto direto (pontos, saldo e gols marcados) sobre jogos de 2026 no corte e resultados simulados; grupos de três ou mais usam cartões estimados pelo snapshot 365scores pós-corte e, persistindo empate, sorteio reprodutível. Os placares são rastreáveis aos snapshots Football-Data/ESPN, mas não foram conferidos linha a linha contra a CBF; cartões não têm timestamp por partida suficiente para validar seu estado no corte. O H2H não altera probabilidades de gols nem de V/E/D. As projeções não são odds nem recomendação de apostas; a variação Monte Carlo não representa toda a incerteza dos dados e do modelo.

@@ -1,4 +1,9 @@
+import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { scorers } from '../../src/data.ts'
+import { SCORERS_SOURCE, scorers2026 } from '../../src/scorers2026.ts'
+import { ANALYTICAL_CUTOFF_UTC } from '../../src/sourceMetadata.ts'
 import {
   mergeMatches,
   parseMatchDetail,
@@ -157,5 +162,39 @@ describe('renderScorersModule', () => {
     expect(source).toContain("{ name: 'Viveros', club: 'athletico-pr', goals: 21 }")
     expect(source).toContain("fetchedAt: '2026-11-07T12:00:00Z'")
     expect(source).toContain("sha256: 'abc'")
+  })
+
+  it('exporta todos os atletas do snapshot local mantendo ranking e provenance', () => {
+    const snapshot = JSON.parse(readFileSync('data/source-snapshots/apifb-artilharia-2026.json', 'utf8'))
+    const moduleScorers = renderScorersModule({
+      scorers: snapshot.scorers,
+      fetchedAt: snapshot.fetchedAt,
+      sourceSha: snapshot.sha256,
+    })
+    const sourceSha = createHash('sha256').update(JSON.stringify(snapshot.scorers), 'utf8').digest('hex')
+
+    expect(snapshot.scorers).toHaveLength(305)
+    expect(scorers2026).toHaveLength(snapshot.scorers.length)
+    expect(scorers2026).toEqual(snapshot.scorers)
+    expect(scorers).toHaveLength(snapshot.scorers.length)
+    expect(scorers2026[0]).toEqual({ name: 'Viveros', club: 'athletico-pr', goals: 21 })
+    expect(scorers2026.at(-1)).toEqual({ name: 'Zé Vitor', club: 'vitoria', goals: 1 })
+    expect(scorers.slice(5, 7).map(({ name, position }) => [name, position])).toEqual([
+      ['Carlos Vinícius', '6º'],
+      ['Luciano Juba', '6º'],
+    ])
+    expect(scorers2026.every((scorer, index, all) => index === 0 || all[index - 1].goals >= scorer.goals)).toBe(true)
+    expect(SCORERS_SOURCE).toMatchObject({
+      fetchedAt: '2026-11-07T16:00:24.137Z',
+      sha256: sourceSha,
+    })
+    expect(Date.parse(SCORERS_SOURCE.fetchedAt)).toBeGreaterThan(Date.parse(ANALYTICAL_CUTOFF_UTC))
+    expect(moduleScorers.match(/\{ name: /g)).toHaveLength(snapshot.scorers.length)
+    expect(readFileSync('src/scorers2026.ts', 'utf8')).toBe(moduleScorers)
+    expect(moduleScorers).toContain("fetchedAt: '2026-11-07T16:00:24.137Z'")
+    expect(moduleScorers).toContain(`sha256: '${sourceSha}'`)
+    expect(moduleScorers).toContain('2026-11-07T16:00:24.137Z')
+    expect(moduleScorers).toContain('A cobertura temporal por partida não foi confirmada')
+    expect(moduleScorers).toContain('não tratar como')
   })
 })

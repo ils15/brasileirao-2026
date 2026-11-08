@@ -1,0 +1,28 @@
+#!/bin/sh
+set -eu
+
+repo_root=$(git rev-parse --show-toplevel) || {
+  printf '%s\n' 'pre-commit: não foi possível localizar a raiz do repositório.' >&2
+  exit 1
+}
+cd "$repo_root"
+
+if ! command -v npm >/dev/null 2>&1; then
+  printf '%s\n' 'pre-commit: npm não encontrado; instale Node.js/npm e as dependências manualmente. Nenhuma instalação automática foi executada.' >&2
+  exit 1
+fi
+
+if ! npm test; then
+  printf '%s\n' "pre-commit: 'npm test' falhou. Verifique as dependências locais; nenhuma instalação automática foi executada." >&2
+  exit 1
+fi
+
+if ! GITHUB_PAGES=true npm run build; then
+  printf '%s\n' "pre-commit: 'GITHUB_PAGES=true npm run build' falhou. Verifique as dependências locais; nenhuma instalação automática foi executada." >&2
+  exit 1
+fi
+
+if ! git diff --cached --check; then
+  printf '%s\n' "pre-commit: 'git diff --cached --check' encontrou problemas no conteúdo staged." >&2
+  exit 1
+fi

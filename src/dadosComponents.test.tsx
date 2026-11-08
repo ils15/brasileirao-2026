@@ -3,13 +3,21 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ResultsTable } from './ResultsTable'
 import { AuditPanel } from './AuditPanel'
-import { currentSeasonResults } from './currentSeasonResults'
+import { CURRENT_SEASON_PACK_GENERATED_AT, CURRENT_SEASON_SOURCE, currentSeasonResults } from './currentSeasonResults'
+import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 
 const playedCount = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).length
 
 describe('tabela de resultados 2026', () => {
+  it('mantém a contagem e o corte atuais no estado sem resultados', () => {
+    render(<ResultsTable matches={[]} />)
+
+    expect(screen.getByText('Nenhum resultado para estes filtros')).toBeInTheDocument()
+    expect(screen.getByText(/o log cobre 0 partidas até 06\/11\/2026 · 21:58:14 BRT/)).toBeInTheDocument()
+  })
+
   it('lista os resultados paginados com contagem visível', () => {
     render(<ResultsTable />)
     const region = screen.getByRole('region', { name: /Resultados por data/ })
@@ -78,6 +86,7 @@ describe('tabela de resultados 2026', () => {
     const flamengoEspn = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).filter((match) => match.source === 'espn' && (match.home === 'flamengo' || match.away === 'flamengo')).length
     if (flamengoEspn > 0) return
     const emptyState = screen.getByText('Nenhum resultado para estes filtros').closest('div[class="empty-state-card"]')! as HTMLElement
+    expect(within(emptyState).getByText(/o log cobre 339 partidas até 06\/11\/2026 · 21:58:14 BRT/)).toBeInTheDocument()
     expect(within(emptyState).getByRole('button', { name: 'Limpar filtros' })).toBeInTheDocument()
   })
 
@@ -107,11 +116,35 @@ describe('painel de dados & auditoria', () => {
     vi.restoreAllMocks()
   })
 
-  it('lista as fontes com hash SHA-256 e horário de captura', () => {
+  it('distingue mtime, capturas, corte e correspondência de placares das fontes', () => {
     render(<AuditPanel />)
     const block = screen.getByRole('heading', { name: 'Fontes e captura' }).closest('section')!
-    expect(within(block).getAllByText(/SHA-256/)).toHaveLength(4)
-    expect(within(block).getAllByText(/2026-11-\d\d \d\d:\d\d:\d\d-03:00/).length).toBeGreaterThan(0)
+    expect(within(block).getAllByText(/SHA-256/)).toHaveLength(5)
+    expect(within(block).getByText(`ESPN (${CURRENT_SEASON_SOURCE.espn.withoutFootballDataScore} de ${CURRENT_SEASON_SOURCE.espn.completedMatches} resultados atribuídos à ESPN no pacote sem correspondência no CSV Football-Data)`)).toBeInTheDocument()
+    expect(within(block).getAllByText('não registrada no snapshot')).toHaveLength(3)
+    expect(within(block).getByText(/2026-11-\d\d \d\d:\d\d:\d\d-03:00/)).toBeInTheDocument()
+    expect(within(block).getByText('mtime do arquivo')).toBeInTheDocument()
+    expect(within(block).getByText(/não comprova captura ou coleta/)).toBeInTheDocument()
+    expect(within(block).getByText('365scores (xG e cartões)')).toBeInTheDocument()
+    expect(within(block).getByText('Obtido em')).toBeInTheDocument()
+    expect(within(block).getByText(ADVANCED_STATS_SOURCE.fetchedAt.replace('T', ' ').replace('Z', ' UTC'))).toBeInTheDocument()
+    expect(within(block).getByText('SHA-256 do JSON canônico')).toBeInTheDocument()
+    expect(within(block).getByText(new RegExp(ADVANCED_STATS_SOURCE.sha256))).toBeInTheDocument()
+    expect(screen.getByText(/Corte analítico: 06\/11\/2026 · 21:58:14 BRT/)).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`Pacote gerado em ${CURRENT_SEASON_PACK_GENERATED_AT}`))).toBeInTheDocument()
+    const currentScoreKeys = new Set(currentSeasonResults.map((match) => `${match.home}|${match.away}|${match.homeGoals}-${match.awayGoals}`))
+    const matchingAdvancedScores = advancedMatches.filter((match) => currentScoreKeys.has(`${match.home}|${match.away}|${match.homeScore}-${match.awayScore}`)).length
+    expect(block).toHaveTextContent(new RegExp(`Correspondência de placares 365scores.*${matchingAdvancedScores}/${advancedMatches.length}`))
+    expect(within(block).getByText(/não comprova cobertura temporal por partida/)).toBeInTheDocument()
+    expect(within(block).getByText(/dados pós-corte não são garantidos como parte do corte analítico/)).toBeInTheDocument()
+    expect(screen.getByText(/Artilharia: API Futebol BR, captura 07\/11\/2026 · 16:00:24 UTC, posterior ao corte; sem timestamp por partida, cobertura temporal não verificada/)).toBeInTheDocument()
+  })
+
+  it('mantém cada cartão de proveniência como subtítulo das fontes', () => {
+    render(<AuditPanel />)
+    const block = screen.getByRole('heading', { name: 'Fontes e captura' }).closest('section')!
+
+    expect(within(block).getByRole('heading', { level: 4, name: '365scores (xG e cartões)' })).toBeInTheDocument()
   })
 
   it('valida a temporada 2026 e as 14 temporadas históricas sem divergências', () => {
@@ -146,7 +179,7 @@ describe('painel de dados & auditoria', () => {
 
   it('oferece os três conjuntos com contagem de linhas', () => {
     render(<AuditPanel />)
-    expect(screen.getByText('Classificação oficial no corte (20 clubes)')).toBeInTheDocument()
+    expect(screen.getByText('Classificação derivada do pacote (20 clubes)')).toBeInTheDocument()
     expect(screen.getByText(`Calendário restante (${remainingFixtures.length} jogos)`)).toBeInTheDocument()
     expect(screen.getAllByText(`${playedCount} linhas`).length).toBeGreaterThan(0)
     expect(screen.getByText(`${remainingFixtures.length} linhas`)).toBeInTheDocument()

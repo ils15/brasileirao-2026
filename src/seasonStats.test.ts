@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { currentSeasonResults, CURRENT_SEASON_SOURCE } from './currentSeasonResults'
-import { ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff, isAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
+import { ANALYTICAL_CUTOFF_LOCAL, ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff, isAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, validateCurrentSeason } from './seasonStats'
 import { cbfOfficialSchedule } from './cbfOfficialSchedule'
 
@@ -20,6 +20,7 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     expect(remainingFixtures.every((fixture) => fixture.cbfRef.length > 0)).toBe(true)
     expect(new Set(remainingFixtures.map((fixture) => fixture.cbfRef)).size).toBe(remainingFixtures.length)
     expect(cbfOfficialSchedule).toHaveLength(380)
+    expect(CURRENT_SEASON_SOURCE.espn.completedMatches).toBe(currentSeasonResults.filter((match) => match.source === 'espn').length)
 
     const sourceByRef = new Map(cbfOfficialSchedule.map(([ref, round, home, away]) => [ref, { round, home, away }]))
     const playedRefs = new Set(currentSeasonResults.map((match) => {
@@ -39,7 +40,11 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     expect(playedRefs.size + remainingFixtures.length).toBe(cbfOfficialSchedule.length)
   })
 
-  it('reconcilia os números de casa e fora com cada linha da classificação oficial', () => {
+  it('mantém o corte local de Brasília equivalente ao instante UTC publicado', () => {
+    expect(Date.parse(ANALYTICAL_CUTOFF_LOCAL)).toBe(Date.parse(ANALYTICAL_CUTOFF_UTC))
+  })
+
+  it('reconcilia os números de casa e fora com cada linha da tabela empacotada', () => {
     for (const club of currentClubs) {
       const { home, away } = getCurrentVenueStats(club.id)
       const totalMatches = home.matches + away.matches
@@ -103,7 +108,7 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     expect(CURRENT_SEASON_SOURCE.cbfStandings).not.toHaveProperty('pageUpdatedAt')
   })
 
-  it('preserva a proveniência dos resultados ESPN (ausentes no Football-Data) e os mantém antes do corte', () => {
+  it('reconcilia os resultados ESPN com o Football-Data: 7 de 8 correspondem por placar e 1 está ausente', () => {
     const espnMatches = currentSeasonResults.filter((match) => match.source === 'espn')
     expect(espnMatches.length).toBeGreaterThan(0)
     for (const match of espnMatches) {

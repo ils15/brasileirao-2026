@@ -43,7 +43,7 @@ describe('join resultado ↔ calendário por par ordenado', () => {
 })
 
 describe('classificações derivadas dos resultados', () => {
-  it('reproduz exatamente o snapshot oficial (ordem, pontos e totais)', () => {
+  it('reproduz a tabela empacotada (ordem, pontos e totais)', () => {
     const table = standingsFromResults()
     expect(table).toHaveLength(20)
     expect(table.map(({ id }) => id)).toEqual(currentClubs.map(({ id }) => id))
@@ -88,7 +88,7 @@ describe('classificações derivadas dos resultados', () => {
 })
 
 describe('evolução por rodada', () => {
-  it('posições cobrem as rodadas com jogos e terminam na classificação oficial', () => {
+  it('posições cobrem as rodadas com jogos e terminam na tabela derivada do pacote', () => {
     const evolution = positionByRound()
     expect(evolution.rounds).toEqual(playedRounds())
     expect(evolution.rounds.length).toBeGreaterThan(30)
@@ -99,9 +99,9 @@ describe('evolução por rodada', () => {
         expect(position).toBeGreaterThanOrEqual(1)
         expect(position).toBeLessThanOrEqual(20)
       }
-      // Último ponto acumula todos os jogos disputados: coincide com o oficial
-      const official = currentClubs.find(({ id }) => id === club.id)!
-      expect(club.positions.at(-1)).toBe(official.position)
+      // Último ponto acumula todos os jogos disputados: coincide com a tabela do pacote.
+      const packagedRow = currentClubs.find(({ id }) => id === club.id)!
+      expect(club.positions.at(-1)).toBe(packagedRow.position)
     }
   })
 

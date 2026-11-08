@@ -20,11 +20,15 @@ describe('aba metodologia & validação', () => {
     expect(screen.getByText(/base de treino efetiva/i)).toBeInTheDocument()
     expect(screen.getByText(new RegExp(HISTORICAL_SOURCE.sha256))).toBeInTheDocument()
     expect(screen.getByText(/A validação agregada contra tabelas finais CBF cobre 2021–2025/)).toBeInTheDocument()
-    // Art. 15 completo: confronto direto só para 2 clubes; cartões projetados para 3+; sorteio por último
-    expect(screen.getByText(/As posições seguem o Art\. 15 do REC 2026/)).toBeInTheDocument()
-    expect(screen.getByText(/cartões vermelhos e amarelos projetados pela taxa por jogo da temporada/)).toBeInTheDocument()
-    expect(screen.getByText(/o H2H 2026 disponível entra somente no desempate entre dois clubes/)).toBeInTheDocument()
-    expect(screen.getByText(/cartões reais e projetados entram no desempate de três ou mais clubes/)).toBeInTheDocument()
+    const officialRule = screen.getByText('Norma oficial:').closest('p')!
+    expect(officialRule).toHaveTextContent(/pontos.*vitórias.*saldo.*gols pró.*confronto direto.*menos cartões vermelhos.*menos cartões amarelos.*sorteio/i)
+    expect(officialRule).toHaveTextContent(/confronto direto entre dois clubes.*pontos.*saldo.*para três ou mais clubes, o confronto direto não se aplica/i)
+    const implementedComparator = screen.getByText('Comparador analítico implementado:').closest('p')!
+    expect(implementedComparator).toHaveTextContent(/dois clubes.*pontos.*saldo.*gols pró.*sorteio antes dos cartões.*três ou mais clubes.*disciplina estimada/i)
+    expect(implementedComparator).toHaveTextContent(/cartões reais disponíveis no snapshot 365scores.*cartões projetados pela taxa por jogo, não simulados partida a partida/i)
+    expect(implementedComparator).toHaveTextContent(/não reproduz integralmente o Art\. 15 nem certifica uma classificação oficial/i)
+    const temporalLimit = screen.getByText('Limite temporal:').closest('p')!
+    expect(temporalLimit).toHaveTextContent(/snapshot 365scores.*após o corte analítico 2026-11-07T00:58:14\.422Z.*não tem cobertura temporal por partida suficiente.*não certificam o desempate oficial no corte/i)
   })
 
   it('apresenta os quatro modelos de ablação em cada dobra temporal sem sugerir ganho consistente', () => {
@@ -60,6 +64,7 @@ describe('aba metodologia & validação', () => {
     expect(within(region).getAllByRole('row', { name: /melhor/ }).length).toBe(1)
     // Produção declara o peso fixado (w = 0,15 adotado no corte nov/2026)
     expect(screen.getByText(/Produção usa w = 0,150/)).toBeInTheDocument()
+    expect(screen.getByText(/snapshot 365scores capturado em 2026-11-07T15:25:20\.960Z, após o corte analítico, sem timestamp temporal por partida.*t−1 descreve apenas a separação das rodadas.*não comprova/)).toBeInTheDocument()
   })
 
   it('o exemplo numérico do λ é rastreável e bate com o λ de produção (blend incluído)', () => {

@@ -1,0 +1,34 @@
+#!/bin/sh
+set -eu
+
+if [ "$#" -ne 1 ] || [ ! -f "$1" ]; then
+  printf '%s\n' 'commit-msg: esperado o caminho para o arquivo da mensagem do commit.' >&2
+  exit 1
+fi
+
+awk '
+  {
+    line = $0
+    # Git message files may use CRLF. Strip only the CR belonging to that
+    # line ending, so spaces or tabs before it are still detected below.
+    sub(/\r$/, "", line)
+    if (NR == 1 && line !~ /[^[:space:]]/) {
+      empty_subject = 1
+    }
+    if (line ~ /[[:space:]]$/) {
+      trailing_whitespace = 1
+    }
+  }
+  END {
+    failed = 0
+    if (NR == 0 || empty_subject) {
+      print "commit-msg: o assunto (primeira linha) não pode estar vazio ou conter somente whitespace." > "/dev/stderr"
+      failed = 1
+    }
+    if (trailing_whitespace) {
+      print "commit-msg: remova whitespace ao final de cada linha da mensagem." > "/dev/stderr"
+      failed = 1
+    }
+    exit failed
+  }
+' "$1"

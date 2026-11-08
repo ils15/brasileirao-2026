@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-07T00:58:14.422Z` (`2026-11-06T21:58:14.422-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 

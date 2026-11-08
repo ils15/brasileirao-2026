@@ -12,7 +12,7 @@
 
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
@@ -23,10 +23,12 @@ import {
   reconcileStandings,
   computeRemaining,
   computeStandings,
+  formatBrazilLocalIso,
   loadCbfSchedule,
   mergeResults,
   parseEspnScoreboard,
   parseFootballDataCsv,
+  summarizeEspnFootballDataCoverage,
   readCurrentCutoff,
   renderCurrentSeasonResults,
   renderProjectionData,
@@ -80,7 +82,7 @@ function addDays(isoDate, days) {
 }
 
 function sha256(text) {
-  return createHash('sha256').update(text, 'utf8').digest('hex')
+  return createHash('sha256').update(text).digest('hex')
 }
 
 function run(command, args, options = {}) {
@@ -137,6 +139,7 @@ async function main() {
   // 3. Fusão com os existentes (precedência do empacotamento anterior).
   const incoming = [...fdMatches, ...espnMatches]
   const { merged, added, rejected } = mergeResults({ schedule, existing: existingResults, incoming })
+  const espnCoverage = summarizeEspnFootballDataCoverage(merged, fdMatches)
   console.log(`Novos efetivos: ${added.length} (FD ${fdMatches.length}, ESPN ${espnMatches.length}) · rejeitados: ${rejected.length}`)
   for (const { match, reason } of rejected) console.warn(`  rejeitado: ${match.home}–${match.away} (${reason})`)
 
@@ -195,19 +198,31 @@ async function main() {
 
   // 5. Regeneração dos módulos TS.
   const now = new Date().toISOString()
-  const cutoffLocalDate = today
-  const cutoffLocal = `${cutoffLocalDate}T${now.slice(11, 16)}:00-03:00`
   const cutoffNewUtc = now.slice(0, 19) + 'Z'
+  const cutoffLocal = formatBrazilLocalIso(cutoffNewUtc)
+  const processingUtcDate = today
+  const espnSnapshotContents = new Map(
+    readdirSync(snapshotsDir)
+      .filter((file) => /^espn-scoreboard-\d{4}-\d{2}-\d{2}\.json$/.test(file))
+      .map((file) => [file, readFileSync(join(snapshotsDir, file), 'utf8')]),
+  )
+  for (const [date, jsonText] of espnSnapshots) {
+    espnSnapshotContents.set(`espn-scoreboard-${date}.json`, jsonText)
+  }
+  const espnSnapshotFiles = [...espnSnapshotContents.keys()].sort()
   const metadata = {
     generatedAt: now,
-    collectedAt: cutoffLocal,
+    // O processo não registra o instante individual de captura de cada fonte.
+    collectedAt: 'não registrada no snapshot',
+    cbfCollectedAt: 'não registrada no snapshot',
     sha256: sha256(csvText),
     rows2026: (csvText.match(/,2026,/g) ?? []).length,
-    espnCount: espnMatches.filter((match) => !existingResults.some((existing) => existing.sourceRef === match.sourceRef)).length,
+    ...espnCoverage,
+    espnFiles: espnSnapshotFiles.map((file) => `data/source-snapshots/${file}`).join(' | '),
     cbfDisplayed: currentMetadataSource.match(/displayedTimestamp: '([^']+)'/)?.[1] ?? 'unknown',
-    espnSha256: espnSnapshots.size > 0
-      ? sha256([...espnSnapshots.values()].join('|'))
-      : currentMetadataSource.match(/espn: \{[\s\S]*?sha256: '([^']+)'/)?.[1] ?? 'unknown',
+    espnSha256: sha256(espnSnapshotFiles.map((file) => espnSnapshotContents.get(file)).join('|')),
+    cbfSha256: sha256(readFileSync(join(snapshotsDir, 'cbf-table-2026.html'))),
+    cbfValidation: 'retained standings snapshot not reconciled with the current packed results; no individual scores verified',
     espnTeamIdsJson: readFileSync(join(srcDir, 'projectionData.ts'), 'utf8').match(/ESPN_TEAM_IDS: Readonly<Record<string, number>> = (\{[^}]+\})/)?.[1] ?? '{}',
     historicalSha256: readFileSync(join(srcDir, 'historicalSeasons.ts'), 'utf8').match(/sha256: '([^']+)'/)?.[1] ?? 'unknown',
   }
@@ -244,7 +259,7 @@ async function main() {
 
   // Log de atualizações (entrega pública do histórico)
   const logPath = join(root, 'docs/atualizacoes.md')
-  const logEntry = `\n## ${cutoffLocalDate} — ${added.length} novo(s) resultado(s)\n\n${added.map((match) => `- ${match.home} ${match.homeGoals}–${match.awayGoals} ${match.away} (${match.source}, ${match.sourceRef})`).join('\n')}\n`
+  const logEntry = `\n## ${processingUtcDate} — ${added.length} novo(s) resultado(s)\n\n${added.map((match) => `- ${match.home} ${match.homeGoals}–${match.awayGoals} ${match.away} (${match.source}, ${match.sourceRef})`).join('\n')}\n`
   if (existsSync(logPath)) {
     writeFileSync(logPath, readFileSync(logPath, 'utf8').replace(/$/, logEntry))
   } else {
@@ -255,7 +270,7 @@ async function main() {
   run('npm', ['test'])
 
   run('git', ['add', 'src/currentSeasonResults.ts', 'src/projectionData.ts', 'src/sourceMetadata.ts', 'src/advancedStats2026.ts', 'src/scorers2026.ts', 'data/source-snapshots', 'docs/atualizacoes.md'])
-  run('git', ['commit', '-m', `data: atualização pós-rodada ${cutoffLocalDate} (+${added.length} resultados)`])
+  run('git', ['commit', '-m', `data: atualização pós-rodada ${processingUtcDate} (+${added.length} resultados)`])
   console.log(`Commit criado. O workflow faz push, build e deploy.`)
 }
 

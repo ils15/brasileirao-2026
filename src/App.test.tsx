@@ -107,6 +107,9 @@ describe('painel do Brasileirão 2026', () => {
     expect(within(kpis).getByText('Jogos disputados no corte')).toBeInTheDocument()
     expect(within(kpis).getByText('Vagas de Libertadores (1º–5º)')).toBeInTheDocument()
     expect(within(kpis).getByText('Jogos restantes · rodadas + adiados')).toBeInTheDocument()
+    expect(screen.getByText((_, element) => element?.classList.contains('leader-stat-caption') ?? false)).toHaveTextContent('Classificação derivada do pacote')
+    expect(screen.getByText(/classificação calculada dos resultados do pacote; a cópia CBF arquivada soma 332 jogos e não valida este conjunto/i)).toBeInTheDocument()
+    expect(screen.queryByText('Classificação oficial')).not.toBeInTheDocument()
   })
 
   it('ordena a classificação por pontos ao clicar no cabeçalho', async () => {
@@ -150,7 +153,8 @@ describe('painel do Brasileirão 2026', () => {
     ]))
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
     expect(within(sourceSummary).getByText(cutoffSummaryLine)).toBeInTheDocument()
-    expect(screen.getByText(/A classificação foi reconciliada em agregado ao conjunto de jogos até 04\/11\/2026 13:00 BRT/)).toBeInTheDocument()
+    expect(screen.getByText(/Corte analítico dos resultados: 06\/11\/2026 · 21:58:14 BRT/)).toBeInTheDocument()
+    expect(screen.getByText(/o HTML CBF arquivado soma 332 jogos e não valida o conjunto/i)).toBeInTheDocument()
     expect(screen.queryByText(/snapshot CBF de 04\/11\/2026 às 13:00/)).not.toBeInTheDocument()
   })
 
@@ -160,6 +164,14 @@ describe('painel do Brasileirão 2026', () => {
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
     expect(within(sourceSummary).getByText('Snapshot automático')).toBeInTheDocument()
     expect(within(sourceSummary).getByText('Sem placares ao vivo — atualização automática a cada 2 horas.')).toBeInTheDocument()
+  })
+
+  it('distingue o corte analítico da captura sem cobertura temporal comprovada da artilharia', () => {
+    render(<App />)
+
+    const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
+    expect(within(sourceSummary).getByText('Resultados e análises até 06/11/2026 · 21:58:14 BRT · nova verificação automática a cada 2 horas')).toBeInTheDocument()
+    expect(screen.getByText(/captura 07\/11\/2026 · 16:00:24 UTC · posterior ao corte analítico; sem timestamp por partida, cobertura temporal não verificada/)).toBeInTheDocument()
   })
 
   it('pesquisa a classificação pelo nome do clube', async () => {
@@ -189,13 +201,16 @@ describe('painel do Brasileirão 2026', () => {
     expect(within(clubList).queryByText(currentClubs[0]!.club)).not.toBeInTheDocument()
   })
 
-  it('artilharia derivada da fonte: ordem por gols, empates compartilham posição e fonte declarada', () => {
+  it('artilharia derivada da fonte: primeira página ordenada, empates preservados e fonte declarada', () => {
     render(<App />)
 
     const topScorers = screen.getByRole('list', { name: 'Artilharia' })
     // Ordenação estrita por gols descendente nos itens renderizados
     const goalCounts = [...topScorers.querySelectorAll('.goal-count strong')].map((element) => Number(element.textContent))
-    expect(goalCounts.length).toBe(scorers.length)
+    expect(goalCounts.length).toBe(20)
+    expect([...topScorers.querySelectorAll('.scorer-info strong')].map((element) => element.textContent)).toEqual(
+      scorers.slice(0, 20).map((scorer) => scorer.name),
+    )
     for (let index = 1; index < goalCounts.length; index += 1) {
       expect(goalCounts[index - 1]).toBeGreaterThanOrEqual(goalCounts[index]!)
     }
@@ -210,8 +225,95 @@ describe('painel do Brasileirão 2026', () => {
       const tiedPosition = scorers[firstTie]!.position
       expect(within(topScorers).getAllByText(tiedPosition)).toHaveLength(tiedCount)
     }
-    expect(screen.getByText(new RegExp(SCORERS_SOURCE.name))).toBeInTheDocument()
-    expect(screen.getByText(/atualizada automaticamente após cada rodada/)).toBeInTheDocument()
+    const scorersPanel = screen.getByRole('region', { name: 'Artilharia' })
+    expect(within(scorersPanel).getByText(new RegExp(SCORERS_SOURCE.name))).toBeInTheDocument()
+    expect(within(scorersPanel).getByText(/sem timestamp por partida, cobertura temporal não verificada/)).toBeInTheDocument()
+  })
+
+  it('separa classificação derivada, artilharia pós-corte e data programada do registro do evento', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    expect(screen.getByText(/Classificação calculada dos resultados do pacote/)).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /Classificação oficial/ })).not.toBeInTheDocument()
+    expect(screen.getByText(/não representa a artilharia no corte/)).toBeInTheDocument()
+
+    await user.click(screen.getByRole('tab', { name: 'Jogos' }))
+    expect(screen.getByRole('columnheader', { name: 'Data/hora na fonte' })).toBeInTheDocument()
+    const eventDateNote = screen.getByText(/Todos os .* resultados até o corte analítico/)
+    expect(eventDateNote.textContent).toContain('REF 340')
+    expect(eventDateNote.textContent).toContain('04/11 ou 05/11')
+    expect(eventDateNote.textContent).toContain('2026-11-03T22:30Z')
+    expect(eventDateNote.textContent).toContain('O pacote não confirma o kickoff oficial.')
+
+    await user.click(screen.getByRole('tab', { name: 'Confrontos' }))
+    const tiebreakNote = screen.getByText(/O desempate simulado \(não é classificação oficial\)/)
+    expect(tiebreakNote.textContent).toContain('nem aplicação integral do Art. 15')
+
+    await user.click(screen.getByRole('tab', { name: 'Dados & Auditoria' }))
+    expect(screen.getByRole('heading', { name: 'CBF (HTML de classificação arquivado)' })).toBeInTheDocument()
+    expect(screen.getByText(/Exibe 04\/11\/2026 - 19:41 \(fuso e significado não declarados\)/)).toBeInTheDocument()
+  })
+
+  it('pagina os 305 atletas sem alterar ordem, posições ou perder/duplicar atletas', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const scorersPanel = screen.getByRole('region', { name: 'Artilharia' })
+    const scorerList = within(scorersPanel).getByRole('list', { name: 'Artilharia' })
+    const pagination = within(scorersPanel).getByRole('navigation', { name: 'Paginação da artilharia' })
+    const next = within(scorersPanel).getByRole('button', { name: 'Próxima página da artilharia' })
+    const previous = within(scorersPanel).getByRole('button', { name: 'Página anterior da artilharia' })
+    const pageCount = Math.ceil(scorers.length / 20)
+    const renderedScorers = (): Array<{ name: string; club: string; position: string; goals: number }> =>
+      [...scorerList.querySelectorAll('.scorer-item')].map((item) => ({
+        name: item.querySelector('.scorer-info strong')?.textContent ?? '',
+        club: item.querySelector('.scorer-info small')?.textContent ?? '',
+        position: item.querySelector('.scorer-rank')?.textContent ?? '',
+        goals: Number(item.querySelector('.goal-count strong')?.textContent),
+      }))
+    const renderedIdentities: string[] = []
+
+    expect(scorers).toHaveLength(305)
+    expect(pageCount).toBe(16)
+    expect(pagination).toHaveTextContent(`1–20 de ${scorers.length}`)
+    expect(pagination).toHaveTextContent('Página 1 de 16')
+    expect(pagination.querySelector('[aria-live="polite"]')).toHaveAttribute('aria-atomic', 'true')
+    expect(previous).toBeDisabled()
+
+    for (let page = 0; page < pageCount; page += 1) {
+      const start = page * 20
+      const end = Math.min(start + 20, scorers.length)
+      const expectedPage = scorers.slice(start, end)
+
+      expect(pagination).toHaveTextContent(`${start + 1}–${end} de ${scorers.length}`)
+      expect(pagination).toHaveTextContent(`Página ${page + 1} de ${pageCount}`)
+      expect(renderedScorers()).toEqual(expectedPage.map(({ name, club, position, goals }) => ({ name, club, position, goals })))
+      renderedIdentities.push(...renderedScorers().map(({ name, club }) => `${name}\u0000${club}`))
+
+      if (page < pageCount - 1) {
+        if (page === 0) {
+          next.focus()
+          await user.keyboard('{Enter}')
+        } else {
+          await user.click(next)
+        }
+        expect(previous).toBeEnabled()
+      }
+    }
+
+    expect(pagination).toHaveTextContent('301–305 de 305')
+    expect(pagination).toHaveTextContent('Página 16 de 16')
+    expect(scorerList.querySelectorAll('.scorer-item')).toHaveLength(5)
+    expect(next).toBeDisabled()
+    expect(renderedIdentities).toEqual(scorers.map(({ name, club }) => `${name}\u0000${club}`))
+    expect(new Set(renderedIdentities).size).toBe(scorers.length)
+
+    previous.focus()
+    await user.keyboard('{Enter}')
+    expect(pagination).toHaveTextContent('281–300 de 305')
+    expect(pagination).toHaveTextContent('Página 15 de 16')
+    expect(next).toBeEnabled()
   })
 
   it('identifica as fontes oficiais e a conferência secundária', () => {
@@ -223,7 +325,7 @@ describe('painel do Brasileirão 2026', () => {
         'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026',
       )
     }
-    expect(screen.getByRole('link', { name: /ESPN · Conferência de artilharia/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /ESPN · Consulta externa/ })).toHaveAttribute(
       'href',
       'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols',
     )
