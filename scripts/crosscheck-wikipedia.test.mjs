@@ -1,4 +1,5 @@
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
@@ -68,7 +69,7 @@ describe('sidecar de corroboração', () => {
   })
 
   it('rejeita sidecar alterado mesmo quando o manifest é mantido', () => {
-    const dir = mkdtempSync('/tmp/opencode/corroboration-')
+    const dir = mkdtempSync(join(tmpdir(), 'corroboration-'))
     try {
       cpSync(SIDECAR_DIR, dir, { recursive: true })
       const file = join(dir, '2006.json')
