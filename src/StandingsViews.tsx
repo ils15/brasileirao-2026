@@ -4,6 +4,7 @@ import { espnLogoUrl } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
 import { getZoneLabel } from './data'
+import { ZoneLegend } from './ZoneLegend'
 
 /**
  * Aba Classificações: as vistas clássicas de análise (geral, últimas rodadas,
@@ -80,7 +81,7 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
                         <img className="crest crest--xs" src={espnLogoUrl(row.id)} alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
                       )}
                       <span className="club-cell-name">{row.club}</span>
-                      <span className={`zone-tag zone-tag--${zoneClass(row.position)}`}>{getZoneLabel(row.position)}</span>
+                      <span className="sr-only">Zona: {getZoneLabel(row.position)}</span>
                     </th>
                   )
                   : <td key={column.id} className={column.id === 'points' ? 'numeric points-cell' : 'numeric games-cell'}>{formatCell(row, column.id)}</td>
@@ -223,15 +224,15 @@ function StreaksAndExtremesView(): JSX.Element {
 const VIEW_IDS = ['geral', 'ultimas', 'mandante', 'visitante', 'turno', 'returno', 'evolucao', 'sequencias'] as const
 type ViewId = (typeof VIEW_IDS)[number]
 
-const VIEWS: { id: ViewId; label: string }[] = [
-  { id: 'geral', label: 'Geral' },
-  { id: 'ultimas', label: 'Últimas 10 rodadas' },
-  { id: 'mandante', label: 'Mandante' },
-  { id: 'visitante', label: 'Visitante' },
-  { id: 'turno', label: 'Turno (1º–19º)' },
-  { id: 'returno', label: 'Returno (20º–38º)' },
-  { id: 'evolucao', label: 'Evolução por rodada' },
-  { id: 'sequencias', label: 'Sequências e extremos' },
+const VIEWS: { id: ViewId; label: string; table: boolean }[] = [
+  { id: 'geral', label: 'Geral', table: true },
+  { id: 'ultimas', label: 'Últimas 10 rodadas', table: true },
+  { id: 'mandante', label: 'Mandante', table: true },
+  { id: 'visitante', label: 'Visitante', table: true },
+  { id: 'turno', label: 'Turno (1º–19º)', table: true },
+  { id: 'returno', label: 'Returno (20º–38º)', table: true },
+  { id: 'evolucao', label: 'Evolução por rodada', table: false },
+  { id: 'sequencias', label: 'Sequências e extremos', table: false },
 ]
 
 export function StandingsViews(): JSX.Element {
@@ -257,23 +258,20 @@ export function StandingsViews(): JSX.Element {
   }
 
   const generalLegend = (
-    <div
-      className="zone-legend"
-      role="group"
-      aria-label="Legenda das zonas da classificação"
-      aria-describedby="standings-zone-legend-note"
-    >
-      <span><i className="legend-dot qualification" />Libertadores · {ZONES.libertadores.detail}</span>
-      <span><i className="legend-dot sudamericana" />Sul-Americana · {ZONES.sudamericana.detail}</span>
-      <span><i className="legend-dot middle" />Meio de tabela · {ZONES.middle.detail}</span>
-      <span><i className="legend-dot relegation" />Rebaixamento · {ZONES.relegation.detail}</span>
-      <p id="standings-zone-legend-note" className="zone-legend-note">
-        * O asterisco indica o cenário G-6 adotado pelo painel; o 6º lugar depende das regras de redistribuição e da sobreposição de classificados.
-      </p>
-    </div>
+    <ZoneLegend
+      ariaLabel="Legenda de zonas da classificação"
+      describedBy="standings-zone-legend-note"
+      note={(
+        <p id="standings-zone-legend-note" className="zone-legend-note">
+          * O asterisco indica o cenário G-6 adotado pelo painel; o 6º lugar depende das regras de redistribuição e da sobreposição de classificados.
+        </p>
+      )}
+    />
   )
+  const tableViews = VIEWS.filter((view) => view.table).map((view) => view.id)
+  const activeViewHasZoneLegend = tableViews.includes(activeView)
   const viewContent: Record<ViewId, JSX.Element> = {
-    geral: <>{generalLegend}<StandingsTableView rows={standingsFromResults()} columns={FULL_COLUMNS} initialSort="position" caption="Classificação geral; role para rolagem horizontal em telas pequenas" /></>,
+    geral: <StandingsTableView rows={standingsFromResults()} columns={FULL_COLUMNS} initialSort="position" caption="Classificação geral; role para rolagem horizontal em telas pequenas" />,
     ultimas: <StandingsTableView rows={standingsFromResults({ rounds: lastTenRounds })} columns={SHORT_COLUMNS} initialSort="points" caption={`Classificação nas últimas 10 rodadas completas (${lastTenRounds[0]}ª à ${lastTenRounds.at(-1)}ª)`} />,
     mandante: <StandingsTableView rows={standingsFromResults({ venue: 'home' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só com jogos como mandante" />,
     visitante: <StandingsTableView rows={standingsFromResults({ venue: 'away' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só jogos como visitante" />,
@@ -309,7 +307,8 @@ export function StandingsViews(): JSX.Element {
           >{view.label}</button>
         ))}
       </div>
-      <div id={`painel-vista-${activeView}`} role="tabpanel" aria-labelledby={`vista-${activeView}`}>
+      <div key={activeView} id={`painel-vista-${activeView}`} role="tabpanel" aria-labelledby={`vista-${activeView}`}>
+        {activeViewHasZoneLegend && generalLegend}
         {viewContent[activeView]}
       </div>
       <p className="table-note">Todas as vistas agregam os resultados até o corte. Nas vistas parciais, clubes com jogos adiados podem ter um jogo a menos.</p>

@@ -18,6 +18,16 @@ const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFracti
 const integer = new Intl.NumberFormat('pt-BR')
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
+
+/**
+ * Texto do IC 95% na tabela por pontuação. A omissão é decidida por linha:
+ * o intervalo aparece quando muda em relação à linha anterior e é omitido
+ * quando idêntico ao da linha de cima.
+ */
+function intervalTextFor(lower: number, upper: number): string {
+  return `IC 95% ${percent.format(lower)}–${percent.format(upper)}`
+}
+
 type MagicKey = MagicDestiny | 'middle'
 const MAGIC_KEYS: MagicKey[] = ['title', 'libertadores', 'sudamericana', 'middle', 'relegation']
 
@@ -26,6 +36,14 @@ interface MagicRow {
   probabilities: Record<MagicKey, number>
   intervals: Record<MagicKey, [number, number]>
   lowSample: Record<MagicKey, boolean>
+  /**
+   * Indica se a projeção registrou ao menos um sucesso do destino naquela
+   * pontuação (`successes > 0`). `false` significa zero sucessos do destino
+   * naquelas simulações, não ausência de simulações: `denominator` segue
+   * sendo o número de observações da pontuação. Nesse caso a probabilidade 0
+   * e o intervalo [0, 1] são apenas valores neutros, sem IC legítimo.
+   */
+  observed: Record<MagicKey, boolean>
   /** Contagem de sucessos por destino, preservada para validar agrupamentos. */
   successes: Record<MagicKey, number>
   clusterCounts: Record<MagicKey, number>
@@ -49,6 +67,7 @@ function emptyMagicRow(points: number): MagicRow {
       title: [0, 1], libertadores: [0, 1], sudamericana: [0, 1], middle: [0, 1], relegation: [0, 1],
     },
     lowSample: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
+    observed: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
     successes: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
     clusterCounts: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
     inclusiveLibertadores: {
@@ -112,10 +131,10 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
 }
 
 const MAGIC_DESTINIES = [
-  { id: 'relegation', label: 'Série B', phrase: 'rebaixado para a Série B', swatch: 'zone-bar--relegation' },
-  { id: 'libertadores', label: 'Libertadores', phrase: 'classificado para a Libertadores', swatch: 'zone-bar--libertadores' },
-  { id: 'sudamericana', label: 'Sul-Americana', phrase: 'classificado para a Sul-Americana', swatch: 'zone-bar--sudamericana' },
-  { id: 'title', label: 'Campeão', phrase: 'campeão', swatch: 'zone-bar--title' },
+  { id: 'relegation', label: 'Série B', phrase: 'rebaixado para a Série B', observation: 'rebaixamento', swatch: 'zone-bar--relegation' },
+  { id: 'libertadores', label: 'Libertadores', phrase: 'classificado para a Libertadores', observation: 'classificação para a Libertadores', swatch: 'zone-bar--libertadores' },
+  { id: 'sudamericana', label: 'Sul-Americana', phrase: 'classificado para a Sul-Americana', observation: 'classificação para a Sul-Americana', swatch: 'zone-bar--sudamericana' },
+  { id: 'title', label: 'Campeão', phrase: 'campeão', observation: 'título', swatch: 'zone-bar--title' },
 ] as const
 
 type MagicDestiny = (typeof MAGIC_DESTINIES)[number]['id']
@@ -134,6 +153,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       entry.probabilities[row.outcome] = row.probability
       entry.intervals[row.outcome] = [row.lower95, row.upper95]
       entry.lowSample[row.outcome] = row.lowSample
+      entry.observed[row.outcome] = row.successes > 0
       entry.successes[row.outcome] = row.successes
       entry.clusterCounts[row.outcome] = row.clusterCount
       entry.denominator = row.denominator
@@ -165,6 +185,20 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     if (destiny === 'libertadores') return row.inclusiveLibertadores.lowSample
     return row.lowSample[destiny]
   }
+  /**
+   * Uma linha só tem estimativa quando houve ao menos uma observação do
+   * destino naquela pontuação. `observed` é `successes > 0`; Libertadores usa
+   * o agregado inclusivo (1º–6º), que existe para todo ponto com simulações e
+   * pode ter zero sucessos — por isso não usa o denominador.
+   */
+  const hasObservationsFor = (row: MagicRow): boolean => {
+    if (destiny === 'libertadores') return row.inclusiveLibertadores.successes > 0
+    return row.observed[destiny]
+  }
+  const successesFor = (row: MagicRow): number => {
+    if (destiny === 'libertadores') return row.inclusiveLibertadores.successes
+    return row.successes[destiny]
+  }
 
   // Agrupa somente pontos consecutivos com estatísticas e inferências idênticas.
   const compactRows = useMemo(() => {
@@ -172,7 +206,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       denominator: row.denominator,
       outcomes: MAGIC_KEYS.map((key) => [
         row.probabilities[key], row.successes[key], row.clusterCounts[key],
-        row.intervals[key][0], row.intervals[key][1], row.lowSample[key],
+        row.intervals[key][0], row.intervals[key][1], row.observed[key], row.lowSample[key],
       ]),
       libertadoresInclusive: [
         row.inclusiveLibertadores.successes,
@@ -311,7 +345,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         </div>
       </div>
 
-      <div className="table-scroll" role="region" aria-label={`Chance de ser ${destinyPhrase} por pontuação exata; faixas estáveis em 0% ou 100% ficam de fora`} tabIndex={0}>
+      <div className="table-scroll" role="region" aria-label={`Chance de ser ${destinyPhrase} por pontuação exata; valor e IC 95% aparecem quando mudam em relação à linha anterior`} tabIndex={0}>
         <table className="projection-table magic-table">
           <thead><tr>
             <th scope="col">Pontos</th>
@@ -319,26 +353,48 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
             <th scope="col">IC 95% e barra</th>
           </tr></thead>
           <tbody>
-            {compactRows.map((group) => {
+            {compactRows.map((group, index) => {
               const row = group.row
+              const hasObservations = hasObservationsFor(row)
               const chance = chanceOf(row)
               const [lower95, upper95] = intervalFor(row)
-              // 0% e 100% (no valor exibido) não têm intervalo útil nem barra.
-              const displaysZero = percent.format(chance) === '0,0%'
-              const displaysCertain = percent.format(chance) === '100,0%'
-              const hasInterval = !displaysZero && !displaysCertain
+              const previousRow = index > 0 ? compactRows[index - 1]!.row : undefined
+              const previousHasSimulations = previousRow ? hasObservationsFor(previousRow) : false
+              const chanceText = percent.format(chance)
+              const intervalText = intervalTextFor(lower95, upper95)
+              // A comparação é do texto formatado (2 casas), não do valor bruto:
+              // repetições consecutivas desse texto não são exibidas; a barra e
+              // o rótulo acessível de cada linha continuam informando o valor.
+              // Linhas sem observação do destino não entram na comparação: não
+              // há bloco numérico anterior válido para herdar a omissão.
+              const previousChanceText = previousHasSimulations && previousRow ? percent.format(chanceOf(previousRow)) : null
+              const previousIntervalText = previousHasSimulations && previousRow
+                ? intervalTextFor(...intervalFor(previousRow))
+                : null
+              const observationsText = `${integer.format(successesFor(row))} de ${integer.format(row.denominator)} observações`
+              const showsChanceText = !hasObservations || chanceText !== previousChanceText
+              const showsIntervalText = hasObservations && intervalText !== previousIntervalText
+              const pointsLabel = group.from === group.to ? String(group.from) : `${group.from} a ${group.to}`
               return (
-                <tr key={group.from} className={displaysZero ? 'magic-row--zero' : undefined}>
+                <tr key={group.from}>
                   <th scope="row" className="magic-points-cell">{group.from === group.to ? group.from : `${group.from}–${group.to}`}</th>
-                  <td className={`numeric games-cell ${displaysZero ? 'probability-cell--zero' : 'magic-active-value'}`}>{percent.format(chance)}</td>
+                  <td className="numeric games-cell magic-active-value">
+                    {!hasObservations
+                      ? <span className="magic-empty" aria-hidden="true">{observationsText}</span>
+                      : showsChanceText ? <span aria-hidden="true">{chanceText}</span> : null}
+                  </td>
                   <td className="magic-bar-cell">
-                    <div className={`magic-bar ${displaysCertain ? 'magic-bar--full' : ''}`} role="img" aria-label={`Com ${group.from === group.to ? group.from : `${group.from} a ${group.to}`} pontos: ${percent.format(chance)} de ${destinyPhrase}`}>
-                      <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} />
-                      {lowSampleFor(row) && <span className="magic-bar-low">amostra baixa</span>}
+                    <div
+                      className={hasObservations ? 'magic-bar' : 'magic-bar magic-bar--empty'}
+                      role="img"
+                      aria-label={hasObservations
+                        ? `Com ${pointsLabel} pontos: ${chanceText} de ${destinyPhrase}; ${intervalText}${lowSampleFor(row) ? '; amostra baixa' : ''}`
+                        : `Com ${pointsLabel} pontos: nenhuma observação de ${destinyEntry.observation} em ${integer.format(row.denominator)} simulações desta pontuação`}
+                    >
+                      {hasObservations && <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} aria-hidden="true" />}
+                      {hasObservations && lowSampleFor(row) && <span className="magic-bar-low" aria-hidden="true">amostra baixa</span>}
                     </div>
-                    {hasInterval && <span className="cell-ci">IC 95% {percent.format(lower95)}–{percent.format(upper95)}</span>}
-                    {displaysCertain && <span className="cell-ci">{cap(destinyPhrase)}</span>}
-                    {displaysZero && <span className="cell-ci">impossível</span>}
+                    {showsIntervalText && <span className="cell-ci" aria-hidden="true">{intervalText}</span>}
                   </td>
                 </tr>
               )
@@ -348,7 +404,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       </div>
       <p className="projection-table-note">
         Apenas pontos consecutivos com as mesmas probabilidades, sucessos, denominadores, clusters, ICs e sinalizadores de amostra baixa são agrupados.
-        Assim, cada IC e denominador continuam correspondendo às pontuações exibidas; em 0% e 100%, o intervalo não é útil e não aparece.
+        Assim, cada IC e denominador continuam correspondendo às pontuações exibidas; o valor e o IC 95% aparecem quando mudam em relação à linha anterior e são omitidos quando idênticos ao da linha de cima. A barra e o rótulo acessível permanecem em todas as linhas. Quando nenhuma simulação daquela pontuação terminou no destino, a linha mostra “0 de N observações”, sem percentual nem IC.
       </p>
     </section>
   )
@@ -381,7 +437,13 @@ interface ProbabilityCellProps {
 }
 
 function ProbabilityCell({ value, lower, upper }: ProbabilityCellProps): JSX.Element {
-  // IC só faz sentido entre 0 e 1 exclusivos; em 0%/100% o intervalo é o próprio valor.
+  // O IC 95% é calculado pela projeção também nos extremos: 0% e 100% de um
+  // destino com ao menos uma observação têm IC legítimo (ex. 0,00%–32,44% e
+  // 99,99%–100,00%) — os extremos não são sentinela de ausência de
+  // observações. Aqui só o texto do intervalo é omitido nesses extremos por
+  // escolha de apresentação; na tabela por pontuação a omissão ocorre quando o
+  // texto formatado repete o da linha anterior, e a ausência de observações do
+  // destino é sinalizada separadamente por “0 de N observações”.
   const hasInterval = value > 0 && value < 1
   return (
     <td className={`numeric probability-cell ${value === 0 ? 'probability-cell--zero' : ''}`}>
