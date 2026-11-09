@@ -61,7 +61,7 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     }
   })
 
-  it('oferece histórico 2021–2025 separado por mando e com fallback vazio explícito', () => {
+  it('oferece histórico 2003–2025 separado por mando e com fallback vazio explícito', () => {
     const flamengo = getHistoricalVenueStats('flamengo')
     expect(flamengo.home.matches).toBeGreaterThan(0)
     expect(flamengo.away.matches).toBeGreaterThan(0)
@@ -88,6 +88,16 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
       expect.objectContaining({ home: 'athletico-pr', away: 'flamengo', homeGoals: 1, awayGoals: 1 }),
     ])
     expect(h2h.historical.home.matches + h2h.historical.away.matches).toBeGreaterThan(0)
+  })
+
+  it('inclui 2003–2011 no H2H, preserva os replays de 2005 e identifica a fonte por era', () => {
+    const h2h = getHeadToHeadSummary('corinthians', 'sao-paulo')
+    const replays2005 = h2h.matches.filter(({ seasonYear }) => seasonYear === 2005)
+
+    expect(replays2005).toHaveLength(3)
+    expect(replays2005.every(({ source }) => source === 'openfootball')).toBe(true)
+    expect(h2h.matches.some(({ seasonYear }) => seasonYear === 2003)).toBe(true)
+    expect(h2h.matches.filter(({ seasonYear }) => seasonYear === 2012).every(({ source }) => source === 'football-data')).toBe(true)
   })
 
   it('mantém timestamps idênticos como um único bloco no corte', () => {

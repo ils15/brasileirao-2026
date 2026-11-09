@@ -63,7 +63,8 @@ describe('painel de confronto direto', () => {
     expect(bar).toBeInTheDocument()
 
     const timeline = screen.getByRole('list', { name: /Timeline de encontros entre Flamengo e Palmeiras/ })
-    expect(within(timeline).getAllByRole('listitem')).toHaveLength(summary.matches.length)
+    const from2012 = summary.matches.filter(({ seasonYear }) => seasonYear >= 2012 && seasonYear <= 2026)
+    expect(within(timeline).getAllByRole('listitem')).toHaveLength(from2012.length)
     // O encontro 2026 Flamengo 0–3 Palmeiras está na timeline com badge de derrota
     const meeting2026 = within(timeline).getAllByRole('listitem').find((item) => item.textContent?.includes('Flamengo') && item.textContent?.includes('0–3'))!
     expect(meeting2026).toHaveTextContent('D')
@@ -74,10 +75,12 @@ describe('painel de confronto direto', () => {
     expect(summaryBox.textContent).toContain('Período 2012–2026: 27 encontros')
     await user.click(screen.getByRole('button', { name: 'Temporada 2026' }))
     expect(document.querySelector('.h2h-summary')!.textContent).toContain('Período 2026–2026: 1 encontro · gols 0–3 (Flamengo primeiro)')
+    expect(within(timeline).getAllByRole('listitem')).toHaveLength(1)
     const bar2026 = screen.getByRole('img', { name: /Retrospecto direto: Vitórias de Flamengo 0, Empates 0, Vitórias de Palmeiras 1/ })
     expect(bar2026).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Desde 2012' }))
     expect(document.querySelector('.h2h-summary')!.textContent).toContain('Período 2012–2026')
+    expect(within(timeline).getAllByRole('listitem')).toHaveLength(from2012.length)
 
 
     // Próximo confronto entre os dois: rodada 36 (palmeiras × flamengo)
@@ -99,7 +102,7 @@ describe('painel de confronto direto', () => {
     await user.selectOptions(screen.getByRole('combobox', { name: 'Clube B do confronto' }), 'internacional')
     const summary = getHeadToHeadSummary('gremio', 'internacional')
     const timeline = screen.getByRole('list', { name: /Timeline de encontros entre Grêmio e Internacional/ })
-    expect(within(timeline).getAllByRole('listitem')).toHaveLength(summary.matches.length)
+    expect(within(timeline).getAllByRole('listitem')).toHaveLength(summary.matches.filter(({ seasonYear }) => seasonYear >= 2012 && seasonYear <= 2026).length)
     expect(screen.getByRole('heading', { name: 'Grêmio × Internacional' })).toBeInTheDocument()
   })
 })

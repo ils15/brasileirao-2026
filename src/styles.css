@@ -387,6 +387,8 @@ th.numeric .sort-button { justify-content: flex-end; }
 .source-card dt { color: var(--text-muted); font-size: 12px; }
 .source-card dd { margin: 0; color: var(--text); font: 12px var(--mono); text-align: right; overflow-wrap: anywhere; }
 .source-card-note { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
+.source-snapshot-list { display: grid; gap: 6px; margin: 10px 0 0; padding-left: 18px; color: var(--text-secondary); font-size: 12px; line-height: 1.45; }
+.source-snapshot-list code { overflow-wrap: anywhere; }
 .audit-note { margin: 14px 0 0; color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
 .validations-table { min-width: 720px; }
 .validations-table th:last-child { position: relative; } /* Mantém o rótulo sr-only no contêiner rolável, sem ampliar o documento. */
@@ -395,6 +397,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .validation-badge { display: inline-block; padding: 4px 10px; border-radius: 3px; font: 700 12px var(--mono); letter-spacing: .05em; }
 .validation-badge--ok { color: var(--success-text); background: var(--success-bg); }
 .validation-badge--fail { color: var(--danger-text); background: var(--danger-bg); }
+.validation-badge--unverified { color: var(--text); background: var(--surface-alt); border: 1px solid var(--border); }
 .export-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
 .export-item { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 14px; border: 1px solid var(--border); background: var(--surface-soft); }
 .export-item strong { color: var(--ink); font-size: 14px; }
@@ -451,7 +454,8 @@ th.numeric .sort-button { justify-content: flex-end; }
 .meeting-item--win .meeting-dot { background: var(--zone-libertadores); }
 .meeting-item--draw .meeting-dot { background: var(--zone-middle); }
 .meeting-item--loss .meeting-dot { background: var(--zone-relegation); }
-.meeting-year { color: var(--text-muted); font: 12px var(--mono); }
+.meeting-year { display: grid; justify-items: center; color: var(--text-muted); font: 12px var(--mono); line-height: 1.1; }
+.meeting-source { color: var(--text-secondary); font: 12px var(--display); }
 .h2h-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; }
 .h2h-timeline ul { margin: 0; padding: 0; }
 

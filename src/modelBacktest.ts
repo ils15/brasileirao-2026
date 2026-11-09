@@ -1,6 +1,6 @@
 import { BACKTEST_CUTOFF, SHRINKAGE_CANDIDATES, XG_BLEND_CANDIDATES, XG_MIN_COVERED_MATCHES } from './projectionConfig'
 import { currentSeasonResults } from './currentSeasonResults'
-import { historicalSeasons, type HistoricalMatch } from './historicalSeasons'
+import { modelableHistoricalSeasons, type HistoricalMatch } from './historicalSeasons'
 import {
   blendExpectedGoals,
   expectedGoalsForVariant,
@@ -53,7 +53,7 @@ function historicalModelMatch(teamIds: readonly string[], match: HistoricalMatch
 }
 
 function historicalModelMatches(): ModelMatch[] {
-  return historicalSeasons.flatMap((season) => season.matches.map((match) => historicalModelMatch(season.teamIds, match, season.year)))
+  return modelableHistoricalSeasons.flatMap((season) => season.matches.map((match) => historicalModelMatch(season.teamIds, match, season.year)))
 }
 
 export function buildProductionTrainingMatches(currentResults = currentSeasonResults): ModelMatch[] {
@@ -123,7 +123,7 @@ export function runFeatureBacktest(): FeatureBacktest {
   const combinedCandidates = new Map<number, Map<number, number>>()
   const allHistoricalMatches = historicalModelMatches()
 
-  for (const season of historicalSeasons) {
+  for (const season of modelableHistoricalSeasons) {
     const seasonMatches = season.matches
       .map((match) => historicalModelMatch(season.teamIds, match, season.year))
     const { training: cutoff, test } = splitWalkForwardByKickoff(seasonMatches, BACKTEST_CUTOFF)

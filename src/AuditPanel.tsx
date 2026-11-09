@@ -1,7 +1,7 @@
 import { useMemo, useState, type JSX } from 'react'
 import { CURRENT_SEASON_PACK_GENERATED_AT, CURRENT_SEASON_SOURCE, currentSeasonResults } from './currentSeasonResults'
 import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
-import { HISTORICAL_SOURCE, historicalSeasons } from './historicalSeasons'
+import { HISTORICAL_SOURCE, OPENFOOTBALL_SOURCE, historicalSeasons } from './historicalSeasons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { validateHistoricalSeason } from './projection'
 import { validateCurrentSeason } from './seasonStats'
@@ -109,6 +109,7 @@ function provenanceBlock() {
       espn: { url: CURRENT_SEASON_SOURCE.espn.url, sha256: CURRENT_SEASON_SOURCE.espn.sha256, coletadoEm: CURRENT_SEASON_SOURCE.espn.collectedAt },
       cbf: { url: CURRENT_SEASON_SOURCE.cbfStandings.url, sha256: CURRENT_SEASON_SOURCE.cbfStandings.sha256, coletadoEm: CURRENT_SEASON_SOURCE.cbfStandings.collectedAt },
       historico: { url: HISTORICAL_SOURCE.url, sha256: HISTORICAL_SOURCE.sha256 },
+      openFootball: historicalSeasons.flatMap((season) => season.provenance ? [{ year: season.year, ...season.provenance }] : []),
     },
   }
 }
@@ -137,33 +138,53 @@ interface ValidationRow {
   name: string
   scope: string
   result: string
-  ok: boolean
+  status: 'ok' | 'fail' | 'unverified'
 }
 
 function useValidations(): ValidationRow[] {
-  return useMemo(() => {
+  return useMemo<ValidationRow[]>(() => {
     const current = validateCurrentSeason()
+    const currentRow: ValidationRow = {
+      name: 'Temporada 2026',
+      scope: `${current.clubs} clubes · ${current.completedMatches} jogos disputados · ${current.remainingMatches} pendentes`,
+      result: current.mismatchedClubs === 0
+        ? `${current.completedMatches + current.remainingMatches} jogos do calendário CBF reconciliados; estatísticas por mando fecham com o snapshot`
+        : `${current.mismatchedClubs} clubes divergem entre resultados e snapshot`,
+      status: current.mismatchedClubs === 0 ? 'ok' : 'fail',
+    }
     return [
-      {
-        name: 'Temporada 2026',
-        scope: `${current.clubs} clubes · ${current.completedMatches} jogos disputados · ${current.remainingMatches} pendentes`,
-        result: current.mismatchedClubs === 0
-          ? `${current.completedMatches + current.remainingMatches} jogos do calendário CBF reconciliados; estatísticas por mando fecham com o snapshot`
-          : `${current.mismatchedClubs} clubes divergem entre resultados e snapshot`,
-        ok: current.mismatchedClubs === 0,
-      },
+      currentRow,
       ...historicalSeasons.map((season) => {
         const validation = validateHistoricalSeason(season)
-        return {
-          name: `Temporada ${season.year}`,
-          scope: `${validation.clubs} clubes · ${validation.matches} jogos`,
-          result: validation.mismatchedClubs === 0
-            ? 'Totais oficiais conferem com os placares empacotados'
-            : `${validation.mismatchedClubs} clubes divergem dos totais oficiais`,
-          ok: validation.mismatchedClubs === 0,
+        const integrity: ValidationRow = {
+          name: `Temporada ${season.year} — integridade estrutural`,
+          scope: `${validation.clubs} clubes · ${validation.matches} placares`,
+          result: validation.structuralValid
+            ? 'IDs, datas, placares, ordinais e identidade de fixture válidos'
+            : `${validation.structuralIssues} problemas estruturais encontrados`,
+          status: validation.structuralValid ? 'ok' : 'fail',
         }
+        const sample: ValidationRow = {
+          name: `Temporada ${season.year} — validação amostral RSSSF`,
+          scope: season.provenance ? '1 confronto comparado' : 'Sem amostra independente registrada',
+          result: validation.sampleVerified
+            ? `Data, clubes e placar da amostra conferem (https://www.rsssfbrasil.com/tablesae/br${season.year}.htm)`
+            : 'Sem validação amostral independente registrada',
+          status: validation.sampleVerified ? 'ok' : 'unverified',
+        }
+        const standings: ValidationRow = {
+          name: `Temporada ${season.year} — tabela final independente`,
+          scope: `${validation.clubs} clubes · ${validation.matches} placares`,
+          result: validation.standingsVerified
+            ? validation.mismatchedClubs === 0
+              ? 'Tabela final verificada confere com os placares empacotados'
+              : `${validation.mismatchedClubs} clubes divergem da tabela final verificada`
+            : 'Tabela final independente não verificada; nenhum total oficial é declarado',
+          status: !validation.standingsVerified ? 'unverified' : validation.mismatchedClubs === 0 ? 'ok' : 'fail',
+        }
+        return [integrity, sample, standings]
       }),
-    ]
+    ].flat()
   }, [])
 }
 
@@ -224,7 +245,7 @@ export function AuditPanel(): JSX.Element {
       </div>
       <p className="table-note">
         Corte analítico: {cutoffLabel} ({ANALYTICAL_CUTOFF_UTC}). Pacote gerado em {CURRENT_SEASON_PACK_GENERATED_AT}. Captura individual de Football-Data, ESPN e CBF: não registrada no snapshot.
-        Cada conjunto abaixo pode ser exportado com bloco de proveniência (fonte, SHA-256, corte e horário de geração).
+         Cada conjunto abaixo pode ser exportado com bloco de proveniência (fonte, SHA-256, corte e horário de geração).
       </p>
 
       <div className="audit-grid">
@@ -241,10 +262,21 @@ export function AuditPanel(): JSX.Element {
             <SourceCard title="Football-Data (histórico empacotado)" url={HISTORICAL_SOURCE.url}
               timestamp={HISTORICAL_SOURCE.localFileMtime} timestampLabel="mtime do arquivo" hash={HISTORICAL_SOURCE.sha256}
               note="Última modificação local; não comprova captura ou coleta." />
+            <div className="source-card">
+              <h4>OpenFootball (histórico descritivo 2003–2011 · CC0 1.0)</h4>
+              <a href={`${OPENFOOTBALL_SOURCE.repository}/tree/${OPENFOOTBALL_SOURCE.commit}`} target="_blank" rel="noreferrer">{OPENFOOTBALL_SOURCE.repository.replace(/^https?:\/\//, '')} ↗</a>
+              <dl><div><dt>Commit fixado</dt><dd><code>{OPENFOOTBALL_SOURCE.commit}</code></dd></div><div><dt>Licença</dt><dd>CC0 1.0 · <code>{OPENFOOTBALL_SOURCE.licenseFile}</code></dd></div></dl>
+              <details><summary>Proveniência dos nove snapshots</summary><ul className="source-snapshot-list">
+                {historicalSeasons.filter((season) => season.provenance).map((season) => <li key={season.year}>{season.year}: <a href={season.provenance!.url} target="_blank" rel="noreferrer">arquivo OpenFootball</a> · blob <code>{season.provenance!.blobSha}</code></li>)}
+              </ul></details>
+            </div>
             <SourceCard title="365scores (xG e cartões)" url="https://webws.365scores.com/web/games/results/?appvid=365&competitions=113&showOdds=false"
               timestamp={ADVANCED_STATS_SOURCE.fetchedAt} timestampLabel="Obtido em" hash={ADVANCED_STATS_SOURCE.sha256}
               hashLabel="SHA-256 do JSON canônico" />
           </div>
+          <p className="audit-note">
+            RSSSF valida uma partida amostral por temporada, não tabelas finais de 2003–2011. 2004: RSSSF lista Figueirense com 45 jogos na tabela, mas a lista de resultados e OpenFootball somam 46; a dedução de 24 pontos do São Caetano não é apresentada como tabela oficial no app. 2005: Brasiliense–Vasco em 24/04 é 2–2 no placar jogado OpenFootball; RSSSF registra 0–1 administrativo, sem substituir o placar da fonte. Os 11 pares de replay de 2005 permanecem como partidas distintas.
+          </p>
           <p className="audit-note">
             A cópia CBF arquivada soma 332 jogos e não valida este pacote; placares individuais não foram conferidos jogo a jogo
             contra a fonte oficial. Correspondência de placares 365scores ↔ pacote: {matchingAdvancedScoreCount}/{advancedMatches.length}; isso não comprova cobertura temporal por partida. O snapshot 365scores foi obtido em {ADVANCED_STATS_SOURCE.fetchedAt} (posterior ao corte e à geração do pacote); sem timestamps por partida, dados pós-corte não são garantidos como parte do corte analítico. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, posterior ao corte; sem timestamp por partida, cobertura temporal não verificada.
@@ -263,8 +295,8 @@ export function AuditPanel(): JSX.Element {
                     <td>{validation.scope}</td>
                     <td>{validation.result}</td>
                     <td className="numeric">
-                      <span className={`validation-badge validation-badge--${validation.ok ? 'ok' : 'fail'}`}>
-                        {validation.ok ? VALIDATION_OK : 'DIVERGE'}
+                       <span className={`validation-badge validation-badge--${validation.status}`}>
+                         {validation.status === 'ok' ? VALIDATION_OK : validation.status === 'fail' ? 'DIVERGE' : 'NÃO VERIFICADO'}
                       </span>
                     </td>
                   </tr>

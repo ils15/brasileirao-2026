@@ -232,7 +232,7 @@ function App(): JSX.Element {
             <div className="hero-copy">
               <p className="eyebrow"><span className="eyebrow-line" />CAMPEONATO BRASILEIRO · SÉRIE A</p>
               <h1 id="hero-title">O Brasileirão 2026<br /><em>em números.</em></h1>
-              <p className="hero-description">Projeções Monte Carlo, probabilidades de vagas e auditoria de dados — estatística aplicada à Série A, com histórico desde 2012.</p>
+              <p className="hero-description">Projeções Monte Carlo, probabilidades de vagas e auditoria de dados — base do modelo desde 2012 e retrospecto H2H desde 2003.</p>
               <a className="hero-link" href="#classificacao">Explorar classificação <span aria-hidden="true">↓</span></a>
             </div>
             <aside className="leader-card" aria-label="Líder da classificação">

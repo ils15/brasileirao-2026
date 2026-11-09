@@ -1,0 +1,3454 @@
+{
+  "season": 2010,
+  "status": "corroborated",
+  "statusReason": null,
+  "matches": [
+    {
+      "home": "atletico-go",
+      "away": "atletico-mg",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "atletico-go",
+      "away": "athletico-pr",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "atletico-go",
+      "away": "avai",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "atletico-go",
+      "away": "botafogo",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "atletico-go",
+      "away": "ceara",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "atletico-go",
+      "away": "corinthians",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "COR"
+    },
+    {
+      "home": "atletico-go",
+      "away": "cruzeiro",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "atletico-go",
+      "away": "flamengo",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "atletico-go",
+      "away": "fluminense",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "atletico-go",
+      "away": "goias",
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "atletico-go",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "atletico-go",
+      "away": "gremio-prudente",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "atletico-go",
+      "away": "guarani",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "atletico-go",
+      "away": "internacional",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "INT"
+    },
+    {
+      "home": "atletico-go",
+      "away": "palmeiras",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "atletico-go",
+      "away": "santos",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "atletico-go",
+      "away": "saopaulo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "atletico-go",
+      "away": "vasco",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "atletico-go",
+      "away": "vitoria",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "ACG",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "atletico-go",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "athletico-pr",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "avai",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "botafogo",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "ceara",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "corinthians",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "COR"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "cruzeiro",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "flamengo",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "goias",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "gremio",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "gremio-prudente",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "guarani",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "INT"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "santos",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "saopaulo",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "vasco",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "atletico-mg",
+      "away": "vitoria",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "CAM",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "atletico-go",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "atletico-mg",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "botafogo",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "ceara",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "COR"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "cruzeiro",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "fluminense",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "goias",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "gremio",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "gremio-prudente",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "guarani",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "INT"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "santos",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "saopaulo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "vasco",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "athletico-pr",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CAP",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "avai",
+      "away": "atletico-go",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "avai",
+      "away": "atletico-mg",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "avai",
+      "away": "athletico-pr",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "avai",
+      "away": "botafogo",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "avai",
+      "away": "ceara",
+      "homeGoals": 5,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "avai",
+      "away": "corinthians",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "COR"
+    },
+    {
+      "home": "avai",
+      "away": "cruzeiro",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "avai",
+      "away": "flamengo",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "avai",
+      "away": "fluminense",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "avai",
+      "away": "goias",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "avai",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "avai",
+      "away": "gremio-prudente",
+      "homeGoals": 6,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "avai",
+      "away": "guarani",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "avai",
+      "away": "internacional",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "INT"
+    },
+    {
+      "home": "avai",
+      "away": "palmeiras",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "avai",
+      "away": "santos",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "avai",
+      "away": "saopaulo",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "avai",
+      "away": "vasco",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "avai",
+      "away": "vitoria",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "AVA",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "botafogo",
+      "away": "atletico-go",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "botafogo",
+      "away": "atletico-mg",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "botafogo",
+      "away": "athletico-pr",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "botafogo",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "botafogo",
+      "away": "ceara",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "botafogo",
+      "away": "corinthians",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "COR"
+    },
+    {
+      "home": "botafogo",
+      "away": "cruzeiro",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "botafogo",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "botafogo",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "botafogo",
+      "away": "goias",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "botafogo",
+      "away": "gremio",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "botafogo",
+      "away": "gremio-prudente",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "botafogo",
+      "away": "guarani",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "botafogo",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "INT"
+    },
+    {
+      "home": "botafogo",
+      "away": "palmeiras",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "botafogo",
+      "away": "santos",
+      "homeGoals": 3,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "botafogo",
+      "away": "saopaulo",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "botafogo",
+      "away": "vasco",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "botafogo",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "BOT",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "ceara",
+      "away": "atletico-go",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "ceara",
+      "away": "atletico-mg",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "ceara",
+      "away": "athletico-pr",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "ceara",
+      "away": "avai",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "ceara",
+      "away": "botafogo",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "ceara",
+      "away": "corinthians",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "COR"
+    },
+    {
+      "home": "ceara",
+      "away": "cruzeiro",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "ceara",
+      "away": "flamengo",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "ceara",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "ceara",
+      "away": "goias",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "ceara",
+      "away": "gremio",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "ceara",
+      "away": "gremio-prudente",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "ceara",
+      "away": "guarani",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "ceara",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "INT"
+    },
+    {
+      "home": "ceara",
+      "away": "palmeiras",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "ceara",
+      "away": "santos",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "ceara",
+      "away": "saopaulo",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "ceara",
+      "away": "vasco",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "ceara",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CEA",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "corinthians",
+      "away": "atletico-go",
+      "homeGoals": 3,
+      "awayGoals": 4,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "corinthians",
+      "away": "atletico-mg",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "corinthians",
+      "away": "athletico-pr",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "corinthians",
+      "away": "avai",
+      "homeGoals": 4,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "corinthians",
+      "away": "botafogo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "corinthians",
+      "away": "ceara",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "corinthians",
+      "away": "cruzeiro",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "corinthians",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "corinthians",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "corinthians",
+      "away": "goias",
+      "homeGoals": 5,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "corinthians",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "corinthians",
+      "away": "gremio-prudente",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "corinthians",
+      "away": "guarani",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "corinthians",
+      "away": "internacional",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "INT"
+    },
+    {
+      "home": "corinthians",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "corinthians",
+      "away": "santos",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "corinthians",
+      "away": "saopaulo",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "corinthians",
+      "away": "vasco",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "corinthians",
+      "away": "vitoria",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "COR",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "atletico-go",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "atletico-mg",
+      "homeGoals": 3,
+      "awayGoals": 4,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "athletico-pr",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "avai",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "botafogo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "ceara",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "COR"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "goias",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "gremio",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "gremio-prudente",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "guarani",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "INT"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "palmeiras",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "santos",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "saopaulo",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "vasco",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "cruzeiro",
+      "away": "vitoria",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "CRU",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "flamengo",
+      "away": "atletico-go",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "flamengo",
+      "away": "atletico-mg",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "flamengo",
+      "away": "athletico-pr",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "flamengo",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "flamengo",
+      "away": "botafogo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "flamengo",
+      "away": "ceara",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "flamengo",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "COR"
+    },
+    {
+      "home": "flamengo",
+      "away": "cruzeiro",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "flamengo",
+      "away": "fluminense",
+      "homeGoals": 3,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "flamengo",
+      "away": "goias",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "flamengo",
+      "away": "gremio",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "flamengo",
+      "away": "gremio-prudente",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "flamengo",
+      "away": "guarani",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "flamengo",
+      "away": "internacional",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "INT"
+    },
+    {
+      "home": "flamengo",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "flamengo",
+      "away": "santos",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "flamengo",
+      "away": "saopaulo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "flamengo",
+      "away": "vasco",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "flamengo",
+      "away": "vitoria",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "FLA",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "fluminense",
+      "away": "atletico-go",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "fluminense",
+      "away": "atletico-mg",
+      "homeGoals": 5,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "fluminense",
+      "away": "athletico-pr",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "fluminense",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "fluminense",
+      "away": "botafogo",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "fluminense",
+      "away": "ceara",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "fluminense",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "COR"
+    },
+    {
+      "home": "fluminense",
+      "away": "cruzeiro",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "fluminense",
+      "away": "flamengo",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "fluminense",
+      "away": "goias",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "fluminense",
+      "away": "gremio",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "fluminense",
+      "away": "gremio-prudente",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "fluminense",
+      "away": "guarani",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "fluminense",
+      "away": "internacional",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "INT"
+    },
+    {
+      "home": "fluminense",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "fluminense",
+      "away": "santos",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "fluminense",
+      "away": "saopaulo",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "fluminense",
+      "away": "vasco",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "fluminense",
+      "away": "vitoria",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "FLU",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "goias",
+      "away": "atletico-go",
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "goias",
+      "away": "atletico-mg",
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "goias",
+      "away": "athletico-pr",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "goias",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "goias",
+      "away": "botafogo",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "goias",
+      "away": "ceara",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "goias",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "COR"
+    },
+    {
+      "home": "goias",
+      "away": "cruzeiro",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "goias",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "goias",
+      "away": "fluminense",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "goias",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "goias",
+      "away": "gremio-prudente",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "goias",
+      "away": "guarani",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "goias",
+      "away": "internacional",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "INT"
+    },
+    {
+      "home": "goias",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "goias",
+      "away": "santos",
+      "homeGoals": 1,
+      "awayGoals": 4,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "goias",
+      "away": "saopaulo",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "goias",
+      "away": "vasco",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "goias",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GOI",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "gremio",
+      "away": "atletico-go",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "gremio",
+      "away": "atletico-mg",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "gremio",
+      "away": "athletico-pr",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "gremio",
+      "away": "avai",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "gremio",
+      "away": "botafogo",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "gremio",
+      "away": "ceara",
+      "homeGoals": 5,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "gremio",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "COR"
+    },
+    {
+      "home": "gremio",
+      "away": "cruzeiro",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "gremio",
+      "away": "flamengo",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "gremio",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "gremio",
+      "away": "goias",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "gremio",
+      "away": "gremio-prudente",
+      "homeGoals": 4,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "gremio",
+      "away": "guarani",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "gremio",
+      "away": "internacional",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "INT"
+    },
+    {
+      "home": "gremio",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "gremio",
+      "away": "santos",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "gremio",
+      "away": "saopaulo",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "gremio",
+      "away": "vasco",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "gremio",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GRE",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "atletico-go",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "atletico-mg",
+      "homeGoals": 4,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "athletico-pr",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "botafogo",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "ceara",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "corinthians",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "COR"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "cruzeiro",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "goias",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "gremio",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "guarani",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "internacional",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "INT"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "palmeiras",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "santos",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "saopaulo",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "vasco",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "gremio-prudente",
+      "away": "vitoria",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GPR",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "guarani",
+      "away": "atletico-go",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "guarani",
+      "away": "atletico-mg",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "guarani",
+      "away": "athletico-pr",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "guarani",
+      "away": "avai",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "guarani",
+      "away": "botafogo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "guarani",
+      "away": "ceara",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "guarani",
+      "away": "corinthians",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "COR"
+    },
+    {
+      "home": "guarani",
+      "away": "cruzeiro",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "guarani",
+      "away": "flamengo",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "guarani",
+      "away": "fluminense",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "guarani",
+      "away": "goias",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "guarani",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "guarani",
+      "away": "gremio-prudente",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "guarani",
+      "away": "internacional",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "INT"
+    },
+    {
+      "home": "guarani",
+      "away": "palmeiras",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "guarani",
+      "away": "santos",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "guarani",
+      "away": "saopaulo",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "guarani",
+      "away": "vasco",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "guarani",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "GUA",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "internacional",
+      "away": "atletico-go",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "internacional",
+      "away": "atletico-mg",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "internacional",
+      "away": "athletico-pr",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "internacional",
+      "away": "avai",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "internacional",
+      "away": "botafogo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "internacional",
+      "away": "ceara",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "internacional",
+      "away": "corinthians",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "COR"
+    },
+    {
+      "home": "internacional",
+      "away": "cruzeiro",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "internacional",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "internacional",
+      "away": "fluminense",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "internacional",
+      "away": "goias",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "internacional",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "internacional",
+      "away": "gremio-prudente",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "internacional",
+      "away": "guarani",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "internacional",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "internacional",
+      "away": "santos",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "internacional",
+      "away": "saopaulo",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "internacional",
+      "away": "vasco",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "internacional",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "INT",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "palmeiras",
+      "away": "atletico-go",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "palmeiras",
+      "away": "atletico-mg",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "palmeiras",
+      "away": "athletico-pr",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "palmeiras",
+      "away": "avai",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "palmeiras",
+      "away": "botafogo",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "palmeiras",
+      "away": "ceara",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "palmeiras",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "COR"
+    },
+    {
+      "home": "palmeiras",
+      "away": "cruzeiro",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "palmeiras",
+      "away": "flamengo",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "palmeiras",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "palmeiras",
+      "away": "goias",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "palmeiras",
+      "away": "gremio",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "palmeiras",
+      "away": "gremio-prudente",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "palmeiras",
+      "away": "guarani",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "palmeiras",
+      "away": "internacional",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "INT"
+    },
+    {
+      "home": "palmeiras",
+      "away": "santos",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "palmeiras",
+      "away": "saopaulo",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "palmeiras",
+      "away": "vasco",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "palmeiras",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "PAL",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "santos",
+      "away": "atletico-go",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "santos",
+      "away": "atletico-mg",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "santos",
+      "away": "athletico-pr",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "santos",
+      "away": "avai",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "santos",
+      "away": "botafogo",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "santos",
+      "away": "ceara",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "santos",
+      "away": "corinthians",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "COR"
+    },
+    {
+      "home": "santos",
+      "away": "cruzeiro",
+      "homeGoals": 4,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "santos",
+      "away": "flamengo",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "santos",
+      "away": "fluminense",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "santos",
+      "away": "goias",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "santos",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "santos",
+      "away": "gremio-prudente",
+      "homeGoals": 2,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "santos",
+      "away": "guarani",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "santos",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "INT"
+    },
+    {
+      "home": "santos",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "santos",
+      "away": "saopaulo",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "santos",
+      "away": "vasco",
+      "homeGoals": 4,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "santos",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SAN",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "saopaulo",
+      "away": "atletico-go",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "saopaulo",
+      "away": "atletico-mg",
+      "homeGoals": 4,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "saopaulo",
+      "away": "athletico-pr",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "saopaulo",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "saopaulo",
+      "away": "botafogo",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "saopaulo",
+      "away": "ceara",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "saopaulo",
+      "away": "corinthians",
+      "homeGoals": 0,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "COR"
+    },
+    {
+      "home": "saopaulo",
+      "away": "cruzeiro",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "saopaulo",
+      "away": "flamengo",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "saopaulo",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 4,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "saopaulo",
+      "away": "goias",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "saopaulo",
+      "away": "gremio",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "saopaulo",
+      "away": "gremio-prudente",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "saopaulo",
+      "away": "guarani",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "saopaulo",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "INT"
+    },
+    {
+      "home": "saopaulo",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "saopaulo",
+      "away": "santos",
+      "homeGoals": 4,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "saopaulo",
+      "away": "vasco",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "VAS"
+    },
+    {
+      "home": "saopaulo",
+      "away": "vitoria",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "SPA",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "vasco",
+      "away": "atletico-go",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "vasco",
+      "away": "atletico-mg",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "vasco",
+      "away": "athletico-pr",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "vasco",
+      "away": "avai",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "vasco",
+      "away": "botafogo",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "vasco",
+      "away": "ceara",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "vasco",
+      "away": "corinthians",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "COR"
+    },
+    {
+      "home": "vasco",
+      "away": "cruzeiro",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "vasco",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "vasco",
+      "away": "fluminense",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "vasco",
+      "away": "goias",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "vasco",
+      "away": "gremio",
+      "homeGoals": 3,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "vasco",
+      "away": "gremio-prudente",
+      "homeGoals": 2,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "vasco",
+      "away": "guarani",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "vasco",
+      "away": "internacional",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "INT"
+    },
+    {
+      "home": "vasco",
+      "away": "palmeiras",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "vasco",
+      "away": "santos",
+      "homeGoals": 3,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "vasco",
+      "away": "saopaulo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "vasco",
+      "away": "vitoria",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VAS",
+      "awayCode": "VIT"
+    },
+    {
+      "home": "vitoria",
+      "away": "atletico-go",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "ACG"
+    },
+    {
+      "home": "vitoria",
+      "away": "atletico-mg",
+      "homeGoals": 4,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "CAM"
+    },
+    {
+      "home": "vitoria",
+      "away": "athletico-pr",
+      "homeGoals": 1,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "CAP"
+    },
+    {
+      "home": "vitoria",
+      "away": "avai",
+      "homeGoals": 3,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "AVA"
+    },
+    {
+      "home": "vitoria",
+      "away": "botafogo",
+      "homeGoals": 1,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "BOT"
+    },
+    {
+      "home": "vitoria",
+      "away": "ceara",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "CEA"
+    },
+    {
+      "home": "vitoria",
+      "away": "corinthians",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "COR"
+    },
+    {
+      "home": "vitoria",
+      "away": "cruzeiro",
+      "homeGoals": 0,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "CRU"
+    },
+    {
+      "home": "vitoria",
+      "away": "flamengo",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "FLA"
+    },
+    {
+      "home": "vitoria",
+      "away": "fluminense",
+      "homeGoals": 1,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "FLU"
+    },
+    {
+      "home": "vitoria",
+      "away": "goias",
+      "homeGoals": 2,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "GOI"
+    },
+    {
+      "home": "vitoria",
+      "away": "gremio",
+      "homeGoals": 0,
+      "awayGoals": 3,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "GRE"
+    },
+    {
+      "home": "vitoria",
+      "away": "gremio-prudente",
+      "homeGoals": 2,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "GPR"
+    },
+    {
+      "home": "vitoria",
+      "away": "guarani",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "GUA"
+    },
+    {
+      "home": "vitoria",
+      "away": "internacional",
+      "homeGoals": 0,
+      "awayGoals": 0,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "INT"
+    },
+    {
+      "home": "vitoria",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 1,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "PAL"
+    },
+    {
+      "home": "vitoria",
+      "away": "santos",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "SAN"
+    },
+    {
+      "home": "vitoria",
+      "away": "saopaulo",
+      "homeGoals": 3,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "SPA"
+    },
+    {
+      "home": "vitoria",
+      "away": "vasco",
+      "homeGoals": 4,
+      "awayGoals": 2,
+      "round": null,
+      "homeCode": "VIT",
+      "awayCode": "VAS"
+    }
+  ],
+  "validation": {
+    "expectedClubs": 20,
+    "clubs": 20,
+    "expectedMatches": 380,
+    "matches": 380,
+    "totalGoals": 978,
+    "goalsFor": 978,
+    "goalsAgainst": 978,
+    "arithmeticConsistent": true,
+    "distinctDirectedFixtures": 380
+  },
+  "provenance": {
+    "article": "2010 Campeonato Brasileiro Série A",
+    "articleUrl": "https://en.wikipedia.org/wiki/2010_Campeonato_Brasileiro_S%C3%A9rie_A",
+    "oldid": 1359651869,
+    "permalink": "https://en.wikipedia.org/w/index.php?oldid=1359651869",
+    "revisionTimestamp": "2026-06-16T12:34:42Z",
+    "retrieved_at": "2026-11-09T16:49:22.778Z",
+    "license": "CC-BY-SA-4.0",
+    "licenseFile": "data/corroboration/wikipedia/LICENSE",
+    "modifications": [
+      "Extração apenas dos parâmetros match_<mandante>_<visitante> do módulo Module:Sports results.",
+      "Normalização dos nomes de clubes para os identificadores do projeto.",
+      "Remoção de prosa, referências, classificação e demais seções do artigo.",
+      "Anotações de rodada entre <sup> preservadas como campo opcional, sem uso na identidade do fixture."
+    ]
+  }
+}

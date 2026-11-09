@@ -28,7 +28,7 @@ export interface HeadToHeadMatch {
   away: string
   homeGoals: number
   awayGoals: number
-  source: 'football-data' | 'espn'
+  source: 'football-data' | 'openfootball' | 'espn'
   sourceRef?: string
 }
 
@@ -112,7 +112,16 @@ function pairMatches(homeId: string, awayId: string, currentResults: readonly Cu
       const homeTeam = ids[home]!
       const awayTeam = ids[away]!
       if (!((homeTeam === homeId && awayTeam === awayId) || (homeTeam === awayId && awayTeam === homeId))) return
-      historical.push({ seasonYear: season.year, kickoff, home: homeTeam, away: awayTeam, homeGoals, awayGoals, source: 'football-data' })
+      historical.push({
+        seasonYear: season.year,
+        kickoff,
+        home: homeTeam,
+        away: awayTeam,
+        homeGoals,
+        awayGoals,
+        source: season.provenance ? 'openfootball' : 'football-data',
+        sourceRef: season.provenance?.rawUrl,
+      })
     })
   }
 

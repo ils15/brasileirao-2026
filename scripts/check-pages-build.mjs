@@ -1,8 +1,24 @@
+import { spawnSync } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 
 const basePath = '/brasileirao-2026/'
-const outputDirectory = resolve(process.argv[2] ?? 'dist')
+const outputDirectory = resolve('dist')
+
+// Rebuild in the same invocation: a pre-existing dist/ may come from a build
+// with another base (e.g. '/'), and validating it would prove nothing about
+// what gets published. Any failure here must abort before the artifact checks.
+const build = spawnSync('npm run build', {
+  shell: true,
+  stdio: 'inherit',
+  env: { ...process.env, GITHUB_PAGES: 'true' },
+})
+
+if (build.error || build.status !== 0) {
+  const reason = build.error?.message ?? `exit code ${build.status}`
+  throw new Error(`GITHUB_PAGES=true npm run build failed (${reason})`)
+}
+
 const html = await readFile(join(outputDirectory, 'index.html'), 'utf8')
 const assetPaths = [...html.matchAll(/(?:src|href)="([^\"]+\.(?:js|css))"/g)].map((match) => match[1])
 

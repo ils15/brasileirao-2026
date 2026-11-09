@@ -7,8 +7,15 @@ import { buildProductionTrainingMatches, buildProductionXgMatches, productionXgM
 import { expectedGoalsForVariant } from './matchModel'
 import { runTemporalBacktest } from './projection'
 import { SHRINKAGE_CANDIDATES, XG_BLEND_CANDIDATES, XG_MIN_COVERED_MATCHES, XG_BLEND_WEIGHT } from './projectionConfig'
+import { historicalSeasons, historicalQueryableSeasons, modelableHistoricalSeasons } from './historicalSeasons'
 
 describe('corte temporal do walk-forward', () => {
+  it('mantém 2003–2011 apenas no histórico consultável e exclui essas temporadas dos modelos', () => {
+    expect(historicalQueryableSeasons).toBe(historicalSeasons)
+    expect(modelableHistoricalSeasons).toEqual(historicalSeasons.filter(({ year }) => year >= 2012))
+    expect(buildProductionTrainingMatches().every(({ seasonYear }) => seasonYear >= 2012)).toBe(true)
+  })
+
   it('mantém todos os jogos com o mesmo kickoff no mesmo lado do corte', () => {
     const matches = [
       { kickoff: '2025-01-01T10:00:00Z', id: 'a' },
