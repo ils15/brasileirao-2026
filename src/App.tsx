@@ -360,7 +360,11 @@ function App(): JSX.Element {
                       {sortedStandings.map((team) => (
                         <tr className={`standing-row standing-row--${zoneClass(team.position)}`} key={team.club} aria-label={`${team.club}: ${getZoneLabel(team.position)}`}>
                           <td className="position-cell"><span>{String(team.position).padStart(2, '0')}</span></td>
-                          <th scope="row" className="club-cell"><TeamBadge team={team} /><span>{team.club}</span></th>
+                          <th scope="row" className="club-cell">
+                            <TeamBadge team={team} />
+                            <span className="club-cell-name">{team.club}</span>
+                            <span className={`zone-tag zone-tag--${zoneClass(team.position)}`}>{getZoneLabel(team.position)}</span>
+                          </th>
                           <td className="points-cell numeric">{team.points}</td>
                           <td className="games-cell numeric">{team.played}</td>
                         </tr>

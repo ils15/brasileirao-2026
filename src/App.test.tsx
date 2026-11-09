@@ -26,6 +26,22 @@ describe('painel do Brasileirão 2026', () => {
     expect(window.localStorage.getItem('br2026-theme')).toBe('dark')
   })
 
+  it('restaura o tema Sistema depois de salvar essa preferência e recarregar o app', async () => {
+    const user = userEvent.setup()
+    const view = render(<App />)
+    const themeSelect = screen.getByRole('combobox', { name: 'Tema de exibição' })
+
+    await user.selectOptions(themeSelect, 'dark')
+    await user.selectOptions(themeSelect, 'system')
+    expect(document.documentElement).toHaveAttribute('data-theme', 'system')
+    expect(window.localStorage.getItem('br2026-theme')).toBe('system')
+
+    view.unmount()
+    render(<App />)
+    expect(screen.getByRole('combobox', { name: 'Tema de exibição' })).toHaveValue('system')
+    expect(document.documentElement).toHaveAttribute('data-theme', 'system')
+  })
+
   it('organiza o painel em sete abas acessíveis com seleção por clique e teclado', async () => {
     const user = userEvent.setup()
     render(<App />)
@@ -67,6 +83,23 @@ describe('painel do Brasileirão 2026', () => {
     await user.keyboard('{Home}')
     expect(screen.getByRole('tab', { name: 'Visão Geral' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
+  })
+
+  it('mostra os rótulos das quatro zonas junto à classificação, sem depender só da cor', () => {
+    render(<App />)
+
+    const table = screen.getByRole('region', { name: /Tabela classificatória/ })
+    expect(within(table).getAllByText('Libertadores · 1º–6º*')).toHaveLength(6)
+    expect(within(table).getAllByText('Sul-Americana · 7º–12º')).toHaveLength(6)
+    expect(within(table).getAllByText('Meio de tabela · 13º–16º')).toHaveLength(4)
+    expect(within(table).getAllByText('Rebaixamento · 17º–20º')).toHaveLength(4)
+    const rows = within(table).getAllByRole('row').slice(1)
+    expect(rows[0]).toHaveTextContent('Libertadores · 1º–6º*')
+    expect(rows[5]).toHaveTextContent('Libertadores · 1º–6º*')
+    expect(rows[6]).toHaveTextContent('Sul-Americana · 7º–12º')
+    expect(rows[11]).toHaveTextContent('Sul-Americana · 7º–12º')
+    expect(rows[12]).toHaveTextContent('Meio de tabela · 13º–16º')
+    expect(rows[16]).toHaveTextContent('Rebaixamento · 17º–20º')
   })
 
   it('abre a aba correta a partir de âncoras legadas da versão anterior', async () => {
@@ -147,7 +180,7 @@ describe('painel do Brasileirão 2026', () => {
       const cells = row.querySelectorAll('th, td')
       return [
         cells[0]?.textContent?.trim(),
-        row.querySelector('.club-cell > span:last-child')?.textContent?.trim(),
+        row.querySelector('.club-cell-name')?.textContent?.trim(),
         cells[2]?.textContent?.trim(),
         cells[3]?.textContent?.trim(),
       ]

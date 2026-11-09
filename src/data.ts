@@ -58,7 +58,8 @@ export function matchesClubFilter(position: number, filter: ClubFilter): boolean
 }
 
 export function getZoneLabel(position: number): string {
-  if (matchesClubFilter(position, 'libertadores')) return `${ZONES.libertadores.label} (${ZONES.libertadores.detail})`
-  if (matchesClubFilter(position, 'relegation')) return `Zona de rebaixamento (${ZONES.relegation.detail})`
-  return `${ZONES.sudamericana.label} ou meio de tabela (${ZONES.sudamericana.from}º–${ZONES.middle.to}º)`
+  if (matchesClubFilter(position, 'libertadores')) return `${ZONES.libertadores.label} · ${ZONES.libertadores.detail.split(' (')[0]}`
+  if (matchesClubFilter(position, 'sudamericana')) return `${ZONES.sudamericana.label} · ${ZONES.sudamericana.detail}`
+  if (matchesClubFilter(position, 'sem-internacional')) return `${ZONES.middle.label} · ${ZONES.middle.detail}`
+  return `${ZONES.relegation.label} · ${ZONES.relegation.detail}`
 }
