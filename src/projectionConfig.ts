@@ -20,25 +20,30 @@ export const XG_BLEND_WEIGHT = 0.15 as const
 export const XG_MIN_COVERED_MATCHES = 40
 
 /**
- * Fronteiras de zona usadas em TODA a aplicação (classificação exibida,
- * contagem por clube na simulação e rótulos). Antes da auditoria existiam
- * três definições convivendo: probabilidades por clube (1º–5º), categorias
- * exclusivas (2º–5º) e legenda da classificação (1º–6º). As categorias
- * exclusivas de `RESULT_GROUPS` derivam destas fronteiras: o campeão é
- * separado apenas para nomear a categoria "Libertadores · 2º–5º".
+ * Fronteiras de zona usadas em toda a aplicação (classificação exibida,
+ * contagem por clube na simulação e rótulos). G-6 é o cenário deste painel,
+ * não uma conclusão automática por o Palmeiras chegar à final da Copa do
+ * Brasil; a alocação depende das regras e da sobreposição de classificados.
+ * Pelo Art. 7 do REC CBF 2026, os seis seguintes fora da Libertadores vão à
+ * Sul-Americana. As categorias exclusivas derivam destas fronteiras; o campeão
+ * é separado apenas para nomear "Libertadores · 2º–6º*".
  */
 export const ZONES = {
-  libertadores: { label: 'Libertadores', detail: '1º–5º (1º–4º direto; 5º preliminar)', from: 1, to: 5 },
-  sudamericana: { label: 'Sul-Americana', detail: '6º–11º', from: 6, to: 11 },
-  middle: { label: 'Meio de tabela', detail: '12º–16º', from: 12, to: 16 },
+  libertadores: { label: 'Libertadores', detail: '1º–6º* (1º–4º direto; 5º preliminar)', from: 1, to: 6 },
+  sudamericana: { label: 'Sul-Americana', detail: '7º–12º', from: 7, to: 12 },
+  middle: { label: 'Meio de tabela', detail: '13º–16º', from: 13, to: 16 },
   relegation: { label: 'Rebaixamento', detail: '17º–20º', from: 17, to: 20 },
 } as const
 
+export function isPositionInZone(position: number, zone: { readonly from: number; readonly to: number }): boolean {
+  return position >= zone.from && position <= zone.to
+}
+
 export const RESULT_GROUPS = [
   { id: 'champion', label: 'Campeão' },
-  { id: 'libertadores', label: 'Libertadores · 2º–5º' },
-  { id: 'sudamericana', label: 'Sul-Americana · 6º–11º' },
-  { id: 'middle', label: 'Meio de tabela · 12º–16º' },
+  { id: 'libertadores', label: 'Libertadores · 2º–6º*' },
+  { id: 'sudamericana', label: 'Sul-Americana · 7º–12º' },
+  { id: 'middle', label: 'Meio de tabela · 13º–16º' },
   { id: 'relegation', label: 'Rebaixamento · 17º–20º' },
 ] as const
 

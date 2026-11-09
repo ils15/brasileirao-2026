@@ -167,6 +167,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .result-count { margin: 0; color: var(--text-muted); font: 12px var(--mono); white-space: nowrap; }
 .zone-legend { display: flex; flex-wrap: wrap; gap: 9px 17px; margin-bottom: 13px; }
 .zone-legend > span { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 12px; }
+.zone-legend-note { margin: -5px 0 13px; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
 .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
 .legend-dot.qualification { background: #69a750; }
 .legend-dot.sudamericana { background: #5b7fd4; }

@@ -21,8 +21,20 @@ export interface PointCurveRow {
   lowSample: boolean
 }
 
+export interface PointCurveAggregateRow {
+  points: number
+  successes: number
+  denominator: number
+  probability: number
+  lower95: number
+  upper95: number
+  clusterCount: number
+  lowSample: boolean
+}
+
 export interface PointOutcomeCurve {
   rows: PointCurveRow[]
+  inclusiveLibertadores: PointCurveAggregateRow[]
   simulationCount: number
 }
 
@@ -34,6 +46,7 @@ interface OutcomeCount {
 interface PointCount {
   denominator: number
   clusterDenominators: Uint8Array
+  inclusiveLibertadores: OutcomeCount
   outcomes: Record<PointCurveOutcome, OutcomeCount>
 }
 
@@ -52,6 +65,7 @@ function createPointCount(simulationCount: number): PointCount {
   return {
     denominator: 0,
     clusterDenominators: new Uint8Array(simulationCount),
+    inclusiveLibertadores: createOutcomeCount(),
     outcomes: {
       title: createOutcomeCount(),
       libertadores: createOutcomeCount(),
@@ -74,6 +88,30 @@ export function wilsonInterval(probability: number, effectiveCount: number): [nu
   const center = (probability + zSquared / (2 * effectiveCount)) / denominator
   const halfWidth = MC_CI_Z * Math.sqrt((probability * (1 - probability) / effectiveCount) + zSquared / (4 * effectiveCount ** 2)) / denominator
   return [Math.max(0, center - halfWidth), Math.min(1, center + halfWidth)]
+}
+
+function clusterCount(point: PointCount): number {
+  return point.clusterDenominators.reduce((sum, count) => sum + Number(count > 0), 0)
+}
+
+function estimate(
+  points: number,
+  count: OutcomeCount,
+  point: PointCount,
+  simulationCount: number,
+): PointCurveAggregateRow {
+  const probability = count.successes / point.denominator
+  const [lower95, upper95] = clusterInterval(count, point, probability, simulationCount)
+  return {
+    points,
+    successes: count.successes,
+    denominator: point.denominator,
+    probability,
+    lower95,
+    upper95,
+    clusterCount: clusterCount(point),
+    lowSample: upper95 - lower95 >= POINT_CURVE_LOW_SAMPLE_WIDTH,
+  }
 }
 
 function clusterInterval(
@@ -109,39 +147,43 @@ export class PointOutcomeCurveAccumulator {
     const outcomeCount = pointCount.outcomes[outcomeAt(sample.position)]
     outcomeCount.successes += 1
     outcomeCount.clusterSuccesses[sample.simulation] = outcomeCount.clusterSuccesses[sample.simulation]! + 1
+    if (sample.position > 0 && sample.position <= ZONES.libertadores.to) {
+      pointCount.inclusiveLibertadores.successes += 1
+      pointCount.inclusiveLibertadores.clusterSuccesses[sample.simulation] =
+        pointCount.inclusiveLibertadores.clusterSuccesses[sample.simulation]! + 1
+    }
     this.points.set(sample.points, pointCount)
   }
 
   build(): PointOutcomeCurve {
-    if (this.simulationCount <= 0 || this.points.size === 0) return { rows: [], simulationCount: 0 }
-
-  const rows: PointCurveRow[] = []
-  for (const [pointsValue, pointCount] of [...this.points.entries()].sort(([left], [right]) => left - right)) {
-    if (pointCount.denominator === 0) continue
-    for (const outcome of outcomes) {
-      const count = pointCount.outcomes[outcome]
-      if (count.successes === 0) continue
-      const probability = count.successes / pointCount.denominator
-      const [lower95, upper95] = clusterInterval(count, pointCount, probability, this.simulationCount)
-      rows.push({
-        points: pointsValue,
-        outcome,
-        successes: count.successes,
-        denominator: pointCount.denominator,
-        probability,
-        lower95,
-        upper95,
-        clusterCount: pointCount.clusterDenominators.reduce((sum, count) => sum + Number(count > 0), 0),
-        lowSample: upper95 - lower95 >= POINT_CURVE_LOW_SAMPLE_WIDTH,
-      })
+    if (this.simulationCount <= 0 || this.points.size === 0) {
+      return { rows: [], inclusiveLibertadores: [], simulationCount: 0 }
     }
-  }
-    return { rows, simulationCount: this.simulationCount }
+
+    const rows: PointCurveRow[] = []
+    const inclusiveLibertadores: PointCurveAggregateRow[] = []
+    for (const [pointsValue, pointCount] of [...this.points.entries()].sort(([left], [right]) => left - right)) {
+      if (pointCount.denominator === 0) continue
+      for (const outcome of outcomes) {
+        const count = pointCount.outcomes[outcome]
+        if (count.successes === 0) continue
+        rows.push({ ...estimate(pointsValue, count, pointCount, this.simulationCount), outcome })
+      }
+      inclusiveLibertadores.push(estimate(
+        pointsValue,
+        pointCount.inclusiveLibertadores,
+        pointCount,
+        this.simulationCount,
+      ))
+    }
+    return { rows, inclusiveLibertadores, simulationCount: this.simulationCount }
   }
 }
 
 export function buildPointOutcomeCurve(samples: readonly PointCurveSample[], simulationCount: number): PointOutcomeCurve {
-  if (simulationCount <= 0 || samples.length === 0) return { rows: [], simulationCount: 0 }
+  if (simulationCount <= 0 || samples.length === 0) {
+    return { rows: [], inclusiveLibertadores: [], simulationCount: 0 }
+  }
   const accumulator = new PointOutcomeCurveAccumulator(simulationCount)
   for (const sample of samples) accumulator.add(sample)
   return accumulator.build()

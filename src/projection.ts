@@ -17,7 +17,7 @@ import {
   historicalGoalAverages,
   poissonResultProbabilities,
 } from './matchModel'
-import { PointOutcomeCurveAccumulator, type PointCurveOutcome } from './pointCurve'
+import { PointOutcomeCurveAccumulator, type PointOutcomeCurve } from './pointCurve'
 import { PointsDistributionAccumulator, probabilityWithInterval, type PointsStats, type ProbabilityInterval } from './pointsDistribution'
 import { normalizeTeamId } from './clubIds'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
@@ -25,6 +25,7 @@ import { disciplineTable, disciplineTiebreak } from './discipline'
 import {
   BACKTEST_CUTOFF,
   BACKTEST_SIMULATIONS,
+  isPositionInZone,
   RESULT_GROUPS,
   SHRINKAGE_CANDIDATES,
   SIMULATION_COUNT,
@@ -42,6 +43,7 @@ export {
   SHRINKAGE_MATCHES,
   SIMULATION_COUNT,
   SIMULATION_SEED,
+  isPositionInZone,
   ZONES,
 } from './projectionConfig'
 export type { ResultGroupId } from './projectionConfig'
@@ -103,20 +105,7 @@ export interface PointsAnalysis {
   distributionByOutcome: OutcomeDistribution[]
 }
 
-export interface PointCurveResult {
-  rows: {
-    points: number
-    outcome: PointCurveOutcome
-    successes: number
-    denominator: number
-    probability: number
-    lower95: number
-    upper95: number
-    clusterCount: number
-    lowSample: boolean
-  }[]
-  simulationCount: number
-}
+export type PointCurveResult = PointOutcomeCurve
 
 export interface BacktestSeason {
   year: number
@@ -785,8 +774,8 @@ export function runProjection(options: { simulations?: number; seed?: number } =
     for (const club of season.table) {
       const counts = probabilityCounts.get(club.id)!
       if (club.position === 1) counts.title += 1
-      if (club.position >= ZONES.libertadores.from && club.position <= ZONES.libertadores.to) counts.libertadores += 1
-      if (club.position >= ZONES.sudamericana.from && club.position <= ZONES.sudamericana.to) counts.sudamericana += 1
+      if (isPositionInZone(club.position, ZONES.libertadores)) counts.libertadores += 1
+      if (isPositionInZone(club.position, ZONES.sudamericana)) counts.sudamericana += 1
       if (club.position >= ZONES.relegation.from) counts.relegation += 1
       const outcome = getOutcome(club.position)
       pointCurveAccumulator.add({ simulation, club: club.id, points: club.points, position: club.position })

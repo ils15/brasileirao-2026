@@ -16,6 +16,18 @@ describe('aba classificações', () => {
     expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
   })
 
+  it('associa à legenda visível e acessível a explicação do asterisco G-6', () => {
+    render(<StandingsViews />)
+    const legend = screen.getByRole('group', { name: 'Legenda das zonas da classificação' })
+    const note = screen.getByText(/\* O asterisco indica o cenário G-6 adotado pelo painel/)
+
+    expect(legend).toHaveTextContent('Libertadores · 1º–6º*')
+    expect(note).toBeVisible()
+    expect(note).toHaveAttribute('id')
+    expect(legend).toHaveAttribute('aria-describedby', note.id)
+    expect(note).toHaveTextContent(/6º lugar depende das regras de redistribuição e da sobreposição de classificados/)
+  })
+
   it('separa a norma oficial, a ordem desta tabela e o limite temporal de cartões antes das vistas', () => {
     render(<StandingsViews />)
     const limitation = screen.getByRole('note', { name: 'Limitação do desempate pelo Art. 15 da CBF' })
