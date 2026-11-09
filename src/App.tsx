@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { getZoneLabel, matchesClubFilter, scorers, standings, SCORERS_SOURCE, type ClubFilter, type Standing } from './data'
 import { ProjectionSection } from './ProjectionSection'
+import { ZoneLegend } from './ZoneLegend'
 import { MethodologyPanel } from './MethodologyPanel'
 import { ProjectionProvider, useProjection } from './ProjectionContext'
 import { FixtureCalendar } from './FixtureCalendar'
@@ -335,12 +336,7 @@ function App(): JSX.Element {
                     {filteredStandings.length} {filteredStandings.length === 1 ? 'clube encontrado' : 'clubes encontrados'}
                   </p>
                 </div>
-                <div className="zone-legend" role="group" aria-label="Legenda das zonas da tabela" aria-describedby="standings-g6-note">
-                  <span><i className="legend-dot qualification" />Libertadores · {ZONES.libertadores.detail}</span>
-                  <span><i className="legend-dot sudamericana" />Sul-Americana · {ZONES.sudamericana.detail}</span>
-                  <span><i className="legend-dot middle" />Meio de tabela · {ZONES.middle.detail}</span>
-                  <span><i className="legend-dot relegation" />Rebaixamento · {ZONES.relegation.detail}</span>
-                </div>
+                <ZoneLegend ariaLabel="Legenda de zonas da classificação" describedBy="standings-g6-note" />
                 <p className="zone-legend-note" id="standings-g6-note" role="note">* O G-6 é cenário adotado com redistribuição assumida; a vaga ao 6º não é automática apenas pela ida do Palmeiras à final da Copa do Brasil.</p>
                 <div className="table-scroll" role="region" aria-label="Tabela classificatória; role para rolagem horizontal em telas pequenas" tabIndex={0}>
                   <table>
@@ -358,12 +354,12 @@ function App(): JSX.Element {
                     </thead>
                     <tbody>
                       {sortedStandings.map((team) => (
-                        <tr className={`standing-row standing-row--${zoneClass(team.position)}`} key={team.club} aria-label={`${team.club}: ${getZoneLabel(team.position)}`}>
+                        <tr className={`standing-row standing-row--${zoneClass(team.position)}`} key={team.club}>
                           <td className="position-cell"><span>{String(team.position).padStart(2, '0')}</span></td>
                           <th scope="row" className="club-cell">
                             <TeamBadge team={team} />
                             <span className="club-cell-name">{team.club}</span>
-                            <span className={`zone-tag zone-tag--${zoneClass(team.position)}`}>{getZoneLabel(team.position)}</span>
+                            <span className="sr-only">Zona: {getZoneLabel(team.position)}</span>
                           </th>
                           <td className="points-cell numeric">{team.points}</td>
                           <td className="games-cell numeric">{team.played}</td>

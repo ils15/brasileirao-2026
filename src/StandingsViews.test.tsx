@@ -18,24 +18,44 @@ describe('aba classificações', () => {
 
   it('associa à legenda visível e acessível a explicação do asterisco G-6', () => {
     render(<StandingsViews />)
-    const legend = screen.getByRole('group', { name: 'Legenda das zonas da classificação' })
+    const legend = screen.getByRole('group', { name: 'Legenda de zonas da classificação' })
     const note = screen.getByText(/\* O asterisco indica o cenário G-6 adotado pelo painel/)
 
-    expect(legend).toHaveTextContent('Libertadores · 1º–6º*')
+    expect(within(legend).getByText('Libertadores · 1º–6º*')).toBeInTheDocument()
+    expect(within(legend).getByText('Sul-Americana · 7º–12º')).toBeInTheDocument()
+    expect(within(legend).getByText('Meio de tabela · 13º–16º')).toBeInTheDocument()
+    expect(within(legend).getByText('Rebaixamento · 17º–20º')).toBeInTheDocument()
     expect(note).toBeVisible()
     expect(note).toHaveAttribute('id')
     expect(legend).toHaveAttribute('aria-describedby', note.id)
     expect(note).toHaveTextContent(/6º lugar depende das regras de redistribuição e da sobreposição de classificados/)
   })
 
-  it('repete os rótulos das zonas nas vistas da classificação além das faixas de cor', () => {
+  it('exibe uma legenda única de zonas acima da tabela, sem chips repetidos por linha', async () => {
+    const user = userEvent.setup()
     render(<StandingsViews />)
-    const table = screen.getByRole('region', { name: /Classificação geral/ })
 
-    expect(within(table).getAllByText('Libertadores · 1º–6º*')).toHaveLength(6)
-    expect(within(table).getAllByText('Sul-Americana · 7º–12º')).toHaveLength(6)
-    expect(within(table).getAllByText('Meio de tabela · 13º–16º')).toHaveLength(4)
-    expect(within(table).getAllByText('Rebaixamento · 17º–20º')).toHaveLength(4)
+    const legend = screen.getByRole('group', { name: 'Legenda de zonas da classificação' })
+    expect(legend.querySelectorAll('.zone-chip')).toHaveLength(4)
+    const table = screen.getByRole('region', { name: /Classificação geral/ })
+    expect(legend.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(table.querySelectorAll('tbody .sr-only')).toHaveLength(20)
+    expect(within(table).queryAllByText(/^(Libertadores|Sul-Americana|Meio de tabela|Rebaixamento) · /)).toHaveLength(0)
+
+    // A zona de cada linha continua acessível via texto oculto.
+    const rows = within(table).getAllByRole('row').slice(1)
+    expect(rows[0]).toHaveAccessibleName(/Flamengo.*Libertadores · 1º–6º\*/)
+    expect(rows[16]).toHaveAccessibleName(/Rebaixamento · 17º–20º/)
+
+    // Outra vista de tabela mantém uma única legenda e nenhuma repetição por linha.
+    await user.click(screen.getByRole('tab', { name: 'Mandante' }))
+    expect(screen.getAllByRole('group', { name: 'Legenda de zonas da classificação' })).toHaveLength(1)
+    const mandante = screen.getByRole('region', { name: /mandante/ })
+    expect(mandante.querySelectorAll('tbody .sr-only')).toHaveLength(20)
+
+    // Vistas sem tabela de classificação não exibem a legenda de zonas.
+    await user.click(screen.getByRole('tab', { name: 'Evolução por rodada' }))
+    expect(screen.queryByRole('group', { name: 'Legenda de zonas da classificação' })).not.toBeInTheDocument()
   })
 
   it('separa a norma oficial, a ordem desta tabela e o limite temporal de cartões antes das vistas', () => {
@@ -67,6 +87,29 @@ describe('aba classificações', () => {
     expect(screen.getByRole('region', { name: /só jogos como visitante|só com jogos como visitante/ })).toBeInTheDocument()
     await user.keyboard('{Home}')
     expect(screen.getByRole('tab', { name: 'Geral' })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('reinicia a ordenação pela coluna inicial da vista ao trocar de aba', async () => {
+    const user = userEvent.setup()
+    render(<StandingsViews />)
+
+    // Na vista geral, inverte a ordenação para gols pró descendente.
+    await user.click(screen.getByRole('button', { name: /^GP/ }))
+    const geral = screen.getByRole('region', { name: /Classificação geral/ })
+    expect(within(geral).getByRole('columnheader', { name: /^GP/ })).toHaveAttribute('aria-sort', 'descending')
+
+    await user.click(screen.getByRole('tab', { name: 'Mandante' }))
+    const mandante = screen.getByRole('region', { name: /mandante/ })
+    // A nova vista começa pela própria coluna inicial, ascendente, sem herdar
+    // a coluna/direção da vista anterior.
+    expect(within(mandante).getByRole('columnheader', { name: /^Pts/ })).toHaveAttribute('aria-sort', 'ascending')
+    expect(within(mandante).getByRole('columnheader', { name: /^Pos/ })).toHaveAttribute('aria-sort', 'none')
+
+    const points = within(mandante)
+      .getAllByRole('row')
+      .slice(1)
+      .map((row) => Number(row.children[2]!.textContent))
+    expect(points).toEqual([...points].sort((left, right) => left - right))
   })
 
   it('vista de mandantes soma só jogos em casa (menor total que a geral)', async () => {

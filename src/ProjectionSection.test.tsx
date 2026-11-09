@@ -60,24 +60,118 @@ describe('painel de projeções', () => {
     // Seletor de destino: trocar para Título muda os KPIs
     expect(screen.getByRole('group', { name: 'Destino para a pontuação mágica' })).toBeInTheDocument()
     const magicTable = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
-    // Toda faixa tem barra — extremos (0%/100%) agrupados numa linha cada,
-    // com a barra cheia ou vazia; IC só quando há incerteza de verdade
+    // Toda linha tem barra, inclusive nos extremos; o texto do valor e do IC
+    // aparece só quando muda em relação à linha anterior.
     const dataRows = within(magicTable).getAllByRole('row').slice(1)
     expect(dataRows.length).toBeGreaterThan(0)
     for (const row of dataRows) {
       expect(row.querySelector('.magic-bar')).not.toBeNull()
     }
-    // Faixas exatamente em 100,00% e 0,00% carregam os selos (quando existem
-    // na amostra de 8 simulações — podem não existir)
-    const sealTexts = within(magicTable).queryAllByText('Rebaixado para a Série B')
-    const impossibleTexts = within(magicTable).queryAllByText('impossível')
-    for (const seal of [...sealTexts, ...impossibleTexts]) {
-      // Selos ficam em linhas SEM barra nem IC
-      expect(seal.closest('tr')!.querySelector('.magic-bar')).toBeNull()
-    }
+    // Sem selos por linha: valores saturados repetidos são omitidos, mas a
+    // barra e o rótulo acessível continuam em todas as linhas.
+    expect(within(magicTable).queryAllByText('impossível')).toHaveLength(0)
+    expect(within(magicTable).queryAllByText('Rebaixado para a Série B')).toHaveLength(0)
     // A tabela exibe SOMENTE a estatística do destino selecionado
     expect(within(magicTable).getByRole('columnheader', { name: /Chance de ser rebaixado para a Série B/ })).toBeInTheDocument()
     expect(within(magicTable).queryByRole('columnheader', { name: /^Título/ })).not.toBeInTheDocument()
+  })
+
+  it('não repete percentual e IC consecutivos idênticos, mantendo barra e valor acessível por linha', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+
+    const valueOf = (row: HTMLElement): HTMLElement => row.querySelector<HTMLElement>('td.games-cell')!
+
+    // Rebaixamento: bloco inicial de 100,00% — o texto aparece só na primeira linha.
+    const relegationTable = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
+    const relegationRows = within(relegationTable).getAllByRole('row').slice(1)
+    expect(relegationRows.filter((row) => valueOf(row).textContent === '100,00%')).toHaveLength(1)
+    // O rótulo fica na primeira linha do bloco de 100%.
+    expect(relegationRows.findIndex((row) => valueOf(row).textContent === '100,00%')).toBe(0)
+    const suppressedCertain = relegationRows.filter((row) => valueOf(row).textContent === '' && /Com .+ pontos: 100,00% de rebaixado/.test(row.querySelector('.magic-bar')!.getAttribute('aria-label')!))
+    expect(suppressedCertain.length).toBeGreaterThan(0)
+    for (const row of suppressedCertain) {
+      // A barra continua em toda linha e carrega o valor no nome acessível.
+      expect(row.querySelector('.magic-bar')).toHaveAccessibleName(/100,00% de rebaixado para a Série B/)
+    }
+    // Valores que mudam continuam visíveis.
+    expect(within(relegationTable).getByText('28,57%')).toBeVisible()
+    expect(within(relegationTable).getByText('33,33%')).toBeVisible()
+    expect(within(relegationTable).getByText('22,22%')).toBeVisible()
+
+    // Libertadores: pontos sem nenhum sucesso no destino mostram "0 de N observações".
+    await user.click(within(screen.getByRole('group', { name: 'Destino para a pontuação mágica' })).getByRole('button', { name: 'Libertadores' }))
+    const libertadoresTable = screen.getByRole('region', { name: /Chance de ser classificado para a Libertadores por pontuação exata/ })
+    const libertadoresRows = within(libertadoresTable).getAllByRole('row').slice(1)
+    const zeroObservationRows = libertadoresRows.filter((row) => /^0 de [\d.]+ observações$/.test(valueOf(row).textContent ?? ''))
+    expect(zeroObservationRows.length).toBeGreaterThan(0)
+    for (const row of zeroObservationRows) {
+      expect(row.querySelector('.cell-ci')).toBeNull()
+      expect(row.querySelector('.magic-bar--empty')).not.toBeNull()
+      expect(row.querySelector('.magic-bar')).toHaveAccessibleName(/^Com .+ pontos: nenhuma observação de classificação para a Libertadores em [\d.]+ simulações desta pontuação$/)
+    }
+    expect(libertadoresRows.filter((row) => valueOf(row).textContent === '100,00%')).toHaveLength(1)
+    // IC 95% idêntico ao da linha anterior também não se repete.
+    const visibleIntervals = libertadoresRows
+      .map((row) => row.querySelector('.cell-ci')?.textContent)
+      .filter((text): text is string => Boolean(text))
+    expect(visibleIntervals.length).toBeGreaterThan(1)
+    for (let index = 1; index < visibleIntervals.length; index += 1) {
+      expect(visibleIntervals[index]).not.toBe(visibleIntervals[index - 1])
+    }
+    for (const row of libertadoresRows) {
+      expect(row.querySelector('.magic-bar')).not.toBeNull()
+    }
+    // Repetição consecutiva: texto visível suprimido, valor preservado na barra.
+    const suppressedRepeat = libertadoresRows.find((row) => valueOf(row).textContent === '')
+    expect(suppressedRepeat!.querySelector('.magic-bar')).toHaveAccessibleName(/^Com .+ pontos: \d{1,3},\d{2}% de classificado para a Libertadores; IC 95% /)
+  })
+
+  it('expõe o resumo completo só no nome acessível da barra, sem duplicar o texto visível', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+
+    const table = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
+    const rows = within(table).getAllByRole('row').slice(1)
+    const valueOf = (row: HTMLElement): HTMLElement => row.querySelector<HTMLElement>('td.games-cell')!
+
+    // Toda linha tem um único nome completo na barra; o texto visível é decorativo.
+    for (const row of rows) {
+      const bar = within(row).getByRole('img')
+      const withoutObservations = /^0 de [\d.]+ observações$/.test(valueOf(row).textContent ?? '')
+      if (withoutObservations) {
+        expect(bar).toHaveAccessibleName(/^Com .+ pontos: nenhuma observação de rebaixamento em [\d.]+ simulações desta pontuação$/)
+        expect(row.querySelector('.cell-ci')).toBeNull()
+        expect(row.querySelector('.magic-bar--empty')).not.toBeNull()
+      } else {
+        expect(bar).toHaveAccessibleName(/^Com .+ pontos: \d{1,3},\d{2}% de rebaixado para a Série B; IC 95% /)
+        const visibleChance = valueOf(row).querySelector('span')
+        if (valueOf(row).textContent !== '') {
+          expect(visibleChance).toHaveAttribute('aria-hidden', 'true')
+        }
+      }
+      for (const interval of row.querySelectorAll('.cell-ci')) {
+        expect(interval).toHaveAttribute('aria-hidden', 'true')
+      }
+    }
+
+    // Linha visível: valor e IC aparecem no td, mas só a barra os anuncia.
+    const visibleRow = rows.find((row) => row.querySelector('.cell-ci'))!
+    expect(visibleRow.querySelector('.cell-ci')).toHaveTextContent(/^IC 95% /)
+    expect(within(visibleRow).getByRole('img')).toHaveAccessibleName(/IC 95% /)
+    expect(valueOf(visibleRow)).not.toHaveAttribute('title')
+
+    // Linha suprimida: td vazio para o leitor (sem `title` duplicando o valor),
+    // mas a barra segue com valor e intervalo.
+    const suppressedRow = rows.find((row) => valueOf(row).textContent === '')!
+    expect(valueOf(suppressedRow)).not.toHaveAttribute('title')
+    expect(suppressedRow.querySelector('.magic-bar')).toHaveAccessibleName(/100,00% de rebaixado para a Série B; IC 95% /)
   })
 
   it('exibe mediana, percentis, IC 95%, badge de variação e exporta a tabela de projeções', { timeout: 30_000 }, async () => {
@@ -213,6 +307,120 @@ describe('painel de projeções', () => {
     expect(row).toHaveTextContent('37,50%')
     expect(row).toHaveTextContent(`IC 95% ${percentFormat.format(0)}–${percentFormat.format(upper95)}`)
     expect(row).toHaveTextContent('amostra baixa')
+  })
+
+  it('mostra “0 de N observações” quando não houve sucesso do destino e mantém percentual e IC nas linhas observadas', async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    result.pointCurve = {
+      simulationCount: 100,
+      inclusiveLibertadores: [
+        // build() agrega o ponto sempre que há simulações, mesmo com zero
+        // sucessos inclusivos: 100 observações, nenhuma vaga na Libertadores.
+        { points: 50, successes: 0, denominator: 100, probability: 0, lower95: 0, upper95: 0.037, clusterCount: 100, lowSample: false },
+        { points: 51, successes: 30, denominator: 100, probability: 0.3, lower95: 0.22, upper95: 0.39, clusterCount: 100, lowSample: false },
+      ],
+      rows: [
+        // Ponto 50 tem 100 observações, mas nenhuma de título: build() não
+        // emite linha de destino com zero sucessos.
+        { points: 50, outcome: 'sudamericana', successes: 100, denominator: 100, probability: 1, lower95: 0.97, upper95: 1, clusterCount: 100, lowSample: false },
+        { points: 51, outcome: 'title', successes: 30, denominator: 100, probability: 0.3, lower95: 0.22, upper95: 0.39, clusterCount: 100, lowSample: false },
+        { points: 52, outcome: 'title', successes: 100, denominator: 100, probability: 1, lower95: 0.97, upper95: 1, clusterCount: 100, lowSample: false },
+      ],
+    }
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+    await user.click(screen.getByRole('button', { name: 'Campeão' }))
+
+    const titleTable = screen.getByRole('region', { name: /Chance de ser campeão por pontuação exata/ })
+    const titleRows = within(titleTable).getAllByRole('row').slice(1)
+    const rowFor = (points: string): HTMLElement => titleRows.find((row) => row.querySelector('th')?.textContent === points)!
+
+    const withoutObservations = rowFor('50')
+    expect(withoutObservations).toHaveTextContent('0 de 100 observações')
+    expect(withoutObservations).not.toHaveTextContent('0,00%')
+    expect(withoutObservations.querySelector('.cell-ci')).toBeNull()
+    expect(withoutObservations.querySelector('.magic-bar-fill')).toBeNull()
+    expect(withoutObservations.querySelector('.magic-bar--empty')).not.toBeNull()
+    expect(within(withoutObservations).getByRole('img'))
+      .toHaveAccessibleName('Com 50 pontos: nenhuma observação de título em 100 simulações desta pontuação')
+
+    // Primeira linha com observação depois do bloco vazio volta a exibir valor.
+    const observed = rowFor('51')
+    expect(observed).toHaveTextContent('30,00%')
+    expect(observed).toHaveTextContent(`IC 95% ${percentFormat.format(0.22)}–${percentFormat.format(0.39)}`)
+    expect(observed.querySelector('.magic-bar-fill')).not.toBeNull()
+
+    const full = rowFor('52')
+    expect(full).toHaveTextContent('100,00%')
+    expect(full).toHaveTextContent(`IC 95% ${percentFormat.format(0.97)}–${percentFormat.format(1)}`)
+
+    // Libertadores inclusiva: 0 sucessos com denominador 100 é ausência de
+    // observação do destino, não ausência de simulações.
+    await user.click(screen.getByRole('button', { name: 'Libertadores' }))
+    const libertadoresTable = screen.getByRole('region', { name: /Chance de ser classificado para a Libertadores por pontuação exata/ })
+    const libertadoresRows = within(libertadoresTable).getAllByRole('row').slice(1)
+    const libertadoresRowFor = (points: string): HTMLElement => libertadoresRows.find((row) => row.querySelector('th')?.textContent === points)!
+
+    const inclusiveZero = libertadoresRowFor('50')
+    expect(inclusiveZero).toHaveTextContent('0 de 100 observações')
+    expect(inclusiveZero.querySelector('.cell-ci')).toBeNull()
+    expect(inclusiveZero.querySelector('.magic-bar-fill')).toBeNull()
+    expect(within(inclusiveZero).getByRole('img'))
+      .toHaveAccessibleName('Com 50 pontos: nenhuma observação de classificação para a Libertadores em 100 simulações desta pontuação')
+
+    const inclusiveObserved = libertadoresRowFor('51')
+    expect(inclusiveObserved).toHaveTextContent('30,00%')
+    expect(inclusiveObserved).toHaveTextContent(`IC 95% ${percentFormat.format(0.22)}–${percentFormat.format(0.39)}`)
+  })
+
+  it('decide a estimativa pela contagem de sucessos, não pelo texto percentual formatado', async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    // Denominador grande o bastante para que 1 sucesso formate “0,00%”.
+    const bigDenominator = 381_699
+    expect(percentFormat.format(1 / bigDenominator)).toBe('0,00%')
+    result.pointCurve = {
+      simulationCount: bigDenominator,
+      inclusiveLibertadores: [],
+      rows: [
+        // 1 sucesso em 381.699 formata “0,00%”, mas a linha TEM observação:
+        // deve exibir percentual + IC, não “0 de N observações”.
+        {
+          points: 42, outcome: 'sudamericana', successes: 1, denominator: bigDenominator,
+          probability: 1 / bigDenominator, lower95: 0, upper95: 0.000009, clusterCount: 1, lowSample: false,
+        },
+        // Zero sucessos no mesmo denominador: ausência de observação do destino.
+        {
+          points: 43, outcome: 'sudamericana', successes: 0, denominator: bigDenominator,
+          probability: 0, lower95: 0, upper95: 0, clusterCount: 0, lowSample: false,
+        },
+      ],
+    }
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+    await user.click(screen.getByRole('button', { name: 'Sul-Americana' }))
+
+    const table = screen.getByRole('region', { name: /Chance de ser classificado para a Sul-Americana por pontuação exata/ })
+    const rows = within(table).getAllByRole('row').slice(1)
+    const rowFor = (points: string): HTMLElement => rows.find((row) => row.querySelector('th')?.textContent === points)!
+
+    const singleSuccess = rowFor('42')
+    expect(singleSuccess).not.toHaveTextContent('observações')
+    expect(singleSuccess.querySelector('td.games-cell')).toHaveTextContent('0,00%')
+    expect(singleSuccess.querySelector('.magic-bar-fill')).not.toBeNull()
+    expect(singleSuccess.querySelector('.cell-ci')!.textContent).toMatch(/^IC 95% /)
+    expect(singleSuccess.querySelector('.magic-bar')).toHaveAccessibleName(/0,00% de classificado para a Sul-Americana; IC 95% /)
+
+    const zeroSuccess = rowFor('43')
+    expect(zeroSuccess).toHaveTextContent('0 de 381.699 observações')
+    expect(zeroSuccess.querySelector('td.games-cell')!.textContent).not.toMatch(/%/)
+    expect(zeroSuccess.querySelector('.magic-bar-fill')).toBeNull()
+    expect(zeroSuccess.querySelector('.magic-bar')).toHaveAccessibleName(
+      'Com 43 pontos: nenhuma observação de classificação para a Sul-Americana em 381.699 simulações desta pontuação',
+    )
   })
 
   it('não agrupa pontuações com denominadores ou ICs diferentes', async () => {

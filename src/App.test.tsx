@@ -85,21 +85,29 @@ describe('painel do Brasileirão 2026', () => {
     expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
   })
 
-  it('mostra os rótulos das quatro zonas junto à classificação, sem depender só da cor', () => {
+  it('mostra uma legenda única das quatro zonas acima da classificação, sem repetir chips por linha', () => {
     render(<App />)
 
+    const legend = screen.getByRole('group', { name: 'Legenda de zonas da classificação' })
+    expect(legend).toHaveTextContent('Libertadores · 1º–6º*')
+    expect(legend).toHaveTextContent('Sul-Americana · 7º–12º')
+    expect(legend).toHaveTextContent('Meio de tabela · 13º–16º')
+    expect(legend).toHaveTextContent('Rebaixamento · 17º–20º')
+    expect(legend.querySelectorAll('.zone-chip')).toHaveLength(4)
+    expect(screen.getAllByRole('group', { name: 'Legenda de zonas da classificação' })).toHaveLength(1)
+
     const table = screen.getByRole('region', { name: /Tabela classificatória/ })
-    expect(within(table).getAllByText('Libertadores · 1º–6º*')).toHaveLength(6)
-    expect(within(table).getAllByText('Sul-Americana · 7º–12º')).toHaveLength(6)
-    expect(within(table).getAllByText('Meio de tabela · 13º–16º')).toHaveLength(4)
-    expect(within(table).getAllByText('Rebaixamento · 17º–20º')).toHaveLength(4)
+    // A legenda fica acima da tabela e nenhum chip de zona se repete por linha.
+    expect(legend.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(table.querySelectorAll('tbody .sr-only')).toHaveLength(20)
+    expect(within(table).queryAllByText('Libertadores · 1º–6º*')).toHaveLength(0)
+
     const rows = within(table).getAllByRole('row').slice(1)
-    expect(rows[0]).toHaveTextContent('Libertadores · 1º–6º*')
-    expect(rows[5]).toHaveTextContent('Libertadores · 1º–6º*')
-    expect(rows[6]).toHaveTextContent('Sul-Americana · 7º–12º')
-    expect(rows[11]).toHaveTextContent('Sul-Americana · 7º–12º')
-    expect(rows[12]).toHaveTextContent('Meio de tabela · 13º–16º')
-    expect(rows[16]).toHaveTextContent('Rebaixamento · 17º–20º')
+    // A zona de cada linha continua acessível mesmo sem o texto visível repetido.
+    expect(rows[0]).toHaveAccessibleName(/Flamengo.*Libertadores · 1º–6º\*/)
+    expect(rows[6]).toHaveAccessibleName(/Sul-Americana · 7º–12º/)
+    expect(rows[12]).toHaveAccessibleName(/Meio de tabela · 13º–16º/)
+    expect(rows[16]).toHaveAccessibleName(/Rebaixamento · 17º–20º/)
   })
 
   it('abre a aba correta a partir de âncoras legadas da versão anterior', async () => {
@@ -144,7 +152,7 @@ describe('painel do Brasileirão 2026', () => {
     expect(within(kpis).getByText('Jogos disputados no corte')).toBeInTheDocument()
     expect(within(kpis).getByText('Vagas de Libertadores (1º–6º*)')).toBeInTheDocument()
     expect(within(kpis).getByText('Jogos restantes · rodadas + adiados')).toBeInTheDocument()
-    const zoneLegend = screen.getByRole('group', { name: 'Legenda das zonas da tabela' })
+    const zoneLegend = screen.getByRole('group', { name: 'Legenda de zonas da classificação' })
     const g6Note = screen.getByText(/G-6 é cenário adotado com redistribuição assumida.*não é automática/i)
     expect(g6Note).toBeVisible()
     expect(zoneLegend).toHaveAttribute('aria-describedby', g6Note.id)
