@@ -14,8 +14,9 @@ com fórmula explícita e base amostral declarada.
 | **Saldo de Gols** | Gols Pró − Gols Contra | Metodologia, critérios de desempate |
 | **Aproveitamento (%)** | Pontos ÷ (3 × Jogos Disputados) | Estatísticas por mando |
 | **Corte Analítico** | Instante UTC de referência do pacote (com equivalente local BRT); aplica-se por kickoff explícito ESPN e, conservadoramente, por data para Football-Data sem fuso. Não é captura, geração ou publicação | Todas as telas (badge snapshot), exportações (bloco de proveniência) |
-| **Libertadores (zona)** | Posições 1º–5º (1º–4º direto; 5º preliminar), somente pela tabela | Legenda, filtros, projeções, curvas |
-| **Sul-Americana (zona)** | Posições 6º–11º | Legenda, filtros, projeções, curvas |
+| **Libertadores (zona)** | Posições 1º–6º*; 1º–4º direto e 5º preliminar. O 6º é cenário do painel, não conclusão automática apenas pela ida do Palmeiras à final da Copa do Brasil; a alocação depende das regras e da sobreposição de classificados | Legenda, filtros, projeções, curvas |
+| **Sul-Americana (zona)** | Posições 7º–12º no cenário G-6; Art. 7 do REC CBF 2026 destina as seis vagas aos clubes seguintes que não estejam na Libertadores | Legenda, filtros, projeções, curvas |
+| **Meio de tabela** | Posições 13º–16º no cenário G-6 | Legenda, filtros, projeções |
 | **Zona de Rebaixamento** | Posições 17º–20º | Legenda, filtros, projeções |
 | **Desempate oficial (Art. 15, §§1–2, REC 2026)** | [Regra CBF (PDF p. 10)](https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf): pontos → mais vitórias → maior saldo → mais gols pró → H2H somente entre dois clubes (pontos dos jogos de ida/volta; persistindo, saldo desses jogos) → menos vermelhos → menos amarelos → sorteio. Para 3+ clubes, §2 exclui H2H e a ordem segue para disciplina. | Auditoria §17 |
 | **Classificação derivada localmente** | Ordenação analítica por pontos → vitórias → saldo → gols pró → nome do clube. Não aplica H2H, cartões ou sorteio e não representa classificação CBF oficial no corte. | Visão Geral · Classificações · Auditoria §17 |
@@ -47,18 +48,18 @@ com fórmula explícita e base amostral declarada.
 
 | Termo padronizado | Definição / fórmula | Onde aparece |
 |---|---|---|
-| **Probabilidade de Título** | Nº de simulações em que o clube termina 1º ÷ n, com n = 20.000; semente fixa 20261104 | Tabela de projeções, exportações |
-| **Probabilidade de Libertadores** | Nº de simulações em posições 1º–5º ÷ n | Tabela de projeções |
-| **Probabilidade de Sul-Americana** | Nº de simulações em posições 6º–11º ÷ n | Tabela de projeções |
+| **Probabilidade de Título** | Nº de simulações em que o clube termina 1º ÷ n, com n = 500.000; semente fixa 20261104 | Tabela de projeções, exportações |
+| **Probabilidade de Libertadores** | Nº de simulações em posições 1º–6º* ÷ n | Tabela de projeções |
+| **Probabilidade de Sul-Americana** | Nº de simulações em posições 7º–12º ÷ n | Tabela de projeções |
 | **Probabilidade de Rebaixamento** | Nº de simulações em posições 17º–20º ÷ n | Tabela de projeções |
-| **IC 95% (Wilson)** | Intervalo de Wilson para a proporção com n efetivo = n simulações; exibido como limite inferior–superior sob cada probabilidade | Tabela de projeções, curva P(resultado\|pontos), exportações |
+| **IC 95%** | Wilson para probabilidades por clube (n efetivo = simulações); na curva P(resultado\|pontuação), cluster-robusto por simulação, com os sucessos 1º e 2º–6º agregados por cluster para a Libertadores inclusiva | Tabela de projeções, curva P(resultado\|pontos), exportações |
 | **Mediana de Pontos Finais** | Percentil 50 (nearest-rank) da distribuição de pontos finais do clube nas n simulações | Tabela de projeções, exportações |
 | **P10 / P25 / P75 / P90** | Percentis nearest-rank (⌈p/100·n⌉-ésimo menor valor) dos pontos finais | Tabela de projeções, exportações |
 | **Desvio-Padrão de Pontos Finais** | Desvio populacional (÷ n) dos pontos finais | Exportações de projeções |
 | **Δ Mediana (badge)** | Mediana de pontos finais − pontos no corte; exibido em pontos absolutos e percentual sobre os pontos atuais | Tabela de projeções |
 | **K/N** | Contagens exatas: K = clubes-simulações na célula; N = total da categoria/pontuação | Distribuições e curvas |
-| **P(pontuação exata \| resultado)** | Distribuição de pontuação final dentro de categorias exclusivas (Campeão; Libertadores 2º–5º; Sul-Americana 6º–11º; Meio 12º–16º; Rebaixamento 17º–20º) | Aba Projeções |
-| **P(resultado \| pontuação exata)** | Curva condicional inversa com IC 95% cluster-robusto (cada simulação é um cluster) | Aba Projeções |
+| **P(pontuação exata \| resultado)** | Distribuição de pontuação final dentro de categorias exclusivas (Campeão; Libertadores 2º–6º*; Sul-Americana 7º–12º; Meio 13º–16º; Rebaixamento 17º–20º) | Aba Projeções |
+| **P(resultado \| pontuação exata)** | Curva condicional inversa com IC 95% cluster-robusto (cada simulação é um cluster); considera o cenário G-6* | Aba Projeções |
 | **Amostra baixa** | Célula da curva cujo IC 95% tem largura ≥ 0,10 | Aba Projeções |
 | **Brier H/E/F** | Σ (pᵢ − 1[i=real])² por partida, médio por temporada; menor é melhor | Backtest, ablação |
 | **k (encolhimento)** | Jogos de peso prévio na regularização das taxas de ataque/defesa; produção usa k=20 escolhido por walk-forward (temporada 2025, apenas anos anteriores) | Metodologia |

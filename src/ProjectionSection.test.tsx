@@ -23,11 +23,21 @@ describe('painel de projeções', () => {
     // Guia de leitura e duas tabelas com perguntas claras
     expect(screen.getByText(/Em que zona o clube pode terminar\?/)).toBeInTheDocument()
     expect(screen.getByText(/Quantos pontos o clube deve fazer\?/)).toBeInTheDocument()
+    expect(screen.getByText('G-6*:').closest('p')).toHaveTextContent(/cenário adotado neste painel.*não é conclusão automática apenas porque o Palmeiras chegou à final/i)
+    const regulationNote = screen.getByText('Regulamento:').closest('p')!
+    expect(regulationNote).toHaveTextContent(/Art\. 7.*seis clubes seguintes que não estejam na Libertadores \(7º–12º neste cenário\)/i)
+    expect(regulationNote).toHaveTextContent(/redistribuição depende das regras aplicáveis e da sobreposição de classificados/i)
+    expect(screen.getByText(/Posições 7–12: seis melhores não classificados à Libertadores/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'REC CBF 2026 (Art. 7)' }).getAttribute('href')).toContain('REC_Brasileiro_SA_rie_A_2026')
     const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
     expect(within(zones).getByRole('row', { name: /Flamengo/ })).toBeInTheDocument()
     expect(within(zones).getAllByRole('row')).toHaveLength(21)
     // Barra empilhada de 5 zonas por linha
     expect(within(zones).getAllByRole('img', { name: /Cenários de/ })).toHaveLength(20)
+    const firstClubBar = within(zones).getByRole('img', { name: /Cenários de Flamengo/ })
+    expect(firstClubBar).toHaveAccessibleName(/Campeão .*Libertadores 2º–6º/)
+    const barLegend = screen.getByRole('group', { name: 'Legenda das barras de zonas' })
+    expect(within(barLegend).getByText('Libertadores 2º–6º')).toBeVisible()
     const pointsTable = screen.getByRole('region', { name: /Pontos finais projetados por clube/ })
     expect(within(pointsTable).getAllByRole('row')).toHaveLength(21)
     expect(screen.getByText(/Não são odds nem recomendação de apostas/)).toBeInTheDocument()
@@ -144,6 +154,126 @@ describe('painel de projeções', () => {
       expect(cells[7]).toHaveTextContent(/pts \(/)
       expect(cells.every((cell) => cell.textContent?.trim())).toBe(true)
     }
+  })
+
+  it('exibe Sul-Americana como probabilidade exclusiva de 7º–12º com IC do mesmo conjunto', async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    result.simulations = 100
+    result.pointCurve = {
+      simulationCount: 100,
+      inclusiveLibertadores: [],
+      rows: [
+        { points: 50, outcome: 'title', successes: 10, denominator: 100, probability: 0.1, lower95: 0.08, upper95: 0.12, clusterCount: 100, lowSample: false },
+        { points: 50, outcome: 'libertadores', successes: 20, denominator: 100, probability: 0.2, lower95: 0.16, upper95: 0.24, clusterCount: 100, lowSample: false },
+        { points: 50, outcome: 'sudamericana', successes: 60, denominator: 100, probability: 0.6, lower95: 0.56, upper95: 0.64, clusterCount: 100, lowSample: false },
+        { points: 50, outcome: 'middle', successes: 0, denominator: 100, probability: 0, lower95: 0, upper95: 0, clusterCount: 100, lowSample: false },
+        { points: 50, outcome: 'relegation', successes: 10, denominator: 100, probability: 0.1, lower95: 0.06, upper95: 0.14, clusterCount: 100, lowSample: false },
+      ],
+    }
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+    await user.click(screen.getByRole('button', { name: 'Sul-Americana' }))
+
+    const table = screen.getByRole('region', { name: /Chance de ser classificado para a Sul-Americana/ })
+    const row = within(table).getByRole('row', { name: /50/ })
+    expect(row).toHaveTextContent('60,00%')
+    expect(row).toHaveTextContent('IC 95% 56,00%–64,00%')
+    expect(screen.getByText(/Faixa Sul-Americana \(7º–12º: 60,00%\)/)).toBeInTheDocument()
+    expect(screen.getByText((_, element) => element?.classList.contains('magic-chart-caption') ?? false)).toHaveTextContent(/Sul-Americana.*7º–12º/)
+  })
+
+  it('usa para Libertadores inclusiva o IC cluster-robusto agregado por simulação', async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    const probability = 3 / 8
+    const upper95 = probability + 1.96 * Math.sqrt(11 / 192)
+    result.pointCurve = {
+      simulationCount: 4,
+      inclusiveLibertadores: [{
+        points: 50, successes: 3, denominator: 8, probability, lower95: 0, upper95,
+        clusterCount: 4, lowSample: true,
+      }],
+      rows: [
+        { points: 50, outcome: 'title', successes: 1, denominator: 8, probability: 1 / 8, lower95: 0.02, upper95: 0.3, clusterCount: 4, lowSample: true },
+        { points: 50, outcome: 'libertadores', successes: 2, denominator: 8, probability: 2 / 8, lower95: 0.1, upper95: 0.4, clusterCount: 4, lowSample: true },
+        { points: 50, outcome: 'sudamericana', successes: 3, denominator: 8, probability: 3 / 8, lower95: 0.1, upper95: 0.6, clusterCount: 4, lowSample: true },
+        { points: 50, outcome: 'middle', successes: 1, denominator: 8, probability: 1 / 8, lower95: 0.02, upper95: 0.3, clusterCount: 4, lowSample: true },
+        { points: 50, outcome: 'relegation', successes: 1, denominator: 8, probability: 1 / 8, lower95: 0.02, upper95: 0.3, clusterCount: 4, lowSample: true },
+      ],
+    }
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+    await user.click(screen.getByRole('button', { name: 'Libertadores' }))
+
+    const table = screen.getByRole('region', { name: /Chance de ser classificado para a Libertadores por pontuação exata/ })
+    const row = within(table).getByRole('row', { name: /50/ })
+    expect(row).toHaveTextContent('37,50%')
+    expect(row).toHaveTextContent(`IC 95% ${percentFormat.format(0)}–${percentFormat.format(upper95)}`)
+    expect(row).toHaveTextContent('amostra baixa')
+  })
+
+  it('não agrupa pontuações com denominadores ou ICs diferentes', async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    const outcomes = [
+      ['title', 1, 0.05, 0.15],
+      ['libertadores', 2, 0.1, 0.3],
+      ['sudamericana', 4, 0.3, 0.5],
+      ['middle', 2, 0.1, 0.3],
+      ['relegation', 1, 0.05, 0.15],
+    ] as const
+    result.pointCurve = {
+      simulationCount: 20,
+      inclusiveLibertadores: [
+        { points: 50, successes: 3, denominator: 10, probability: 0.3, lower95: 0.2, upper95: 0.4, clusterCount: 10, lowSample: false },
+        { points: 51, successes: 6, denominator: 20, probability: 0.3, lower95: 0.25, upper95: 0.35, clusterCount: 20, lowSample: true },
+      ],
+      rows: outcomes.flatMap(([outcome, successes, lower95, upper95]) => [
+        { points: 50, outcome, successes, denominator: 10, probability: successes / 10, lower95, upper95, clusterCount: 10, lowSample: false },
+        { points: 51, outcome, successes: successes * 2, denominator: 20, probability: successes / 10, lower95: lower95 + 0.01, upper95: upper95 - 0.01, clusterCount: 20, lowSample: true },
+      ]),
+    }
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('tab', { name: 'Por pontuação' }))
+    const table = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
+
+    expect(screen.getByText(/Apenas pontos consecutivos com as mesmas probabilidades, sucessos, denominadores, clusters, ICs e sinalizadores de amostra baixa são agrupados/)).toBeVisible()
+    expect(within(table).getByRole('row', { name: /50/ })).toHaveTextContent('IC 95% 5,00%–15,00%')
+    expect(within(table).getByRole('row', { name: /51/ })).toHaveTextContent('IC 95% 6,00%–14,00%')
+    expect(within(table).queryByRole('row', { name: /50–51/ })).not.toBeInTheDocument()
+  })
+
+  it('particiona as barras em categorias exclusivas cuja soma não excede 100%', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    const firstClub = result.clubProbabilities[0]!
+    result.clubProbabilities = [
+      { ...firstClub, title: 0.1, libertadores: 0.4, sudamericana: 0.2, relegation: 0.1 },
+      ...result.clubProbabilities.slice(1),
+    ]
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const bar = screen.getByRole('img', { name: new RegExp(`Cenários de ${firstClub.club}`) })
+    const widths = [...bar.querySelectorAll('.zone-bar-segment')].map((segment) => Number.parseFloat((segment as HTMLElement).style.width))
+    const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
+    const row = within(zones).getByRole('row', { name: new RegExp(firstClub.club) })
+    const displayedChances = [...row.querySelectorAll('.probability-cell strong')].map((cell) => cell.textContent)
+    expect(widths).toHaveLength(5)
+    expect(widths[0]).toBeCloseTo(10)
+    expect(widths[1]).toBeCloseTo(30)
+    expect(widths[2]).toBeCloseTo(20)
+    expect(widths[3]).toBeCloseTo(30)
+    expect(widths[4]).toBeCloseTo(10)
+    expect(widths.reduce((sum, width) => sum + width, 0)).toBeCloseTo(100)
+    expect(displayedChances).toEqual([
+      percentFormat.format(0.1),
+      percentFormat.format(0.4),
+      percentFormat.format(0.2),
+      percentFormat.format(0.1),
+    ])
   })
 
   it('informa quando as simulações ainda estão em processamento', () => {

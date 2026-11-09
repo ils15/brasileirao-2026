@@ -45,11 +45,19 @@ multiplicadores neutros quando `jogos + k = 0` e preserva as médias quando
 - **Antes:** probabilidades por clube contavam 1º–5º; as categorias exclusivas
   da distribuição de pontos usavam 2º–5º; a legenda da classificação marcava
   1º–6º como "faixa de classificação" — a mesma palavra com três fronteiras.
-- **Depois:** `projectionConfig.ts` define `ZONES` (Libertadores 1º–5º,
+- **Depois, antes do cenário G-6:** `projectionConfig.ts` definia `ZONES` (Libertadores 1º–5º,
   Sul-Americana 6º–11º, meio 12º–16º, rebaixamento 17º–20º) usada pela
   contagem da simulação, pelos rótulos das categorias exclusivas e pela
   legenda/filtros da classificação (`data.ts`). As categorias exclusivas
   continuam separando o campeão apenas para nomear "Libertadores · 2º–5º".
+
+**Atualização posterior — cenário G-6:** a projeção considera 1º–6º como
+Libertadores, 7º–12º como Sul-Americana (os seis clubes seguintes fora da
+Libertadores, conforme Art. 7 do REC CBF 2026), 13º–16º como meio de tabela e
+17º–20º como rebaixamento. O asterisco marca o cenário adotado pelo painel; a
+redistribuição depende das regras e da sobreposição de classificados, não sendo
+conclusão automática apenas pela ida do Palmeiras à final da Copa do Brasil.
+Resultados de copas e redistribuições não são simulados.
 
 ## 4. Critério adicional no comparador H2H de projeções — **Documentado**
 

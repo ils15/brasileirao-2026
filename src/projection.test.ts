@@ -4,9 +4,19 @@ import { standings } from './data'
 import { currentSeasonResults } from './currentSeasonResults'
 import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { historicalSeasons, remainingFixtures, currentClubs } from './projectionData'
-import { buildCurrentSeasonHeadToHead, buildPointsAnalysis, compareHeadToHeadForTable, runProjection, runTemporalBacktest, simulateOneSeason, validateHistoricalSeason } from './projection'
+import { buildCurrentSeasonHeadToHead, buildPointsAnalysis, compareHeadToHeadForTable, isPositionInZone, runProjection, runTemporalBacktest, simulateOneSeason, validateHistoricalSeason, ZONES } from './projection'
 
 describe('projeção estática do Brasileirão 2026', () => {
+  it('mantém as fronteiras G-6, seis vagas seguintes na Sul-Americana e rebaixamento', () => {
+    expect(isPositionInZone(6, ZONES.libertadores)).toBe(true)
+    expect(isPositionInZone(7, ZONES.libertadores)).toBe(false)
+    expect(isPositionInZone(7, ZONES.sudamericana)).toBe(true)
+    expect(isPositionInZone(12, ZONES.sudamericana)).toBe(true)
+    expect(ZONES.sudamericana).toMatchObject({ from: 7, to: 12 })
+    expect(ZONES.middle).toMatchObject({ from: 13, to: 16 })
+    expect(ZONES.relegation).toMatchObject({ from: 17, to: 20 })
+  })
+
   it('usa o confronto direto 2026 concluído no desempate de dois clubes empatados', () => {
     const headToHead = buildCurrentSeasonHeadToHead()
     const flamengoAgainstPalmeiras = headToHead.get('flamengo')?.get('palmeiras')
@@ -88,7 +98,9 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(result.pointsAtStart + result.pointsAdded).toBe(result.totalPoints)
     expect(result.table.filter((club) => club.position <= 4)).toHaveLength(4)
     expect(result.table.filter((club) => club.position === 5)).toHaveLength(1)
-    expect(result.table.filter((club) => club.position >= 6 && club.position <= 11)).toHaveLength(6)
+    expect(result.table.filter((club) => club.position >= 1 && club.position <= 6)).toHaveLength(6)
+    expect(result.table.filter((club) => club.position >= 7 && club.position <= 12)).toHaveLength(6)
+    expect(result.table.filter((club) => club.position >= 13 && club.position <= 16)).toHaveLength(4)
     expect(result.table.filter((club) => club.position >= 17)).toHaveLength(4)
   })
 
@@ -98,6 +110,13 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(first.clubProbabilities).toEqual(second.clubProbabilities)
     expect(first.pointsAnalysis).toEqual(second.pointsAnalysis)
     expect(first.pointCurve).toEqual(second.pointCurve)
+    expect(Object.fromEntries(first.pointsAnalysis.distributionByOutcome.map(({ id, samples }) => [id, samples]))).toEqual({
+      champion: 120,
+      libertadores: 600,
+      sudamericana: 720,
+      middle: 480,
+      relegation: 480,
+    })
     expect(first.clubProbabilities.reduce((sum, club) => sum + club.title, 0)).toBeCloseTo(1, 12)
     for (const club of first.clubProbabilities) {
       expect(club.title).toBeGreaterThanOrEqual(0)
@@ -201,12 +220,12 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(backtest.relativeImprovement).toBeGreaterThan(0.03)
   })
 
-  it('completa as 500.000 simulações aprovadas e conserva as vagas do torneio', { timeout: 60_000 }, () => {
+  it('completa as 500.000 simulações e respeita as zonas do cenário G-6', { timeout: 60_000 }, () => {
     const result = runProjection()
     expect(result.simulations).toBe(500_000)
     expect(result.seed).toBe(20_261_104)
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.title, 0)).toBeCloseTo(1, 10)
-    expect(result.clubProbabilities.reduce((sum, club) => sum + club.libertadores, 0)).toBeCloseTo(5, 10)
+    expect(result.clubProbabilities.reduce((sum, club) => sum + club.libertadores, 0)).toBeCloseTo(6, 10)
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.sudamericana, 0)).toBeCloseTo(6, 10)
     expect(result.clubProbabilities.reduce((sum, club) => sum + club.relegation, 0)).toBeCloseTo(4, 10)
   })

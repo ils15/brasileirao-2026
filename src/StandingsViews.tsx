@@ -145,7 +145,7 @@ function PositionEvolutionChart(): JSX.Element {
         className="evolution-chart"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Evolução da posição por rodada, da primeira à ${evolution.rounds.length}ª. Destacados: ${focusedIds.map((id) => labelFor.get(id) ?? id).join(', ') || 'nenhum clube'}. Faixa verde marca Libertadores 1º–5º; faixa vermelha, rebaixamento 17º–20º.`}
+        aria-label={`Evolução da posição por rodada, da primeira à ${evolution.rounds.length}ª. Destacados: ${focusedIds.map((id) => labelFor.get(id) ?? id).join(', ') || 'nenhum clube'}. Faixa verde marca Libertadores ${ZONES.libertadores.detail}; faixa vermelha, rebaixamento ${ZONES.relegation.detail}.`}
       >
         {zoneBands.map((band) => (
           <rect key={band.className} x={padding.left} y={positionAt(band.from)} width={width - padding.left - padding.right} height={(band.to - band.from + 1) * stepY} className={`evolution-band ${band.className}`} />
@@ -255,11 +255,19 @@ export function StandingsViews(): JSX.Element {
   }
 
   const generalLegend = (
-    <div className="zone-legend" aria-label="Legenda das zonas da classificação">
-      <span><i className="legend-dot qualification" />Libertadores · 1º–5º</span>
-      <span><i className="legend-dot sudamericana" />Sul-Americana · 6º–11º</span>
-      <span><i className="legend-dot middle" />Meio de tabela · 12º–16º</span>
-      <span><i className="legend-dot relegation" />Rebaixamento · 17º–20º</span>
+    <div
+      className="zone-legend"
+      role="group"
+      aria-label="Legenda das zonas da classificação"
+      aria-describedby="standings-zone-legend-note"
+    >
+      <span><i className="legend-dot qualification" />Libertadores · {ZONES.libertadores.detail}</span>
+      <span><i className="legend-dot sudamericana" />Sul-Americana · {ZONES.sudamericana.detail}</span>
+      <span><i className="legend-dot middle" />Meio de tabela · {ZONES.middle.detail}</span>
+      <span><i className="legend-dot relegation" />Rebaixamento · {ZONES.relegation.detail}</span>
+      <p id="standings-zone-legend-note" className="zone-legend-note">
+        * O asterisco indica o cenário G-6 adotado pelo painel; o 6º lugar depende das regras de redistribuição e da sobreposição de classificados.
+      </p>
     </div>
   )
   const viewContent: Record<ViewId, JSX.Element> = {

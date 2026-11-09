@@ -309,7 +309,7 @@ function App(): JSX.Element {
             <section className="kpi-strip" aria-label="Indicadores da temporada">
               <div className="kpi-card"><strong className="kpi-value">{leader.points}</strong><span className="kpi-label">Pontos do líder · {leader.club}</span></div>
               <div className="kpi-card"><strong className="kpi-value">{seasonFacts.playedCount}<span className="kpi-divider">/{seasonFacts.scheduledCount}</span></strong><span className="kpi-label">Jogos disputados no corte</span></div>
-              <div className="kpi-card"><strong className="kpi-value">{ZONES.libertadores.to}</strong><span className="kpi-label">Vagas de Libertadores (1º–5º)</span></div>
+              <div className="kpi-card"><strong className="kpi-value">{ZONES.libertadores.to}</strong><span className="kpi-label">Vagas de Libertadores (1º–6º*)</span></div>
               <div className="kpi-card"><strong className="kpi-value">{seasonFacts.remainingCount}</strong><span className="kpi-label">Jogos restantes · rodadas + adiados</span></div>
             </section>
 
@@ -335,12 +335,13 @@ function App(): JSX.Element {
                     {filteredStandings.length} {filteredStandings.length === 1 ? 'clube encontrado' : 'clubes encontrados'}
                   </p>
                 </div>
-                <div className="zone-legend" aria-label="Legenda das zonas da tabela">
+                <div className="zone-legend" role="group" aria-label="Legenda das zonas da tabela" aria-describedby="standings-g6-note">
                   <span><i className="legend-dot qualification" />Libertadores · {ZONES.libertadores.detail}</span>
                   <span><i className="legend-dot sudamericana" />Sul-Americana · {ZONES.sudamericana.detail}</span>
                   <span><i className="legend-dot middle" />Meio de tabela · {ZONES.middle.detail}</span>
                   <span><i className="legend-dot relegation" />Rebaixamento · {ZONES.relegation.detail}</span>
                 </div>
+                <p className="zone-legend-note" id="standings-g6-note" role="note">* O G-6 é cenário adotado com redistribuição assumida; a vaga ao 6º não é automática apenas pela ida do Palmeiras à final da Copa do Brasil.</p>
                 <div className="table-scroll" role="region" aria-label="Tabela classificatória; role para rolagem horizontal em telas pequenas" tabIndex={0}>
                   <table>
                     <thead>

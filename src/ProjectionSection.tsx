@@ -1,9 +1,9 @@
 import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { SIMULATION_COUNT, SIMULATION_SEED } from './projectionConfig'
 import type { ClubProbability, ProjectionResult } from './projection'
+import type { PointCurveAggregateRow } from './pointCurve'
 import { useProjection, type ProjectionStatus } from './ProjectionContext'
 import { Crest } from './Crest'
-import { wilsonInterval } from './pointCurve'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { buildXlsx, downloadFile, toCSV, toJson } from './exporters'
@@ -26,8 +26,10 @@ interface MagicRow {
   probabilities: Record<MagicKey, number>
   intervals: Record<MagicKey, [number, number]>
   lowSample: Record<MagicKey, boolean>
-  /** Clubes-simulações com aquele destino (para IC de leituras combinadas). */
+  /** Contagem de sucessos por destino, preservada para validar agrupamentos. */
   successes: Record<MagicKey, number>
+  clusterCounts: Record<MagicKey, number>
+  inclusiveLibertadores: PointCurveAggregateRow
   denominator: number
 }
 
@@ -37,6 +39,23 @@ const MAGIC_COLORS: Record<MagicDestiny | 'middle', string> = {
   sudamericana: '#4c5870',
   middle: '#b8c1ba',
   relegation: '#d47a63',
+}
+
+function emptyMagicRow(points: number): MagicRow {
+  return {
+    points,
+    probabilities: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
+    intervals: {
+      title: [0, 1], libertadores: [0, 1], sudamericana: [0, 1], middle: [0, 1], relegation: [0, 1],
+    },
+    lowSample: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
+    successes: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
+    clusterCounts: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
+    inclusiveLibertadores: {
+      points, successes: 0, denominator: 0, probability: 0, lower95: 0, upper95: 1, clusterCount: 0, lowSample: false,
+    },
+    denominator: 0,
+  }
 }
 
 /** Curva P(destino | pontos) em SVG: destino selecionado em destaque, demais em fundo. */
@@ -52,11 +71,9 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
   const yAt = (probability: number): number =>
     height - padding.bottom - probability * (height - padding.top - padding.bottom)
 
-  // Mesma leitura combinada do chanceOf: libertadores (1º–5º) e
-  // sul-americana (1º–11º) são inclusivos; título e rebaixamento exclusivos.
+  // A chance inclusiva de Libertadores (1º–6º*) vem do agregado por simulação.
   const probabilityFor = (row: MagicRow, destinyId: MagicKey): number => {
-    if (destinyId === 'libertadores') return row.probabilities.title + row.probabilities.libertadores
-    if (destinyId === 'sudamericana') return row.probabilities.title + row.probabilities.libertadores + row.probabilities.sudamericana
+    if (destinyId === 'libertadores') return row.inclusiveLibertadores.probability
     return row.probabilities[destinyId]
   }
   const pathFor = (destinyId: MagicKey): string =>
@@ -113,21 +130,18 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   const rows = useMemo<MagicRow[]>(() => {
     const byPoints = new Map<number, MagicRow>()
     for (const row of result.pointCurve.rows) {
-      const entry = byPoints.get(row.points) ?? {
-        points: row.points,
-        probabilities: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
-        intervals: {
-          title: [0, 1], libertadores: [0, 1], sudamericana: [0, 1], middle: [0, 1], relegation: [0, 1],
-        },
-        lowSample: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
-        successes: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
-        denominator: 0,
-      }
+      const entry = byPoints.get(row.points) ?? emptyMagicRow(row.points)
       entry.probabilities[row.outcome] = row.probability
       entry.intervals[row.outcome] = [row.lower95, row.upper95]
       entry.lowSample[row.outcome] = row.lowSample
       entry.successes[row.outcome] = row.successes
+      entry.clusterCounts[row.outcome] = row.clusterCount
       entry.denominator = row.denominator
+      byPoints.set(row.points, entry)
+    }
+    for (const row of result.pointCurve.inclusiveLibertadores) {
+      const entry = byPoints.get(row.points) ?? emptyMagicRow(row.points)
+      entry.inclusiveLibertadores = row
       byPoints.set(row.points, entry)
     }
     return [...byPoints.values()].sort((left, right) => left.points - right.points)
@@ -136,38 +150,44 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   const destinyEntry = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!
   const destinyPhrase = destinyEntry.phrase
   const cap = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
-  // Leitura por VAGA (instrução do usuário): campeão conta dentro de
-  // Libertadores (1º–5º) e Sul-Americana (1º–11º) — as curvas sobem
-  // monotonicamente com os pontos até 100%. Título (1º) e Rebaixamento
-  // (17º–20º) permanecem exclusivos; Rebaixamento desce até 0%.
+  // Libertadores é chance inclusiva de vaga (1º–6º*); Sul-Americana fica
+  // exclusiva (7º–12º), assim como título (1º) e as demais faixas.
   const chanceOf = (row: MagicRow, destinyOverride?: MagicKey): number => {
     const key = destinyOverride ?? destiny
-    if (key === 'libertadores') return row.probabilities.title + row.probabilities.libertadores
-    if (key === 'sudamericana') return row.probabilities.title + row.probabilities.libertadores + row.probabilities.sudamericana
+    if (key === 'libertadores') return row.inclusiveLibertadores.probability
     return row.probabilities[key]
   }
   const intervalFor = (row: MagicRow): [number, number] => {
-    const combined = (keys: MagicKey[]): [number, number] => {
-      const successes = keys.reduce((sum, key) => sum + row.successes[key], 0)
-      return wilsonInterval(row.denominator === 0 ? 0 : successes / row.denominator, row.denominator)
-    }
-    if (destiny === 'libertadores') return combined(['title', 'libertadores'])
-    if (destiny === 'sudamericana') return combined(['title', 'libertadores', 'sudamericana'])
+    if (destiny === 'libertadores') return [row.inclusiveLibertadores.lower95, row.inclusiveLibertadores.upper95]
     return row.intervals[destiny]
   }
   const lowSampleFor = (row: MagicRow): boolean => {
-    if (destiny === 'libertadores') return row.lowSample.title || row.lowSample.libertadores
-    if (destiny === 'sudamericana') return row.lowSample.title || row.lowSample.libertadores || row.lowSample.sudamericana
+    if (destiny === 'libertadores') return row.inclusiveLibertadores.lowSample
     return row.lowSample[destiny]
   }
 
-  // Agrupa faixas consecutivas onde nenhuma probabilidade muda (0%/100% estáveis).
+  // Agrupa somente pontos consecutivos com estatísticas e inferências idênticas.
   const compactRows = useMemo(() => {
-    const keyOf = (row: MagicRow): string => MAGIC_KEYS.map((key) => (row.probabilities[key] * 1000).toFixed(0)).join(',')
+    const keyOf = (row: MagicRow): string => JSON.stringify({
+      denominator: row.denominator,
+      outcomes: MAGIC_KEYS.map((key) => [
+        row.probabilities[key], row.successes[key], row.clusterCounts[key],
+        row.intervals[key][0], row.intervals[key][1], row.lowSample[key],
+      ]),
+      libertadoresInclusive: [
+        row.inclusiveLibertadores.successes,
+        row.inclusiveLibertadores.denominator,
+        row.inclusiveLibertadores.probability,
+        row.inclusiveLibertadores.clusterCount,
+        row.inclusiveLibertadores.lower95,
+        row.inclusiveLibertadores.upper95,
+        row.inclusiveLibertadores.lowSample,
+      ],
+    })
     const groups: { from: number; to: number; row: MagicRow }[] = []
     for (const row of rows) {
       const last = groups[groups.length - 1]
-      if (last && keyOf(last.row) === keyOf(row)) last.to = row.points
+      if (last && last.to + 1 === row.points && keyOf(last.row) === keyOf(row)) last.to = row.points
       else groups.push({ from: row.points, to: row.points, row })
     }
     return groups
@@ -217,7 +237,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       <h4 className="points-table-title" id="magic-points-title">A pontuação mágica: quantos pontos bastam?</h4>
       <p className="projection-table-note">
         Escolha o destino e veja somente a estatística dele dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
-        IC 95% cluster-robusto por simulação; faixas onde nada muda (0% ou 100%) são agrupadas e exibidas sem barra nem intervalo.
+        IC 95% cluster-robusto por simulação; faixas são agrupadas somente quando probabilidades, K/N, clusters e ICs de todos os destinos são idênticos.
       </p>
       <div className="magic-destiny-picker" role="group" aria-label="Destino para a pontuação mágica">
         {MAGIC_DESTINIES.map((entry) => (
@@ -239,8 +259,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           <MagicCurveChart rows={rows} destiny={destiny} />
           <p className="magic-chart-caption">
             Linha tracejada: 50% — acima dela, ser {destinyPhrase} é o resultado mais provável.
-            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga (1º–5º)</strong>, incluindo o campeão: a curva sobe até 100%.</>}
-            {destiny === 'sudamericana' && <> Sul-Americana conta como <strong>vaga garantida (1º–11º)</strong>, incluindo campeão e Libertadores: a curva sobe até 100%.</>}
+            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga (1º–6º*)</strong>, incluindo o campeão: a curva sobe até 100%.</>}
+            {destiny === 'sudamericana' && <> Sul-Americana é a faixa exclusiva de <strong>7º–12º</strong>; não inclui título nem vaga de Libertadores.</>}
           </p>
         </div>
         <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyPhrase}`}>
@@ -251,7 +271,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
                 {escaping
                   ? `Sem Série B é o mais provável (${percent.format(1 - chanceOf(likely))})`
                   : destiny === 'sudamericana'
-                  ? `No mínimo Sul-Americana (${percent.format(chanceOf(likely))})`
+                  ? `Faixa Sul-Americana (7º–12º: ${percent.format(chanceOf(likely))})`
                   : `${cap(destinyPhrase)} é o mais provável (${percent.format(chanceOf(likely))})`}
               </span>
             </div>
@@ -327,8 +347,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         </table>
       </div>
       <p className="projection-table-note">
-        Faixas onde o destino não muda (0% ou 100% do início ao fim) são agrupadas numa única linha,
-        sempre com a barra preenchida ou vazia; o IC 95% aparece só quando há de fato incerteza.
+        Apenas pontos consecutivos com as mesmas probabilidades, sucessos, denominadores, clusters, ICs e sinalizadores de amostra baixa são agrupados.
+        Assim, cada IC e denominador continuam correspondendo às pontuações exibidas; em 0% e 100%, o intervalo não é útil e não aparece.
       </p>
     </section>
   )
@@ -372,8 +392,8 @@ function ProbabilityCell({ value, lower, upper }: ProbabilityCellProps): JSX.Ele
 }
 
 const ZONE_BAR_SEGMENTS = [
-  { key: 'title', className: 'zone-bar--title', label: 'Título' },
-  { key: 'libertadores', className: 'zone-bar--libertadores', label: 'Libertadores' },
+  { key: 'title', className: 'zone-bar--title', label: 'Campeão' },
+  { key: 'libertadores', className: 'zone-bar--libertadores', label: 'Libertadores 2º–6º' },
   { key: 'sudamericana', className: 'zone-bar--sudamericana', label: 'Sul-Americana' },
   { key: 'middle', className: 'zone-bar--middle', label: 'Meio de tabela' },
   { key: 'relegation', className: 'zone-bar--relegation', label: 'Rebaixamento' },
@@ -383,10 +403,13 @@ interface ClubForBar extends ClubProbability {}
 
 /** Barra 100% com as cinco zonas possíveis do clube — leitura instantânea do cenário. */
 function ZoneStackedBar({ club }: { club: ClubForBar }): JSX.Element {
-  const middle = Math.max(0, 1 - club.title - club.libertadores - club.sudamericana - club.relegation)
+  // A coluna geral de Libertadores é inclusiva (1º–6º); na barra, o campeão
+  // fica separado e a faixa Libertadores representa somente 2º–6º.
+  const libertadoresExclusive = Math.max(0, club.libertadores - club.title)
+  const middle = Math.max(0, 1 - club.title - libertadoresExclusive - club.sudamericana - club.relegation)
   const values: Record<(typeof ZONE_BAR_SEGMENTS)[number]['key'], number> = {
     title: club.title,
-    libertadores: club.libertadores,
+    libertadores: libertadoresExclusive,
     sudamericana: club.sudamericana,
     middle,
     relegation: club.relegation,
@@ -403,9 +426,9 @@ function ZoneStackedBar({ club }: { club: ClubForBar }): JSX.Element {
 
 function ZoneBarLegend(): JSX.Element {
   return (
-    <div className="zone-bar-legend" aria-hidden="true">
+    <div className="zone-bar-legend" role="group" aria-label="Legenda das barras de zonas">
       {ZONE_BAR_SEGMENTS.map((segment) => (
-        <span key={segment.key}><i className={`zone-bar-swatch ${segment.className}`} />{segment.label}</span>
+        <span key={segment.key}><i className={`zone-bar-swatch ${segment.className}`} aria-hidden="true" />{segment.label}</span>
       ))}
     </div>
   )
@@ -506,6 +529,8 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
       <p className="projection-disclaimer">
         Não são odds nem recomendação de apostas. A dispersão de Monte Carlo mede apenas a variação da simulação com este modelo; não representa toda a incerteza dos dados ou da metodologia.
       </p>
+      <p className="projection-table-note"><strong>G-6*:</strong> cenário adotado neste painel; a vaga ao 6º não é conclusão automática apenas porque o Palmeiras chegou à final da Copa do Brasil.</p>
+      <p className="projection-table-note"><strong>Regulamento:</strong> o <a href="https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf" target="_blank" rel="noreferrer">REC CBF 2026 (Art. 7)</a> aloca à Sul-Americana os seis clubes seguintes que não estejam na Libertadores (7º–12º neste cenário). A redistribuição depende das regras aplicáveis e da sobreposição de classificados; títulos e vagas de copas não são simulados.</p>
 
       {status === 'loading' && <p className="projection-status" role="status">Calculando cenários em segundo plano…</p>}
       {status === 'ready' && <p className="sr-only" role="status">Projeção concluída: probabilidades e distribuições para {integer.format(result?.simulations ?? SIMULATION_COUNT)} simulações disponíveis.</p>}
@@ -597,7 +622,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                 </tbody>
               </table>
             </div>
-            <p className="projection-footnote">¹ Considera as posições 1–5 na tabela (1º–4º direto; 5º preliminar). ² Posições 6–11: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. Chances condicionais a este recorte e às vagas geradas pela tabela; títulos de Copa do Brasil e CONMEBOL, que redistribuem vagas, não foram simulados.</p>
+            <p className="projection-footnote">¹ Considera as posições 1–6* na tabela (1º–4º direto; 5º preliminar); consulte acima a premissa do asterisco. ² Posições 7–12: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. As chances são condicionais a este recorte.</p>
 
             <h4 className="points-table-title" id="points-final-title">Quantos pontos cada clube deve fazer?</h4>
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Pontos finais projetados por clube; role para rolagem horizontal em telas pequenas" tabIndex={0}>
