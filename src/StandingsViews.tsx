@@ -3,6 +3,7 @@ import { attackDefenseLeaders, currentStreaks, lastNRounds, positionByRound, sta
 import { espnLogoUrl } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
+import { getZoneLabel } from './data'
 
 /**
  * Aba Classificações: as vistas clássicas de análise (geral, últimas rodadas,
@@ -78,7 +79,8 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
                       {espnLogoUrl(row.id) && (
                         <img className="crest crest--xs" src={espnLogoUrl(row.id)} alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
                       )}
-                      <span>{row.club}</span>
+                      <span className="club-cell-name">{row.club}</span>
+                      <span className={`zone-tag zone-tag--${zoneClass(row.position)}`}>{getZoneLabel(row.position)}</span>
                     </th>
                   )
                   : <td key={column.id} className={column.id === 'points' ? 'numeric points-cell' : 'numeric games-cell'}>{formatCell(row, column.id)}</td>

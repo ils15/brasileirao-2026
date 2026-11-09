@@ -28,6 +28,16 @@ describe('aba classificações', () => {
     expect(note).toHaveTextContent(/6º lugar depende das regras de redistribuição e da sobreposição de classificados/)
   })
 
+  it('repete os rótulos das zonas nas vistas da classificação além das faixas de cor', () => {
+    render(<StandingsViews />)
+    const table = screen.getByRole('region', { name: /Classificação geral/ })
+
+    expect(within(table).getAllByText('Libertadores · 1º–6º*')).toHaveLength(6)
+    expect(within(table).getAllByText('Sul-Americana · 7º–12º')).toHaveLength(6)
+    expect(within(table).getAllByText('Meio de tabela · 13º–16º')).toHaveLength(4)
+    expect(within(table).getAllByText('Rebaixamento · 17º–20º')).toHaveLength(4)
+  })
+
   it('separa a norma oficial, a ordem desta tabela e o limite temporal de cartões antes das vistas', () => {
     render(<StandingsViews />)
     const limitation = screen.getByRole('note', { name: 'Limitação do desempate pelo Art. 15 da CBF' })
