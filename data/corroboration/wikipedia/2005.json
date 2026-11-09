@@ -1,0 +1,32 @@
+{
+  "season": 2005,
+  "status": "corroboration_unavailable",
+  "statusReason": "A revisão fixada do artigo não contém matriz de resultados casa/fora; há apenas resumo, classificação final e estatísticas. Nenhum placar foi extraído.",
+  "matches": [],
+  "validation": {
+    "expectedClubs": 22,
+    "clubs": null,
+    "expectedMatches": null,
+    "matches": 0,
+    "goalsFor": null,
+    "goalsAgainst": null,
+    "arithmeticConsistent": null,
+    "distinctDirectedFixtures": null
+  },
+  "provenance": {
+    "article": "2005 Campeonato Brasileiro Série A",
+    "articleUrl": "https://en.wikipedia.org/wiki/2005_Campeonato_Brasileiro_S%C3%A9rie_A",
+    "oldid": 1381069893,
+    "permalink": "https://en.wikipedia.org/w/index.php?oldid=1381069893",
+    "revisionTimestamp": "2026-10-19T20:33:49Z",
+    "retrieved_at": "2026-11-09T16:49:22.778Z",
+    "license": "CC-BY-SA-4.0",
+    "licenseFile": "data/corroboration/wikipedia/LICENSE",
+    "modifications": [
+      "Extração apenas dos parâmetros match_<mandante>_<visitante> do módulo Module:Sports results.",
+      "Normalização dos nomes de clubes para os identificadores do projeto.",
+      "Remoção de prosa, referências, classificação e demais seções do artigo.",
+      "Anotações de rodada entre <sup> preservadas como campo opcional, sem uso na identidade do fixture."
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+NOTICE — licenças por diretório
+================================
+
+Este repositório combina dados de origens e licenças distintas. O mapa abaixo
+indica a licença aplicável a cada diretório.
+
+  data/source-snapshots/**
+      CC0-1.0 (Creative Commons Zero 1.0 Universal), para os snapshots de
+      fontes abertas. A cópia da licença do snapshot OpenFootball 2003–2011
+      está em data/source-snapshots/openfootball-br-2003-2011/LICENSE.md.
+      Os demais arquivos de snapshot preservam os termos da fonte original.
+
+  data/corroboration/**
+      CC-BY-SA-4.0 (Creative Commons Atribuição-CompartilhaIgual 4.0
+      Internacional), para o sidecar extraído da Wikipédia em inglês.
+      Licença em https://creativecommons.org/licenses/by-sa/4.0/.
+      Texto integral em data/corroboration/wikipedia/LICENSE; atribuição,
+      artigos, revisões (oldid) e modificações em
+      data/corroboration/wikipedia/NOTICE.
+
+  Código-fonte (src/, scripts/, configuração, docs/)
+      Sem licença de código declarada neste repositório; todos os direitos
+      reservados ao mantenedor, salvo indicação em contrário no próprio
+      arquivo ou em documentação específica.
+
+A camada data/corroboration/** é usada apenas por ferramentas offline de
+auditoria. Ela não é consumida pelo runtime, e os placares publicados pelo
+aplicativo continuam vindo exclusivamente da camada canônica OpenFootball
+(CC0) descrita em data/source-snapshots/openfootball-br-2003-2011/.

@@ -1,0 +1,5 @@
+# Snapshots verbatim do OpenFootball: os bytes (inclusive whitespace à direita)
+# são a prova de proveniência — blob SHA-1 e SHA-256 estão fixados em
+# scripts/pack-history.test.mjs. Desabilita só as checagens de whitespace do git
+# para estes arquivos; o restante do repositório continua sob o gate padrão.
+data/source-snapshots/openfootball-br-2003-2011/*.txt -whitespace -text

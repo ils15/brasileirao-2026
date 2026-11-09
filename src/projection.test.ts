@@ -1,12 +1,23 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 import { standings } from './data'
 import { currentSeasonResults } from './currentSeasonResults'
-import { HISTORICAL_SOURCE } from './historicalSeasons'
+import { HISTORICAL_SOURCE, modelableHistoricalSeasons } from './historicalSeasons'
 import { historicalSeasons, remainingFixtures, currentClubs } from './projectionData'
 import { buildCurrentSeasonHeadToHead, buildPointsAnalysis, compareHeadToHeadForTable, isPositionInZone, runProjection, runTemporalBacktest, simulateOneSeason, validateHistoricalSeason, ZONES } from './projection'
 
 describe('projeção estática do Brasileirão 2026', () => {
+  it('separa integridade estrutural, amostra RSSSF e verificação de tabela final', () => {
+    const season = historicalSeasons.find(({ year }) => year === 2003)!
+
+    expect(validateHistoricalSeason(season)).toMatchObject({
+      structuralValid: true,
+      sampleVerified: true,
+      standingsVerified: false,
+      mismatchedClubs: 0,
+    })
+  })
+
   it('mantém as fronteiras G-6, seis vagas seguintes na Sul-Americana e rebaixamento', () => {
     expect(isPositionInZone(6, ZONES.libertadores)).toBe(true)
     expect(isPositionInZone(7, ZONES.libertadores)).toBe(false)
@@ -64,11 +75,12 @@ describe('projeção estática do Brasileirão 2026', () => {
       const remaining = remainingFixtures.filter((fixture) => fixture.home === club.id || fixture.away === club.id)
       expect(club.played + remaining.length).toBe(38)
     }
-    expect(historicalSeasons).toHaveLength(14)
+    expect(historicalSeasons).toHaveLength(23)
     for (const season of historicalSeasons) {
-      // 2016 tem 379: Chapecoense × Atlético-MG de 11/12/2016 ficou sem placar no CSV
+      // 2003–2005 tiveram 24, 24 e 22 clubes; 2006+ usa o formato de 20.
+      // 2016 tem 379: Chapecoense × Atlético-MG de 11/12/2016 ficou sem placar no CSV.
       expect(season.matches.length).toBeGreaterThanOrEqual(379)
-      expect(season.matches.length).toBeLessThanOrEqual(380)
+      expect(season.matches.length).toBeLessThanOrEqual(552)
       const chronology = season.matches.map(([, , , , kickoff, sourceOrdinal]) => ({ kickoff, sourceOrdinal }))
       expect(chronology).toHaveLength(season.matches.length)
       expect(chronology.every(({ kickoff }) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(kickoff))).toBe(true)
@@ -77,14 +89,21 @@ describe('projeção estática do Brasileirão 2026', () => {
         left.kickoff.localeCompare(right.kickoff) || left.sourceOrdinal - right.sourceOrdinal,
       ))
       const validation = validateHistoricalSeason(season)
-      expect(validation.clubs).toBe(20)
+      expect(validation.clubs).toBe(season.teamIds.length)
       if (season.validation.standingsVerified) {
-        expect(season.officialStandings).toHaveLength(20)
-        expect(validation).toEqual({ matches: season.matches.length, clubs: 20, mismatchedClubs: 0, standingsVerified: true })
+        expect(season.officialStandings).toHaveLength(season.teamIds.length)
       } else {
         expect(season.officialStandings).toBeUndefined()
-        expect(validation).toEqual({ matches: season.matches.length, clubs: 20, mismatchedClubs: 0, standingsVerified: false })
       }
+      expect(validation).toMatchObject({
+        matches: season.matches.length,
+        clubs: season.teamIds.length,
+        mismatchedClubs: 0,
+        standingsVerified: Boolean(season.officialStandings),
+        structuralValid: true,
+        sampleVerified: Boolean(season.provenance),
+        structuralIssues: 0,
+      })
     }
   })
 
@@ -185,21 +204,34 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(champion?.samples).toBe(0)
   })
 
-  it('corta o backtest pela data/hora explícita mesmo quando as partidas chegam fora da ordem do array', () => {
-    const season = historicalSeasons[0]!
-    const originalMatches = season.matches
-    let backtest: ReturnType<typeof runTemporalBacktest>
-    season.matches = [...originalMatches].reverse()
+  it('não deixa histórico não modelável nem ordem do array vazarem para o backtest', async () => {
+    // historicalSeasons traz 2003–2011, que nunca entram no modelo; dentro do
+    // recorte modelável, 2012 chega com as partidas invertidas. Se o backtest
+    // usasse a lista completa ou a ordem do array em vez do recorte explícito
+    // e da cronologia por kickoff/ordinal, os números abaixo mudariam.
+    const doctored = historicalSeasons.map((season) => season.year === 2012
+      ? { ...season, matches: [...season.matches].reverse() }
+      : season)
+    vi.resetModules()
+    vi.doMock('./historicalSeasons', () => ({
+      historicalSeasons: doctored,
+      modelableHistoricalSeasons: doctored.filter(({ year }) => year >= 2012),
+    }))
     try {
-      backtest = runTemporalBacktest()
+      // Módulo recém-importado: ignora o cache de runTemporalBacktest.
+      const { runTemporalBacktest: runFreshBacktest } = await import('./projection')
+      const backtest = runFreshBacktest()
+      expect(backtest.seasons.map(({ year }) => year)).toEqual(modelableHistoricalSeasons.map(({ year }) => year))
+      expect(backtest.matches).toBe(1121)
+      expect(backtest.modelBrier).toBeCloseTo(0.61335, 5)
+      expect(backtest.tableBrier).toBeCloseTo(0.34386, 5)
+      // k de produção escolhido por walk-forward (k aplicado à última
+      // temporada usando apenas anos anteriores), não in-sample.
+      expect(backtest.productionShrinkageMatches).toBe(15)
     } finally {
-      season.matches = originalMatches
+      vi.doUnmock('./historicalSeasons')
+      vi.resetModules()
     }
-    expect(backtest.modelBrier).toBeCloseTo(0.61335, 5)
-    expect(backtest.tableBrier).toBeCloseTo(0.34386, 5)
-    // k de produção escolhido por walk-forward (k aplicado à última
-    // temporada usando apenas anos anteriores), não in-sample.
-    expect(backtest.productionShrinkageMatches).toBe(15)
   })
 
   it('mantém os kickoffs empatados juntos e informa os folds do backtest sem usar jogos futuros', () => {

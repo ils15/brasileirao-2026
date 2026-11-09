@@ -1,4 +1,5 @@
-import { currentClubs, historicalSeasons, remainingFixtures } from './projectionData'
+import { currentClubs, remainingFixtures } from './projectionData'
+import { historicalSeasons, modelableHistoricalSeasons } from './historicalSeasons'
 import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonResults'
 import type { HistoricalMatch } from './historicalSeasons'
 import {
@@ -213,7 +214,7 @@ interface RandomSource {
 // vivem em matchModel.ts; este módulo apenas as consome (auditoria: fórmulas
 // duplicadas com guardas divergentes entre projection.ts e matchModel.ts).
 
-function historicalMatches(seasons = historicalSeasons): MatchInput[] {
+function historicalMatches(seasons = modelableHistoricalSeasons): MatchInput[] {
   return seasons.flatMap((season) => season.matches.map((match) => historicalMatchInput(season.teamIds, match)))
 }
 
@@ -488,12 +489,12 @@ export function simulateOneSeason(seed: number): SingleSeasonResult {
 }
 
 function createBacktestSeason(year: number): { seasonMatches: MatchInput[]; priorMatches: MatchInput[] } {
-  const season = historicalSeasons.find((entry) => entry.year === year)
+  const season = modelableHistoricalSeasons.find((entry) => entry.year === year)
   if (!season) throw new Error(`Temporada histórica não empacotada: ${year}`)
   const seasonMatches = season.matches
     .map((match) => historicalMatchInput(season.teamIds, match))
     .sort(compareHistoricalChronology)
-  const priorMatches = historicalMatches(historicalSeasons.filter((entry) => entry.year < year))
+  const priorMatches = historicalMatches(modelableHistoricalSeasons.filter((entry) => entry.year < year))
   return { seasonMatches, priorMatches }
 }
 
@@ -623,7 +624,7 @@ function historicalTableBacktest(year: number, shrinkageMatches: number): { tabl
   const trainingMatches = [...priorMatches, ...cutoff]
   const averages = historicalGoalAverages(trainingMatches)
   const totals = seasonToDateTotals(cutoff)
-  const season = historicalSeasons.find((entry) => entry.year === year)!
+  const season = modelableHistoricalSeasons.find((entry) => entry.year === year)!
   const headToHead = new Map<string, Map<string, HeadToHeadRecord>>()
 
   for (const match of cutoff) {
@@ -689,7 +690,7 @@ export function runTemporalBacktest(): BacktestSummary {
   const seasons: BacktestSeason[] = []
   const candidatesByYear = new Map<number, MatchBacktestResult[]>()
 
-  for (const season of historicalSeasons) {
+  for (const season of modelableHistoricalSeasons) {
     const priorResults = seasons
     const shrinkageMatches = priorResults.length === 0
       ? 12
@@ -732,23 +733,64 @@ export function runTemporalBacktest(): BacktestSummary {
   return cachedTemporalBacktest
 }
 
-export function validateHistoricalSeason(season: (typeof historicalSeasons)[number]): { matches: number; clubs: number; mismatchedClubs: number; standingsVerified: boolean } {
-  if (!season.officialStandings) {
-    return { matches: season.matches.length, clubs: season.teamIds.length, mismatchedClubs: 0, standingsVerified: false }
+export function validateHistoricalSeason(season: (typeof historicalSeasons)[number]): {
+  matches: number
+  clubs: number
+  mismatchedClubs: number
+  standingsVerified: boolean
+  structuralValid: boolean
+  sampleVerified: boolean
+  structuralIssues: number
+} {
+  const ids = season.teamIds.map(normalizeTeamId)
+  const fixtureKeys = new Set<string>()
+  let structuralIssues = new Set(ids).size === ids.length ? 0 : 1
+  season.matches.forEach(([homeIndex, awayIndex, homeGoals, awayGoals, kickoff, sourceOrdinal], index) => {
+    const home = ids[homeIndex]
+    const away = ids[awayIndex]
+    const dateTime = kickoff.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/)
+    const timeValid = dateTime != null && Number(dateTime[4]) < 24 && Number(dateTime[5]) < 60
+    const dateValid = dateTime != null && (() => {
+      const date = new Date(Date.UTC(Number(dateTime[1]), Number(dateTime[2]) - 1, Number(dateTime[3])))
+      return date.getUTCFullYear() === Number(dateTime[1])
+        && date.getUTCMonth() === Number(dateTime[2]) - 1
+        && date.getUTCDate() === Number(dateTime[3])
+    })()
+    if (!home || !away || homeIndex === awayIndex || !Number.isInteger(homeGoals) || homeGoals < 0
+      || !Number.isInteger(awayGoals) || awayGoals < 0 || !timeValid || !dateValid || sourceOrdinal !== index + 1) {
+      structuralIssues += 1
+    }
+    if (!home || !away) return
+    const fixtureKey = `${kickoff}|${home}|${away}`
+    if (fixtureKeys.has(fixtureKey)) structuralIssues += 1
+    fixtureKeys.add(fixtureKey)
+  })
+  if (season.validation.matches !== season.matches.length || season.validation.clubs !== season.teamIds.length) structuralIssues += 1
+
+  let mismatchedClubs = 0
+  if (season.officialStandings) {
+    const totals = seasonToDateTotals(historicalMatches([season]))
+    mismatchedClubs = season.officialStandings.filter(([rawId, points, played, wins, draws, losses, goalsFor, goalsAgainst]) => {
+      const actual = totals.get(normalizeTeamId(rawId))
+      return !actual
+        || actual.points !== points
+        || actual.played !== played
+        || actual.wins !== wins
+        || actual.draws !== draws
+        || actual.losses !== losses
+        || actual.goalsFor !== goalsFor
+        || actual.goalsAgainst !== goalsAgainst
+    }).length
   }
-  const totals = seasonToDateTotals(historicalMatches([season]))
-  const mismatchedClubs = season.officialStandings.filter(([rawId, points, played, wins, draws, losses, goalsFor, goalsAgainst]) => {
-    const actual = totals.get(normalizeTeamId(rawId))
-    return !actual
-      || actual.points !== points
-      || actual.played !== played
-      || actual.wins !== wins
-      || actual.draws !== draws
-      || actual.losses !== losses
-      || actual.goalsFor !== goalsFor
-      || actual.goalsAgainst !== goalsAgainst
-  }).length
-  return { matches: season.matches.length, clubs: season.teamIds.length, mismatchedClubs, standingsVerified: true }
+  return {
+    matches: season.matches.length,
+    clubs: season.teamIds.length,
+    mismatchedClubs,
+    standingsVerified: Boolean(season.officialStandings),
+    structuralValid: structuralIssues === 0,
+    sampleVerified: season.provenance?.rsssfSampleVerified ?? false,
+    structuralIssues,
+  }
 }
 
 function createExpectedGoals(): ExpectedGoals[] {

@@ -3,6 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { FixtureCalendar } from './FixtureCalendar'
 import { remainingFixtures } from './projectionData'
+import { historicalSeasons } from './historicalSeasons'
+import { normalizeTeamId } from './clubIds'
+import { getHistoricalVenueStats } from './seasonStats'
 
 describe('calendário e retrospecto por mando', () => {
   it('lista para o clube selecionado exatamente os fixtures usados na simulação', () => {
@@ -14,8 +17,30 @@ describe('calendário e retrospecto por mando', () => {
       remainingFixtures.filter(({ home, away }) => home === 'flamengo' || away === 'flamengo').length,
     )
     expect(within(calendar).getByText(/2026 · em casa/)).toBeInTheDocument()
-    expect(within(calendar).getByText(/2021–2025 · fora/)).toBeInTheDocument()
+    expect(within(calendar).getByText(/2003–2025 · fora/)).toBeInTheDocument()
     expect(within(calendar).getByText(/Sem índice de dificuldade/)).toBeInTheDocument()
+  })
+
+  it('rotula o histórico por mando com o período realmente agregado', () => {
+    const years = historicalSeasons.map(({ year }) => year)
+    const periodLabel = `${Math.min(...years)}–${Math.max(...years)}`
+    const flamengo = getHistoricalVenueStats('flamengo')
+
+    render(<FixtureCalendar />)
+    const calendar = screen.getByRole('region', { name: 'Calendário restante por clube' })
+    const homeCard = within(calendar).getByText(`${periodLabel} · em casa`).closest('article')
+    const awayCard = within(calendar).getByText(`${periodLabel} · fora`).closest('article')
+
+    expect(homeCard).not.toBeNull()
+    expect(awayCard).not.toBeNull()
+    // O número exibido é o agregado de todas as temporadas empacotadas...
+    expect(homeCard!.textContent).toContain(`${flamengo.home.matches} · ${flamengo.home.wins}-${flamengo.home.draws}-${flamengo.home.losses}`)
+    expect(awayCard!.textContent).toContain(`${flamengo.away.matches} · ${flamengo.away.wins}-${flamengo.away.draws}-${flamengo.away.losses}`)
+    // ...portanto o período do rótulo precisa cobrir mais que o recorte recente 2021–2025.
+    const recentHome = historicalSeasons
+      .filter(({ year }) => year >= 2021)
+      .reduce((total, season) => total + season.matches.filter(([home]) => normalizeTeamId(season.teamIds[home]!) === 'flamengo').length, 0)
+    expect(flamengo.home.matches).toBeGreaterThan(recentHome)
   })
 
   it('atualiza calendário, mando e adversário por seleção acessível de clube', async () => {
@@ -41,7 +66,7 @@ describe('calendário e retrospecto por mando', () => {
     // Chips compactos com ícone de mando (casa/fora)
     const miniGrid = fixtureView.getByLabelText('Estatísticas H2H de Flamengo contra Athletico Paranaense')
     expect(miniGrid.querySelectorAll('.h2h-mini')).toHaveLength(4)
-    expect(miniGrid.textContent).toContain('2021–25 casa')
+    expect(miniGrid.textContent).toContain('2003–25 casa')
     expect(miniGrid.textContent).toContain('2026 fora')
     await user.click(fixtureView.getByText(/Placares do retrospecto/))
     const scores = fixtureView.getByRole('list', { name: 'Placares H2H de Flamengo e Athletico Paranaense' })

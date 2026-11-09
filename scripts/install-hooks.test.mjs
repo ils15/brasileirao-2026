@@ -13,6 +13,13 @@ import { spawnSync } from "node:child_process";
 
 const installer = resolve(process.cwd(), "scripts/install-hooks.mjs");
 const temporaryDirectories = [];
+const inheritedGitEnvironment = [
+  "GIT_DIR",
+  "GIT_WORK_TREE",
+  "GIT_INDEX_FILE",
+  "GIT_COMMON_DIR",
+  "GIT_PREFIX",
+];
 
 function runGit(args, cwd, env) {
   const result = spawnSync("git", args, { cwd, env, encoding: "utf8" });
@@ -35,6 +42,7 @@ function createRepository() {
     GIT_CONFIG_NOSYSTEM: "1",
     HOME: directory,
   };
+  for (const variable of inheritedGitEnvironment) delete env[variable];
   runGit(["init", "--quiet", root], directory, env);
   return { directory, root, globalConfig, env };
 }

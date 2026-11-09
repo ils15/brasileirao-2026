@@ -1,0 +1,32 @@
+{
+  "season": 2004,
+  "status": "corroboration_unavailable",
+  "statusReason": "A revisão fixada do artigo não contém matriz de resultados casa/fora; há apenas classificação final e resumo. Nenhum placar foi extraído.",
+  "matches": [],
+  "validation": {
+    "expectedClubs": 24,
+    "clubs": null,
+    "expectedMatches": null,
+    "matches": 0,
+    "goalsFor": null,
+    "goalsAgainst": null,
+    "arithmeticConsistent": null,
+    "distinctDirectedFixtures": null
+  },
+  "provenance": {
+    "article": "2004 Campeonato Brasileiro Série A",
+    "articleUrl": "https://en.wikipedia.org/wiki/2004_Campeonato_Brasileiro_S%C3%A9rie_A",
+    "oldid": 1324706996,
+    "permalink": "https://en.wikipedia.org/w/index.php?oldid=1324706996",
+    "revisionTimestamp": "2025-11-29T05:01:22Z",
+    "retrieved_at": "2026-11-09T16:49:22.778Z",
+    "license": "CC-BY-SA-4.0",
+    "licenseFile": "data/corroboration/wikipedia/LICENSE",
+    "modifications": [
+      "Extração apenas dos parâmetros match_<mandante>_<visitante> do módulo Module:Sports results.",
+      "Normalização dos nomes de clubes para os identificadores do projeto.",
+      "Remoção de prosa, referências, classificação e demais seções do artigo.",
+      "Anotações de rodada entre <sup> preservadas como campo opcional, sem uso na identidade do fixture."
+    ]
+  }
+}

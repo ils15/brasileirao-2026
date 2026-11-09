@@ -1,6 +1,7 @@
 import { currentSeasonResults, CURRENT_SEASON_SOURCE } from './currentSeasonResults'
 import { SCORERS_SOURCE } from './scorers2026'
 import { currentClubs, remainingFixtures, historicalSeasons } from './projectionData'
+import { modelableHistoricalSeasons } from './historicalSeasons'
 import { cbfOfficialSchedule } from './cbfOfficialSchedule'
 import { filterAtOrBeforeAnalyticalCutoff, ANALYTICAL_CUTOFF_LOCAL, ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
@@ -45,6 +46,10 @@ export const historicalFacts = {
   firstYear: Math.min(...historicalSeasons.map((season) => season.year)),
   lastYear: Math.max(...historicalSeasons.map((season) => season.year)),
   totalMatches: historicalSeasons.reduce((sum, season) => sum + season.matches.length, 0),
+  modelableSeasons: modelableHistoricalSeasons.length,
+  modelableFirstYear: Math.min(...modelableHistoricalSeasons.map((season) => season.year)),
+  modelableLastYear: Math.max(...modelableHistoricalSeasons.map((season) => season.year)),
+  modelableMatches: modelableHistoricalSeasons.reduce((sum, season) => sum + season.matches.length, 0),
   verifiedRange: '2021–2025',
 } as const
 

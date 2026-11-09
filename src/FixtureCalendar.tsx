@@ -64,8 +64,13 @@ export function FixtureCalendar(): JSX.Element {
       <div className="venue-stats-grid" aria-label={`Desempenho de ${selectedClub.club} por mando`}>
         <VenueStatsCard title="2026 · em casa" venue="home" stats={currentStats.home} />
         <VenueStatsCard title="2026 · fora" venue="away" stats={currentStats.away} />
-        <VenueStatsCard title="2021–2025 · em casa" venue="home" stats={historicalStats.home} />
-        <VenueStatsCard title="2021–2025 · fora" venue="away" stats={historicalStats.away} />
+        {/* O painel expõe o histórico completo disponível, não um recorte recente:
+            getHistoricalVenueStats agrega todas as temporadas de historicalSeasons
+            (OpenFootball 2003–2011 + Football-Data 2012–2025, 9.176 partidas), e o
+            README descreve o retrospecto do calendário como 2003–2025. Os rótulos
+            precisam acompanhar o agregado; rotular de "2021–2025" subnotificava o período. */}
+        <VenueStatsCard title="2003–2025 · em casa" venue="home" stats={historicalStats.home} />
+        <VenueStatsCard title="2003–2025 · fora" venue="away" stats={historicalStats.away} />
       </div>
 
       <div className="fixture-list-heading">
@@ -109,8 +114,8 @@ export function FixtureCalendar(): JSX.Element {
               <div className="head-to-head-context">
                 <p>Retrospecto H2H · informativo; sem peso na projeção. Resultados históricos, não previsão.</p>
                 <div className="h2h-mini-grid" aria-label={`Estatísticas H2H de ${home} contra ${away}`}>
-                  <span className="h2h-mini"><HomeIcon /> 2021–25 casa · N{headToHead.historical.home.matches} · {headToHead.historical.home.wins}-{headToHead.historical.home.draws}-{headToHead.historical.home.losses} · {headToHead.historical.home.points} pts</span>
-                  <span className="h2h-mini"><AwayIcon /> 2021–25 fora · N{headToHead.historical.away.matches} · {headToHead.historical.away.wins}-{headToHead.historical.away.draws}-{headToHead.historical.away.losses} · {headToHead.historical.away.points} pts</span>
+                  <span className="h2h-mini"><HomeIcon /> 2003–25 casa · N{headToHead.historical.home.matches} · {headToHead.historical.home.wins}-{headToHead.historical.home.draws}-{headToHead.historical.home.losses} · {headToHead.historical.home.points} pts</span>
+                  <span className="h2h-mini"><AwayIcon /> 2003–25 fora · N{headToHead.historical.away.matches} · {headToHead.historical.away.wins}-{headToHead.historical.away.draws}-{headToHead.historical.away.losses} · {headToHead.historical.away.points} pts</span>
                   <span className="h2h-mini"><HomeIcon /> 2026 casa · N{headToHead.current.home.matches} · {headToHead.current.home.wins}-{headToHead.current.home.draws}-{headToHead.current.home.losses} · {headToHead.current.home.points} pts</span>
                   <span className="h2h-mini"><AwayIcon /> 2026 fora · N{headToHead.current.away.matches} · {headToHead.current.away.wins}-{headToHead.current.away.draws}-{headToHead.current.away.losses} · {headToHead.current.away.points} pts</span>
                 </div>

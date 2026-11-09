@@ -42,7 +42,7 @@ com fórmula explícita e base amostral declarada.
 | **xG (gols esperados do jogo)** | Soma do valor xG de cada chute do clube na partida (fonte 365scores); alimenta o blend de gols. Não é dado disciplinar. A captura foi pós-corte e não tem timestamp por partida suficiente para certificar disponibilidade histórica | Metodologia, Auditoria §18 |
 | **Força por clube/mando** | Taxas de ataque e defesa (gols/jogo) regularizadas para a média da liga; a mesma tabela alimenta os 48 confrontos da simulação | Aba Metodologia & Validação |
 | **Probabilidade de resultado** | Marginais H/E/F de duas Poisson independentes com os λ do confronto; barras somam 100% | Aba Confrontos |
-| **Retrospecto direto** | Barra V-E-D + timeline dos encontros 2021–2026 disponíveis; histórico, nunca altera probabilidades | Aba Confrontos |
+| **Retrospecto direto** | Barra V-E-D + timeline dos encontros 2003–2026 disponíveis; 2003–2011 é OpenFootball (CC0), 2012–2025 Football-Data e 2026 fontes atuais. Histórico, nunca altera probabilidades | Aba Confrontos |
 
 ## Projeções (Monte Carlo)
 
@@ -63,7 +63,7 @@ com fórmula explícita e base amostral declarada.
 | **Amostra baixa** | Célula da curva cujo IC 95% tem largura ≥ 0,10 | Aba Projeções |
 | **Brier H/E/F** | Σ (pᵢ − 1[i=real])² por partida, médio por temporada; menor é melhor | Backtest, ablação |
 | **k (encolhimento)** | Jogos de peso prévio na regularização das taxas de ataque/defesa; produção usa k=20 escolhido por walk-forward (temporada 2025, apenas anos anteriores) | Metodologia |
-| **μ casa/fora (base de treino)** | Média de gols por mando na base efetiva (1.900 jogos históricos + 339 de 2026 até o corte); o histórico puro é exibido como referência editorial | Metodologia |
+| **μ casa/fora (base de treino)** | Média por mando sobre os jogos elegíveis de 2012–2025 mais os resultados elegíveis de 2026 até o corte; o histórico puro modelável é exibido como referência editorial. OpenFootball pré-2012 não entra nessa base | Metodologia |
 
 ## Dados e auditoria
 
@@ -72,7 +72,8 @@ com fórmula explícita e base amostral declarada.
 | **Referência da Fonte** | Linha do CSV Football-Data (`csv-line-N`) ou ID de evento ESPN | Log de resultados, exportações |
 | **Proveniência (bloco de exportação)** | `fonte` (URL + SHA-256 + captura, quando registrada), `corteAnalitico` e `geradoEm` do arquivo exportado; a geração do pacote não é a publicação | Aba Dados & Auditoria |
 | **Validação da temporada 2026** | 339 resultados + 41 pendentes = 380 pares únicos do calendário local CBF; estatísticas por mando fecham com o agregado derivado dos resultados (pontos/V/E/D/GP/GC). A cópia HTML da classificação CBF soma 332 jogos e não valida o conjunto atual | Aba Dados & Auditoria |
-| **Validação histórica** | Totais oficiais de cada temporada 2021–2025 conferem com os placares empacotados (100 clubes-temporada, sem divergências) | Aba Dados & Auditoria |
+| **Validação histórica** | Totais oficiais CBF de cada temporada 2021–2025 conferem com os placares empacotados (100 clubes-temporada, sem divergências). Para OpenFootball 2003–2011 há uma partida datada amostral por ano contra RSSSF; não certifica tabelas completas. Diferenças 2004/2005 estão documentadas e os placares do snapshot não são substituídos | Aba Dados & Auditoria · `docs/historico-2003-2011.md` |
+| **Fronteira do modelo** | 5.319 partidas completas de 2012–2025 podem alimentar treino, projeções, calibração e backtests. As 3.857 partidas OpenFootball de 2003–2011 servem apenas ao H2H descritivo | Metodologia · `historicalSeasons.ts` |
 | **Snapshot estático** | Sem API nem atualização em runtime; pacote gerado em 07/11/2026 00:58:14.422Z (06/11/2026 21:58:14.422 BRT). Captura individual das fontes e horário da publicação não foram registrados | Badge em todas as telas |
 
 ## Convenções de exibição

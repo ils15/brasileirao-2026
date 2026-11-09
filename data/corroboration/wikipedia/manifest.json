@@ -1,0 +1,71 @@
+{
+  "source": "English Wikipedia (en.wikipedia.org)",
+  "license": "CC-BY-SA-4.0",
+  "licenseFile": "data/corroboration/wikipedia/LICENSE",
+  "generatedBy": "scripts/fetch-wikipedia-corroboration.mjs",
+  "seasons": {
+    "2003": {
+      "file": "2003.json",
+      "sha256": "52dafcd851ea2946e78648a79330a33fb851baa852f298e7471e551966968041",
+      "status": "not_corroborated",
+      "oldid": 1314521303,
+      "matches": 0
+    },
+    "2004": {
+      "file": "2004.json",
+      "sha256": "e54d6c6a6c786569f610cb1ea8df0af64ea23a42d2ce5b7e11009101ac093c3d",
+      "status": "corroboration_unavailable",
+      "oldid": 1324706996,
+      "matches": 0
+    },
+    "2005": {
+      "file": "2005.json",
+      "sha256": "dc8128f8dafe0c6c2e68e9706d2c8045b7ea079e4724d6287caf87ea5a620fb1",
+      "status": "corroboration_unavailable",
+      "oldid": 1381069893,
+      "matches": 0
+    },
+    "2006": {
+      "file": "2006.json",
+      "sha256": "784aae1a74fe4ab8879239143dbd41ace2acd8fbcc85ec991b297d18e267901f",
+      "status": "corroborated",
+      "oldid": 1359651926,
+      "matches": 380
+    },
+    "2007": {
+      "file": "2007.json",
+      "sha256": "fb601100a3ec1706b05e72b26cdf6c884d5e6f3071789bb2f5a8b757b8b2c643",
+      "status": "corroborated",
+      "oldid": 1348483259,
+      "matches": 380
+    },
+    "2008": {
+      "file": "2008.json",
+      "sha256": "63b661b7dfd3a14d95ac68d96e420f0448d3a82ee336ae46ae9be3b0fd4d9992",
+      "status": "corroboration_unavailable",
+      "oldid": 1260520572,
+      "matches": 0
+    },
+    "2009": {
+      "file": "2009.json",
+      "sha256": "bc545ed03b172adc50a9e3cd270bed53fe787f3d1ca3483d630eeb616a3479fe",
+      "status": "corroborated",
+      "oldid": 1355029152,
+      "matches": 380
+    },
+    "2010": {
+      "file": "2010.json",
+      "sha256": "fcdb36781c4e4ff85e406a22cb825c5d0c53e18ef8a67c546abd3b2388ffdc41",
+      "status": "corroborated",
+      "oldid": 1359651869,
+      "matches": 380
+    },
+    "2011": {
+      "file": "2011.json",
+      "sha256": "6b39eec6a2c8f8afb3909b8c1eb0324398232301be50cc8f67a2b76d2bf8a2b5",
+      "status": "corroborated",
+      "oldid": 1359650245,
+      "matches": 380
+    }
+  }
+}

@@ -1,0 +1,38 @@
+Sidecar de corroboração — Wikipédia em inglês
+==============================================
+
+Os arquivos JSON deste diretório contêm material extraído de artigos da
+Wikipédia em inglês sobre o Campeonato Brasileiro Série A (2003–2011),
+licenciados sob Creative Commons Atribuição-CompartilhaIgual 4.0
+Internacional (CC BY-SA 4.0), https://creativecommons.org/licenses/by-sa/4.0/.
+O texto integral da licença está em LICENSE.
+
+Artigos e revisões fixadas (oldid):
+
+  2003 — "2003 Campeonato Brasileiro Série A" — oldid 1314521303
+  2004 — "2004 Campeonato Brasileiro Série A" — oldid 1324706996
+  2005 — "2005 Campeonato Brasileiro Série A" — oldid 1381069893
+  2006 — "2006 Campeonato Brasileiro Série A" — oldid 1359651926
+  2007 — "2007 Campeonato Brasileiro Série A" — oldid 1348483259
+  2008 — "2008 Campeonato Brasileiro Série A" — oldid 1260520572
+  2009 — "2009 Campeonato Brasileiro Série A" — oldid 1355029152
+  2010 — "2010 Campeonato Brasileiro Série A" — oldid 1359651869
+  2011 — "2011 Campeonato Brasileiro Série A" — oldid 1359650245
+
+Modificações em relação ao material original:
+
+  - Extração apenas dos placares da matriz casa/fora (módulo Module:Sports
+    results), sem prosa, referências, classificação ou outras seções.
+  - Normalização dos nomes de clubes para os identificadores usados no
+    projeto.
+  - Preservação opcional da anotação de rodada da própria matriz.
+  - Nenhum placar foi alterado, completado ou inferido.
+
+Atribuição: material da Wikipédia, disponível em https://en.wikipedia.org/,
+sob CC BY-SA 4.0. Cada JSON registra `article`, `oldid`, `retrieved_at`,
+`license` e `modifications` na seção `provenance`.
+
+Este diretório é uma camada de corroboração secundária. O runtime do
+aplicativo não lê estes arquivos; a fonte canônica dos placares continua
+sendo o snapshot OpenFootball (CC0) em
+data/source-snapshots/openfootball-br-2003-2011/.

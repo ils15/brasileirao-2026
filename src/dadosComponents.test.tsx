@@ -147,14 +147,27 @@ describe('painel de dados & auditoria', () => {
     expect(within(block).getByRole('heading', { level: 4, name: '365scores (xG e cartões)' })).toBeInTheDocument()
   })
 
-  it('valida a temporada 2026 e as 14 temporadas históricas sem divergências', () => {
+  it('expõe as diferenças RSSSF/OpenFootball sem sobrescrever os placares da fonte', () => {
+    render(<AuditPanel />)
+    const block = screen.getByRole('heading', { name: 'Fontes e captura' }).closest('section')!
+
+    expect(block).toHaveTextContent(/RSSSF valida uma partida amostral por temporada, não tabelas finais de 2003–2011/)
+    expect(block).toHaveTextContent(/2004: RSSSF lista Figueirense com 45 jogos na tabela, mas a lista de resultados e OpenFootball somam 46/)
+    expect(block).toHaveTextContent(/2005: Brasiliense–Vasco em 24\/04 é 2–2 no placar jogado OpenFootball; RSSSF registra 0–1 administrativo/)
+    expect(block).toHaveTextContent(/dedução de 24 pontos do São Caetano/)
+    expect(block).toHaveTextContent(/11 pares de replay de 2005 permanecem como partidas distintas/)
+  })
+
+  it('separa integridade, validação amostral e tabela final sem declarar totais não verificados', () => {
     render(<AuditPanel />)
     const table = screen.getByRole('region', { name: 'Status das validações de dados' })
     const rows = within(table).getAllByRole('row')
-    expect(rows).toHaveLength(16)
-    for (const row of rows.slice(1)) {
-      expect(within(row).getByText('ok')).toBeInTheDocument()
-    }
+    expect(rows).toHaveLength(71)
+    expect(within(table).getByRole('row', { name: /Temporada 2003 — integridade estrutural/ })).toHaveTextContent('ok')
+    expect(within(table).getByRole('row', { name: /Temporada 2003 — validação amostral RSSSF/ })).toHaveTextContent('ok')
+    expect(within(table).getByRole('row', { name: /Temporada 2003 — tabela final independente/ })).toHaveTextContent('NÃO VERIFICADO')
+    expect(within(table).getByRole('row', { name: /Temporada 2021 — tabela final independente/ })).toHaveTextContent('ok')
+    expect(within(table).queryByText(/Totais oficiais conferem/)).not.toBeInTheDocument()
     expect(within(table).getByText(new RegExp(`${playedCount} jogos disputados · ${remainingFixtures.length} pendentes`))).toBeInTheDocument()
   })
 

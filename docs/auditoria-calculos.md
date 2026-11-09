@@ -410,3 +410,34 @@ inconclusivos não devem ser substituídos por estimativas nem por dados
 posteriores ao corte na classificação oficial daquele corte; o sorteio só
 pode ser representado por um resultado oficial publicado, não por ordem
 alfabética.
+
+## 21. Histórico descritivo OpenFootball 2003–2011 — **Isolado e documentado**
+
+O pacote junta nove snapshots do fork [`jackdepaula/br-brazil`](https://github.com/jackdepaula/br-brazil), fixados no commit `1aae6a91b196f7c55224cd47ee4a31431d45fe3a`. A licença CC0 1.0 foi copiada para `data/source-snapshots/openfootball-br-2003-2011/LICENSE.md`; origem, atribuição, blob e SHA-256 de cada arquivo constam em `src/historicalSeasons.ts`. Os arquivos-fonte ficam em `data/source-snapshots/` e não são ativos do build.
+
+Os 3.857 resultados de 2003–2011 são somente para consulta descritiva/H2H. `modelableHistoricalSeasons` mantém limite explícito de 2012: os 5.319 resultados Football-Data de 2012–2025 continuam alimentando treino, projeções, calibração e backtests sem mudança semântica. Não inferimos nem expomos tabela oficial para as temporadas OpenFootball.
+
+Uma partida datada de cada temporada foi conferida com a lista de resultados RSSSF; isso é validação amostral, não confirmação integral dos arquivos nem das classificações:
+
+| Ano | Partida conferida | Resultado |
+|---|---|---|
+| 2003 | Guarani × Vasco, 29/03 | 4–2 |
+| 2004 | Botafogo × Goiás, 21/04 | 1–4 |
+| 2005 | Paraná × Goiás, 23/04 | 0–2 |
+| 2006 | Juventude × Paraná, 15/04 | 1–0 |
+| 2007 | Figueirense × Atlético-PR, 12/05 | 3–6 |
+| 2008 | Náutico × Goiás, 10/05 | 2–1 |
+| 2009 | Sport × Barueri, 09/05 | 1–1 |
+| 2010 | Botafogo × Santos, 08/05 | 3–3 |
+| 2011 | Ceará × Vasco, 21/05 | 1–3 |
+
+Referências: [RSSSF 2003](https://www.rsssfbrasil.com/tablesae/br2003.htm), [2004](https://www.rsssfbrasil.com/tablesae/br2004.htm), [2005](https://www.rsssfbrasil.com/tablesae/br2005.htm), [2006](https://www.rsssfbrasil.com/tablesae/br2006.htm), [2007](https://www.rsssfbrasil.com/tablesae/br2007.htm), [2008](https://www.rsssfbrasil.com/tablesae/br2008.htm), [2009](https://www.rsssfbrasil.com/tablesae/br2009.htm), [2010](https://www.rsssfbrasil.com/tablesae/br2010.htm), [2011](https://www.rsssfbrasil.com/tablesae/br2011.htm).
+
+**Discrepâncias conhecidas preservadas:**
+
+- Em 2004, a tabela final RSSSF lista Figueirense com 45 partidas, enquanto a lista de resultados RSSSF e OpenFootball contêm 46. O app não declara totais/tabela oficial para essa temporada. RSSSF também registra dedução de 24 pontos do São Caetano; ela não foi aplicada nem apresentada como tabela oficial.
+- Em 2005, RSSSF registra Brasiliense–Vasco (24/04) como 0–1 por decisão administrativa, embora o placar jogado tenha sido 2–2. O snapshot OpenFootball é preservado como publicado; nenhuma decisão foi aplicada ao resultado.
+- Em 2004, a fonte imprime a interrupção São Paulo–São Caetano como `*0x0*` em 27/10 e depois registra a continuação 4–2 em 03/11. O parser ignora a linha do intervalo abandonado e mantém o resultado concluído 4–2.
+- Em 2005, 11 pares de clubes aparecem três vezes devido aos replays. Repetição de par não é tratada como duplicata: os jogos são registros distintos, e a checagem de identidade usa rodada, data e mando/visitante.
+
+Detalhamento de snapshots, amostras e regras do parser: [`docs/historico-2003-2011.md`](historico-2003-2011.md). Os rótulos na auditoria da UI distinguem integridade estrutural, amostra RSSSF e tabela final independente; uma amostra positiva não marca a temporada inteira como verificada.
