@@ -20,9 +20,11 @@ const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maxim
 const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
 
 /**
- * Texto do IC 95% na tabela por pontuação. A omissão é decidida por linha:
- * o intervalo aparece quando muda em relação à linha anterior e é omitido
- * quando idêntico ao da linha de cima.
+ * Texto do IC 95% na tabela por pontuação. Só faixas de 1 ponto exibem IC: em
+ * faixas com 2+ pontos o intervalo varia por pontuação e um envelope
+ * (min/max de membros distintos) não corresponde a nenhum ponto do range.
+ * Mesmo em faixa de 1 ponto, o texto é omitido quando idêntico ao da faixa
+ * anterior.
  */
 function intervalTextFor(lower: number, upper: number): string {
   return `IC 95% ${percent.format(lower)}–${percent.format(upper)}`
@@ -44,11 +46,28 @@ interface MagicRow {
    * e o intervalo [0, 1] são apenas valores neutros, sem IC legítimo.
    */
   observed: Record<MagicKey, boolean>
-  /** Contagem de sucessos por destino, preservada para validar agrupamentos. */
-  successes: Record<MagicKey, number>
-  clusterCounts: Record<MagicKey, number>
   inclusiveLibertadores: PointCurveAggregateRow
   denominator: number
+}
+
+/** Faixa contígua de pontuações que exibem o mesmo valor formatado. */
+interface MagicRowGroup {
+  from: number
+  to: number
+  row: MagicRow
+  lowSample: boolean
+  /**
+   * Menor e maior número de simulações entre os pontos da faixa. Em faixas
+   * sem observação o N varia por pontuação e é anunciado como intervalo; um
+   * único N inventado seria falso.
+   */
+  sampleMin: number
+  sampleMax: number
+}
+
+/** `true` quando a faixa cobre mais de uma pontuação e, portanto, não exibe IC. */
+function showsRangeOf(group: MagicRowGroup): boolean {
+  return group.from !== group.to
 }
 
 const MAGIC_COLORS: Record<MagicDestiny | 'middle', string> = {
@@ -68,8 +87,6 @@ function emptyMagicRow(points: number): MagicRow {
     },
     lowSample: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
     observed: { title: false, libertadores: false, sudamericana: false, middle: false, relegation: false },
-    successes: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
-    clusterCounts: { title: 0, libertadores: 0, sudamericana: 0, middle: 0, relegation: 0 },
     inclusiveLibertadores: {
       points, successes: 0, denominator: 0, probability: 0, lower95: 0, upper95: 1, clusterCount: 0, lowSample: false,
     },
@@ -131,10 +148,10 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
 }
 
 const MAGIC_DESTINIES = [
-  { id: 'relegation', label: 'Série B', phrase: 'rebaixado para a Série B', observation: 'rebaixamento', swatch: 'zone-bar--relegation' },
-  { id: 'libertadores', label: 'Libertadores', phrase: 'classificado para a Libertadores', observation: 'classificação para a Libertadores', swatch: 'zone-bar--libertadores' },
-  { id: 'sudamericana', label: 'Sul-Americana', phrase: 'classificado para a Sul-Americana', observation: 'classificação para a Sul-Americana', swatch: 'zone-bar--sudamericana' },
-  { id: 'title', label: 'Campeão', phrase: 'campeão', observation: 'título', swatch: 'zone-bar--title' },
+  { id: 'relegation', label: 'Série B', phrase: 'rebaixado para a Série B', absence: 'nenhum rebaixamento', swatch: 'zone-bar--relegation' },
+  { id: 'libertadores', label: 'Libertadores', phrase: 'classificado para a Libertadores', absence: 'nenhuma vaga na Libertadores', swatch: 'zone-bar--libertadores' },
+  { id: 'sudamericana', label: 'Sul-Americana', phrase: 'classificado para a Sul-Americana', absence: 'nenhuma na Sul-Americana', swatch: 'zone-bar--sudamericana' },
+  { id: 'title', label: 'Campeão', phrase: 'campeão', absence: 'nenhum título', swatch: 'zone-bar--title' },
 ] as const
 
 type MagicDestiny = (typeof MAGIC_DESTINIES)[number]['id']
@@ -154,8 +171,6 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       entry.intervals[row.outcome] = [row.lower95, row.upper95]
       entry.lowSample[row.outcome] = row.lowSample
       entry.observed[row.outcome] = row.successes > 0
-      entry.successes[row.outcome] = row.successes
-      entry.clusterCounts[row.outcome] = row.clusterCount
       entry.denominator = row.denominator
       byPoints.set(row.points, entry)
     }
@@ -195,41 +210,77 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     if (destiny === 'libertadores') return row.inclusiveLibertadores.successes > 0
     return row.observed[destiny]
   }
-  const successesFor = (row: MagicRow): number => {
-    if (destiny === 'libertadores') return row.inclusiveLibertadores.successes
-    return row.successes[destiny]
+  /** Simulações da pontuação para o destino atual (Libertadores usa o agregado inclusivo). */
+  const denominatorFor = (row: MagicRow): number => {
+    if (destiny === 'libertadores') return row.inclusiveLibertadores.denominator
+    return row.denominator
   }
-
-  // Agrupa somente pontos consecutivos com estatísticas e inferências idênticas.
-  const compactRows = useMemo(() => {
-    const keyOf = (row: MagicRow): string => JSON.stringify({
-      denominator: row.denominator,
-      outcomes: MAGIC_KEYS.map((key) => [
-        row.probabilities[key], row.successes[key], row.clusterCounts[key],
-        row.intervals[key][0], row.intervals[key][1], row.observed[key], row.lowSample[key],
-      ]),
-      libertadoresInclusive: [
-        row.inclusiveLibertadores.successes,
-        row.inclusiveLibertadores.denominator,
-        row.inclusiveLibertadores.probability,
-        row.inclusiveLibertadores.clusterCount,
-        row.inclusiveLibertadores.lower95,
-        row.inclusiveLibertadores.upper95,
-        row.inclusiveLibertadores.lowSample,
-      ],
-    })
-    const groups: { from: number; to: number; row: MagicRow }[] = []
-    for (const row of rows) {
-      const last = groups[groups.length - 1]
-      if (last && last.to + 1 === row.points && keyOf(last.row) === keyOf(row)) last.to = row.points
-      else groups.push({ from: row.points, to: row.points, row })
-    }
-    return groups
-  }, [rows])
 
   // Para rebaixamento a pergunta é invertida: quantos pontos para ESCAPAR.
   // effectiveChance representa a chance do "bom resultado" (salvo / destino conquistado).
   const escaping = destiny === 'relegation'
+
+  /**
+   * Início da tabela: no rebaixamento a leitura começa na primeira pontuação
+   * cuja barra já é cheia (100,00%). Pontuações menores com barra incompleta
+   * não aparecem, porque não acrescentam informação ao bloco garantido. Nas
+   * demais abas a curva não começa garantida e todas as pontuações ficam.
+   */
+  const displayRows = useMemo(() => {
+    if (!escaping) return rows
+    const fullText = percent.format(1)
+    const firstFull = rows.findIndex((row) => hasObservationsFor(row) && percent.format(chanceOf(row)) === fullText)
+    if (firstFull <= 0) return rows
+    return rows.slice(firstFull)
+  }, [rows, escaping, destiny])
+
+  /**
+   * Agrupa faixas contíguas cujo valor exibido é idêntico. O critério é o
+   * texto formatado (duas casas), nunca a igualdade estatística: pontuações
+   * que mostram o mesmo percentual viram uma única linha de intervalo, com um
+   * único valor. O IC não é agregado: quando a faixa tem 2+ pontos ele varia
+   * por pontuação e por isso não é exibido. Pontuações sem nenhum sucesso do
+   * destino formam um bloco próprio, independentemente do N: o N varia por
+   * pontuação e é anunciado como intervalo. O bloco de zero também atravessa
+   * pontuações sem simulações (que não geram linha), porque nenhuma delas
+   * contradiz a ausência; faixas de valor observado, ao contrário, exigem
+   * pontos numericamente adjacentes.
+   */
+  const compactRows = useMemo<MagicRowGroup[]>(() => {
+    const displayKeyOf = (row: MagicRow): string => hasObservationsFor(row)
+      ? `valor:${percent.format(chanceOf(row))}`
+      : 'sem-observação'
+    const groups: MagicRowGroup[] = []
+    for (const row of displayRows) {
+      const last = groups[groups.length - 1]
+      const sameKey = last !== undefined && displayKeyOf(last.row) === displayKeyOf(row)
+      // Faixa de valor exibido exige adjacência numérica; bloco sem observação
+      // agrupa linhas consecutivas mesmo quando falta um total de pontos (sem
+      // simulações, não há linha para contradizer a ausência).
+      const merges = sameKey && (!hasObservationsFor(row) || last!.to + 1 === row.points)
+      if (merges) {
+        const group = last!
+        group.to = row.points
+        group.lowSample = group.lowSample || lowSampleFor(row)
+        group.sampleMin = Math.min(group.sampleMin, denominatorFor(row))
+        group.sampleMax = Math.max(group.sampleMax, denominatorFor(row))
+      } else {
+        const sample = denominatorFor(row)
+        groups.push({
+          from: row.points,
+          to: row.points,
+          row,
+          lowSample: lowSampleFor(row),
+          sampleMin: sample,
+          sampleMax: sample,
+        })
+      }
+    }
+    return groups
+  }, [displayRows, destiny])
+  // Sinaliza ao usuário quando a tabela do rebaixamento foi truncada abaixo
+  // do primeiro 100,00%.
+  const truncatedBelowFull = escaping && displayRows.length < rows.length
   const effectiveChanceOf = (row: MagicRow): number => (escaping ? 1 - chanceOf(row) : chanceOf(row))
   const likely = rows.find((row) => effectiveChanceOf(row) >= 0.5)
   const nearCertain = rows.find((row) => effectiveChanceOf(row) >= 0.9)
@@ -271,7 +322,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       <h4 className="points-table-title" id="magic-points-title">A pontuação mágica: quantos pontos bastam?</h4>
       <p className="projection-table-note">
         Escolha o destino e veja somente a estatística dele dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
-        IC 95% cluster-robusto por simulação; faixas são agrupadas somente quando probabilidades, K/N, clusters e ICs de todos os destinos são idênticos.
+        IC 95% cluster-robusto por simulação; faixas contíguas de pontuações com o mesmo valor exibido aparecem como um intervalo (ex.: 21–37), com um único percentual e sem IC, porque o intervalo varia por pontuação. Pontuações contíguas sem nenhuma observação do destino também formam uma única faixa, mesmo com N diferente, e atravessam totais de pontos sem simulações (que não geram linha); um ponto com observação intercalado quebra o bloco.
       </p>
       <div className="magic-destiny-picker" role="group" aria-label="Destino para a pontuação mágica">
         {MAGIC_DESTINIES.map((entry) => (
@@ -345,7 +396,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         </div>
       </div>
 
-      <div className="table-scroll" role="region" aria-label={`Chance de ser ${destinyPhrase} por pontuação exata; valor e IC 95% aparecem quando mudam em relação à linha anterior`} tabIndex={0}>
+      <div className="table-scroll" role="region" aria-label={`Chance de ser ${destinyPhrase} por pontuação exata; faixas contíguas de mesmo valor aparecem como intervalo com um único percentual; o IC 95% é omitido em faixas com mais de um ponto; pontos contíguos sem observação do destino aparecem como uma única faixa sem percentual${truncatedBelowFull ? '; a tabela começa na primeira pontuação com 100,00% de rebaixamento e valores menores não são exibidos' : ''}`} tabIndex={0}>
         <table className="projection-table magic-table">
           <thead><tr>
             <th scope="col">Pontos</th>
@@ -357,42 +408,49 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
               const row = group.row
               const hasObservations = hasObservationsFor(row)
               const chance = chanceOf(row)
-              const [lower95, upper95] = intervalFor(row)
-              const previousRow = index > 0 ? compactRows[index - 1]!.row : undefined
-              const previousHasSimulations = previousRow ? hasObservationsFor(previousRow) : false
+              const previousGroup = index > 0 ? compactRows[index - 1] : undefined
+              const showsRange = showsRangeOf(group)
               const chanceText = percent.format(chance)
-              const intervalText = intervalTextFor(lower95, upper95)
-              // A comparação é do texto formatado (2 casas), não do valor bruto:
-              // repetições consecutivas desse texto não são exibidas; a barra e
-              // o rótulo acessível de cada linha continuam informando o valor.
-              // Linhas sem observação do destino não entram na comparação: não
-              // há bloco numérico anterior válido para herdar a omissão.
-              const previousChanceText = previousHasSimulations && previousRow ? percent.format(chanceOf(previousRow)) : null
-              const previousIntervalText = previousHasSimulations && previousRow
-                ? intervalTextFor(...intervalFor(previousRow))
+              const pointsLabel = showsRange ? `De ${group.from} a ${group.to} pontos` : `Com ${group.from} pontos`
+              // Faixa de 1 ponto: IC normal, omitido só quando repete o da
+              // faixa anterior de 1 ponto. Faixa com 2+ pontos: sem IC, pois
+              // ele varia entre as pontuações do range.
+              const intervalText = showsRange ? null : intervalTextFor(...intervalFor(row))
+              const previousIntervalText = previousGroup && !showsRangeOf(previousGroup) && hasObservationsFor(previousGroup.row)
+                ? intervalTextFor(...intervalFor(previousGroup.row))
                 : null
-              const observationsText = `${integer.format(successesFor(row))} de ${integer.format(row.denominator)} observações`
-              const showsChanceText = !hasObservations || chanceText !== previousChanceText
-              const showsIntervalText = hasObservations && intervalText !== previousIntervalText
-              const pointsLabel = group.from === group.to ? String(group.from) : `${group.from} a ${group.to}`
+              const showsIntervalText = Boolean(hasObservations && intervalText && intervalText !== previousIntervalText)
+              // Sem observação: o N varia por pontuação, então o nome acessível
+              // cita o intervalo de simulações em vez de inventar um N único.
+              const singlePoint = group.from === group.to
+              const sampleLabel = group.sampleMax <= 0
+                ? null
+                : group.sampleMin === group.sampleMax
+                  ? singlePoint
+                    ? `${integer.format(group.sampleMax)} simulações desta pontuação`
+                    : `${integer.format(group.sampleMax)} simulações nesta faixa`
+                  : `de ${integer.format(group.sampleMin)} a ${integer.format(group.sampleMax)} simulações por pontuação`
+              const accessibleName = !hasObservations
+                ? `${pointsLabel}: ${destinyEntry.absence} nas simulações${sampleLabel ? `; ${sampleLabel}` : ''}`
+                : showsRange
+                  ? `${pointsLabel}: ${chanceText} de ${destinyPhrase}; intervalo de confiança não exibido porque pode variar entre os pontos${group.lowSample ? '; amostra baixa' : ''}`
+                  : `${pointsLabel}: ${chanceText} de ${destinyPhrase}; ${intervalText}${group.lowSample ? '; amostra baixa' : ''}`
               return (
                 <tr key={group.from}>
-                  <th scope="row" className="magic-points-cell">{group.from === group.to ? group.from : `${group.from}–${group.to}`}</th>
+                  <th scope="row" className="magic-points-cell">{showsRange ? `${group.from}–${group.to}` : group.from}</th>
                   <td className="numeric games-cell magic-active-value">
                     {!hasObservations
-                      ? <span className="magic-empty" aria-hidden="true">{observationsText}</span>
-                      : showsChanceText ? <span aria-hidden="true">{chanceText}</span> : null}
+                      ? <span className="magic-empty" aria-hidden="true">{destinyEntry.absence}</span>
+                      : <span aria-hidden="true">{chanceText}</span>}
                   </td>
                   <td className="magic-bar-cell">
                     <div
                       className={hasObservations ? 'magic-bar' : 'magic-bar magic-bar--empty'}
                       role="img"
-                      aria-label={hasObservations
-                        ? `Com ${pointsLabel} pontos: ${chanceText} de ${destinyPhrase}; ${intervalText}${lowSampleFor(row) ? '; amostra baixa' : ''}`
-                        : `Com ${pointsLabel} pontos: nenhuma observação de ${destinyEntry.observation} em ${integer.format(row.denominator)} simulações desta pontuação`}
+                      aria-label={accessibleName}
                     >
                       {hasObservations && <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} aria-hidden="true" />}
-                      {hasObservations && lowSampleFor(row) && <span className="magic-bar-low" aria-hidden="true">amostra baixa</span>}
+                      {hasObservations && group.lowSample && <span className="magic-bar-low" aria-hidden="true">amostra baixa</span>}
                     </div>
                     {showsIntervalText && <span className="cell-ci" aria-hidden="true">{intervalText}</span>}
                   </td>
@@ -403,8 +461,11 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
         </table>
       </div>
       <p className="projection-table-note">
-        Apenas pontos consecutivos com as mesmas probabilidades, sucessos, denominadores, clusters, ICs e sinalizadores de amostra baixa são agrupados.
-        Assim, cada IC e denominador continuam correspondendo às pontuações exibidas; o valor e o IC 95% aparecem quando mudam em relação à linha anterior e são omitidos quando idênticos ao da linha de cima. A barra e o rótulo acessível permanecem em todas as linhas. Quando nenhuma simulação daquela pontuação terminou no destino, a linha mostra “0 de N observações”, sem percentual nem IC.
+        Faixas agrupam pontos com o mesmo valor exibido; o percentual aparece uma vez por faixa.
+        O IC 95% é omitido em faixas com mais de um ponto, porque o intervalo varia entre os pontos e um envelope não representaria nenhum deles; nas faixas de um ponto, o IC só se repete quando difere da faixa anterior.
+        Valores apenas parecidos não são agrupados: o critério é o texto formatado idêntico, nunca a igualdade estatística.
+        Faixas sem nenhuma observação do destino mostram “nenhum rebaixamento” (ou “nenhum título”, “nenhuma vaga na Libertadores”, “nenhuma na Sul-Americana”), com barra vazia e sem IC; elas agrupam pontos consecutivos independentemente do N e atravessam totais de pontos sem simulações, e o total de simulações é anunciado como intervalo quando varia. Pontuações com 0,00% arredondado, mas com ao menos um sucesso observado, continuam como linha própria com percentual e IC.
+        {truncatedBelowFull && ' A tabela começa na primeira pontuação com 100,00% de rebaixamento; valores menores não são exibidos.'}
       </p>
     </section>
   )
@@ -442,8 +503,8 @@ function ProbabilityCell({ value, lower, upper }: ProbabilityCellProps): JSX.Ele
   // 99,99%–100,00%) — os extremos não são sentinela de ausência de
   // observações. Aqui só o texto do intervalo é omitido nesses extremos por
   // escolha de apresentação; na tabela por pontuação a omissão ocorre quando o
-  // texto formatado repete o da linha anterior, e a ausência de observações do
-  // destino é sinalizada separadamente por “0 de N observações”.
+  // texto formatado repete o da faixa anterior, e a ausência de observações do
+  // destino é sinalizada separadamente por “nenhum rebaixamento” e afins.
   const hasInterval = value > 0 && value < 1
   return (
     <td className={`numeric probability-cell ${value === 0 ? 'probability-cell--zero' : ''}`}>
