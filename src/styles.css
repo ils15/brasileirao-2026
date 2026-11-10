@@ -1091,23 +1091,47 @@ th.numeric .sort-button { justify-content: flex-end; }
 .sim-quick-btn { min-height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s ease; }
 .sim-quick-btn:hover { border-color: var(--focus); background: var(--surface-tint); }
 .sim-quick-btn--reset { color: var(--danger-text); border-color: var(--danger-badge); background: var(--danger-bg); }
-.sim-matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; margin-bottom: 28px; }
-.sim-match-card { display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+.sim-matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.sim-match-card { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
 .sim-match-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
 .sim-match-card--has-pick { border-color: var(--focus); box-shadow: 0 0 0 1px var(--focus); }
 .sim-match-header { display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 11px; font-family: var(--mono); }
-.sim-match-teams { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 4px 0; }
-.sim-team { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-.sim-team--home { justify-content: flex-start; text-align: left; }
-.sim-team--away { justify-content: flex-end; text-align: right; }
-.sim-team-name { font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sim-match-vs { color: var(--text-muted); font-size: 12px; font-family: var(--mono); padding: 0 4px; }
-.sim-pick-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.sim-pick-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 44px; padding: 4px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-soft); color: var(--text); cursor: pointer; transition: all .15s ease; }
-.sim-pick-btn:hover { border-color: var(--focus); background: var(--surface-tint); color: var(--ink); }
-.sim-pick-btn.is-selected { background: var(--selected-surface); color: #fff; border-color: var(--focus); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
-.sim-pick-tag { font-size: 13px; font-weight: 700; line-height: 1; }
-.sim-pick-prob { font-size: 11px; font-family: var(--mono); opacity: .85; }
+.sim-match-clear { background: transparent; border: 0; color: var(--danger-text); font: 600 11px var(--mono); cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.sim-match-clear:hover { background: var(--danger-bg); }
+
+/* Duelo com controles de placar */
+.sim-duel-box { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; }
+.sim-team-side { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.sim-team-side--home { justify-content: flex-start; text-align: left; }
+.sim-team-side--away { justify-content: flex-end; text-align: right; }
+.sim-team-side.is-winner .sim-team-name { color: var(--zone-title); }
+.sim-team-info { display: flex; flex-direction: column; min-width: 0; }
+.sim-team-info.text-right { align-items: flex-end; }
+.sim-team-name { font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+.sim-team-points { font-size: 11px; font-family: var(--mono); color: var(--text-muted); margin-top: 2px; }
+
+/* Caixa de Placar com Steppers (+ / -) */
+.sim-score-box { display: flex; align-items: center; gap: 6px; flex-shrink: 0; padding: 0 4px; }
+.sim-stepper { display: flex; align-items: center; gap: 3px; background: var(--surface-soft); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
+.sim-step-btn { width: 24px; height: 26px; border: 0; border-radius: 4px; background: var(--surface); color: var(--ink); font: 700 14px var(--mono); line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s ease; }
+.sim-step-btn:hover { background: var(--surface-tint); color: var(--focus); }
+.sim-score-val { min-width: 20px; text-align: center; font: 700 15px var(--mono); color: var(--text-muted); }
+.sim-score-val.has-score { color: var(--ink); }
+.sim-score-x { font: 700 12px var(--mono); color: var(--text-muted); }
+
+/* Botões Semânticos de Desfecho (Vitória Mandante / Empate / Vitória Visitante) */
+.sim-outcome-buttons { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; margin-top: 2px; }
+.sim-outcome-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 44px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-soft); color: var(--text); cursor: pointer; transition: all .15s ease; }
+.sim-outcome-btn:hover { border-color: var(--focus); background: var(--surface-tint); color: var(--ink); }
+.sim-outcome-btn.is-selected { background: var(--selected-surface); color: #fff; border-color: var(--focus); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+.sim-outcome-title { font-size: 11px; font-weight: 700; line-height: 1.2; text-align: center; }
+.sim-outcome-prob { font-size: 11px; font-family: var(--mono); opacity: .85; margin-top: 2px; }
+
+/* Nota Metodológica do Simulador */
+.sim-methodology-note { margin-top: 20px; }
+.sim-methodology-body { padding: 12px 14px; background: var(--surface-soft); border-radius: 6px; margin-top: 8px; font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+.sim-methodology-body p { margin: 6px 0; }
+.sim-methodology-body code { font-family: var(--mono); font-size: 11px; padding: 1px 4px; border-radius: 3px; background: var(--surface-tint); }
 .sim-results-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
 .sim-results-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
 .sim-results-header h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink); }

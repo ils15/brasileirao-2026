@@ -2,15 +2,8 @@ import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { matchProbabilities } from './matchProbabilities'
 import { Crest } from './Crest'
-import { ZONES } from './projectionConfig'
-import type { ProjectionResult } from './projection'
-
-export type PickOutcome = 'home' | 'draw' | 'away'
-
-export interface MatchPick {
-  cbfRef: string
-  pick: PickOutcome
-}
+import { ZONES, SIMULATION_SEED } from './projectionConfig'
+import { runScenarioProjection, type ProjectionResult, type UserScore } from './projection'
 
 interface RoundGroup {
   round: string
@@ -40,20 +33,57 @@ const signedPercent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimum
 export function MatchSimulator({ result }: { result?: ProjectionResult | null }): JSX.Element {
   const rounds = useMemo(pendingRounds, [])
   const [selectedRound, setSelectedRound] = useState(rounds[0]?.round ?? '')
-  const [picks, setPicks] = useState<Map<string, PickOutcome>>(() => new Map())
+  const [picks, setPicks] = useState<Map<string, UserScore>>(() => new Map())
   const [viewMode, setViewMode] = useState<'standings' | 'probabilities'>('standings')
 
   const group = rounds.find((entry) => entry.round === selectedRound) ?? rounds[0]
   const clubMap = useMemo(() => new Map(currentClubs.map((club) => [club.id, club])), [])
 
-  const togglePick = (cbfRef: string, outcome: PickOutcome): void => {
+  // Incrementa/decrementa gols
+  const adjustGoals = (cbfRef: string, side: 'home' | 'away', delta: number): void => {
     setPicks((prev) => {
       const next = new Map(prev)
-      if (next.get(cbfRef) === outcome) {
-        next.delete(cbfRef)
-      } else {
-        next.set(cbfRef, outcome)
+      const current = next.get(cbfRef) ?? { homeGoals: 0, awayGoals: 0 }
+      const newHome = side === 'home' ? Math.max(0, Math.min(9, current.homeGoals + delta)) : current.homeGoals
+      const newAway = side === 'away' ? Math.max(0, Math.min(9, current.awayGoals + delta)) : current.awayGoals
+      next.set(cbfRef, { homeGoals: newHome, awayGoals: newAway })
+      return next
+    })
+  }
+
+  // Seleciona desfecho com 1 clique (vitória mandante, empate, vitória visitante)
+  const toggleOutcome = (cbfRef: string, outcome: 'home' | 'draw' | 'away', expectedHome = 1.4, expectedAway = 1.0): void => {
+    setPicks((prev) => {
+      const next = new Map(prev)
+      const current = next.get(cbfRef)
+      if (current) {
+        const curOutcome = current.homeGoals > current.awayGoals ? 'home' : current.homeGoals === current.awayGoals ? 'draw' : 'away'
+        if (curOutcome === outcome) {
+          next.delete(cbfRef)
+          return next
+        }
       }
+
+      if (outcome === 'home') {
+        const hg = Math.max(1, Math.round(expectedHome))
+        const ag = Math.max(0, Math.min(hg - 1, Math.round(expectedAway)))
+        next.set(cbfRef, { homeGoals: hg > ag ? hg : ag + 1, awayGoals: ag })
+      } else if (outcome === 'draw') {
+        const g = Math.min(2, Math.max(0, Math.round((expectedHome + expectedAway) / 2)))
+        next.set(cbfRef, { homeGoals: g, awayGoals: g })
+      } else {
+        const ag = Math.max(1, Math.round(expectedAway))
+        const hg = Math.max(0, Math.min(ag - 1, Math.round(expectedHome)))
+        next.set(cbfRef, { homeGoals: hg, awayGoals: ag > hg ? ag : hg + 1 })
+      }
+      return next
+    })
+  }
+
+  const clearPick = (cbfRef: string): void => {
+    setPicks((prev) => {
+      const next = new Map(prev)
+      next.delete(cbfRef)
       return next
     })
   }
@@ -67,124 +97,70 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
 
     const next = new Map(picks)
     for (const fixture of group.fixtures) {
+      const { probabilities, expected } = matchProbabilities(fixture.home, fixture.away)
+      const [homeP, drawP, awayP] = probabilities
+
       if (type === 'home') {
-        next.set(fixture.cbfRef, 'home')
-      } else {
-        const { probabilities } = matchProbabilities(fixture.home, fixture.away)
-        const [homeP, drawP, awayP] = probabilities
-        if (type === 'favorites') {
-          const max = Math.max(homeP, drawP, awayP)
-          next.set(fixture.cbfRef, max === homeP ? 'home' : max === drawP ? 'draw' : 'away')
-        } else if (type === 'underdogs') {
-          const min = Math.min(homeP, drawP, awayP)
-          next.set(fixture.cbfRef, min === homeP ? 'home' : min === drawP ? 'draw' : 'away')
-        }
+        next.set(fixture.cbfRef, { homeGoals: 2, awayGoals: 0 })
+      } else if (type === 'favorites') {
+        const max = Math.max(homeP, drawP, awayP)
+        if (max === homeP) next.set(fixture.cbfRef, { homeGoals: Math.max(2, Math.round(expected.home)), awayGoals: Math.min(1, Math.round(expected.away)) })
+        else if (max === drawP) next.set(fixture.cbfRef, { homeGoals: 1, awayGoals: 1 })
+        else next.set(fixture.cbfRef, { homeGoals: Math.min(1, Math.round(expected.home)), awayGoals: Math.max(2, Math.round(expected.away)) })
+      } else if (type === 'underdogs') {
+        const min = Math.min(homeP, drawP, awayP)
+        if (min === homeP) next.set(fixture.cbfRef, { homeGoals: 1, awayGoals: 0 })
+        else if (min === drawP) next.set(fixture.cbfRef, { homeGoals: 2, awayGoals: 2 })
+        else next.set(fixture.cbfRef, { homeGoals: 0, awayGoals: 1 })
       }
     }
     setPicks(next)
   }
 
-  // Simulação rápida determinística da tabela pós-palpites
-  const simulatedTable = useMemo(() => {
-    const table = currentClubs.map((club) => ({
-      ...club,
-      originalPosition: club.position,
-      simulatedPoints: club.points,
-      simulatedPlayed: club.played,
-      simulatedWins: club.wins,
-      pointsDiff: 0,
-    }))
-
-    const clubIndexMap = new Map(table.map((c, idx) => [c.id, idx]))
-
-    // Aplica os palpites do usuário
-    for (const fixture of remainingFixtures) {
-      const pick = picks.get(fixture.cbfRef)
-      if (!pick) continue
-
-      const homeClub = table[clubIndexMap.get(fixture.home)!]
-      const awayClub = table[clubIndexMap.get(fixture.away)!]
-      if (!homeClub || !awayClub) continue
-
-      homeClub.simulatedPlayed += 1
-      awayClub.simulatedPlayed += 1
-
-      if (pick === 'home') {
-        homeClub.simulatedPoints += 3
-        homeClub.simulatedWins += 1
-        homeClub.pointsDiff += 3
-      } else if (pick === 'away') {
-        awayClub.simulatedPoints += 3
-        awayClub.simulatedWins += 1
-        awayClub.pointsDiff += 3
-      } else {
-        homeClub.simulatedPoints += 1
-        awayClub.simulatedPoints += 1
-        homeClub.pointsDiff += 1
-        awayClub.pointsDiff += 1
-      }
-    }
-
-    // Ordena de acordo com o regulamento do Brasileirão: Pontos desc, Vitórias desc, Saldo desc
-    table.sort((a, b) => {
-      if (b.simulatedPoints !== a.simulatedPoints) return b.simulatedPoints - a.simulatedPoints
-      if (b.simulatedWins !== a.simulatedWins) return b.simulatedWins - a.simulatedWins
-      const sgA = a.goalsFor - a.goalsAgainst
-      const sgB = b.goalsFor - b.goalsAgainst
-      if (sgB !== sgA) return sgB - sgA
-      return b.goalsFor - a.goalsFor
-    })
-
-    return table.map((team, idx) => ({
-      ...team,
-      simulatedPosition: idx + 1,
-      positionDelta: team.originalPosition - (idx + 1), // > 0 subiu, < 0 caiu
-    }))
+  // Executa o motor Monte Carlo determinístico com os placares do usuário
+  const scenarioProbabilities = useMemo(() => {
+    return runScenarioProjection(picks, 2000, SIMULATION_SEED)
   }, [picks])
 
-  // Estimativa rápida de probabilidades simuladas
-  const simulatedProbabilities = useMemo(() => {
-    if (!result) return []
+  // Classificação ordenada pelos critérios do Brasileirão com os jogos simulados
+  const simulatedTable = useMemo(() => {
+    const list = [...scenarioProbabilities]
+    list.sort((a, b) => {
+      if (b.simulatedPoints !== a.simulatedPoints) return b.simulatedPoints - a.simulatedPoints
+      if (b.simulatedWins !== a.simulatedWins) return b.simulatedWins - a.simulatedWins
+      if (b.simulatedGoalDifference !== a.simulatedGoalDifference) return b.simulatedGoalDifference - a.simulatedGoalDifference
+      return b.simulatedGoalsFor - a.simulatedGoalsFor
+    })
+    return list.map((item, idx) => ({
+      ...item,
+      simulatedPosition: idx + 1,
+      positionDelta: item.currentPosition - (idx + 1), // > 0 subiu, < 0 caiu
+    }))
+  }, [scenarioProbabilities])
 
-    // Fator de escala baseado na variação dos pontos simulados
-    return result.clubProbabilities.map((club) => {
-      const simClub = simulatedTable.find((c) => c.id === club.id)
-      const pointsAdded = simClub?.pointsDiff ?? 0
-
-      // Ajuste proporcional simplificado em tempo real
-      let simTitle = club.title
-      let simLibertadores = club.libertadores
-      let simRelegation = club.relegation
-
-      if (pointsAdded > 0) {
-        if (club.currentPosition <= 3) {
-          simTitle = Math.min(0.999, club.title * (1 + pointsAdded * 0.12))
-        }
-        if (club.currentPosition <= 10) {
-          simLibertadores = Math.min(0.999, club.libertadores * (1 + pointsAdded * 0.08))
-        }
-        if (club.currentPosition >= 14) {
-          simRelegation = Math.max(0.001, club.relegation * (1 - pointsAdded * 0.22))
-        }
-      }
+  // Probabilidades com deltas em relação à projeção estática oficial
+  const simulatedProbabilitiesList = useMemo(() => {
+    const originalMap = new Map(result?.clubProbabilities.map((c) => [c.id, c]) ?? [])
+    return simulatedTable.map((team) => {
+      const orig = originalMap.get(team.id)
+      const origTitle = orig?.title ?? 0
+      const origLib = orig?.libertadores ?? 0
+      const origSula = orig?.sudamericana ?? 0
+      const origRel = orig?.relegation ?? 0
 
       return {
-        id: club.id,
-        club: club.club,
-        currentPosition: club.currentPosition,
-        simulatedPosition: simClub?.simulatedPosition ?? club.currentPosition,
-        originalTitle: club.title,
-        simulatedTitle: simTitle,
-        titleDelta: simTitle - club.title,
-        originalRelegation: club.relegation,
-        simulatedRelegation: simRelegation,
-        relegationDelta: simRelegation - club.relegation,
-        originalLibertadores: club.libertadores,
-        simulatedLibertadores: simLibertadores,
-        libertadoresDelta: simLibertadores - club.libertadores,
+        ...team,
+        origTitle,
+        titleDelta: team.title - origTitle,
+        origLib,
+        libDelta: team.libertadores - origLib,
+        origSula,
+        sulaDelta: team.sudamericana - origSula,
+        origRel,
+        relDelta: team.relegation - origRel,
       }
     })
-  }, [result, simulatedTable])
+  }, [simulatedTable, result])
 
   const totalPicksCount = picks.size
 
@@ -192,21 +168,21 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
     <section className="sim-panel panel" aria-labelledby="simulator-title">
       <div className="section-heading">
         <div>
-          <p className="eyebrow eyebrow-dark">LABORATÓRIO DE CENÁRIOS</p>
-          <h2 id="simulator-title">Simulador de Resultados & Probabilidades</h2>
+          <p className="eyebrow eyebrow-dark">LABORATÓRIO DE CENÁRIOS & PLACARES</p>
+          <h2 id="simulator-title">Simulador Interativo do Brasileirão</h2>
         </div>
-        <span className="section-index">SIM <span>/ INTERATIVO</span></span>
+        <span className="section-index">SIM <span>/ MONTE CARLO</span></span>
       </div>
 
       <p className="sim-lead">
-        Escolha os resultados das partidas e acompanhe instantaneamente as mudanças na tabela de classificação e nas probabilidades matemáticas de título, Libertadores e rebaixamento.
+        Defina os placares e resultados das partidas rodada a rodada. Acompanhe em tempo real os impactos na pontuação, saldo de gols e nas probabilidades matemáticas de título, Libertadores e rebaixamento calculadas por Monte Carlo.
       </p>
 
       {/* Toolbar do Simulador */}
       <div className="sim-toolbar">
         {group && (
           <label className="sim-round-select">
-            <span>Rodada para Simular</span>
+            <span>Rodada:</span>
             <select
               aria-label="Selecionar rodada para simular"
               value={group.round}
@@ -222,7 +198,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
         )}
 
         <div className="sim-scenarios" role="group" aria-label="Cenários automáticos">
-          <span className="sim-scenarios-label">Palpites rápidos:</span>
+          <span className="sim-scenarios-label">Preenchimento rápido:</span>
           <button type="button" className="sim-quick-btn" onClick={() => setScenario('favorites')}>
             ⚡ Favoritos
           </button>
@@ -240,62 +216,129 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
         </div>
       </div>
 
-      {/* Grid de Partidas da Rodada */}
+      {/* Grid de Duelos da Rodada */}
       <div className="sim-matches-grid" aria-label="Partidas da rodada selecionada">
         {group?.fixtures.map((fixture) => {
-          const home = clubMap.get(fixture.home)?.club ?? fixture.home
-          const away = clubMap.get(fixture.away)?.club ?? fixture.away
+          const homeClub = clubMap.get(fixture.home)
+          const awayClub = clubMap.get(fixture.away)
+          const homeName = homeClub?.club ?? fixture.home
+          const awayName = awayClub?.club ?? fixture.away
           const { expected, probabilities } = matchProbabilities(fixture.home, fixture.away)
           const [homeP, drawP, awayP] = probabilities
-          const activePick = picks.get(fixture.cbfRef)
+
+          const score = picks.get(fixture.cbfRef)
+          const activeOutcome = score !== undefined
+            ? score.homeGoals > score.awayGoals
+              ? 'home'
+              : score.homeGoals === score.awayGoals
+                ? 'draw'
+                : 'away'
+            : null
 
           return (
-            <article className={`sim-match-card ${activePick ? 'sim-match-card--has-pick' : ''}`} key={fixture.cbfRef}>
+            <article className={`sim-match-card ${score !== undefined ? 'sim-match-card--has-pick' : ''}`} key={fixture.cbfRef}>
               <div className="sim-match-header">
                 <span className="sim-match-venue">Rodada {group.roundNumber} · CBF #{fixture.cbfRef}</span>
-                <span className="sim-match-expected">xG: {expected.home.toFixed(2)} × {expected.away.toFixed(2)}</span>
+                {score !== undefined ? (
+                  <button
+                    type="button"
+                    className="sim-match-clear"
+                    onClick={() => clearPick(fixture.cbfRef)}
+                    title="Remover palpite deste jogo"
+                  >
+                    ✕ Limpar
+                  </button>
+                ) : (
+                  <span className="sim-match-expected">xG: {expected.home.toFixed(2)} × {expected.away.toFixed(2)}</span>
+                )}
               </div>
 
-              <div className="sim-match-teams">
-                <div className="sim-team sim-team--home">
-                  <Crest clubId={fixture.home} size="medium" />
-                  <span className="sim-team-name">{home}</span>
+              {/* Duelo com Escudos, Nomes, Pontuação Atual e Controle de Gols */}
+              <div className="sim-duel-box">
+                <div className={`sim-team-side sim-team-side--home ${activeOutcome === 'home' ? 'is-winner' : ''}`}>
+                  <Crest clubId={fixture.home} size="xs" />
+                  <div className="sim-team-info">
+                    <span className="sim-team-name">{homeName}</span>
+                    <span className="sim-team-points">{homeClub ? `${homeClub.position}º · ${homeClub.points} pts` : ''}</span>
+                  </div>
                 </div>
-                <span className="sim-match-vs">×</span>
-                <div className="sim-team sim-team--away">
-                  <span className="sim-team-name">{away}</span>
-                  <Crest clubId={fixture.away} size="medium" />
+
+                {/* Placar Interativo com Ajuste de Gols (+/-) */}
+                <div className="sim-score-box">
+                  <div className="sim-stepper">
+                    <button
+                      type="button"
+                      className="sim-step-btn"
+                      onClick={() => adjustGoals(fixture.cbfRef, 'home', -1)}
+                      aria-label={`Diminuir gol de ${homeName}`}
+                    >−</button>
+                    <span className={`sim-score-val ${score ? 'has-score' : ''}`}>
+                      {score ? score.homeGoals : '—'}
+                    </span>
+                    <button
+                      type="button"
+                      className="sim-step-btn"
+                      onClick={() => adjustGoals(fixture.cbfRef, 'home', 1)}
+                      aria-label={`Aumentar gol de ${homeName}`}
+                    >+</button>
+                  </div>
+                  <span className="sim-score-x">×</span>
+                  <div className="sim-stepper">
+                    <button
+                      type="button"
+                      className="sim-step-btn"
+                      onClick={() => adjustGoals(fixture.cbfRef, 'away', -1)}
+                      aria-label={`Diminuir gol de ${awayName}`}
+                    >−</button>
+                    <span className={`sim-score-val ${score ? 'has-score' : ''}`}>
+                      {score ? score.awayGoals : '—'}
+                    </span>
+                    <button
+                      type="button"
+                      className="sim-step-btn"
+                      onClick={() => adjustGoals(fixture.cbfRef, 'away', 1)}
+                      aria-label={`Aumentar gol de ${awayName}`}
+                    >+</button>
+                  </div>
+                </div>
+
+                <div className={`sim-team-side sim-team-side--away ${activeOutcome === 'away' ? 'is-winner' : ''}`}>
+                  <div className="sim-team-info text-right">
+                    <span className="sim-team-name">{awayName}</span>
+                    <span className="sim-team-points">{awayClub ? `${awayClub.position}º · ${awayClub.points} pts` : ''}</span>
+                  </div>
+                  <Crest clubId={fixture.away} size="xs" />
                 </div>
               </div>
 
-              {/* Botões 1 / X / 2 */}
-              <div className="sim-pick-buttons" role="group" aria-label={`Palpite para ${home} contra ${away}`}>
+              {/* Botões Semânticos de Desfecho (Sem códigos crípticos 1/X/2) */}
+              <div className="sim-outcome-buttons" role="group" aria-label={`Palpite para ${homeName} contra ${awayName}`}>
                 <button
                   type="button"
-                  className={`sim-pick-btn ${activePick === 'home' ? 'is-selected' : ''}`}
-                  onClick={() => togglePick(fixture.cbfRef, 'home')}
-                  aria-pressed={activePick === 'home'}
+                  className={`sim-outcome-btn ${activeOutcome === 'home' ? 'is-selected is-home' : ''}`}
+                  onClick={() => toggleOutcome(fixture.cbfRef, 'home', expected.home, expected.away)}
+                  aria-pressed={activeOutcome === 'home'}
                 >
-                  <span className="sim-pick-tag">1</span>
-                  <span className="sim-pick-prob">{percent.format(homeP)}</span>
+                  <span className="sim-outcome-title">Vitória {homeName.split(' ')[0]}</span>
+                  <span className="sim-outcome-prob">{percent.format(homeP)}</span>
                 </button>
                 <button
                   type="button"
-                  className={`sim-pick-btn ${activePick === 'draw' ? 'is-selected' : ''}`}
-                  onClick={() => togglePick(fixture.cbfRef, 'draw')}
-                  aria-pressed={activePick === 'draw'}
+                  className={`sim-outcome-btn ${activeOutcome === 'draw' ? 'is-selected is-draw' : ''}`}
+                  onClick={() => toggleOutcome(fixture.cbfRef, 'draw', expected.home, expected.away)}
+                  aria-pressed={activeOutcome === 'draw'}
                 >
-                  <span className="sim-pick-tag">X</span>
-                  <span className="sim-pick-prob">{percent.format(drawP)}</span>
+                  <span className="sim-outcome-title">Empate</span>
+                  <span className="sim-outcome-prob">{percent.format(drawP)}</span>
                 </button>
                 <button
                   type="button"
-                  className={`sim-pick-btn ${activePick === 'away' ? 'is-selected' : ''}`}
-                  onClick={() => togglePick(fixture.cbfRef, 'away')}
-                  aria-pressed={activePick === 'away'}
+                  className={`sim-outcome-btn ${activeOutcome === 'away' ? 'is-selected is-away' : ''}`}
+                  onClick={() => toggleOutcome(fixture.cbfRef, 'away', expected.home, expected.away)}
+                  aria-pressed={activeOutcome === 'away'}
                 >
-                  <span className="sim-pick-tag">2</span>
-                  <span className="sim-pick-prob">{percent.format(awayP)}</span>
+                  <span className="sim-outcome-title">Vitória {awayName.split(' ')[0]}</span>
+                  <span className="sim-outcome-prob">{percent.format(awayP)}</span>
                 </button>
               </div>
             </article>
@@ -307,11 +350,11 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
       <div className="sim-results-section">
         <div className="sim-results-header">
           <div>
-            <h3>Impacto na Classificação ({totalPicksCount} {totalPicksCount === 1 ? 'jogo definido' : 'jogos definidos'})</h3>
+            <h3>Impacto na Classificação & Probabilidades ({totalPicksCount} {totalPicksCount === 1 ? 'jogo definido' : 'jogos definidos'})</h3>
             <p className="table-note">
               {totalPicksCount === 0
-                ? 'Selecione os palpites acima para ver a tabela simulada e as oscilações de probabilidade.'
-                : 'Tabela calculada com os pontos adicionais dos seus palpites mantendo os critérios oficiais CBF.'}
+                ? 'Selecione os vencedores ou ajuste os placares acima para ver o recálculo imediato de pontos e probabilidades Monte Carlo.'
+                : 'Tabela calculada com os placares definidos, aplicando saldo de gols, vitórias e todos os critérios oficiais CBF.'}
             </p>
           </div>
           <div className="sim-view-toggle" role="tablist" aria-label="Visualização do simulador">
@@ -341,27 +384,30 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             <table className="standings-view-table sim-table">
               <thead>
                 <tr>
-                  <th scope="col" className="numeric">Pos</th>
+                  <th scope="col" className="numeric">#</th>
                   <th scope="col">Mov</th>
                   <th scope="col">Clube</th>
-                  <th scope="col" className="numeric">Pts</th>
+                  <th scope="col" className="numeric">Pts Atual</th>
+                  <th scope="col" className="numeric">Pts Sim.</th>
+                  <th scope="col" className="numeric">Δ Pts</th>
                   <th scope="col" className="numeric">J</th>
                   <th scope="col" className="numeric">V</th>
                   <th scope="col" className="numeric">SG</th>
-                  <th scope="col" className="numeric">Δ Pts</th>
+                  <th scope="col" className="numeric">GP</th>
+                  <th scope="col" className="numeric">GC</th>
                 </tr>
               </thead>
               <tbody>
-                {simulatedTable.map((team) => {
-                  const isG4 = team.simulatedPosition <= ZONES.libertadores.to
-                  const isSula = team.simulatedPosition <= ZONES.sudamericana.to && !isG4
-                  const isZ4 = team.simulatedPosition >= ZONES.relegation.from
+                {simulatedTable.map((team, index) => {
+                  const isG4 = index + 1 <= ZONES.libertadores.to
+                  const isSula = index + 1 <= ZONES.sudamericana.to && !isG4
+                  const isZ4 = index + 1 >= ZONES.relegation.from
                   const zoneClass = isG4 ? 'qualification' : isSula ? 'sudamericana' : isZ4 ? 'relegation' : 'middle'
 
                   return (
                     <tr key={team.id} className={`standing-row standing-row--${zoneClass}`}>
                       <td className="position-cell numeric">
-                        <span>{String(team.simulatedPosition).padStart(2, '0')}</span>
+                        <span>{String(index + 1).padStart(2, '0')}</span>
                       </td>
                       <td className="sim-mov-cell">
                         {team.positionDelta > 0 ? (
@@ -381,17 +427,24 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                       <th scope="row" className="club-cell">
                         <Crest clubId={team.id} size="xs" />
                         <span className="club-cell-name">{team.club}</span>
-                        {team.simulatedPosition !== team.originalPosition && (
-                          <span className="sim-original-pos">({team.originalPosition}º oficial)</span>
+                        {index + 1 !== team.currentPosition && (
+                          <span className="official-pos-badge" title={`Posição oficial no campeonato: ${team.currentPosition}º`}>
+                            {team.currentPosition}º oficial
+                          </span>
                         )}
                       </th>
+                      <td className="numeric games-cell">{team.currentPoints}</td>
                       <td className="numeric points-cell"><strong>{team.simulatedPoints}</strong></td>
-                      <td className="numeric games-cell">{team.simulatedPlayed}</td>
-                      <td className="numeric games-cell">{team.simulatedWins}</td>
-                      <td className="numeric games-cell">{team.goalsFor - team.goalsAgainst}</td>
                       <td className="numeric games-cell sim-pts-delta">
                         {team.pointsDiff > 0 ? `+${team.pointsDiff}` : '—'}
                       </td>
+                      <td className="numeric games-cell">{team.currentPosition}</td>
+                      <td className="numeric games-cell">{team.simulatedWins}</td>
+                      <td className="numeric games-cell">
+                        {team.simulatedGoalDifference > 0 ? `+${team.simulatedGoalDifference}` : team.simulatedGoalDifference}
+                      </td>
+                      <td className="numeric games-cell">{team.simulatedGoalsFor}</td>
+                      <td className="numeric games-cell">{team.simulatedGoalsAgainst}</td>
                     </tr>
                   )
                 })}
@@ -403,23 +456,33 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             <table className="projection-table sim-table">
               <thead>
                 <tr>
-                  <th scope="col" className="numeric">Pos</th>
+                  <th scope="col" className="numeric">#</th>
                   <th scope="col">Clube</th>
+                  <th scope="col" className="numeric">Pts Atual</th>
+                  <th scope="col" className="numeric">Pts Sim.</th>
                   <th scope="col" className="numeric">Título %</th>
                   <th scope="col" className="numeric">Libertadores %</th>
+                  <th scope="col" className="numeric">Sul-Americana %</th>
                   <th scope="col" className="numeric">Rebaixamento %</th>
                 </tr>
               </thead>
               <tbody>
-                {simulatedProbabilities.map((team) => (
+                {simulatedProbabilitiesList.map((team, index) => (
                   <tr key={team.id}>
-                    <td className="position-cell numeric">{String(team.simulatedPosition).padStart(2, '0')}</td>
+                    <td className="position-cell numeric">{String(index + 1).padStart(2, '0')}</td>
                     <th scope="row" className="club-cell">
                       <Crest clubId={team.id} size="xs" />
                       <span className="club-cell-name">{team.club}</span>
+                      {index + 1 !== team.currentPosition && (
+                        <span className="official-pos-badge" title={`Posição oficial no campeonato: ${team.currentPosition}º`}>
+                          {team.currentPosition}º oficial
+                        </span>
+                      )}
                     </th>
+                    <td className="numeric games-cell">{team.currentPoints}</td>
+                    <td className="numeric points-cell"><strong>{team.simulatedPoints}</strong></td>
                     <td className="numeric probability-cell">
-                      <strong>{percent.format(team.simulatedTitle)}</strong>
+                      <strong>{percent.format(team.title)}</strong>
                       {Math.abs(team.titleDelta) >= 0.005 && (
                         <span className={`sim-pct-delta ${team.titleDelta > 0 ? 'is-up' : 'is-down'}`}>
                           {signedPercent.format(team.titleDelta)}
@@ -427,18 +490,26 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                       )}
                     </td>
                     <td className="numeric probability-cell">
-                      <strong>{percent.format(team.simulatedLibertadores)}</strong>
-                      {Math.abs(team.libertadoresDelta) >= 0.005 && (
-                        <span className={`sim-pct-delta ${team.libertadoresDelta > 0 ? 'is-up' : 'is-down'}`}>
-                          {signedPercent.format(team.libertadoresDelta)}
+                      <strong>{percent.format(team.libertadores)}</strong>
+                      {Math.abs(team.libDelta) >= 0.005 && (
+                        <span className={`sim-pct-delta ${team.libDelta > 0 ? 'is-up' : 'is-down'}`}>
+                          {signedPercent.format(team.libDelta)}
                         </span>
                       )}
                     </td>
                     <td className="numeric probability-cell">
-                      <strong>{percent.format(team.simulatedRelegation)}</strong>
-                      {Math.abs(team.relegationDelta) >= 0.005 && (
-                        <span className={`sim-pct-delta ${team.relegationDelta < 0 ? 'is-up' : 'is-down'}`}>
-                          {signedPercent.format(team.relegationDelta)}
+                      <strong>{percent.format(team.sudamericana)}</strong>
+                      {Math.abs(team.sulaDelta) >= 0.005 && (
+                        <span className={`sim-pct-delta ${team.sulaDelta > 0 ? 'is-up' : 'is-down'}`}>
+                          {signedPercent.format(team.sulaDelta)}
+                        </span>
+                      )}
+                    </td>
+                    <td className="numeric probability-cell">
+                      <strong>{percent.format(team.relegation)}</strong>
+                      {Math.abs(team.relDelta) >= 0.005 && (
+                        <span className={`sim-pct-delta ${team.relDelta < 0 ? 'is-up' : 'is-down'}`}>
+                          {signedPercent.format(team.relDelta)}
                         </span>
                       )}
                     </td>
@@ -448,6 +519,22 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             </table>
           </div>
         )}
+
+        {/* Nota Metodológica Transparente */}
+        <details className="clean-disclosure sim-methodology-note">
+          <summary>ℹ️ Metodologia e Parâmetros do Simulador Monte Carlo</summary>
+          <div className="sim-methodology-body">
+            <p>
+              <strong>Semente Determinística Única (<code>{SIMULATION_SEED}</code>):</strong> Todas as simulações executam 2.000 iterações Monte Carlo completas no seu navegador com a mesma semente pseudoaleatória do modelo oficial, garantindo reprodutibilidade estrita (os mesmos palpites produzem rigorosamente os mesmos números).
+            </p>
+            <p>
+              <strong>Placares e Gols Reais:</strong> Os jogos que você define têm seus placares fixados exatamente nos gols informados, alterando pontos, vitórias, gols marcados, gols sofridos e saldo de gols. As demais partidas não definidas são simuladas estocasticamente pela distribuição Poisson com Expected Goals (xG) ajustados por mando de campo.
+            </p>
+            <p>
+              <strong>Critérios Oficiais CBF (Art. 15):</strong> Pontos, Vitórias, Saldo de Gols, Gols Marcados e Confronto Direto são aplicados em cada uma das 2.000 temporadas simuladas para determinar as probabilidades de Título (1º), Libertadores (1º–6º*), Sul-Americana (7º–12º) e Rebaixamento (17º–20º).
+            </p>
+          </div>
+        </details>
       </div>
     </section>
   )

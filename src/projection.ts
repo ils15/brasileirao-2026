@@ -418,12 +418,18 @@ function initialTeamStates(
   }))
 }
 
+export interface UserScore {
+  homeGoals: number
+  awayGoals: number
+}
+
 function simulateSeason(
   random: RandomSource,
   clubs: readonly SimulationClub[],
-  fixtures: readonly { home: string; away: string }[],
+  fixtures: readonly { home: string; away: string; cbfRef?: string }[],
   expectedGoals: readonly ExpectedGoals[],
   initialHeadToHead: HeadToHeadMatrix = new Map(),
+  fixedScores?: ReadonlyMap<string, UserScore>,
 ): SingleSeasonResult {
   if (fixtures.length !== expectedGoals.length) throw new Error('Cada jogo precisa de uma estimativa de gols esperados.')
   const states = initialTeamStates(random, clubs, initialHeadToHead)
@@ -436,8 +442,13 @@ function simulateSeason(
     const awayEntry = stateById.get(fixture.away)
     const goalsMean = expectedGoals[fixtureIndex]!
     if (!homeEntry || !awayEntry) throw new Error(`Fixture contém clube desconhecido: ${fixture.home}–${fixture.away}`)
-    const homeGoals = poissonSample(goalsMean.home, random)
-    const awayGoals = poissonSample(goalsMean.away, random)
+
+    const fixed = fixedScores
+      ? (fixture.cbfRef ? fixedScores.get(fixture.cbfRef) : undefined) ?? fixedScores.get(`${fixture.home}|${fixture.away}`)
+      : undefined
+
+    const homeGoals = fixed !== undefined ? fixed.homeGoals : poissonSample(goalsMean.home, random)
+    const awayGoals = fixed !== undefined ? fixed.awayGoals : poissonSample(goalsMean.away, random)
     const home = homeEntry.state
     const away = awayEntry.state
 
@@ -486,6 +497,112 @@ export function simulateOneSeason(seed: number): SingleSeasonResult {
   const random = createRandom(seed)
   const expectedGoals = remainingFixtures.map((fixture) => estimateExpectedGoals(fixture.home, fixture.away))
   return simulateSeason(random, currentClubs, remainingFixtures, expectedGoals, buildCurrentSeasonHeadToHead())
+}
+
+export interface ScenarioClubProbability {
+  id: string
+  club: string
+  currentPosition: number
+  simulatedPosition: number
+  currentPoints: number
+  simulatedPoints: number
+  simulatedWins: number
+  simulatedGoalsFor: number
+  simulatedGoalsAgainst: number
+  simulatedGoalDifference: number
+  pointsDiff: number
+  title: number
+  libertadores: number
+  sudamericana: number
+  relegation: number
+}
+
+export function runScenarioProjection(
+  fixedScores: ReadonlyMap<string, UserScore>,
+  simulations: number = 2000,
+  seed: number = SIMULATION_SEED,
+): ScenarioClubProbability[] {
+  const random = createRandom(seed)
+  const expectedGoals = remainingFixtures.map((fixture) => estimateExpectedGoals(fixture.home, fixture.away))
+  const initialHeadToHead = buildCurrentSeasonHeadToHead()
+
+  const counts = new Map(currentClubs.map((club) => [
+    club.id,
+    { title: 0, libertadores: 0, sudamericana: 0, relegation: 0, totalPosition: 0 }
+  ]))
+
+  for (let s = 0; s < simulations; s += 1) {
+    const season = simulateSeason(random, currentClubs, remainingFixtures, expectedGoals, initialHeadToHead, fixedScores)
+    for (const club of season.table) {
+      const c = counts.get(club.id)!
+      if (club.position === 1) c.title += 1
+      if (isPositionInZone(club.position, ZONES.libertadores)) c.libertadores += 1
+      if (isPositionInZone(club.position, ZONES.sudamericana)) c.sudamericana += 1
+      if (club.position >= ZONES.relegation.from) c.relegation += 1
+      c.totalPosition += club.position
+    }
+  }
+
+  // Deterministic partial standings from currentClubs + user fixed matches only
+  const partialTable = currentClubs.map((c) => ({
+    id: c.id,
+    club: c.club,
+    currentPosition: c.position,
+    points: c.points,
+    played: c.played,
+    wins: c.wins,
+    goalsFor: c.goalsFor,
+    goalsAgainst: c.goalsAgainst,
+  }))
+  const partialMap = new Map(partialTable.map((c) => [c.id, c]))
+
+  for (const fixture of remainingFixtures) {
+    const fixed = fixedScores.get(fixture.cbfRef) ?? fixedScores.get(`${fixture.home}|${fixture.away}`)
+    if (!fixed) continue
+    const home = partialMap.get(fixture.home)
+    const away = partialMap.get(fixture.away)
+    if (!home || !away) continue
+
+    home.played += 1
+    away.played += 1
+    home.goalsFor += fixed.homeGoals
+    home.goalsAgainst += fixed.awayGoals
+    away.goalsFor += fixed.awayGoals
+    away.goalsAgainst += fixed.homeGoals
+
+    if (fixed.homeGoals > fixed.awayGoals) {
+      home.points += 3
+      home.wins += 1
+    } else if (fixed.homeGoals < fixed.awayGoals) {
+      away.points += 3
+      away.wins += 1
+    } else {
+      home.points += 1
+      away.points += 1
+    }
+  }
+
+  return currentClubs.map((club) => {
+    const c = counts.get(club.id)!
+    const partial = partialMap.get(club.id)!
+    return {
+      id: club.id,
+      club: club.club,
+      currentPosition: club.position,
+      simulatedPosition: Math.round(c.totalPosition / simulations),
+      currentPoints: club.points,
+      simulatedPoints: partial.points,
+      simulatedWins: partial.wins,
+      simulatedGoalsFor: partial.goalsFor,
+      simulatedGoalsAgainst: partial.goalsAgainst,
+      simulatedGoalDifference: partial.goalsFor - partial.goalsAgainst,
+      pointsDiff: partial.points - club.points,
+      title: c.title / simulations,
+      libertadores: c.libertadores / simulations,
+      sudamericana: c.sudamericana / simulations,
+      relegation: c.relegation / simulations,
+    }
+  })
 }
 
 function createBacktestSeason(year: number): { seasonMatches: MatchInput[]; priorMatches: MatchInput[] } {

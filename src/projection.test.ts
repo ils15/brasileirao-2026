@@ -4,7 +4,7 @@ import { standings } from './data'
 import { currentSeasonResults } from './currentSeasonResults'
 import { HISTORICAL_SOURCE, modelableHistoricalSeasons } from './historicalSeasons'
 import { historicalSeasons, remainingFixtures, currentClubs } from './projectionData'
-import { buildCurrentSeasonHeadToHead, buildPointsAnalysis, compareHeadToHeadForTable, isPositionInZone, runProjection, runTemporalBacktest, simulateOneSeason, validateHistoricalSeason, ZONES } from './projection'
+import { buildCurrentSeasonHeadToHead, buildPointsAnalysis, compareHeadToHeadForTable, isPositionInZone, runProjection, runScenarioProjection, runTemporalBacktest, simulateOneSeason, validateHistoricalSeason, ZONES } from './projection'
 
 describe('projeção estática do Brasileirão 2026', () => {
   it('separa integridade estrutural, amostra RSSSF e verificação de tabela final', () => {
@@ -290,5 +290,29 @@ describe('projeção estática do Brasileirão 2026', () => {
     expect(result.trainingGoalAverages.home).toBeGreaterThan(0)
     expect(result.leagueAverageGoals.home).toBeGreaterThan(0)
     expect(result.trainingGoalAverages.home).not.toBe(result.leagueAverageGoals.home)
+  })
+
+  it('projeta cenários personalizados com placares fixos e semente determinística', () => {
+    const fixedScores = new Map<string, { homeGoals: number; awayGoals: number }>()
+    const firstFixture = remainingFixtures[0]!
+    fixedScores.set(firstFixture.cbfRef, { homeGoals: 3, awayGoals: 0 })
+
+    const scenario = runScenarioProjection(fixedScores, 500, 20_261_104)
+    expect(scenario).toHaveLength(20)
+
+    const homeClub = scenario.find((c) => c.id === firstFixture.home)!
+    const awayClub = scenario.find((c) => c.id === firstFixture.away)!
+
+    // O mandante ganha 3 pontos e +3 de saldo
+    expect(homeClub.pointsDiff).toBe(3)
+    expect(homeClub.simulatedPoints).toBe(homeClub.currentPoints + 3)
+    // O visitante ganha 0 pontos e -3 de saldo
+    expect(awayClub.pointsDiff).toBe(0)
+    expect(awayClub.simulatedPoints).toBe(awayClub.currentPoints)
+
+    // Reprodutibilidade com a mesma semente
+    const repeat = runScenarioProjection(fixedScores, 500, 20_261_104)
+    expect(repeat.map((c) => c.title)).toEqual(scenario.map((c) => c.title))
+    expect(repeat.map((c) => c.relegation)).toEqual(scenario.map((c) => c.relegation))
   })
 })
