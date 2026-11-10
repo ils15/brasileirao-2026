@@ -4,6 +4,7 @@ import type { ClubProbability, ProjectionResult } from './projection'
 import type { PointCurveAggregateRow } from './pointCurve'
 import { useProjection, type ProjectionStatus } from './ProjectionContext'
 import { Crest } from './Crest'
+import { GamepadIcon } from './icons'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { buildXlsx, downloadFile, toCSV, toJson } from './exporters'
@@ -697,7 +698,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
           ref={(element) => { analysisTabRefs.current[2] = element }}
           onClick={() => setActiveAnalysis('simulador')}
           onKeyDown={(event) => handleAnalysisTabKeyDown(event, 2)}
-        >🎮 Simulador Interativo</button>
+        ><GamepadIcon className="inline-icon" /> Simulador Interativo</button>
       </div>
 
       {!result && (

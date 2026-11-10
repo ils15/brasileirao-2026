@@ -69,9 +69,9 @@ Localizado na aba **Projeções & Simulador**, o simulador permite ao usuário b
 - **Seleção de Rodadas**: Navegue por qualquer uma das rodadas restantes do campeonato.
 - **Palpites Rápidos 1 / X / 2**: Cada partida conta com botões interativos (altura tátil $\ge 44\text{px}$) com as probabilidades calculadas pelo modelo para guiar o palpite.
 - **Cenários Pré-configurados (1 Clique)**:
-  - `⚡ Mais Prováveis`: Preenche a rodada com o resultado de maior probabilidade estatística.
-  - `💥 Cenário Zebra`: Preenche com os resultados mais improváveis.
-  - `🏠 Supremacia Mandante`: Simula vitórias de todos os donos da casa.
+  - `Mais Prováveis`: Preenche a rodada com o resultado de maior probabilidade estatística.
+  - `Cenário Zebra`: Preenche com os resultados mais improváveis.
+  - `Supremacia Mandante`: Simula vitórias de todos os donos da casa.
   - `↺ Limpar Palpites`: Restaura as probabilidades puras do modelo original.
 - **Recálculo Imediato**:
   - Classificação simulada em tempo real com saldo de gols e pontos.
