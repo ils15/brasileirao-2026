@@ -4,9 +4,11 @@ import {
   estimateHeadToHeadAdjustment,
   expectedGoalsFromTeamTotals,
   expectedGoalsFromXg,
+  getDiverseQuickScores,
   historicalGoalAverages,
   mostProbableScores,
   poissonResultProbabilities,
+  sampleMatchScore,
   type ModelMatch,
 } from './matchModel'
 
@@ -139,5 +141,33 @@ describe('placares mais prováveis por xG (moda bivariada)', () => {
     expect(scores.homeWin.probability).toBeGreaterThan(0)
     expect(scores.draw.probability).toBeGreaterThan(0)
     expect(scores.awayWin.probability).toBeGreaterThan(0)
+  })
+
+  it('permite escalar o multiplicador de gols em mostProbableScores', () => {
+    const conservative = mostProbableScores({ home: 1.5, away: 1.0 }, 0, 0.8)
+    const elastic = mostProbableScores({ home: 1.5, away: 1.0 }, 0, 1.8)
+    expect(conservative.homeWin.homeGoals).toBeLessThanOrEqual(elastic.homeWin.homeGoals)
+  })
+
+  it('amostra placares válidos estocasticamente respeitando o grid Poisson', () => {
+    const score = sampleMatchScore({ home: 2.1, away: 1.2 }, 0, 1.4, 0.5)
+    expect(score.homeGoals).toBeGreaterThanOrEqual(0)
+    expect(score.homeGoals).toBeLessThanOrEqual(8)
+    expect(score.awayGoals).toBeGreaterThanOrEqual(0)
+    expect(score.awayGoals).toBeLessThanOrEqual(8)
+  })
+
+  it('gera lista diversa de placares rápidos incluindo opções elásticas', () => {
+    const quick = getDiverseQuickScores({ home: 2.2, away: 1.1 }, 0, 1.4)
+    expect(quick.length).toBeGreaterThanOrEqual(4)
+    // Cada opção tem probabilidade positiva e gols não-negativos
+    for (const item of quick) {
+      expect(item.homeGoals).toBeGreaterThanOrEqual(0)
+      expect(item.awayGoals).toBeGreaterThanOrEqual(0)
+      expect(item.probability).toBeGreaterThan(0)
+    }
+    // Deve conter opções com mais de 2 gols para partidas abertas
+    const hasHigherScore = quick.some((s) => s.homeGoals >= 3 || s.awayGoals >= 2)
+    expect(hasHigherScore).toBe(true)
   })
 })

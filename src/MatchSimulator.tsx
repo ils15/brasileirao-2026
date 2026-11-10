@@ -1,9 +1,28 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { matchProbabilities } from './matchProbabilities'
+import { sampleMatchScore } from './matchModel'
 import { Crest } from './Crest'
 import { ZONES, SIMULATION_SEED } from './projectionConfig'
 import { runScenarioProjection, type ProjectionResult, type UserScore } from './projection'
+
+export type GoalProfile = 'tight' | 'balanced' | 'elastic' | 'goleada'
+
+export interface GoalProfileConfig {
+  id: GoalProfile
+  label: string
+  shortLabel: string
+  multiplier: number
+  badge: string
+  description: string
+}
+
+export const GOAL_PROFILES: GoalProfileConfig[] = [
+  { id: 'tight', label: '🛡️ Truncado', shortLabel: '🛡️ Truncado', multiplier: 0.8, badge: '0.8x', description: 'Jogos truncados e defesas fortes com poucos gols (0x0, 1x0, 0x1, 1x1)' },
+  { id: 'balanced', label: '⚖️ Equilibrado', shortLabel: '⚖️ Equilibrado', multiplier: 1.0, badge: '1.0x', description: 'Média real do Brasileirão (1x0, 2x1, 2x0, 1x1, 1x2)' },
+  { id: 'elastic', label: '💥 Elástico (+Gols)', shortLabel: '💥 Elástico', multiplier: 1.4, badge: '1.4x', description: 'Jogos abertos com mais gols e placares elásticos (2x1, 3x1, 3x2, 2x2, 3x0)' },
+  { id: 'goleada', label: '🔥 Goleadas (Show)', shortLabel: '🔥 Goleadas', multiplier: 1.8, badge: '1.8x', description: 'Alta dispersão de gols e placares largos (4x1, 4x0, 3x3, 5x2, 4x2)' },
+]
 
 interface RoundGroup {
   round: string
@@ -33,11 +52,18 @@ const signedPercent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimum
 export function MatchSimulator({ result }: { result?: ProjectionResult | null }): JSX.Element {
   const rounds = useMemo(pendingRounds, [])
   const [selectedRound, setSelectedRound] = useState(rounds[0]?.round ?? '')
+  const [goalProfile, setGoalProfile] = useState<GoalProfile>('elastic')
   const [picks, setPicks] = useState<Map<string, UserScore>>(() => new Map())
   const [viewMode, setViewMode] = useState<'standings' | 'probabilities'>('standings')
 
   const group = rounds.find((entry) => entry.round === selectedRound) ?? rounds[0]
   const clubMap = useMemo(() => new Map(currentClubs.map((club) => [club.id, club])), [])
+
+  const activeConfig = useMemo(
+    () => GOAL_PROFILES.find((p) => p.id === goalProfile) ?? GOAL_PROFILES[2]!,
+    [goalProfile],
+  )
+  const activeMultiplier = activeConfig.multiplier
 
   // Incrementa/decrementa gols partindo do placar projetado ou do placar atual
   const adjustGoals = (
@@ -52,6 +78,20 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
       const newHome = side === 'home' ? Math.max(0, Math.min(9, current.homeGoals + delta)) : current.homeGoals
       const newAway = side === 'away' ? Math.max(0, Math.min(9, current.awayGoals + delta)) : current.awayGoals
       next.set(cbfRef, { homeGoals: newHome, awayGoals: newAway })
+      return next
+    })
+  }
+
+  // Define placar diretamente via chip rápido de placar
+  const setScoreDirect = (cbfRef: string, homeGoals: number, awayGoals: number): void => {
+    setPicks((prev) => {
+      const next = new Map(prev)
+      const current = next.get(cbfRef)
+      if (current && current.homeGoals === homeGoals && current.awayGoals === awayGoals) {
+        next.delete(cbfRef)
+      } else {
+        next.set(cbfRef, { homeGoals, awayGoals })
+      }
       return next
     })
   }
@@ -85,7 +125,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
     })
   }
 
-  const setScenario = (type: 'modal' | 'favorites' | 'underdogs' | 'home' | 'clear'): void => {
+  const setScenario = (type: 'sample' | 'modal' | 'favorites' | 'underdogs' | 'home' | 'clear'): void => {
     if (!group) return
     if (type === 'clear') {
       setPicks(new Map())
@@ -94,10 +134,14 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
 
     const next = new Map(picks)
     for (const fixture of group.fixtures) {
-      const { probabilities, mostProbable } = matchProbabilities(fixture.home, fixture.away)
+      const { probabilities, mostProbable, expected } = matchProbabilities(fixture.home, fixture.away, activeMultiplier)
       const [homeP, drawP, awayP] = probabilities
 
-      if (type === 'modal') {
+      if (type === 'sample') {
+        // Amostragem estocástica com base no perfil de gols (alta diversidade de placares)
+        const score = sampleMatchScore(expected, 0, activeMultiplier)
+        next.set(fixture.cbfRef, score)
+      } else if (type === 'modal') {
         // Moda conjunta do confronto: placar mais provável segundo o modelo
         next.set(fixture.cbfRef, {
           homeGoals: mostProbable.overall.homeGoals,
@@ -230,13 +274,49 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
           </label>
         )}
 
+        {/* Modulador de Gols e Elasticidade */}
+        <div className="sim-modulator-box">
+          <div className="sim-modulator-header">
+            <span className="sim-modulator-title">
+              ⚙️ <strong>Modulador de Gols & Elasticidade:</strong>
+            </span>
+            <span className="sim-modulator-desc">
+              {activeConfig.description}
+            </span>
+          </div>
+          <div className="sim-profile-pills" role="radiogroup" aria-label="Perfil de intensidade de gols">
+            {GOAL_PROFILES.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                role="radio"
+                aria-checked={goalProfile === p.id}
+                className={`sim-profile-pill ${goalProfile === p.id ? 'is-active' : ''}`}
+                onClick={() => setGoalProfile(p.id)}
+                title={p.description}
+              >
+                <span>{p.label}</span>
+                <span className="sim-profile-badge">{p.badge}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="sim-scenarios" role="group" aria-label="Cenários automáticos">
           <span className="sim-scenarios-label">Preenchimento rápido:</span>
           <button
             type="button"
+            className="sim-quick-btn sim-quick-btn--dice"
+            onClick={() => setScenario('sample')}
+            title="Sorteia placares realistas e variados para cada jogo da rodada com base no perfil de gols ativo (evita placares todos iguais)"
+          >
+            🎲 Sortear Rodada ({activeConfig.shortLabel})
+          </button>
+          <button
+            type="button"
             className="sim-quick-btn"
             onClick={() => setScenario('modal')}
-            title="Preenche cada confronto com o placar de maior probabilidade segundo o modelo de gols esperados"
+            title="Preenche cada confronto com o placar de maior probabilidade estatística"
           >
             🎯 Mais Prováveis
           </button>
@@ -251,18 +331,18 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
           <button
             type="button"
             className="sim-quick-btn"
-            onClick={() => setScenario('underdogs')}
-            title="Aplica o resultado zebra com seu placar esperado"
-          >
-            💥 Zebras
-          </button>
-          <button
-            type="button"
-            className="sim-quick-btn"
             onClick={() => setScenario('home')}
             title="Aplica vitórias dos mandantes calibradas por ataque vs defesa"
           >
             🏠 Mandantes
+          </button>
+          <button
+            type="button"
+            className="sim-quick-btn"
+            onClick={() => setScenario('underdogs')}
+            title="Aplica o resultado zebra com seu placar esperado"
+          >
+            💥 Zebras
           </button>
           {totalPicksCount > 0 && (
             <button
@@ -284,7 +364,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
           const awayClub = clubMap.get(fixture.away)
           const homeName = homeClub?.club ?? fixture.home
           const awayName = awayClub?.club ?? fixture.away
-          const { expected, probabilities, mostProbable } = matchProbabilities(fixture.home, fixture.away)
+          const { expected, probabilities, mostProbable, quickScores } = matchProbabilities(fixture.home, fixture.away, activeMultiplier)
           const [homeP, drawP, awayP] = probabilities
 
           const score = picks.get(fixture.cbfRef)
@@ -385,6 +465,28 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                     </span>
                   </div>
                   <Crest clubId={fixture.away} size="xs" />
+                </div>
+              </div>
+
+              {/* Chips de Placares Rápidos & Elásticos */}
+              <div className="sim-quick-chips" aria-label={`Placares sugeridos para ${homeName} contra ${awayName}`}>
+                <span className="sim-chips-label">Placares rápidos:</span>
+                <div className="sim-chips-list">
+                  {quickScores.map((qs) => {
+                    const isCurrent = score !== undefined && score.homeGoals === qs.homeGoals && score.awayGoals === qs.awayGoals
+                    return (
+                      <button
+                        key={`${qs.homeGoals}x${qs.awayGoals}`}
+                        type="button"
+                        className={`sim-score-chip ${isCurrent ? 'is-active' : ''}`}
+                        onClick={() => setScoreDirect(fixture.cbfRef, qs.homeGoals, qs.awayGoals)}
+                        aria-label={`Placar rápido ${qs.homeGoals} a ${qs.awayGoals}`}
+                        title={`Definir ${homeName} ${qs.homeGoals} × ${qs.awayGoals} ${awayName} (Probabilidade estimada: ${(qs.probability * 100).toFixed(1)}%)`}
+                      >
+                        {qs.homeGoals}×{qs.awayGoals}
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
 
@@ -611,7 +713,10 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
           <summary>ℹ️ Metodologia e Parâmetros do Simulador Monte Carlo</summary>
           <div className="sim-methodology-body">
             <p>
-              <strong>Placares Baseados em Gols Esperados (xG), Ataque e Defesa:</strong> Os placares sugeridos e aplicados nos botões de vitória/empate não utilizam valores fixos genéricos. Eles calculam a <em>moda estatística</em> (o placar de maior probabilidade) da distribuição bivariada Poisson a partir das taxas de gols esperados (\(\lambda\)) de cada clube, combinando a força de ataque do mandante com a fragilidade defensiva do visitante e vice-versa.
+              <strong>Modulador de Elasticidade e Variabilidade de Gols:</strong> O usuário pode escolher entre os perfis <em>🛡️ Truncado (0.8x)</em>, <em>⚖️ Equilibrado (1.0x)</em>, <em>💥 Elástico (1.4x)</em> e <em>🔥 Goleadas (1.8x)</em>. O botão <em>🎲 Sortear Rodada</em> realiza amostragem estocástica Poisson/Dixon-Coles a partir do xG de cada duelo, produzindo uma rodada com placares diversificados e naturais. Além disso, cada card de duelo oferece <em>chips de placares rápidos</em> para selecionar diretamente placares tradicionais ou elásticos (3×0, 3×1, 4×1, 2×2, 3×2).
+            </p>
+            <p>
+              <strong>Placares Baseados em Gols Esperados (xG), Ataque e Defesa:</strong> Os placares sugeridos e calculados não utilizam valores fixos arbitrários. Eles derivam da distribuição bivariada Poisson a partir das taxas de gols esperados (\(\lambda\)) de cada clube, combinando a força de ataque do mandante com a fragilidade defensiva do visitante e vice-versa.
             </p>
             <p>
               <strong>Semente Determinística Única (<code>{SIMULATION_SEED}</code>):</strong> Todas as simulações executam 2.000 iterações Monte Carlo completas no seu navegador com a mesma semente pseudoaleatória do modelo oficial, garantindo reprodutibilidade estrita (os mesmos palpites produzem rigorosamente os mesmos números).

@@ -421,10 +421,14 @@ export interface MostProbableScores {
 /**
  * Identifica os placares mais prováveis (a moda da distribuição conjunta) globalmente
  * e condicionados a cada desfecho (vitória mandante, empate, vitória visitante).
- * Baseia-se rigorosamente nos gols esperados λ (ataque e defesa ponderados por mando).
+ * Permite modular a elasticidade de gols através do multiplicador de volume ofensivo.
  */
-export function mostProbableScores(expected: ExpectedGoals, rho = 0): MostProbableScores {
-  const grid = dcJointGrid(expected, rho)
+export function mostProbableScores(expected: ExpectedGoals, rho = 0, multiplier = 1.0): MostProbableScores {
+  const scaled: ExpectedGoals = multiplier === 1.0 ? expected : {
+    home: Math.max(0.1, expected.home * multiplier),
+    away: Math.max(0.1, expected.away * multiplier),
+  }
+  const grid = dcJointGrid(scaled, rho)
   let bestOverall: ScoreOutcome = { homeGoals: 1, awayGoals: 1, probability: -1 }
   let bestHomeWin: ScoreOutcome = { homeGoals: 1, awayGoals: 0, probability: -1 }
   let bestDraw: ScoreOutcome = { homeGoals: 1, awayGoals: 1, probability: -1 }
@@ -454,6 +458,78 @@ export function mostProbableScores(expected: ExpectedGoals, rho = 0): MostProbab
     draw: bestDraw,
     awayWin: bestAwayWin,
   }
+}
+
+/**
+ * Amostra um placar estocasticamente a partir da distribuição conjunta bivariada
+ * Poisson de acordo com as probabilidades reais do confronto e o multiplicador de gols.
+ * Garante variabilidade realista para que os jogos de uma rodada não fiquem uniformes.
+ */
+export function sampleMatchScore(
+  expected: ExpectedGoals,
+  rho = 0,
+  multiplier = 1.0,
+  uniform: number = Math.random(),
+): { homeGoals: number; awayGoals: number } {
+  const scaled: ExpectedGoals = multiplier === 1.0 ? expected : {
+    home: Math.max(0.1, expected.home * multiplier),
+    away: Math.max(0.1, expected.away * multiplier),
+  }
+  const grid = dcJointGrid(scaled, rho)
+  const sampled = sampleFromGrid(grid, uniform)
+  return {
+    homeGoals: Math.min(8, sampled.homeGoals),
+    awayGoals: Math.min(8, sampled.awayGoals),
+  }
+}
+
+/**
+ * Retorna os placares mais prováveis e plausíveis para o confronto,
+ * incluindo opções elásticas (goleadas / placares maiores) para seleção rápida.
+ */
+export function getDiverseQuickScores(
+  expected: ExpectedGoals,
+  rho = 0,
+  multiplier = 1.0,
+): ScoreOutcome[] {
+  const scaled: ExpectedGoals = multiplier === 1.0 ? expected : {
+    home: Math.max(0.1, expected.home * multiplier),
+    away: Math.max(0.1, expected.away * multiplier),
+  }
+  const grid = dcJointGrid(scaled, rho)
+  const allScores: ScoreOutcome[] = []
+
+  for (let cell = 0; cell < grid.cumulative.length; cell += 1) {
+    const previous = cell > 0 ? grid.cumulative[cell - 1]! : 0
+    const probability = grid.cumulative[cell]! - previous
+    const homeGoals = Math.floor(cell / grid.size)
+    const awayGoals = cell % grid.size
+    if (homeGoals <= 5 && awayGoals <= 5 && probability > 0.015) {
+      allScores.push({ homeGoals, awayGoals, probability })
+    }
+  }
+
+  allScores.sort((a, b) => b.probability - a.probability)
+  const top = allScores.slice(0, 6)
+  const topKeys = new Set(top.map((s) => `${s.homeGoals}x${s.awayGoals}`))
+
+  // Garante alternativas elásticas (goleada mandante ou jogo movimentado)
+  const elasticHome = allScores.find(
+    (s) => s.homeGoals >= 3 && s.homeGoals > s.awayGoals && !topKeys.has(`${s.homeGoals}x${s.awayGoals}`),
+  )
+  if (elasticHome) top.push(elasticHome)
+
+  const elasticDraw = allScores.find(
+    (s) => s.homeGoals === 2 && s.awayGoals === 2 && !topKeys.has('2x2'),
+  )
+  if (elasticDraw) top.push(elasticDraw)
+
+  const elasticAway = allScores.find(
+    (s) => s.awayGoals >= 2 && s.awayGoals > s.homeGoals && !topKeys.has(`${s.homeGoals}x${s.awayGoals}`),
+  )
+  if (elasticAway && top.length < 8) top.push(elasticAway)
+
+  return top.slice(0, 8)
 }
 
 /**
