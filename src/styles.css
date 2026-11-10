@@ -1088,6 +1088,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .sim-round-select select { min-height: 38px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-size: 13px; }
 
 /* Modulador de Gols e Elasticidade */
+.inline-icon { width: 14px; height: 14px; flex: 0 0 auto; display: inline-block; vertical-align: -2px; stroke: currentColor; stroke-width: 1.6; opacity: .8; }
 .sim-modulator-box { display: flex; flex-direction: column; gap: 8px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
 .sim-modulator-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; }
 .sim-modulator-title { color: var(--ink); font-size: 12px; font-weight: 600; }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { getZoneLabel, matchesClubFilter, scorers, standings, SCORERS_SOURCE, type ClubFilter, type Standing } from './data'
 import { ProjectionSection } from './ProjectionSection'
+import { InfoIcon } from './icons'
 import { ZoneLegend } from './ZoneLegend'
 import { MethodologyPanel } from './MethodologyPanel'
 import { ProjectionProvider, useProjection } from './ProjectionContext'
@@ -390,7 +391,7 @@ function App(): JSX.Element {
                   </table>
                 </div>
                 <details className="clean-disclosure">
-                  <summary>ℹ️ Notas de conciliação de dados</summary>
+                  <summary><InfoIcon className="inline-icon" /> Notas de conciliação de dados</summary>
                   <p className="table-note">Classificação calculada dos resultados do pacote; a cópia CBF arquivada soma 332 jogos e não valida este conjunto. O número de jogos varia entre os clubes.</p>
                 </details>
               </div>
@@ -433,7 +434,7 @@ function App(): JSX.Element {
                   </span>
                 </nav>
                 <details className="clean-disclosure">
-                  <summary>ℹ️ Fontes e critérios da artilharia</summary>
+                  <summary><InfoIcon className="inline-icon" /> Fontes e critérios da artilharia</summary>
                   <p className="scorers-caption">Lista informativa da temporada; captura pós-corte, não representa a artilharia no corte.</p>
                   <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {scorersCaptureLabel} · posterior ao corte analítico; sem timestamp por partida, cobertura temporal não verificada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
                   <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>

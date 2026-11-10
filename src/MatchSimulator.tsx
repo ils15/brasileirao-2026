@@ -5,6 +5,7 @@ import { sampleMatchScore } from './matchModel'
 import { Crest } from './Crest'
 import { ZONES, SIMULATION_SEED } from './projectionConfig'
 import { runScenarioProjection, type ProjectionResult, type UserScore } from './projection'
+import { GearIcon, DiceIcon, TargetIcon, BoltIcon, HomeIcon, BurstIcon, ShieldIcon, ScalesIcon, FireIcon, InfoIcon } from './icons'
 
 export type GoalProfile = 'tight' | 'balanced' | 'elastic' | 'goleada'
 
@@ -18,11 +19,24 @@ export interface GoalProfileConfig {
 }
 
 export const GOAL_PROFILES: GoalProfileConfig[] = [
-  { id: 'tight', label: '🛡️ Truncado', shortLabel: '🛡️ Truncado', multiplier: 0.8, badge: '0.8x', description: 'Jogos truncados e defesas fortes com poucos gols (0x0, 1x0, 0x1, 1x1)' },
-  { id: 'balanced', label: '⚖️ Equilibrado', shortLabel: '⚖️ Equilibrado', multiplier: 1.0, badge: '1.0x', description: 'Média real do Brasileirão (1x0, 2x1, 2x0, 1x1, 1x2)' },
-  { id: 'elastic', label: '💥 Elástico (+Gols)', shortLabel: '💥 Elástico', multiplier: 1.4, badge: '1.4x', description: 'Jogos abertos com mais gols e placares elásticos (2x1, 3x1, 3x2, 2x2, 3x0)' },
-  { id: 'goleada', label: '🔥 Goleadas (Show)', shortLabel: '🔥 Goleadas', multiplier: 1.8, badge: '1.8x', description: 'Alta dispersão de gols e placares largos (4x1, 4x0, 3x3, 5x2, 4x2)' },
+  { id: 'tight', label: 'Truncado', shortLabel: 'Truncado', multiplier: 0.8, badge: '0.8x', description: 'Jogos truncados e defesas fortes com poucos gols (0x0, 1x0, 0x1, 1x1)' },
+  { id: 'balanced', label: 'Equilibrado', shortLabel: 'Equilibrado', multiplier: 1.0, badge: '1.0x', description: 'Média real do Brasileirão (1x0, 2x1, 2x0, 1x1, 1x2)' },
+  { id: 'elastic', label: 'Elástico (+Gols)', shortLabel: 'Elástico', multiplier: 1.4, badge: '1.4x', description: 'Jogos abertos com mais gols e placares elásticos (2x1, 3x1, 3x2, 2x2, 3x0)' },
+  { id: 'goleada', label: 'Goleadas (Show)', shortLabel: 'Goleadas', multiplier: 1.8, badge: '1.8x', description: 'Alta dispersão de gols e placares largos (4x1, 4x0, 3x3, 5x2, 4x2)' },
 ]
+
+const GOAL_PROFILE_ICONS: Record<GoalProfile, typeof ShieldIcon> = {
+  tight: ShieldIcon,
+  balanced: ScalesIcon,
+  elastic: BurstIcon,
+  goleada: FireIcon,
+}
+
+/** Glifo SVG do perfil de gols, substituindo o emoji antigo. */
+function ProfileGlyph({ profile }: { profile: GoalProfile }): JSX.Element {
+  const Icon = GOAL_PROFILE_ICONS[profile]
+  return <Icon className="inline-icon" />
+}
 
 interface RoundGroup {
   round: string
@@ -278,7 +292,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
         <div className="sim-modulator-box">
           <div className="sim-modulator-header">
             <span className="sim-modulator-title">
-              ⚙️ <strong>Modulador de Gols & Elasticidade:</strong>
+              <GearIcon className="inline-icon" /> <strong>Modulador de Gols & Elasticidade:</strong>
             </span>
             <span className="sim-modulator-desc">
               {activeConfig.description}
@@ -295,7 +309,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                 onClick={() => setGoalProfile(p.id)}
                 title={p.description}
               >
-                <span>{p.label}</span>
+                <span className="sim-profile-label"><ProfileGlyph profile={p.id} />{p.label}</span>
                 <span className="sim-profile-badge">{p.badge}</span>
               </button>
             ))}
@@ -310,7 +324,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             onClick={() => setScenario('sample')}
             title="Sorteia placares realistas e variados para cada jogo da rodada com base no perfil de gols ativo (evita placares todos iguais)"
           >
-            🎲 Sortear Rodada ({activeConfig.shortLabel})
+            <DiceIcon className="inline-icon" /> Sortear Rodada ({activeConfig.shortLabel})
           </button>
           <button
             type="button"
@@ -318,7 +332,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             onClick={() => setScenario('modal')}
             title="Preenche cada confronto com o placar de maior probabilidade estatística"
           >
-            🎯 Mais Prováveis
+            <TargetIcon className="inline-icon" /> Mais Prováveis
           </button>
           <button
             type="button"
@@ -326,7 +340,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             onClick={() => setScenario('favorites')}
             title="Aplica a vitória do favorito com seu placar esperado"
           >
-            ⚡ Favoritos
+            <BoltIcon className="inline-icon" /> Favoritos
           </button>
           <button
             type="button"
@@ -334,7 +348,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             onClick={() => setScenario('home')}
             title="Aplica vitórias dos mandantes calibradas por ataque vs defesa"
           >
-            🏠 Mandantes
+            <HomeIcon className="inline-icon" /> Mandantes
           </button>
           <button
             type="button"
@@ -342,7 +356,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             onClick={() => setScenario('underdogs')}
             title="Aplica o resultado zebra com seu placar esperado"
           >
-            💥 Zebras
+            <BurstIcon className="inline-icon" /> Zebras
           </button>
           {totalPicksCount > 0 && (
             <button
@@ -710,10 +724,10 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
 
         {/* Nota Metodológica Transparente */}
         <details className="clean-disclosure sim-methodology-note">
-          <summary>ℹ️ Metodologia e Parâmetros do Simulador Monte Carlo</summary>
+          <summary><InfoIcon className="inline-icon" /> Metodologia e Parâmetros do Simulador Monte Carlo</summary>
           <div className="sim-methodology-body">
             <p>
-              <strong>Modulador de Elasticidade e Variabilidade de Gols:</strong> O usuário pode escolher entre os perfis <em>🛡️ Truncado (0.8x)</em>, <em>⚖️ Equilibrado (1.0x)</em>, <em>💥 Elástico (1.4x)</em> e <em>🔥 Goleadas (1.8x)</em>. O botão <em>🎲 Sortear Rodada</em> realiza amostragem estocástica Poisson/Dixon-Coles a partir do xG de cada duelo, produzindo uma rodada com placares diversificados e naturais. Além disso, cada card de duelo oferece <em>chips de placares rápidos</em> para selecionar diretamente placares tradicionais ou elásticos (3×0, 3×1, 4×1, 2×2, 3×2).
+              <strong>Modulador de Elasticidade e Variabilidade de Gols:</strong> O usuário pode escolher entre os perfis <em>Truncado (0.8x)</em>, <em>Equilibrado (1.0x)</em>, <em>Elástico (1.4x)</em> e <em>Goleadas (1.8x)</em>. O botão <em>Sortear Rodada</em> realiza amostragem estocástica Poisson/Dixon-Coles a partir do xG de cada duelo, produzindo uma rodada com placares diversificados e naturais. Além disso, cada card de duelo oferece <em>chips de placares rápidos</em> para selecionar diretamente placares tradicionais ou elásticos (3×0, 3×1, 4×1, 2×2, 3×2).
             </p>
             <p>
               <strong>Placares Baseados em Gols Esperados (xG), Ataque e Defesa:</strong> Os placares sugeridos e calculados não utilizam valores fixos arbitrários. Eles derivam da distribuição bivariada Poisson a partir das taxas de gols esperados (\(\lambda\)) de cada clube, combinando a força de ataque do mandante com a fragilidade defensiva do visitante e vice-versa.
