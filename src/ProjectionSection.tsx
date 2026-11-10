@@ -619,8 +619,10 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
   const [activeAnalysis, setActiveAnalysis] = useState<'por-clube' | 'por-pontuacao' | 'simulador'>('por-clube')
   const analysisTabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const probabilityRows = useMemo(() => result?.clubProbabilities ?? [], [result])
-  const { sortedRows: sortedZones, toggleSort: toggleZoneSort, ariaSort: zoneAriaSort } = useTableSort(probabilityRows, zoneColumns, 'position')
-  const { sortedRows: sortedPoints, toggleSort: togglePointsSort, ariaSort: pointsAriaSort } = useTableSort(probabilityRows, pointsColumns, 'position')
+  const { sortedRows: sortedZones, sortColumnId: zoneSortColumnId, direction: zoneDirection, toggleSort: toggleZoneSort, resetSort: resetZoneSort, ariaSort: zoneAriaSort } = useTableSort(probabilityRows, zoneColumns, 'position')
+  const { sortedRows: sortedPoints, sortColumnId: pointsSortColumnId, direction: pointsDirection, toggleSort: togglePointsSort, resetSort: resetPointsSort, ariaSort: pointsAriaSort } = useTableSort(probabilityRows, pointsColumns, 'position')
+  const isCustomZoneSort = zoneSortColumnId !== 'position' || zoneDirection !== 'ascending'
+  const isCustomPointsSort = pointsSortColumnId !== 'position' || pointsDirection !== 'ascending'
 
   function handleAnalysisTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number): void {
     const views = ['por-clube', 'por-pontuacao', 'simulador'] as const
@@ -728,7 +730,14 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
               </ul>
             </div>
 
-            <h4 className="points-table-title" id="zones-table-title">Em que zona cada clube pode terminar?</h4>
+            <div className="table-header-flex">
+              <h4 className="points-table-title" id="zones-table-title">Em que zona cada clube pode terminar?</h4>
+              {isCustomZoneSort && (
+                <button type="button" className="reset-sort-btn" onClick={resetZoneSort} title="Restaurar ordenação pela classificação oficial">
+                  ↺ Restaurar ordem oficial
+                </button>
+              )}
+            </div>
             <ZoneBarLegend />
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Zonas possíveis por clube nas simulações; role para rolagem horizontal em telas pequenas" tabIndex={0}>
               <table className="projection-table zones-table">
@@ -745,9 +754,18 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedZones.map((club) => (
+                  {sortedZones.map((club, index) => (
                     <tr key={club.id}>
-                      <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span><Crest clubId={club.id} /><span>{club.club}</span></th>
+                      <th scope="row">
+                        <span className="projection-current-position">{String(index + 1).padStart(2, '0')}</span>
+                        <Crest clubId={club.id} />
+                        <span>{club.club}</span>
+                        {isCustomZoneSort && (
+                          <span className="official-pos-badge" title={`Posição oficial no corte: ${club.currentPosition}º`}>
+                            {club.currentPosition}º oficial
+                          </span>
+                        )}
+                      </th>
                       <td className="zone-bar-cell"><ZoneStackedBar club={club} /></td>
                       <ProbabilityCell kind="title" value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
                       <ProbabilityCell kind="libertadores" value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
@@ -760,7 +778,14 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
             </div>
             <p className="projection-footnote">¹ Considera as posições 1–6* na tabela (1º–4º direto; 5º preliminar); consulte acima a premissa do asterisco. ² Posições 7–12: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. As chances são condicionais a este recorte.</p>
 
-            <h4 className="points-table-title" id="points-final-title">Quantos pontos cada clube deve fazer?</h4>
+            <div className="table-header-flex">
+              <h4 className="points-table-title" id="points-final-title">Quantos pontos cada clube deve fazer?</h4>
+              {isCustomPointsSort && (
+                <button type="button" className="reset-sort-btn" onClick={resetPointsSort} title="Restaurar ordenação pela classificação oficial">
+                  ↺ Restaurar ordem oficial
+                </button>
+              )}
+            </div>
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Pontos finais projetados por clube; role para rolagem horizontal em telas pequenas" tabIndex={0}>
               <table className="projection-table points-final-table">
                 <thead>
@@ -776,13 +801,21 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedPoints.map((club) => {
+                  {sortedPoints.map((club, index) => {
                     const delta = club.pointsStats.median - club.currentPoints
                     const deltaPercent = club.currentPoints === 0 ? 0 : delta / club.currentPoints
                     return (
                       <tr key={club.id}>
-                        <td className="numeric position-cell">{String(club.currentPosition).padStart(2, '0')}</td>
-                        <th scope="row" className="club-cell"><Crest clubId={club.id} /><span>{club.club}</span></th>
+                        <td className="numeric position-cell">{String(index + 1).padStart(2, '0')}</td>
+                        <th scope="row" className="club-cell">
+                          <Crest clubId={club.id} />
+                          <span>{club.club}</span>
+                          {isCustomPointsSort && (
+                            <span className="official-pos-badge" title={`Posição oficial no corte: ${club.currentPosition}º`}>
+                              {club.currentPosition}º oficial
+                            </span>
+                          )}
+                        </th>
                         <td className="numeric games-cell">{club.currentPoints}</td>
                         <td className="numeric probability-cell"><strong>{club.pointsStats.median}</strong><span className="cell-ci">média {decimal.format(club.pointsStats.mean)}</span></td>
                         <td className="numeric range-cell">{club.pointsStats.p25}</td>

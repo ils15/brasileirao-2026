@@ -164,7 +164,8 @@ function App(): JSX.Element {
     () => standings.filter((team) => matchesClubFilter(team.position, clubFilter)),
     [clubFilter],
   )
-  const { sortedRows: sortedStandings, toggleSort, ariaSort } = useTableSort(filteredStandings, standingsColumns, 'position')
+  const { sortedRows: sortedStandings, sortColumnId, direction, toggleSort, resetSort, ariaSort } = useTableSort(filteredStandings, standingsColumns, 'position')
+  const isCustomStandingsSort = sortColumnId !== 'position' || direction !== 'ascending'
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -339,6 +340,11 @@ function App(): JSX.Element {
                       placeholder="Buscar clube..."
                     />
                   </label>
+                  {isCustomStandingsSort && (
+                    <button type="button" className="reset-sort-btn" onClick={resetSort} title="Restaurar ordenação oficial (1º ao 20º)">
+                      ↺ Ordem oficial (1º–20º)
+                    </button>
+                  )}
                   <p className="result-count" aria-live="polite">
                     {filteredStandings.length} {filteredStandings.length === 1 ? 'clube encontrado' : 'clubes encontrados'}
                   </p>
@@ -360,12 +366,17 @@ function App(): JSX.Element {
                       </tr>
                     </thead>
                     <tbody>
-                      {sortedStandings.map((team) => (
+                      {sortedStandings.map((team, index) => (
                         <tr className={`standing-row standing-row--${zoneClass(team.position)}`} key={team.club}>
-                          <td className="position-cell"><span>{String(team.position).padStart(2, '0')}</span></td>
+                          <td className="position-cell"><span>{String(index + 1).padStart(2, '0')}</span></td>
                           <th scope="row" className="club-cell">
                             <TeamBadge team={team} />
                             <span className="club-cell-name">{team.club}</span>
+                            {isCustomStandingsSort && (
+                              <span className="official-pos-badge" title={`Posição oficial no campeonato: ${team.position}º`}>
+                                {team.position}º oficial
+                              </span>
+                            )}
                             <span className="sr-only">Zona: {getZoneLabel(team.position)}</span>
                           </th>
                           <td className="points-cell numeric">{team.points}</td>

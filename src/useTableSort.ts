@@ -42,9 +42,14 @@ export function useTableSort<T>(rows: readonly T[], columns: readonly SortableCo
     setDirection(column?.numeric && columnId !== 'position' ? 'descending' : 'ascending')
   }
 
+  function resetSort(): void {
+    setSortColumnId(initialColumnId)
+    setDirection(initialDirection)
+  }
+
   function ariaSort(columnId: string): 'none' | SortDirection | undefined {
     return columnId === sortColumnId ? direction : 'none'
   }
 
-  return { sortedRows, sortColumnId, direction, toggleSort, ariaSort }
+  return { sortedRows, sortColumnId, direction, toggleSort, resetSort, ariaSort }
 }

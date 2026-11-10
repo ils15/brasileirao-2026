@@ -232,6 +232,13 @@ th.numeric .sort-button { justify-content: flex-end; }
 .sort-button:hover { color: var(--ink); }
 .sort-indicator { color: var(--text-muted); }
 
+/* Cabeçalho flexível e botão de restauração da ordem padrão */
+.table-header-flex { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 8px; }
+.table-header-flex h4 { margin: 0; }
+.reset-sort-btn { display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 2px 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-control); background: var(--surface-soft); color: var(--focus); font: 600 12px var(--display); cursor: pointer; transition: all .15s ease; }
+.reset-sort-btn:hover { background: var(--surface-tint); border-color: var(--focus); }
+.official-pos-badge { display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 4px; font: 600 11px var(--mono); color: var(--text-muted); background: var(--surface-soft); border: 1px solid var(--border); margin-left: 8px; white-space: nowrap; vertical-align: middle; }
+
 .scorers-panel { padding-bottom: 23px; }
 .scorers-caption { margin: 20px 0 8px; color: var(--text-muted); font-size: 13px; }
 .scorer-list { margin: 0; padding: 0; list-style: none; }

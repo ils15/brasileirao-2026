@@ -49,9 +49,10 @@ interface StandingsTableViewProps {
 }
 
 function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTableViewProps): JSX.Element {
-  const { sortedRows, toggleSort, ariaSort } = useTableSort(rows, columns, initialSort)
-  const formatCell = (row: StandingsRow, key: string): string => {
-    if (key === 'position') return String(row.position).padStart(2, '0')
+  const { sortedRows, sortColumnId, direction, toggleSort, ariaSort } = useTableSort(rows, columns, initialSort)
+  const isCustomSort = sortColumnId !== 'position' || direction !== 'ascending'
+  const formatCell = (row: StandingsRow, key: string, rowIndex: number): string => {
+    if (key === 'position') return String(rowIndex + 1).padStart(2, '0')
     if (key === 'goalDifference') return row.goalDifference > 0 ? `+${row.goalDifference}` : String(row.goalDifference)
     return String(row[key as keyof StandingsRow])
   }
@@ -71,7 +72,7 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
           </tr>
         </thead>
         <tbody>
-          {sortedRows.map((row) => (
+          {sortedRows.map((row, rowIndex) => (
             <tr key={row.id} className={`standing-row standing-row--${zoneClass(row.position)}`}>
               {columns.map((column, index) => (
                 index === 1
@@ -81,10 +82,15 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
                         <img className="crest crest--xs" src={espnLogoUrl(row.id)} alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} />
                       )}
                       <span className="club-cell-name">{row.club}</span>
+                      {isCustomSort && (
+                        <span className="official-pos-badge" title={`Posição oficial no campeonato: ${row.position}º`}>
+                          {row.position}º oficial
+                        </span>
+                      )}
                       <span className="sr-only">Zona: {getZoneLabel(row.position)}</span>
                     </th>
                   )
-                  : <td key={column.id} className={column.id === 'points' ? 'numeric points-cell' : 'numeric games-cell'}>{formatCell(row, column.id)}</td>
+                  : <td key={column.id} className={column.id === 'points' ? 'numeric points-cell' : 'numeric games-cell'}>{formatCell(row, column.id, rowIndex)}</td>
               ))}
             </tr>
           ))}
