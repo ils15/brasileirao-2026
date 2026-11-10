@@ -42,44 +42,42 @@ describe('painel do Brasileirão 2026', () => {
     expect(document.documentElement).toHaveAttribute('data-theme', 'system')
   })
 
-  it('organiza o painel em sete abas acessíveis com seleção por clique e teclado', async () => {
+  it('organiza o painel em cinco abas acessíveis com seleção por clique e teclado', async () => {
     const user = userEvent.setup()
     render(<App />)
 
     const tabs = screen.getAllByRole('tab')
     expect(tabs.map((tab) => tab.textContent)).toEqual([
-      'Visão Geral', 'Classificações', 'Jogos', 'Confrontos', 'Projeções', 'Metodologia & Validação', 'Dados & Auditoria',
+      'Visão Geral', 'Classificações & Análises', 'Jogos & Confrontos', 'Projeções & Simulador', 'Metodologia & Auditoria',
     ])
     const tablist = screen.getByRole('tablist', { name: 'Navegação principal' })
-    expect(within(tablist).getAllByRole('tab')).toHaveLength(7)
+    expect(within(tablist).getAllByRole('tab')).toHaveLength(5)
 
     // Aba inicial: Visão Geral visível; as demais ocultas.
     expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
     expect(document.getElementById('painel-classificacoes')!.hidden).toBe(true)
     expect(document.getElementById('painel-jogos')!.hidden).toBe(true)
-    expect(document.getElementById('painel-confrontos')!.hidden).toBe(true)
     expect(document.getElementById('painel-projecoes')!.hidden).toBe(true)
     expect(document.getElementById('painel-metodologia')!.hidden).toBe(true)
-    expect(document.getElementById('painel-dados')!.hidden).toBe(true)
 
     // Seleção por clique troca o painel visível.
-    await user.click(screen.getByRole('tab', { name: 'Confrontos' }))
-    expect(screen.getByRole('tabpanel', { name: 'Confrontos' })).toBeVisible()
+    await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
+    expect(screen.getByRole('tabpanel', { name: 'Jogos & Confrontos' })).toBeVisible()
     expect(document.getElementById('painel-visao-geral')!.hidden).toBe(true)
     expect(screen.getByRole('heading', { name: 'Próxima rodada' })).toBeVisible()
 
     // Teclado: setas movem a seleção com foco gerenciado (roving tabindex).
-    const projecoesTab = screen.getByRole('tab', { name: 'Projeções' })
+    const projecoesTab = screen.getByRole('tab', { name: 'Projeções & Simulador' })
     projecoesTab.focus()
     await user.keyboard('{ArrowRight}')
-    const metodologiaTab = screen.getByRole('tab', { name: 'Metodologia & Validação' })
+    const metodologiaTab = screen.getByRole('tab', { name: 'Metodologia & Auditoria' })
     expect(metodologiaTab).toHaveAttribute('aria-selected', 'true')
     expect(metodologiaTab).toHaveFocus()
-    expect(screen.getByRole('tabpanel', { name: 'Metodologia & Validação' })).toBeVisible()
+    expect(screen.getByRole('tabpanel', { name: 'Metodologia & Auditoria' })).toBeVisible()
 
     // End vai à última aba; Home volta à primeira.
     await user.keyboard('{End}')
-    expect(screen.getByRole('tab', { name: 'Dados & Auditoria' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('tab', { name: 'Metodologia & Auditoria' })).toHaveAttribute('aria-selected', 'true')
     await user.keyboard('{Home}')
     expect(screen.getByRole('tab', { name: 'Visão Geral' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
@@ -116,22 +114,22 @@ describe('painel do Brasileirão 2026', () => {
 
     window.history.replaceState(null, '', '#estatisticas')
     window.dispatchEvent(new HashChangeEvent('hashchange'))
-    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Metodologia & Validação' })).toBeVisible())
+    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Metodologia & Auditoria' })).toBeVisible())
 
     window.history.replaceState(null, '', '#dados')
     window.dispatchEvent(new HashChangeEvent('hashchange'))
-    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Dados & Auditoria' })).toBeVisible())
+    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Metodologia & Auditoria' })).toBeVisible())
 
     window.history.replaceState(null, '', '#calendario')
     window.dispatchEvent(new HashChangeEvent('hashchange'))
-    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Jogos' })).toBeVisible())
+    await waitFor(() => expect(screen.getByRole('tabpanel', { name: 'Jogos & Confrontos' })).toBeVisible())
   })
 
   it('exibe as análises da aba Classificações e da aba Confrontos', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('tab', { name: 'Classificações' }))
+    await user.click(screen.getByRole('tab', { name: 'Classificações & Análises' }))
     expect(screen.getByRole('heading', { name: 'Classificações' })).toBeVisible()
     expect(screen.getByRole('tablist', { name: 'Vistas da classificação' })).toBeInTheDocument()
     expect(screen.getAllByText(/Libertadores · 1º–6º\*/).length).toBeGreaterThan(0)
@@ -139,7 +137,7 @@ describe('painel do Brasileirão 2026', () => {
     expect(screen.getAllByText('Meio de tabela · 13º–16º').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Rebaixamento · 17º–20º').length).toBeGreaterThan(0)
 
-    await user.click(screen.getByRole('tab', { name: 'Confrontos' }))
+    await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
     expect(screen.getByRole('heading', { name: 'Próxima rodada' })).toBeVisible()
     expect(screen.getByRole('heading', { name: /Confronto direto|Flamengo × Palmeiras/ })).toBeVisible()
   })
@@ -287,7 +285,7 @@ describe('painel do Brasileirão 2026', () => {
     expect(screen.queryByRole('link', { name: /Classificação oficial/ })).not.toBeInTheDocument()
     expect(screen.getByText(/não representa a artilharia no corte/)).toBeInTheDocument()
 
-    await user.click(screen.getByRole('tab', { name: 'Jogos' }))
+    await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
     expect(screen.getByRole('columnheader', { name: 'Data/hora na fonte' })).toBeInTheDocument()
     const eventDateNote = screen.getByText(/Todos os .* resultados até o corte analítico/)
     expect(eventDateNote.textContent).toContain('REF 340')
@@ -295,11 +293,10 @@ describe('painel do Brasileirão 2026', () => {
     expect(eventDateNote.textContent).toContain('2026-11-03T22:30Z')
     expect(eventDateNote.textContent).toContain('O pacote não confirma o kickoff oficial.')
 
-    await user.click(screen.getByRole('tab', { name: 'Confrontos' }))
     const tiebreakNote = screen.getByText(/O desempate simulado \(não é classificação oficial\)/)
     expect(tiebreakNote.textContent).toContain('nem aplicação integral do Art. 15')
 
-    await user.click(screen.getByRole('tab', { name: 'Dados & Auditoria' }))
+    await user.click(screen.getByRole('tab', { name: 'Metodologia & Auditoria' }))
     expect(screen.getByRole('heading', { name: 'CBF (HTML de classificação arquivado)' })).toBeInTheDocument()
     expect(screen.getByText(/Exibe 04\/11\/2026 - 19:41 \(fuso e significado não declarados\)/)).toBeInTheDocument()
   })

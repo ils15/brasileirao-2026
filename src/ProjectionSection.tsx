@@ -7,6 +7,7 @@ import { Crest } from './Crest'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { buildXlsx, downloadFile, toCSV, toJson } from './exporters'
+import { MatchSimulator } from './MatchSimulator'
 
 interface ProjectionPanelProps {
   result: ProjectionResult | null
@@ -495,21 +496,24 @@ interface ProbabilityCellProps {
   value: number
   lower: number
   upper: number
+  kind?: 'title' | 'libertadores' | 'sudamericana' | 'relegation'
 }
 
-function ProbabilityCell({ value, lower, upper }: ProbabilityCellProps): JSX.Element {
-  // O IC 95% é calculado pela projeção também nos extremos: 0% e 100% de um
-  // destino com ao menos uma observação têm IC legítimo (ex. 0,00%–32,44% e
-  // 99,99%–100,00%) — os extremos não são sentinela de ausência de
-  // observações. Aqui só o texto do intervalo é omitido nesses extremos por
-  // escolha de apresentação; na tabela por pontuação a omissão ocorre quando o
-  // texto formatado repete o da faixa anterior, e a ausência de observações do
-  // destino é sinalizada separadamente por “nenhum rebaixamento” e afins.
+function ProbabilityCell({ value, lower, upper, kind }: ProbabilityCellProps): JSX.Element {
   const hasInterval = value > 0 && value < 1
+  const pct = value * 100
+  const heatClass = value === 0 ? 'probability-cell--zero' : kind ? `probability-cell--${kind}` : ''
   return (
-    <td className={`numeric probability-cell ${value === 0 ? 'probability-cell--zero' : ''}`}>
-      <strong>{percent.format(value)}</strong>
-      {hasInterval && <span className="cell-ci">IC {percent.format(lower)}–{percent.format(upper)}</span>}
+    <td className={`numeric probability-cell ${heatClass}`}>
+      <div className="prob-cell-content">
+        <strong>{percent.format(value)}</strong>
+        {hasInterval && <span className="cell-ci">IC {percent.format(lower)}–{percent.format(upper)}</span>}
+      </div>
+      {value > 0.01 && (
+        <div className="prob-mini-track" aria-hidden="true">
+          <div className={`prob-mini-bar prob-mini-bar--${kind ?? 'default'}`} style={{ width: `${Math.min(100, Math.max(4, pct))}%` }} />
+        </div>
+      )}
     </td>
   )
 }
@@ -612,14 +616,14 @@ function exportProjections(result: ProjectionResult, format: 'csv' | 'xlsx' | 'j
 }
 
 function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX.Element {
-  const [activeAnalysis, setActiveAnalysis] = useState<'por-clube' | 'por-pontuacao'>('por-clube')
+  const [activeAnalysis, setActiveAnalysis] = useState<'por-clube' | 'por-pontuacao' | 'simulador'>('por-clube')
   const analysisTabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const probabilityRows = useMemo(() => result?.clubProbabilities ?? [], [result])
   const { sortedRows: sortedZones, toggleSort: toggleZoneSort, ariaSort: zoneAriaSort } = useTableSort(probabilityRows, zoneColumns, 'position')
   const { sortedRows: sortedPoints, toggleSort: togglePointsSort, ariaSort: pointsAriaSort } = useTableSort(probabilityRows, pointsColumns, 'position')
 
   function handleAnalysisTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number): void {
-    const views = ['por-clube', 'por-pontuacao'] as const
+    const views = ['por-clube', 'por-pontuacao', 'simulador'] as const
     const nextIndex = event.key === 'ArrowRight'
       ? (index + 1) % views.length
       : event.key === 'ArrowLeft'
@@ -683,6 +687,15 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
           onClick={() => setActiveAnalysis('por-pontuacao')}
           onKeyDown={(event) => handleAnalysisTabKeyDown(event, 1)}
         >Por pontuação</button>
+        <button
+          className={activeAnalysis === 'simulador' ? 'subtab is-selected' : 'subtab'}
+          id="aba-simulador" role="tab" type="button"
+          aria-selected={activeAnalysis === 'simulador'} aria-controls="analise-simulador"
+          tabIndex={activeAnalysis === 'simulador' ? 0 : -1}
+          ref={(element) => { analysisTabRefs.current[2] = element }}
+          onClick={() => setActiveAnalysis('simulador')}
+          onKeyDown={(event) => handleAnalysisTabKeyDown(event, 2)}
+        >🎮 Simulador Interativo</button>
       </div>
 
       {!result && (
@@ -736,10 +749,10 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                     <tr key={club.id}>
                       <th scope="row"><span className="projection-current-position">{String(club.currentPosition).padStart(2, '0')}</span><Crest clubId={club.id} /><span>{club.club}</span></th>
                       <td className="zone-bar-cell"><ZoneStackedBar club={club} /></td>
-                      <ProbabilityCell value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
-                      <ProbabilityCell value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
-                      <ProbabilityCell value={club.sudamericana} lower={club.sudamericanaInterval.lower95} upper={club.sudamericanaInterval.upper95} />
-                      <ProbabilityCell value={club.relegation} lower={club.relegationInterval.lower95} upper={club.relegationInterval.upper95} />
+                      <ProbabilityCell kind="title" value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
+                      <ProbabilityCell kind="libertadores" value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
+                      <ProbabilityCell kind="sudamericana" value={club.sudamericana} lower={club.sudamericanaInterval.lower95} upper={club.sudamericanaInterval.upper95} />
+                      <ProbabilityCell kind="relegation" value={club.relegation} lower={club.relegationInterval.lower95} upper={club.relegationInterval.upper95} />
                     </tr>
                   ))}
                 </tbody>
@@ -806,6 +819,10 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
 
             <MagicPointsPanel result={result} />
           </section>
+          </div>
+
+          <div role="tabpanel" id="analise-simulador" aria-labelledby="aba-simulador" hidden={activeAnalysis !== 'simulador'}>
+            <MatchSimulator result={result} />
           </div>
         </>
       )}

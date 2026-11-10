@@ -19,9 +19,8 @@ indica a licença aplicável a cada diretório.
       data/corroboration/wikipedia/NOTICE.
 
   Código-fonte (src/, scripts/, configuração, docs/)
-      Sem licença de código declarada neste repositório; todos os direitos
-      reservados ao mantenedor, salvo indicação em contrário no próprio
-      arquivo ou em documentação específica.
+      Licença MIT (ver arquivo LICENSE na raiz do repositório).
+      Copyright (c) 2026 Brasileirão 2026 Dashboard Contributors (ils15).
 
 A camada data/corroboration/** é usada apenas por ferramentas offline de
 auditoria. Ela não é consumida pelo runtime, e os placares publicados pelo

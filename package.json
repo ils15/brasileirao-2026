@@ -2,12 +2,18 @@
   "name": "brasileirao-2026-dashboard",
   "private": true,
   "version": "1.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "test": "vitest run",
-    "smoke:pages": "node scripts/check-pages-build.mjs"
+    "test:watch": "vitest",
+    "smoke:pages": "node scripts/check-pages-build.mjs",
+    "pack:history": "node scripts/pack-history.mjs",
+    "crosscheck": "node scripts/crosscheck-wikipedia.mjs",
+    "update:data": "node scripts/update-data.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

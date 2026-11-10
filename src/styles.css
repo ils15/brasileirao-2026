@@ -71,7 +71,7 @@
   --error-text: #692f27;
   --error-surface: #fff3ef;
   --mono: 'IBM Plex Mono', 'DM Mono', 'SFMono-Regular', Consolas, monospace;
-  --display: 'Inter', 'DM Sans', Arial, sans-serif;
+  --display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -1072,3 +1072,84 @@ th.numeric .sort-button { justify-content: flex-end; }
 .fixture-prob--draw { color: var(--text-secondary); background: var(--surface-tint); }
 .fixture-prob--loss { color: var(--danger-text); background: var(--danger-bg); }
 .fixture-prob-pts { margin-left: auto; color: var(--ink); font: 700 12px var(--mono); }
+
+/* Simulador de Resultados e Probabilidades */
+.sim-panel { padding: 25px; margin-top: 24px; }
+.sim-lead { max-width: 760px; margin: 12px 0 20px; color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
+.sim-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-soft); margin-bottom: 20px; }
+.sim-round-select { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.sim-round-select select { min-height: 38px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-size: 13px; }
+.sim-scenarios { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sim-scenarios-label { color: var(--text-muted); font-size: 12px; font-family: var(--mono); }
+.sim-quick-btn { min-height: 36px; padding: 0 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-control); background: var(--surface); color: var(--ink); font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s ease; }
+.sim-quick-btn:hover { border-color: var(--focus); background: var(--surface-tint); }
+.sim-quick-btn--reset { color: var(--danger-text); border-color: var(--danger-badge); background: var(--danger-bg); }
+.sim-matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.sim-match-card { display: flex; flex-direction: column; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+.sim-match-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+.sim-match-card--has-pick { border-color: var(--focus); box-shadow: 0 0 0 1px var(--focus); }
+.sim-match-header { display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 11px; font-family: var(--mono); }
+.sim-match-teams { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 4px 0; }
+.sim-team { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.sim-team--home { justify-content: flex-start; text-align: left; }
+.sim-team--away { justify-content: flex-end; text-align: right; }
+.sim-team-name { font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sim-match-vs { color: var(--text-muted); font-size: 12px; font-family: var(--mono); padding: 0 4px; }
+.sim-pick-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.sim-pick-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 44px; padding: 4px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface-soft); color: var(--text); cursor: pointer; transition: all .15s ease; }
+.sim-pick-btn:hover { border-color: var(--focus); background: var(--surface-tint); color: var(--ink); }
+.sim-pick-btn.is-selected { background: var(--selected-surface); color: #fff; border-color: var(--focus); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+.sim-pick-tag { font-size: 13px; font-weight: 700; line-height: 1; }
+.sim-pick-prob { font-size: 11px; font-family: var(--mono); opacity: .85; }
+.sim-results-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+.sim-results-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+.sim-results-header h3 { margin: 0; font-size: 18px; font-weight: 700; color: var(--ink); }
+.sim-view-toggle { display: flex; gap: 8px; }
+.sim-table { min-width: 600px; }
+.sim-mov-cell { text-align: center; }
+.sim-delta-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; padding: 2px 6px; border-radius: 4px; font: 700 11px var(--mono); }
+.sim-delta-badge--up { background: var(--success-bg); color: var(--success-text); }
+.sim-delta-badge--down { background: var(--danger-bg); color: var(--danger-text); }
+.sim-delta-badge--neutral { color: var(--text-muted); }
+.sim-original-pos { margin-left: 6px; color: var(--text-muted); font-size: 11px; font-family: var(--mono); font-weight: 400; }
+.sim-pts-delta { font-weight: 700; color: var(--zone-title); }
+.sim-pct-delta { display: block; font-size: 11px; font-family: var(--mono); font-weight: 700; }
+.sim-pct-delta.is-up { color: var(--zone-title); }
+.sim-pct-delta.is-down { color: var(--danger-badge); }
+
+/* Heatmap de Probabilidades */
+.prob-cell-content { display: flex; flex-direction: column; align-items: flex-end; }
+.prob-mini-track { width: 100%; height: 4px; border-radius: 2px; background: rgba(0,0,0,.06); margin-top: 4px; overflow: hidden; }
+:root[data-theme='dark'] .prob-mini-track { background: rgba(255,255,255,.08); }
+.prob-mini-bar { height: 100%; border-radius: 2px; }
+.prob-mini-bar--title { background: #f59e0b; }
+.prob-mini-bar--libertadores { background: #10b981; }
+.prob-mini-bar--sudamericana { background: #3b82f6; }
+.prob-mini-bar--relegation { background: #ef4444; }
+.prob-mini-bar--default { background: var(--focus); }
+.probability-cell--title { background: rgba(245, 158, 11, .06); }
+.probability-cell--libertadores { background: rgba(16, 185, 129, .06); }
+.probability-cell--sudamericana { background: rgba(59, 130, 246, .05); }
+.probability-cell--relegation { background: rgba(239, 68, 68, .07); }
+
+/* Detalhes retráteis para despoluir textos explicativos */
+.clean-disclosure { margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 8px; }
+.clean-disclosure summary { font-size: 12px; color: var(--text-muted); cursor: pointer; user-select: none; }
+.clean-disclosure summary:hover { color: var(--ink); }
+.clean-disclosure p { margin: 6px 0 0; font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+
+/* Mobile Sticky Columns */
+@media (max-width: 767px) {
+  .sticky-col-pos { position: sticky; left: 0; z-index: 2; background: var(--surface); }
+  .sticky-col-club { position: sticky; left: 48px; z-index: 2; background: var(--surface); box-shadow: 2px 0 6px -2px rgba(0,0,0,.15); }
+  thead th.sticky-col-pos, thead th.sticky-col-club { background: var(--thead); z-index: 3; }
+}
+
+@media (max-width: 640px) {
+  .sim-panel { padding: 14px 10px; }
+  .sim-matches-grid { grid-template-columns: 1fr; }
+  .sim-toolbar { flex-direction: column; align-items: stretch; gap: 12px; }
+  .sim-scenarios { justify-content: flex-start; }
+  .sim-round-select { width: 100%; justify-content: space-between; }
+  .sim-round-select select { flex: 1; max-width: 200px; }
+}

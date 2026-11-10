@@ -11,7 +11,7 @@ import { StandingsViews } from './StandingsViews'
 import { NextRoundPanel } from './NextRoundPanel'
 import { TeamAnalysisPanel } from './TeamAnalysisPanel'
 import { HeadToHeadPanel } from './HeadToHeadPanel'
-import { espnLogoUrlByClub } from './projectionData'
+import { espnLogoUrlByClub, currentClubs } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
 import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, updateClock } from './seasonFacts'
@@ -23,12 +23,10 @@ type ThemeMode = 'system' | 'light' | 'dark'
 
 const TABS = [
   { id: 'visao-geral', label: 'Visão Geral' },
-  { id: 'classificacoes', label: 'Classificações' },
-  { id: 'jogos', label: 'Jogos' },
-  { id: 'confrontos', label: 'Confrontos' },
-  { id: 'projecoes', label: 'Projeções' },
-  { id: 'metodologia', label: 'Metodologia & Validação' },
-  { id: 'dados', label: 'Dados & Auditoria' },
+  { id: 'classificacoes', label: 'Classificações & Análises' },
+  { id: 'jogos', label: 'Jogos & Confrontos' },
+  { id: 'projecoes', label: 'Projeções & Simulador' },
+  { id: 'metodologia', label: 'Metodologia & Auditoria' },
 ] as const
 
 type TabId = (typeof TABS)[number]['id']
@@ -40,20 +38,26 @@ const ANCHOR_TO_TAB: Record<string, TabId> = {
   '#artilharia': 'visao-geral',
   '#clubes': 'visao-geral',
   '#classificacoes': 'classificacoes',
+  '#jogos': 'jogos',
   '#calendario': 'jogos',
   '#resultados': 'jogos',
-  '#confrontos': 'confrontos',
+  '#confrontos': 'jogos',
   '#projecoes': 'projecoes',
+  '#simulador': 'projecoes',
   '#probabilidades-time': 'projecoes',
   '#por-pontuacao': 'projecoes',
   '#estatisticas': 'metodologia',
   '#metodologia': 'metodologia',
   '#forcas-time': 'metodologia',
-  '#dados': 'dados',
+  '#dados': 'metodologia',
+  '#auditoria': 'metodologia',
 }
 
 function tabFromHash(hash: string): TabId | null {
-  if (hash === `#visao-geral` || hash === `#jogos` || hash === `#projecoes` || hash === `#dados`) return hash.slice(1) as TabId
+  if (hash === `#visao-geral` || hash === `#classificacoes` || hash === `#jogos` || hash === `#projecoes` || hash === `#metodologia` || hash === `#auditoria`) {
+    const raw = hash.slice(1)
+    return (raw === 'auditoria' ? 'metodologia' : raw) as TabId
+  }
   return ANCHOR_TO_TAB[hash] ?? null
 }
 
@@ -144,6 +148,7 @@ function App(): JSX.Element {
   const [scorerPage, setScorerPage] = useState(0)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const leader = standings[0]!
+  const leaderClub = currentClubs[0]!
   const normalizedQuery = normalizeText(query.trim())
   const scorerPageCount = Math.max(1, Math.ceil(scorers.length / SCORERS_PER_PAGE))
   const scorerPageStart = scorerPage * SCORERS_PER_PAGE
@@ -247,7 +252,9 @@ function App(): JSX.Element {
               <div className="leader-stats">
                 <div><strong>{leader.points}</strong><span>Pontos</span></div>
                 <div><strong>{leader.played}</strong><span>Jogos</span></div>
-              <span className="leader-stat-caption">Classificação derivada do pacote</span>
+                <div><strong>{leaderClub.wins}</strong><span>Vitórias</span></div>
+                <div><strong>{leaderClub.goalsFor - leaderClub.goalsAgainst > 0 ? `+${leaderClub.goalsFor - leaderClub.goalsAgainst}` : leaderClub.goalsFor - leaderClub.goalsAgainst}</strong><span>Saldo</span></div>
+                <span className="leader-stat-caption sr-only">Classificação derivada do pacote</span>
               </div>
               <span className="leader-watermark" aria-hidden="true">26</span>
             </aside>
@@ -371,7 +378,10 @@ function App(): JSX.Element {
                     </tbody>
                   </table>
                 </div>
-                <p className="table-note">Classificação calculada dos resultados do pacote; a cópia CBF arquivada soma 332 jogos e não valida este conjunto. O número de jogos varia entre os clubes.</p>
+                <details className="clean-disclosure">
+                  <summary>ℹ️ Notas de conciliação de dados</summary>
+                  <p className="table-note">Classificação calculada dos resultados do pacote; a cópia CBF arquivada soma 332 jogos e não valida este conjunto. O número de jogos varia entre os clubes.</p>
+                </details>
               </div>
 
               <section className="scorers-panel panel" id="artilharia" aria-labelledby="scorers-title">
@@ -379,7 +389,6 @@ function App(): JSX.Element {
                   <div><p className="eyebrow eyebrow-dark">QUEM FAZ A DIFERENÇA</p><h2 id="scorers-title">Artilharia</h2></div>
                   <span className="section-index">02 <span>/ GOLS</span></span>
                 </div>
-                <p className="scorers-caption">Lista informativa da temporada; captura pós-corte, não representa a artilharia no corte.</p>
                 <ol className="scorer-list" id="scorer-list" aria-label="Artilharia">
                   {visibleScorers.map((scorer, index) => (
                     <li className="scorer-item" key={`${scorer.name}-${scorer.club}`}>
@@ -412,8 +421,12 @@ function App(): JSX.Element {
                     <span aria-current="page">Página {scorerPage + 1} de {scorerPageCount}</span>
                   </span>
                 </nav>
-                <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {scorersCaptureLabel} · posterior ao corte analítico; sem timestamp por partida, cobertura temporal não verificada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
-                <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
+                <details className="clean-disclosure">
+                  <summary>ℹ️ Fontes e critérios da artilharia</summary>
+                  <p className="scorers-caption">Lista informativa da temporada; captura pós-corte, não representa a artilharia no corte.</p>
+                  <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {scorersCaptureLabel} · posterior ao corte analítico; sem timestamp por partida, cobertura temporal não verificada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
+                  <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
+                </details>
                 <a className="text-link" href={ESPN_URL} target="_blank" rel="noreferrer">Ver estatísticas na ESPN <span aria-hidden="true">↗</span></a>
               </section>
             </section>
@@ -448,19 +461,17 @@ function App(): JSX.Element {
             </section>
           </section>
 
-          <section id="painel-jogos" role="tabpanel" aria-labelledby="aba-jogos" hidden={activeTab !== 'jogos'}>
-            <ResultsTable />
-            <FixtureCalendar />
-          </section>
-
           <section id="painel-classificacoes" role="tabpanel" aria-labelledby="aba-classificacoes" hidden={activeTab !== 'classificacoes'}>
             <StandingsViews />
           </section>
 
-          <section id="painel-confrontos" role="tabpanel" aria-labelledby="aba-confrontos" hidden={activeTab !== 'confrontos'}>
+          <section id="painel-jogos" role="tabpanel" aria-labelledby="aba-jogos" hidden={activeTab !== 'jogos'}>
             <NextRoundPanel />
+            <ResultsTable />
+            <FixtureCalendar />
             <TeamAnalysisPanel />
             <HeadToHeadPanel />
+            <div id="painel-confrontos" hidden={activeTab !== 'jogos'} />
           </section>
 
           <section id="painel-projecoes" role="tabpanel" aria-labelledby="aba-projecoes" hidden={activeTab !== 'projecoes'}>
@@ -469,10 +480,8 @@ function App(): JSX.Element {
 
           <section id="painel-metodologia" role="tabpanel" aria-labelledby="aba-metodologia" hidden={activeTab !== 'metodologia'}>
             <MethodologyConsumer />
-          </section>
-
-          <section id="painel-dados" role="tabpanel" aria-labelledby="aba-dados" hidden={activeTab !== 'dados'}>
             <AuditPanel />
+            <div id="painel-dados" hidden={activeTab !== 'metodologia'} />
           </section>
         </div>
         </ProjectionProvider>
