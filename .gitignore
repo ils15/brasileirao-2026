@@ -3,3 +3,4 @@ dist/
 *.tsbuildinfo
 .pantheon/
 .zcode/
+.playwright-mcp/
