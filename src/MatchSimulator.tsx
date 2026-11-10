@@ -39,11 +39,16 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
   const group = rounds.find((entry) => entry.round === selectedRound) ?? rounds[0]
   const clubMap = useMemo(() => new Map(currentClubs.map((club) => [club.id, club])), [])
 
-  // Incrementa/decrementa gols
-  const adjustGoals = (cbfRef: string, side: 'home' | 'away', delta: number): void => {
+  // Incrementa/decrementa gols partindo do placar projetado ou do placar atual
+  const adjustGoals = (
+    cbfRef: string,
+    side: 'home' | 'away',
+    delta: number,
+    projected: { homeGoals: number; awayGoals: number },
+  ): void => {
     setPicks((prev) => {
       const next = new Map(prev)
-      const current = next.get(cbfRef) ?? { homeGoals: 0, awayGoals: 0 }
+      const current = next.get(cbfRef) ?? projected
       const newHome = side === 'home' ? Math.max(0, Math.min(9, current.homeGoals + delta)) : current.homeGoals
       const newAway = side === 'away' ? Math.max(0, Math.min(9, current.awayGoals + delta)) : current.awayGoals
       next.set(cbfRef, { homeGoals: newHome, awayGoals: newAway })
@@ -51,8 +56,12 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
     })
   }
 
-  // Seleciona desfecho com 1 clique (vitória mandante, empate, vitória visitante)
-  const toggleOutcome = (cbfRef: string, outcome: 'home' | 'draw' | 'away', expectedHome = 1.4, expectedAway = 1.0): void => {
+  // Seleciona desfecho com o placar mais provável do modelo para aquele desfecho
+  const toggleOutcome = (
+    cbfRef: string,
+    outcome: 'home' | 'draw' | 'away',
+    score: { homeGoals: number; awayGoals: number },
+  ): void => {
     setPicks((prev) => {
       const next = new Map(prev)
       const current = next.get(cbfRef)
@@ -63,19 +72,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
           return next
         }
       }
-
-      if (outcome === 'home') {
-        const hg = Math.max(1, Math.round(expectedHome))
-        const ag = Math.max(0, Math.min(hg - 1, Math.round(expectedAway)))
-        next.set(cbfRef, { homeGoals: hg > ag ? hg : ag + 1, awayGoals: ag })
-      } else if (outcome === 'draw') {
-        const g = Math.min(2, Math.max(0, Math.round((expectedHome + expectedAway) / 2)))
-        next.set(cbfRef, { homeGoals: g, awayGoals: g })
-      } else {
-        const ag = Math.max(1, Math.round(expectedAway))
-        const hg = Math.max(0, Math.min(ag - 1, Math.round(expectedHome)))
-        next.set(cbfRef, { homeGoals: hg, awayGoals: ag > hg ? ag : hg + 1 })
-      }
+      next.set(cbfRef, { homeGoals: score.homeGoals, awayGoals: score.awayGoals })
       return next
     })
   }
@@ -88,7 +85,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
     })
   }
 
-  const setScenario = (type: 'favorites' | 'underdogs' | 'home' | 'clear'): void => {
+  const setScenario = (type: 'modal' | 'favorites' | 'underdogs' | 'home' | 'clear'): void => {
     if (!group) return
     if (type === 'clear') {
       setPicks(new Map())
@@ -97,21 +94,57 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
 
     const next = new Map(picks)
     for (const fixture of group.fixtures) {
-      const { probabilities, expected } = matchProbabilities(fixture.home, fixture.away)
+      const { probabilities, mostProbable } = matchProbabilities(fixture.home, fixture.away)
       const [homeP, drawP, awayP] = probabilities
 
-      if (type === 'home') {
-        next.set(fixture.cbfRef, { homeGoals: 2, awayGoals: 0 })
+      if (type === 'modal') {
+        // Moda conjunta do confronto: placar mais provável segundo o modelo
+        next.set(fixture.cbfRef, {
+          homeGoals: mostProbable.overall.homeGoals,
+          awayGoals: mostProbable.overall.awayGoals,
+        })
+      } else if (type === 'home') {
+        // Vitória do mandante calibrada por ataque vs defesa
+        next.set(fixture.cbfRef, {
+          homeGoals: mostProbable.homeWin.homeGoals,
+          awayGoals: mostProbable.homeWin.awayGoals,
+        })
       } else if (type === 'favorites') {
         const max = Math.max(homeP, drawP, awayP)
-        if (max === homeP) next.set(fixture.cbfRef, { homeGoals: Math.max(2, Math.round(expected.home)), awayGoals: Math.min(1, Math.round(expected.away)) })
-        else if (max === drawP) next.set(fixture.cbfRef, { homeGoals: 1, awayGoals: 1 })
-        else next.set(fixture.cbfRef, { homeGoals: Math.min(1, Math.round(expected.home)), awayGoals: Math.max(2, Math.round(expected.away)) })
+        if (max === homeP) {
+          next.set(fixture.cbfRef, {
+            homeGoals: mostProbable.homeWin.homeGoals,
+            awayGoals: mostProbable.homeWin.awayGoals,
+          })
+        } else if (max === drawP) {
+          next.set(fixture.cbfRef, {
+            homeGoals: mostProbable.draw.homeGoals,
+            awayGoals: mostProbable.draw.awayGoals,
+          })
+        } else {
+          next.set(fixture.cbfRef, {
+            homeGoals: mostProbable.awayWin.homeGoals,
+            awayGoals: mostProbable.awayWin.awayGoals,
+          })
+        }
       } else if (type === 'underdogs') {
         const min = Math.min(homeP, drawP, awayP)
-        if (min === homeP) next.set(fixture.cbfRef, { homeGoals: 1, awayGoals: 0 })
-        else if (min === drawP) next.set(fixture.cbfRef, { homeGoals: 2, awayGoals: 2 })
-        else next.set(fixture.cbfRef, { homeGoals: 0, awayGoals: 1 })
+        if (min === homeP) {
+          next.set(fixture.cbfRef, {
+            homeGoals: mostProbable.homeWin.homeGoals,
+            awayGoals: mostProbable.homeWin.awayGoals,
+          })
+        } else if (min === drawP) {
+          next.set(fixture.cbfRef, {
+            homeGoals: mostProbable.draw.homeGoals,
+            awayGoals: mostProbable.draw.awayGoals,
+          })
+        } else {
+          next.set(fixture.cbfRef, {
+            homeGoals: mostProbable.awayWin.homeGoals,
+            awayGoals: mostProbable.awayWin.awayGoals,
+          })
+        }
       }
     }
     setPicks(next)
@@ -199,17 +232,45 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
 
         <div className="sim-scenarios" role="group" aria-label="Cenários automáticos">
           <span className="sim-scenarios-label">Preenchimento rápido:</span>
-          <button type="button" className="sim-quick-btn" onClick={() => setScenario('favorites')}>
+          <button
+            type="button"
+            className="sim-quick-btn"
+            onClick={() => setScenario('modal')}
+            title="Preenche cada confronto com o placar de maior probabilidade segundo o modelo de gols esperados"
+          >
+            🎯 Mais Prováveis
+          </button>
+          <button
+            type="button"
+            className="sim-quick-btn"
+            onClick={() => setScenario('favorites')}
+            title="Aplica a vitória do favorito com seu placar esperado"
+          >
             ⚡ Favoritos
           </button>
-          <button type="button" className="sim-quick-btn" onClick={() => setScenario('underdogs')}>
+          <button
+            type="button"
+            className="sim-quick-btn"
+            onClick={() => setScenario('underdogs')}
+            title="Aplica o resultado zebra com seu placar esperado"
+          >
             💥 Zebras
           </button>
-          <button type="button" className="sim-quick-btn" onClick={() => setScenario('home')}>
+          <button
+            type="button"
+            className="sim-quick-btn"
+            onClick={() => setScenario('home')}
+            title="Aplica vitórias dos mandantes calibradas por ataque vs defesa"
+          >
             🏠 Mandantes
           </button>
           {totalPicksCount > 0 && (
-            <button type="button" className="sim-quick-btn sim-quick-btn--reset" onClick={() => setScenario('clear')}>
+            <button
+              type="button"
+              className="sim-quick-btn sim-quick-btn--reset"
+              onClick={() => setScenario('clear')}
+              title="Limpar todos os palpites da rodada"
+            >
               ↺ Limpar ({totalPicksCount})
             </button>
           )}
@@ -223,7 +284,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
           const awayClub = clubMap.get(fixture.away)
           const homeName = homeClub?.club ?? fixture.home
           const awayName = awayClub?.club ?? fixture.away
-          const { expected, probabilities } = matchProbabilities(fixture.home, fixture.away)
+          const { expected, probabilities, mostProbable } = matchProbabilities(fixture.home, fixture.away)
           const [homeP, drawP, awayP] = probabilities
 
           const score = picks.get(fixture.cbfRef)
@@ -239,18 +300,24 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
             <article className={`sim-match-card ${score !== undefined ? 'sim-match-card--has-pick' : ''}`} key={fixture.cbfRef}>
               <div className="sim-match-header">
                 <span className="sim-match-venue">Rodada {group.roundNumber} · CBF #{fixture.cbfRef}</span>
-                {score !== undefined ? (
-                  <button
-                    type="button"
-                    className="sim-match-clear"
-                    onClick={() => clearPick(fixture.cbfRef)}
-                    title="Remover palpite deste jogo"
+                <div className="sim-match-meta">
+                  <span
+                    className="sim-match-xg"
+                    title={`Gols esperados (xG) baseados em ataque e defesa: ${homeName} ${expected.home.toFixed(2)} × ${expected.away.toFixed(2)} ${awayName}. Placar mais provável conjunto (moda): ${mostProbable.overall.homeGoals} × ${mostProbable.overall.awayGoals} (${(mostProbable.overall.probability * 100).toFixed(1)}%)`}
                   >
-                    ✕ Limpar
-                  </button>
-                ) : (
-                  <span className="sim-match-expected">xG: {expected.home.toFixed(2)} × {expected.away.toFixed(2)}</span>
-                )}
+                    xG: <strong>{expected.home.toFixed(2)}</strong> × <strong>{expected.away.toFixed(2)}</strong>
+                  </span>
+                  {score !== undefined && (
+                    <button
+                      type="button"
+                      className="sim-match-clear"
+                      onClick={() => clearPick(fixture.cbfRef)}
+                      title="Remover palpite deste jogo"
+                    >
+                      ✕ Limpar
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Duelo com Escudos, Nomes, Pontuação Atual e Controle de Gols */}
@@ -259,7 +326,9 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                   <Crest clubId={fixture.home} size="xs" />
                   <div className="sim-team-info">
                     <span className="sim-team-name">{homeName}</span>
-                    <span className="sim-team-points">{homeClub ? `${homeClub.position}º · ${homeClub.points} pts` : ''}</span>
+                    <span className="sim-team-points">
+                      {homeClub ? `${homeClub.position}º · ${homeClub.points} pts (SG ${homeClub.goalsFor - homeClub.goalsAgainst >= 0 ? '+' : ''}${homeClub.goalsFor - homeClub.goalsAgainst})` : ''}
+                    </span>
                   </div>
                 </div>
 
@@ -269,16 +338,19 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                     <button
                       type="button"
                       className="sim-step-btn"
-                      onClick={() => adjustGoals(fixture.cbfRef, 'home', -1)}
+                      onClick={() => adjustGoals(fixture.cbfRef, 'home', -1, mostProbable.overall)}
                       aria-label={`Diminuir gol de ${homeName}`}
                     >−</button>
-                    <span className={`sim-score-val ${score ? 'has-score' : ''}`}>
-                      {score ? score.homeGoals : '—'}
+                    <span
+                      className={`sim-score-val ${score !== undefined ? 'has-score' : 'is-placeholder'}`}
+                      title={score !== undefined ? `Placar selecionado: ${score.homeGoals}` : `Placar provável projetado: ${mostProbable.overall.homeGoals}`}
+                    >
+                      {score !== undefined ? score.homeGoals : mostProbable.overall.homeGoals}
                     </span>
                     <button
                       type="button"
                       className="sim-step-btn"
-                      onClick={() => adjustGoals(fixture.cbfRef, 'home', 1)}
+                      onClick={() => adjustGoals(fixture.cbfRef, 'home', 1, mostProbable.overall)}
                       aria-label={`Aumentar gol de ${homeName}`}
                     >+</button>
                   </div>
@@ -287,16 +359,19 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                     <button
                       type="button"
                       className="sim-step-btn"
-                      onClick={() => adjustGoals(fixture.cbfRef, 'away', -1)}
+                      onClick={() => adjustGoals(fixture.cbfRef, 'away', -1, mostProbable.overall)}
                       aria-label={`Diminuir gol de ${awayName}`}
                     >−</button>
-                    <span className={`sim-score-val ${score ? 'has-score' : ''}`}>
-                      {score ? score.awayGoals : '—'}
+                    <span
+                      className={`sim-score-val ${score !== undefined ? 'has-score' : 'is-placeholder'}`}
+                      title={score !== undefined ? `Placar selecionado: ${score.awayGoals}` : `Placar provável projetado: ${mostProbable.overall.awayGoals}`}
+                    >
+                      {score !== undefined ? score.awayGoals : mostProbable.overall.awayGoals}
                     </span>
                     <button
                       type="button"
                       className="sim-step-btn"
-                      onClick={() => adjustGoals(fixture.cbfRef, 'away', 1)}
+                      onClick={() => adjustGoals(fixture.cbfRef, 'away', 1, mostProbable.overall)}
                       aria-label={`Aumentar gol de ${awayName}`}
                     >+</button>
                   </div>
@@ -305,40 +380,51 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
                 <div className={`sim-team-side sim-team-side--away ${activeOutcome === 'away' ? 'is-winner' : ''}`}>
                   <div className="sim-team-info text-right">
                     <span className="sim-team-name">{awayName}</span>
-                    <span className="sim-team-points">{awayClub ? `${awayClub.position}º · ${awayClub.points} pts` : ''}</span>
+                    <span className="sim-team-points">
+                      {awayClub ? `${awayClub.position}º · ${awayClub.points} pts (SG ${awayClub.goalsFor - awayClub.goalsAgainst >= 0 ? '+' : ''}${awayClub.goalsFor - awayClub.goalsAgainst})` : ''}
+                    </span>
                   </div>
                   <Crest clubId={fixture.away} size="xs" />
                 </div>
               </div>
 
-              {/* Botões Semânticos de Desfecho (Sem códigos crípticos 1/X/2) */}
+              {/* Botões Semânticos de Desfecho com Placares Mais Prováveis */}
               <div className="sim-outcome-buttons" role="group" aria-label={`Palpite para ${homeName} contra ${awayName}`}>
                 <button
                   type="button"
                   className={`sim-outcome-btn ${activeOutcome === 'home' ? 'is-selected is-home' : ''}`}
-                  onClick={() => toggleOutcome(fixture.cbfRef, 'home', expected.home, expected.away)}
+                  onClick={() => toggleOutcome(fixture.cbfRef, 'home', mostProbable.homeWin)}
                   aria-pressed={activeOutcome === 'home'}
+                  title={`Vitória do mandante com placar mais provável (${mostProbable.homeWin.homeGoals}×${mostProbable.homeWin.awayGoals}) baseado no xG de ataque vs defesa`}
                 >
                   <span className="sim-outcome-title">Vitória {homeName.split(' ')[0]}</span>
-                  <span className="sim-outcome-prob">{percent.format(homeP)}</span>
+                  <span className="sim-outcome-prob">
+                    <strong>{mostProbable.homeWin.homeGoals}×{mostProbable.homeWin.awayGoals}</strong> · {percent.format(homeP)}
+                  </span>
                 </button>
                 <button
                   type="button"
                   className={`sim-outcome-btn ${activeOutcome === 'draw' ? 'is-selected is-draw' : ''}`}
-                  onClick={() => toggleOutcome(fixture.cbfRef, 'draw', expected.home, expected.away)}
+                  onClick={() => toggleOutcome(fixture.cbfRef, 'draw', mostProbable.draw)}
                   aria-pressed={activeOutcome === 'draw'}
+                  title={`Empate com placar mais provável (${mostProbable.draw.homeGoals}×${mostProbable.draw.awayGoals}) baseado no xG`}
                 >
                   <span className="sim-outcome-title">Empate</span>
-                  <span className="sim-outcome-prob">{percent.format(drawP)}</span>
+                  <span className="sim-outcome-prob">
+                    <strong>{mostProbable.draw.homeGoals}×{mostProbable.draw.awayGoals}</strong> · {percent.format(drawP)}
+                  </span>
                 </button>
                 <button
                   type="button"
                   className={`sim-outcome-btn ${activeOutcome === 'away' ? 'is-selected is-away' : ''}`}
-                  onClick={() => toggleOutcome(fixture.cbfRef, 'away', expected.home, expected.away)}
+                  onClick={() => toggleOutcome(fixture.cbfRef, 'away', mostProbable.awayWin)}
                   aria-pressed={activeOutcome === 'away'}
+                  title={`Vitória do visitante com placar mais provável (${mostProbable.awayWin.homeGoals}×${mostProbable.awayWin.awayGoals}) baseado no xG`}
                 >
                   <span className="sim-outcome-title">Vitória {awayName.split(' ')[0]}</span>
-                  <span className="sim-outcome-prob">{percent.format(awayP)}</span>
+                  <span className="sim-outcome-prob">
+                    <strong>{mostProbable.awayWin.homeGoals}×{mostProbable.awayWin.awayGoals}</strong> · {percent.format(awayP)}
+                  </span>
                 </button>
               </div>
             </article>
@@ -524,6 +610,9 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
         <details className="clean-disclosure sim-methodology-note">
           <summary>ℹ️ Metodologia e Parâmetros do Simulador Monte Carlo</summary>
           <div className="sim-methodology-body">
+            <p>
+              <strong>Placares Baseados em Gols Esperados (xG), Ataque e Defesa:</strong> Os placares sugeridos e aplicados nos botões de vitória/empate não utilizam valores fixos genéricos. Eles calculam a <em>moda estatística</em> (o placar de maior probabilidade) da distribuição bivariada Poisson a partir das taxas de gols esperados (\(\lambda\)) de cada clube, combinando a força de ataque do mandante com a fragilidade defensiva do visitante e vice-versa.
+            </p>
             <p>
               <strong>Semente Determinística Única (<code>{SIMULATION_SEED}</code>):</strong> Todas as simulações executam 2.000 iterações Monte Carlo completas no seu navegador com a mesma semente pseudoaleatória do modelo oficial, garantindo reprodutibilidade estrita (os mesmos palpites produzem rigorosamente os mesmos números).
             </p>

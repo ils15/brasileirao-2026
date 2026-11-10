@@ -5,6 +5,7 @@ import {
   expectedGoalsFromTeamTotals,
   expectedGoalsFromXg,
   historicalGoalAverages,
+  mostProbableScores,
   poissonResultProbabilities,
   type ModelMatch,
 } from './matchModel'
@@ -102,5 +103,41 @@ describe('ajuste H2H regularizado por mando', () => {
     expect(oldAdjustment.effectiveWeight).toBeCloseTo(0.25, 12)
     expect(Math.abs(oldAdjustment.home)).toBeLessThan(Math.abs(recentAdjustment.home))
     expect(recentAdjustment.home).toBeLessThanOrEqual(0.35)
+  })
+})
+
+describe('placares mais prováveis por xG (moda bivariada)', () => {
+  it('identifica placares coerentes para mandante favorito, visitante e jogo parelho', () => {
+    // Mandante muito favorito (ataque forte vs defesa fraca: 2.4 x 0.6)
+    const favorite = mostProbableScores({ home: 2.4, away: 0.6 })
+    expect(favorite.homeWin).toEqual({ homeGoals: 2, awayGoals: 0, probability: expect.any(Number) })
+    expect(favorite.overall).toEqual({ homeGoals: 2, awayGoals: 0, probability: expect.any(Number) })
+    expect(favorite.draw).toEqual({ homeGoals: 1, awayGoals: 1, probability: expect.any(Number) })
+
+    // Jogo parelho e fechado (1.3 x 1.1)
+    const tight = mostProbableScores({ home: 1.3, away: 1.1 })
+    expect(tight.homeWin).toEqual({ homeGoals: 1, awayGoals: 0, probability: expect.any(Number) })
+    expect(tight.draw).toEqual({ homeGoals: 1, awayGoals: 1, probability: expect.any(Number) })
+    expect(tight.awayWin).toEqual({ homeGoals: 0, awayGoals: 1, probability: expect.any(Number) })
+    expect(tight.overall).toEqual({ homeGoals: 1, awayGoals: 1, probability: expect.any(Number) })
+
+    // Visitante favorito (0.9 x 1.9)
+    const awayFav = mostProbableScores({ home: 0.9, away: 1.9 })
+    expect(awayFav.awayWin).toEqual({ homeGoals: 0, awayGoals: 1, probability: expect.any(Number) })
+    expect(awayFav.overall).toEqual({ homeGoals: 0, awayGoals: 1, probability: expect.any(Number) })
+
+    // Jogo aberto com alta expectativa de gols (2.5 x 1.4)
+    const open = mostProbableScores({ home: 2.5, away: 1.4 })
+    expect(open.homeWin).toEqual({ homeGoals: 2, awayGoals: 1, probability: expect.any(Number) })
+  })
+
+  it('respeita estritamente as regras de vitória, empate e derrota para cada desfecho', () => {
+    const scores = mostProbableScores({ home: 1.7, away: 1.2 })
+    expect(scores.homeWin.homeGoals).toBeGreaterThan(scores.homeWin.awayGoals)
+    expect(scores.draw.homeGoals).toBe(scores.draw.awayGoals)
+    expect(scores.awayWin.awayGoals).toBeGreaterThan(scores.awayWin.homeGoals)
+    expect(scores.homeWin.probability).toBeGreaterThan(0)
+    expect(scores.draw.probability).toBeGreaterThan(0)
+    expect(scores.awayWin.probability).toBeGreaterThan(0)
   })
 })

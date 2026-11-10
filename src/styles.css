@@ -1096,6 +1096,9 @@ th.numeric .sort-button { justify-content: flex-end; }
 .sim-match-card:hover { border-color: var(--border-strong); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
 .sim-match-card--has-pick { border-color: var(--focus); box-shadow: 0 0 0 1px var(--focus); }
 .sim-match-header { display: flex; justify-content: space-between; align-items: center; color: var(--text-muted); font-size: 11px; font-family: var(--mono); }
+.sim-match-meta { display: flex; align-items: center; gap: 8px; }
+.sim-match-xg { font-size: 11px; font-family: var(--mono); color: var(--text-muted); cursor: help; }
+.sim-match-xg strong { color: var(--ink); font-weight: 600; }
 .sim-match-clear { background: transparent; border: 0; color: var(--danger-text); font: 600 11px var(--mono); cursor: pointer; padding: 2px 6px; border-radius: 4px; }
 .sim-match-clear:hover { background: var(--danger-bg); }
 
@@ -1117,6 +1120,7 @@ th.numeric .sort-button { justify-content: flex-end; }
 .sim-step-btn:hover { background: var(--surface-tint); color: var(--focus); }
 .sim-score-val { min-width: 20px; text-align: center; font: 700 15px var(--mono); color: var(--text-muted); }
 .sim-score-val.has-score { color: var(--ink); }
+.sim-score-val.is-placeholder { opacity: 0.38; }
 .sim-score-x { font: 700 12px var(--mono); color: var(--text-muted); }
 
 /* Botões Semânticos de Desfecho (Vitória Mandante / Empate / Vitória Visitante) */

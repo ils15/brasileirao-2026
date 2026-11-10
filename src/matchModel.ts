@@ -405,6 +405,57 @@ export function poissonResultProbabilities(expected: ExpectedGoals, rho = 0): [n
   return result
 }
 
+export interface ScoreOutcome {
+  homeGoals: number
+  awayGoals: number
+  probability: number
+}
+
+export interface MostProbableScores {
+  overall: ScoreOutcome
+  homeWin: ScoreOutcome
+  draw: ScoreOutcome
+  awayWin: ScoreOutcome
+}
+
+/**
+ * Identifica os placares mais prováveis (a moda da distribuição conjunta) globalmente
+ * e condicionados a cada desfecho (vitória mandante, empate, vitória visitante).
+ * Baseia-se rigorosamente nos gols esperados λ (ataque e defesa ponderados por mando).
+ */
+export function mostProbableScores(expected: ExpectedGoals, rho = 0): MostProbableScores {
+  const grid = dcJointGrid(expected, rho)
+  let bestOverall: ScoreOutcome = { homeGoals: 1, awayGoals: 1, probability: -1 }
+  let bestHomeWin: ScoreOutcome = { homeGoals: 1, awayGoals: 0, probability: -1 }
+  let bestDraw: ScoreOutcome = { homeGoals: 1, awayGoals: 1, probability: -1 }
+  let bestAwayWin: ScoreOutcome = { homeGoals: 0, awayGoals: 1, probability: -1 }
+
+  for (let cell = 0; cell < grid.cumulative.length; cell += 1) {
+    const previous = cell > 0 ? grid.cumulative[cell - 1]! : 0
+    const probability = grid.cumulative[cell]! - previous
+    const homeGoals = Math.floor(cell / grid.size)
+    const awayGoals = cell % grid.size
+
+    if (probability > bestOverall.probability) {
+      bestOverall = { homeGoals, awayGoals, probability }
+    }
+    if (homeGoals > awayGoals && probability > bestHomeWin.probability) {
+      bestHomeWin = { homeGoals, awayGoals, probability }
+    } else if (homeGoals === awayGoals && probability > bestDraw.probability) {
+      bestDraw = { homeGoals, awayGoals, probability }
+    } else if (awayGoals > homeGoals && probability > bestAwayWin.probability) {
+      bestAwayWin = { homeGoals, awayGoals, probability }
+    }
+  }
+
+  return {
+    overall: bestOverall,
+    homeWin: bestHomeWin,
+    draw: bestDraw,
+    awayWin: bestAwayWin,
+  }
+}
+
 /**
  * ρ de Dixon-Coles estimado por máxima verossimilhança sobre a base de
  * treino: λ/μ de cada partida vêm das forças casa/fora (mesma fórmula da
