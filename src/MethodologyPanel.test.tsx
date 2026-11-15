@@ -6,7 +6,7 @@ import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { expectedGoalsBreakdown } from './matchModel'
 import { productionTrainingMatches } from './modelBacktest'
-import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './seasonFacts'
+import { advancedStatsCaptureLabel, advancedStatsCaptureRelation, cutoffLabel } from './seasonFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
 /** Escapa um literal derivado dos módulos para uso em RegExp. */
@@ -41,6 +41,13 @@ describe('aba metodologia & validação', () => {
     expect(implementedComparator).toHaveTextContent(/não reproduz integralmente o Art\. 15 nem certifica uma classificação oficial/i)
     const temporalLimit = screen.getByText('Limite temporal:').closest('p')!
     expect(temporalLimit).toHaveTextContent(new RegExp(`snapshot 365scores.*${advancedStatsCaptureLabel}.*${advancedStatsCaptureRelation}.*${ANALYTICAL_CUTOFF_UTC}.*não tem cobertura temporal por partida suficiente.*não certificam o desempate oficial no corte`, 'i'))
+    // O exemplo de simulação é ilustrativo do corte: o rótulo vem do módulo de
+    // dados (nenhuma data cravada) e nada ali afirma resultado atual de clube.
+    const illustrative = screen.getByText(/Ilustração de leitura/).closest('p')!
+    expect(illustrative).toHaveTextContent(new RegExp(`registrados até ${escapeRegExp(cutoffLabel)} e dos confrontos ainda pendentes`))
+    expect(illustrative).toHaveTextContent(/aproximada, de um corte anterior, não derivada deste pacote e não referente a nenhum clube deste corte/i)
+    expect(illustrative).not.toHaveTextContent(/rodada \d+|pts e \d+ jogos|3–1 sobre/)
+    expect(cutoffLabel).not.toMatch(/\d{4}-\d{2}-\d{2}T/) // rótulo legível do corte, não literal ISO
   })
 
   it('apresenta os quatro modelos de ablação em cada dobra temporal sem sugerir ganho consistente', () => {
