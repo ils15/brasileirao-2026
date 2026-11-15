@@ -2,10 +2,10 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { FixtureCalendar } from './FixtureCalendar'
-import { remainingFixtures } from './projectionData'
+import { currentClubs, remainingFixtures } from './projectionData'
 import { historicalSeasons } from './historicalSeasons'
 import { normalizeTeamId } from './clubIds'
-import { getHistoricalVenueStats } from './seasonStats'
+import { getHeadToHeadSummary, getHistoricalVenueStats } from './seasonStats'
 
 describe('calendário e retrospecto por mando', () => {
   it('lista para o clube selecionado exatamente os fixtures usados na simulação', () => {
@@ -61,17 +61,26 @@ describe('calendário e retrospecto por mando', () => {
     const calendar = screen.getByRole('region', { name: 'Calendário restante por clube' })
     const fixture = calendar.querySelector<HTMLElement>('.remaining-fixture')
     expect(fixture).not.toBeNull()
+    // O primeiro jogo pendente do Flamengo muda a cada rodada: clube, adversário
+    // e retrospecto saem do pacote, não de um confronto fixo.
+    const first = remainingFixtures.filter(({ home, away }) => home === 'flamengo' || away === 'flamengo')[0]!
+    const nameOf = (id: string): string => currentClubs.find((club) => club.id === id)!.club
+    const h2h = getHeadToHeadSummary(first.home, first.away)
     const fixtureView = within(fixture!)
     expect(fixtureView.getByText(/Retrospecto H2H · informativo; sem peso na projeção/)).toBeInTheDocument()
     // Chips compactos com ícone de mando (casa/fora)
-    const miniGrid = fixtureView.getByLabelText('Estatísticas H2H de Flamengo contra Athletico Paranaense')
+    const miniGrid = fixtureView.getByLabelText(`Estatísticas H2H de ${nameOf(first.home)} contra ${nameOf(first.away)}`)
     expect(miniGrid.querySelectorAll('.h2h-mini')).toHaveLength(4)
     expect(miniGrid.textContent).toContain('2003–25 casa')
     expect(miniGrid.textContent).toContain('2026 fora')
     await user.click(fixtureView.getByText(/Placares do retrospecto/))
-    const scores = fixtureView.getByRole('list', { name: 'Placares H2H de Flamengo e Athletico Paranaense' })
+    const scores = fixtureView.getByRole('list', { name: `Placares H2H de ${nameOf(first.home)} e ${nameOf(first.away)}` })
+    const firstMeeting = h2h.matches[0]!
     const firstScore = scores.querySelector('li')!
-    expect(firstScore.textContent).toContain('Athletico Paranaense 1–1 Flamengo')
+    expect(firstMeeting).toBeDefined()
+    expect(firstScore.textContent).toContain(
+      `${nameOf(firstMeeting.home)} ${firstMeeting.homeGoals}–${firstMeeting.awayGoals} ${nameOf(firstMeeting.away)}`,
+    )
     expect(firstScore.querySelector('.meeting-badge')).not.toBeNull()
   })
 })

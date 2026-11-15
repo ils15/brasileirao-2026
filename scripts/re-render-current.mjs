@@ -23,15 +23,26 @@ const csvText = readFileSync(join(root, 'data/source-snapshots/football-data-BR.
 const espnFiles = readdirSync(join(root, 'data/source-snapshots')).filter((f) => f.startsWith('espn-scoreboard-')).sort()
 const espnText = espnFiles.map((f) => readFileSync(join(root, 'data/source-snapshots', f), 'utf8')).join('|')
 
+// Re-render é só recomputar: os instantes de captura vêm do pacote atual.
+// Fallback inventado (ex.: uma data fixa) publicaria proveniência falsa.
+const cbfDisplayed = current.match(/displayedTimestamp: '([^']+)'/)?.[1]
+if (!cbfDisplayed) {
+  throw new Error("displayedTimestamp da tabela CBF não encontrado em src/currentSeasonResults.ts; rode scripts/update-data.mjs (ou restaure o snapshot) em vez de inventar um valor.")
+}
+const collectedAt = current.match(/collectedAt: '([^']+)'/)?.[1]
+if (!collectedAt) {
+  throw new Error("collectedAt não encontrado em src/currentSeasonResults.ts; o re-render não deve gravar proveniência sem o valor do pacote.")
+}
+
 const metadata = {
   generatedAt: new Date().toISOString(),
-  collectedAt: current.match(/collectedAt: '([^']+)'/)?.[1] ?? new Date().toISOString(),
+  collectedAt,
   sha256: sha256(csvText),
   rows2026: (csvText.match(/,2026,/g) ?? []).length,
   espnCount: results.filter((r) => r.source === 'espn').length,
   espnSha256: sha256(espnText),
   historicalSha256: 'ed5c0925007f9ae35f97558993e597d41807e3f1507fae9d7e555bbab5b02bcf',
-  cbfDisplayed: current.match(/displayedTimestamp: '([^']+)'/)?.[1] ?? '04/11/2026 - 19:41',
+  cbfDisplayed,
 }
 
 writeFileSync(join(srcDir, 'currentSeasonResults.ts'), renderCurrentSeasonResults({ results, metadata }))

@@ -5,6 +5,13 @@ import App from './App'
 import { currentClubs } from './projectionData'
 import { cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation } from './seasonFacts'
 import { scorers, SCORERS_SOURCE } from './data'
+import { scorers2026 } from './scorers2026'
+import { CURRENT_SEASON_SOURCE } from './currentSeasonResults'
+
+/** Escapa um literal do pacote para uso em RegExp (o teste não crava o texto). */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
 describe('painel do Brasileirão 2026', () => {
   beforeEach(() => {
@@ -290,7 +297,7 @@ describe('painel do Brasileirão 2026', () => {
     const eventDateNote = screen.getByText(/Todos os .* resultados até o corte analítico/)
     expect(eventDateNote.textContent).toContain('REF 340')
     expect(eventDateNote.textContent).toContain('04/11 ou 05/11')
-    expect(eventDateNote.textContent).toContain('2026-11-03T22:30Z')
+    expect(eventDateNote.textContent).toContain('2026-11-03T22:30Z') // data-fixa: registro do pacote (kickoff ESPN já disputado)
     expect(eventDateNote.textContent).toContain('O pacote não confirma o kickoff oficial.')
 
     const tiebreakNote = screen.getByText(/O desempate simulado \(não é classificação oficial\)/)
@@ -298,10 +305,10 @@ describe('painel do Brasileirão 2026', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Metodologia & Auditoria' }))
     expect(screen.getByRole('heading', { name: 'CBF (HTML de classificação arquivado)' })).toBeInTheDocument()
-    expect(screen.getByText(/Exibe 04\/11\/2026 - 19:41 \(fuso e significado não declarados\)/)).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`Exibe ${escapeRegExp(CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp)} \\(fuso e significado não declarados\\)`))).toBeInTheDocument()
   })
 
-  it('pagina os 305 atletas sem alterar ordem, posições ou perder/duplicar atletas', async () => {
+  it('pagina todos os atletas sem alterar ordem, posições ou perder/duplicar atletas', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -310,7 +317,10 @@ describe('painel do Brasileirão 2026', () => {
     const pagination = within(scorersPanel).getByRole('navigation', { name: 'Paginação da artilharia' })
     const next = within(scorersPanel).getByRole('button', { name: 'Próxima página da artilharia' })
     const previous = within(scorersPanel).getByRole('button', { name: 'Página anterior da artilharia' })
-    const pageCount = Math.ceil(scorers.length / 20)
+    // Tamanho da página vem da própria UI (primeira página renderizada) e o
+    // total vem do pacote: nada de cravar contagem que muda a cada coleta.
+    const perPage = scorerList.querySelectorAll('.scorer-item').length
+    const pageCount = Math.ceil(scorers.length / perPage)
     const renderedScorers = (): Array<{ name: string; club: string; position: string; goals: number }> =>
       [...scorerList.querySelectorAll('.scorer-item')].map((item) => ({
         name: item.querySelector('.scorer-info strong')?.textContent ?? '',
@@ -320,16 +330,18 @@ describe('painel do Brasileirão 2026', () => {
       }))
     const renderedIdentities: string[] = []
 
-    expect(scorers).toHaveLength(305)
-    expect(pageCount).toBe(16)
-    expect(pagination).toHaveTextContent(`1–20 de ${scorers.length}`)
-    expect(pagination).toHaveTextContent('Página 1 de 16')
+    expect(scorers2026.length).toBeGreaterThan(0)
+    expect(scorers).toHaveLength(scorers2026.length)
+    expect(perPage).toBeGreaterThanOrEqual(5)
+    expect(pageCount).toBeGreaterThan(1)
+    expect(pagination).toHaveTextContent(`1–${Math.min(perPage, scorers.length)} de ${scorers.length}`)
+    expect(pagination).toHaveTextContent(`Página 1 de ${pageCount}`)
     expect(pagination.querySelector('[aria-live="polite"]')).toHaveAttribute('aria-atomic', 'true')
     expect(previous).toBeDisabled()
 
     for (let page = 0; page < pageCount; page += 1) {
-      const start = page * 20
-      const end = Math.min(start + 20, scorers.length)
+      const start = page * perPage
+      const end = Math.min(start + perPage, scorers.length)
       const expectedPage = scorers.slice(start, end)
 
       expect(pagination).toHaveTextContent(`${start + 1}–${end} de ${scorers.length}`)
@@ -348,17 +360,19 @@ describe('painel do Brasileirão 2026', () => {
       }
     }
 
-    expect(pagination).toHaveTextContent('301–305 de 305')
-    expect(pagination).toHaveTextContent('Página 16 de 16')
-    expect(scorerList.querySelectorAll('.scorer-item')).toHaveLength(5)
+    const lastPageStart = (pageCount - 1) * perPage
+    expect(pagination).toHaveTextContent(`${lastPageStart + 1}–${scorers.length} de ${scorers.length}`)
+    expect(pagination).toHaveTextContent(`Página ${pageCount} de ${pageCount}`)
+    expect(scorerList.querySelectorAll('.scorer-item')).toHaveLength(scorers.length - lastPageStart)
     expect(next).toBeDisabled()
     expect(renderedIdentities).toEqual(scorers.map(({ name, club }) => `${name}\u0000${club}`))
     expect(new Set(renderedIdentities).size).toBe(scorers.length)
 
     previous.focus()
     await user.keyboard('{Enter}')
-    expect(pagination).toHaveTextContent('281–300 de 305')
-    expect(pagination).toHaveTextContent('Página 15 de 16')
+    const previousPageStart = (pageCount - 2) * perPage
+    expect(pagination).toHaveTextContent(`${previousPageStart + 1}–${previousPageStart + perPage} de ${scorers.length}`)
+    expect(pagination).toHaveTextContent(`Página ${pageCount - 1} de ${pageCount}`)
     expect(next).toBeEnabled()
   })
 

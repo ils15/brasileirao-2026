@@ -43,10 +43,27 @@ jobs:
           # 14/11/2026) = 1.000/dia; após o trial (100/dia), reduzir para 6.
           API_FUTEBOL_BR_PER_RUN: '25'
         run: |
+          # O updater faz o commit internamente quando há dados novos, então
+          # `git status` depois dele fica limpo e não serve como sinal: o que
+          # detecta mudança é a comparação do HEAD antes/depois. A árvore suja
+          # é tratada como fallback (alteração que o updater não commitou),
+          # para nunca publicar um dist sem o dado versionado.
+          data_paths='src/currentSeasonResults.ts src/projectionData.ts src/sourceMetadata.ts src/advancedStats2026.ts src/scorers2026.ts data/source-snapshots docs/atualizacoes.md'
+          before=$(git rev-parse HEAD)
           node scripts/update-data.mjs
-          if [ -n "$(git status --porcelain -- src/currentSeasonResults.ts src/projectionData.ts src/sourceMetadata.ts src/advancedStats2026.ts src/scorers2026.ts data/source-snapshots docs/atualizacoes.md)" ]; then
+          after=$(git rev-parse HEAD)
+          if [ "$before" != "$after" ]; then
+            echo "Novo commit de dados: $before -> $after"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          elif [ -n "$(git status --porcelain -- $data_paths)" ]; then
+            echo "::warning::updater deixou alterações sem commit; commitando na workflow para publicar estado versionado."
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -- $data_paths
+            git commit -m "data: atualização pós-rodada (árvore não commitada pelo updater)"
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
+            echo "Sem dados novos (HEAD ${after:0:7}, árvore limpa nos caminhos de dados)."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Push data commit

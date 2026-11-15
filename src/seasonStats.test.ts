@@ -81,12 +81,23 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     const baseline = getCurrentVenueStats('flamengo')
     expect(getCurrentVenueStats('flamengo', [...currentSeasonResults, futureResult])).toEqual(baseline)
 
+    // O H2H corrente do par é o que o pacote já tem: um jogo posterior ao corte
+    // não pode entrar nem mudar contagem, mando ou pontos (sem cravar o
+    // histórico do par, que muda quando a rodada acontece).
+    const pairInPackage = (match: { home: string; away: string }): boolean =>
+      (match.home === 'flamengo' && match.away === 'athletico-pr') || (match.home === 'athletico-pr' && match.away === 'flamengo')
+    const pair2026 = currentSeasonResults.filter((match) => pairInPackage(match) && isAtOrBeforeAnalyticalCutoff(match.kickoff, match.source))
+    const baselineH2h = getHeadToHeadSummary('flamengo', 'athletico-pr')
     const h2h = getHeadToHeadSummary('flamengo', 'athletico-pr', [...currentSeasonResults, futureResult])
-    expect(h2h.current.home.matches).toBe(0)
-    expect(h2h.current.away).toMatchObject({ matches: 1, wins: 0, draws: 1, losses: 0, points: 1 })
-    expect(h2h.matches.filter(({ seasonYear }) => seasonYear === 2026)).toEqual([
-      expect.objectContaining({ home: 'athletico-pr', away: 'flamengo', homeGoals: 1, awayGoals: 1 }),
-    ])
+
+    expect(h2h.current).toEqual(baselineH2h.current)
+    expect(h2h.current.home.matches + h2h.current.away.matches).toBe(pair2026.length)
+    expect(h2h.matches.some(({ sourceRef }) => sourceRef === 'future-test-only')).toBe(false)
+    const pairFromH2h = h2h.matches
+      .filter(({ seasonYear }) => seasonYear === 2026)
+      .map(({ home, away, homeGoals, awayGoals }) => JSON.stringify({ home, away, homeGoals, awayGoals }))
+    expect(pairFromH2h).toHaveLength(pair2026.length)
+    expect(new Set(pairFromH2h)).toEqual(new Set(pair2026.map(({ home, away, homeGoals, awayGoals }) => JSON.stringify({ home, away, homeGoals, awayGoals }))))
     expect(h2h.historical.home.matches + h2h.historical.away.matches).toBeGreaterThan(0)
   })
 
@@ -118,7 +129,7 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     expect(CURRENT_SEASON_SOURCE.cbfStandings).not.toHaveProperty('pageUpdatedAt')
   })
 
-  it('reconcilia os resultados ESPN com o Football-Data: 7 de 8 correspondem por placar e 1 está ausente', () => {
+  it('reconcilia os resultados ESPN com o Football-Data sem duplicar pares nem furar o corte', () => {
     const espnMatches = currentSeasonResults.filter((match) => match.source === 'espn')
     expect(espnMatches.length).toBeGreaterThan(0)
     for (const match of espnMatches) {

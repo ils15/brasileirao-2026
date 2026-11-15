@@ -3,3 +3,8 @@
 # scripts/pack-history.test.mjs. Desabilita só as checagens de whitespace do git
 # para estes arquivos; o restante do repositório continua sob o gate padrão.
 data/source-snapshots/openfootball-br-2003-2011/*.txt -whitespace -text
+
+# Mesma regra para o CSV cru do Football-Data: o SHA-256 do arquivo é a prova de
+# proveniência (scripts/pack-history.test.mjs e o pacote atual), então
+# whitespace à direita no fim das linhas é do publicador, não erro nosso.
+data/source-snapshots/football-data-BR.csv -whitespace -text

@@ -9,6 +9,11 @@ import { productionTrainingMatches } from './modelBacktest'
 import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './seasonFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
+/** Escapa um literal derivado dos módulos para uso em RegExp. */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 describe('aba metodologia & validação', () => {
   it('apresenta backtest, ablação e as limitações do modelo', { timeout: 30_000 }, () => {
     const result = runProjection({ simulations: 8, seed: 123 })
@@ -71,7 +76,11 @@ describe('aba metodologia & validação', () => {
     expect(within(region).getAllByRole('row', { name: /melhor/ }).length).toBe(1)
     // Produção declara o peso fixado (w = 0,15 adotado no corte nov/2026)
     expect(screen.getByText(/Produção usa w = 0,150/)).toBeInTheDocument()
-    expect(screen.getByText(/snapshot 365scores capturado em 2026-11-07T15:25:20\.960Z, após o corte analítico, sem timestamp temporal por partida.*t−1 descreve apenas a separação das rodadas.*não comprova/)).toBeInTheDocument()
+    // A prosa estática deriva o instante e a relação da captura do módulo de
+    // dados: nada de data literal (o snapshot muda a cada coleta da fonte).
+    const captureSentence = `capturado em ${advancedStatsCaptureLabel}, ${advancedStatsCaptureRelation}, sem timestamp temporal por partida`
+    expect(captureSentence).not.toMatch(/\d{4}-\d{2}-\d{2}T/) // data do módulo, não literal ISO
+    expect(screen.getByText(new RegExp(`${escapeRegExp(captureSentence)}.*t−1 descreve apenas a separação das rodadas.*não comprova`))).toBeInTheDocument()
   })
 
   it('o exemplo numérico do λ é rastreável e bate com o λ de produção (blend incluído)', () => {

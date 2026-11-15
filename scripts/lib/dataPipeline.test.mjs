@@ -9,6 +9,7 @@ import {
   parseEspnScoreboard,
   parseFootballDataCsv,
   parseCbfSchedule,
+  planCollectionRun,
   renderCurrentSeasonResults,
   summarizeEspnFootballDataCoverage,
   validateIntegrity,
@@ -23,7 +24,7 @@ const schedule = [
 
 describe('formatBrazilLocalIso', () => {
   it('converts a UTC cutoff to the matching Brasília wall time and offset', () => {
-    expect(formatBrazilLocalIso('2026-11-07T00:58:14Z')).toBe('2026-11-06T21:58:14-03:00')
+    expect(formatBrazilLocalIso('2026-11-07T00:58:14Z')).toBe('2026-11-06T21:58:14-03:00') // data-fixa: fixture sintética
   })
 })
 
@@ -203,6 +204,66 @@ describe('validateIntegrity', () => {
 
     const broken = [...results, { home: 'a', away: 'b', homeGoals: 0, awayGoals: 0 }]
     expect(() => validateIntegrity({ schedule, results: broken, remaining })).toThrow(/duplicado/)
+  })
+})
+
+describe('planCollectionRun', () => {
+  it('re-coleta no mesmo dia do corte preservando o orçamento das fontes secundárias', () => {
+    expect(planCollectionRun({ today: '2026-11-15', lastCutoffDate: '2026-11-15' }))
+      .toEqual({ collect: true, refreshSecondary: false })
+  })
+
+  it('faz a coleta completa quando existe dia novo desde o corte', () => {
+    expect(planCollectionRun({ today: '2026-11-16', lastCutoffDate: '2026-11-15' }))
+      .toEqual({ collect: true, refreshSecondary: true })
+  })
+
+  it('não coleta quando o corte empacotado é posterior ao dia corrente', () => {
+    expect(planCollectionRun({ today: '2026-11-14', lastCutoffDate: '2026-11-15' }))
+      .toEqual({ collect: false, refreshSecondary: false })
+  })
+
+  it('recusa dia fora do formato ISO', () => {
+    expect(() => planCollectionRun({ today: '15/11/2026', lastCutoffDate: '2026-11-15' }))
+      .toThrow(/Dia inválido/)
+  })
+})
+
+describe('re-coleta no mesmo dia do corte', () => {
+  it('incorpora jogo que termina depois do corte via ESPN, sem fonte secundária', () => {
+    const lastCutoffDate = '2026-11-15'
+    const cutoffUtc = `${lastCutoffDate}T02:39:43Z`
+    const plan = planCollectionRun({ today: lastCutoffDate, lastCutoffDate })
+
+    // Só as primárias rodam: o kickoff novo entra pelo scoreboard do dia.
+    expect(plan).toEqual({ collect: true, refreshSecondary: false })
+    const scoreboard = {
+      events: [{
+        id: '401999999',
+        date: `${lastCutoffDate}T22:30Z`,
+        status: { type: { state: 'post' } },
+        competitions: [{ competitors: [
+          { homeAway: 'home', team: { displayName: 'Bahia' }, score: '2' },
+          { homeAway: 'away', team: { displayName: 'Coritiba' }, score: '1' },
+        ] }],
+      }],
+    }
+    const espnMatches = parseEspnScoreboard(JSON.stringify(scoreboard), { cutoffUtc: `${lastCutoffDate}T23:59:59Z` })
+
+    // Football-Data mantém o corte conservador do dia inteiro: no mesmo dia não entrega nada.
+    const csv = [
+      'Country,League,Season,Date,Time,Home,Away,HG,AG,Res',
+      'Brazil,Serie A,2026,15/11/2026,19:30,Bahia,Coritiba,2,1,H',
+    ].join('\n')
+    expect(parseFootballDataCsv(csv, { seasonYear: 2026, cutoffDate: lastCutoffDate })).toHaveLength(0)
+
+    const existing = [{ home: 'a', away: 'b', homeGoals: 1, awayGoals: 0, kickoff: '2026-11-14T20:00Z', source: 'espn', sourceRef: 'apr-1' }]
+    const withPair = [...schedule, { ref: '005', round: 3, home: 'bahia', away: 'coritiba' }]
+    const { added } = mergeResults({ schedule: withPair, existing, incoming: espnMatches })
+
+    expect(added).toHaveLength(1)
+    expect(added[0]).toMatchObject({ home: 'bahia', away: 'coritiba', homeGoals: 2, awayGoals: 1, source: 'espn' })
+    expect(Date.parse(added[0].kickoff)).toBeGreaterThan(Date.parse(cutoffUtc))
   })
 })
 

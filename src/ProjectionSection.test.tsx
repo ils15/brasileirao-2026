@@ -87,24 +87,47 @@ describe('painel de projeções', () => {
     const valueOf = (row: HTMLElement): HTMLElement => row.querySelector<HTMLElement>('td.games-cell')!
     const pointsOf = (row: HTMLElement): string => row.querySelector('th')?.textContent ?? ''
 
-    // Rebaixamento: 22 a 27 exibem 100,00% e viram uma única faixa 22–27.
+    // Rebaixamento: pontuações consecutivas com o mesmo valor exibido colapsam
+    // numa faixa só. O rótulo vem da própria tabela — os pontos mudam a cada
+    // rodada, então nada de cravar "22–27" aqui.
     const relegationTable = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
     const relegationRows = within(relegationTable).getAllByRole('row').slice(1)
-    const certain = relegationRows.find((row) => pointsOf(row) === '22–27')!
-    expect(certain).toBeDefined()
-    expect(valueOf(certain)).toHaveTextContent('100,00%')
-    for (const points of ['22', '23', '24', '25', '26', '27']) {
-      expect(relegationRows.some((row) => pointsOf(row) === points)).toBe(false)
+    const rowData = relegationRows.map((row) => {
+      const label = pointsOf(row)
+      const [from, to = from] = label.split('–')
+      return { row, label, from: Number(from), to: Number(to), value: valueOf(row).textContent?.trim() ?? '' }
+    })
+    // Faixas em ordem crescente e sem sobreposição: uma pontuação pertence a
+    // exatamente uma linha (colapsada ou isolada).
+    for (let index = 1; index < rowData.length; index += 1) {
+      expect(rowData[index]!.from).toBeGreaterThan(rowData[index - 1]!.to)
     }
-    // Pontuações sem simulações abrem lacunas; o bloco cheio seguinte é 35–40.
-    expect(relegationRows.some((row) => pointsOf(row) === '35–40')).toBe(true)
     // Uma barra por faixa, com o intervalo no nome acessível.
     for (const row of relegationRows) expect(row.querySelectorAll('.magic-bar')).toHaveLength(1)
-    expect(certain.querySelector('.magic-bar')).toHaveAccessibleName(/^De 22 a 27 pontos: 100,00% de rebaixado para a Série B; intervalo de confiança não exibido porque pode variar entre os pontos(?:; amostra baixa)?$/)
-    // Valores que mudam continuam visíveis.
-    expect(within(relegationTable).getByText('60,00%')).toBeVisible()
-    expect(within(relegationTable).getByText('80,00%')).toBeVisible()
-    expect(within(relegationTable).getByText('20,00%')).toBeVisible()
+    // 100,00% colapsa numa faixa (ou num ponto só, se ainda não houver duas
+    // pontuações certas) e é anunciado com o próprio intervalo.
+    const certain = rowData.filter(({ value }) => value === '100,00%')
+    expect(certain.length).toBeGreaterThan(0)
+    for (const { row, label, from, to } of certain) {
+      expect(label.includes('–')).toBe(to > from)
+      // Faixa colapsada não exibe IC (pode variar entre os pontos); ponto
+      // isolado exibe IC 95% (ou declara que não há intervalo).
+      const interval = to > from
+        ? 'intervalo de confiança não exibido porque pode variar entre os pontos'
+        : '(?:IC 95% \\d{1,3},\\d{2}%–\\d{1,3},\\d{2}%|intervalo de confiança não exibido porque pode variar entre os pontos)'
+      const prefix = to > from ? `De ${from} a ${to}` : `Com ${from}`
+      expect(row.querySelector('.magic-bar')).toHaveAccessibleName(
+        new RegExp(`^${prefix} pontos: 100,00% de rebaixado para a Série B; ${interval}(?:; amostra baixa)?$`),
+      )
+    }
+    // Faixas colapsadas existem nos dois extremos (100% e valores parciais).
+    expect(rowData.some(({ from, to }) => to > from)).toBe(true)
+    // Valores que mudam continuam visíveis fora da faixa certa.
+    const partial = rowData.filter(({ value }) => /^\d{1,3},\d{2}%$/.test(value) && value !== '100,00%' && value !== '0,00%')
+    expect(partial.length).toBeGreaterThan(0)
+    for (const { row, value } of partial) {
+      expect(within(row).getByText(value)).toBeVisible()
+    }
 
     // Libertadores: pontos sem nenhum sucesso no destino mostram a ausência
     // em texto e formam uma única faixa contígua.

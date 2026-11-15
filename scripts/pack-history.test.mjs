@@ -34,7 +34,7 @@ describe('parser OpenFootball 2003–2011', () => {
 
     expect(first).toMatchObject({ round: 1, date: '2011-05-21', home: 'ceara', away: 'vasco', homeGoals: 1, awayGoals: 3 })
     expect(second).toMatchObject({ round: 1, date: '2011-05-22', home: 'palmeiras', away: 'botafogo', homeGoals: 1, awayGoals: 0 })
-    expect(first.kickoff).toBe('2011-05-21T00:00')
+    expect(first.kickoff).toBe('2011-05-21T00:00') // data-fixa: registro histórico empacotado (OpenFootball 2011)
   })
 
   it('falha em clubes desconhecidos em vez de descartar placares', () => {

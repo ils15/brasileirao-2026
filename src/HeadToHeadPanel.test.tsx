@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { HeadToHeadPanel } from './HeadToHeadPanel'
+import { getHeadToHeadSummary } from './seasonStats'
 
 describe('painel de confronto direto', () => {
   it('expõe anos desde 2003 com intervalo inicial padrão preservado em 2012', () => {
@@ -21,12 +22,18 @@ describe('painel de confronto direto', () => {
     render(<HeadToHeadPanel />)
     const timeline = screen.getByRole('list', { name: /Timeline de encontros/ })
 
+    // Encontros do período padrão (2012–2026) para o confronto padrão, direto
+    // da estrutura que a UI consome: um jogo novo do par muda a contagem.
+    const defaultPeriodMeetings = getHeadToHeadSummary('flamengo', 'palmeiras').matches
+      .filter((match) => match.seasonYear >= 2012 && match.seasonYear <= 2026)
+
+    expect(defaultPeriodMeetings.length).toBeGreaterThan(0)
     expect(within(timeline).queryByLabelText('Fonte: OpenFootball (CC0)')).not.toBeInTheDocument()
-    expect(within(timeline).getAllByRole('listitem')).toHaveLength(27)
+    expect(within(timeline).getAllByRole('listitem')).toHaveLength(defaultPeriodMeetings.length)
 
     fireEvent.click(screen.getByRole('button', { name: 'Desde 2003' }))
 
     expect(within(timeline).getAllByLabelText('Fonte: OpenFootball (CC0)').length).toBeGreaterThan(0)
-    expect(within(timeline).getAllByRole('listitem').length).toBeGreaterThan(27)
+    expect(within(timeline).getAllByRole('listitem').length).toBeGreaterThan(defaultPeriodMeetings.length)
   })
 })

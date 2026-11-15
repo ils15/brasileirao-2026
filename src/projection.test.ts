@@ -3,6 +3,7 @@ import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 import { standings } from './data'
 import { currentSeasonResults } from './currentSeasonResults'
 import { HISTORICAL_SOURCE, modelableHistoricalSeasons } from './historicalSeasons'
+import historicalSourceCode from './historicalSeasons?raw'
 import { historicalSeasons, remainingFixtures, currentClubs } from './projectionData'
 import { buildCurrentSeasonHeadToHead, buildPointsAnalysis, compareHeadToHeadForTable, isPositionInZone, runProjection, runScenarioProjection, runTemporalBacktest, simulateOneSeason, validateHistoricalSeason, ZONES } from './projection'
 
@@ -58,7 +59,12 @@ describe('projeção estática do Brasileirão 2026', () => {
     // Invariantes derivados (a suíte continua válida após atualizações pós-rodada)
     expect(currentClubs).toHaveLength(20)
     expect(HISTORICAL_SOURCE.url).toBe('https://www.football-data.co.uk/new/BR.csv')
-    expect(HISTORICAL_SOURCE.localFileMtime).toBe('2026-11-04T10:52:14-03:00')
+    // O mtime é metadado do snapshot regravado por `npm run pack:history`:
+    // validar formato ISO com offset e a coerência com o módulo gerado, nunca
+    // a data literal (que muda a cada empacotamento).
+    expect(HISTORICAL_SOURCE.localFileMtime).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/)
+    expect(Number.isFinite(Date.parse(HISTORICAL_SOURCE.localFileMtime))).toBe(true)
+    expect(historicalSourceCode).toContain(`localFileMtime: '${HISTORICAL_SOURCE.localFileMtime}'`)
     expect(HISTORICAL_SOURCE.sha256).toMatch(/^[a-f0-9]{64}$/)
     expect(remainingFixtures.length).toBeLessThanOrEqual(48)
     expect(remainingFixtures.length).toBeGreaterThan(0)

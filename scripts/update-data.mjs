@@ -28,6 +28,7 @@ import {
   mergeResults,
   parseEspnScoreboard,
   parseFootballDataCsv,
+  planCollectionRun,
   summarizeEspnFootballDataCoverage,
   readCurrentCutoff,
   renderCurrentSeasonResults,
@@ -106,10 +107,18 @@ async function main() {
   const today = new Date().toISOString().slice(0, 10)
   console.log(`Corte empacotado: ${cutoffUtc} · hoje (UTC): ${today}`)
 
-  if (today <= lastCutoffDate) {
-    console.log('Nenhum dia novo desde o corte; nada a atualizar.')
+  if (today < lastCutoffDate) {
+    console.log('Corte empacotado é posterior ao dia atual; nada a atualizar.')
     process.exit(0)
   }
+  // Mesmo dia do corte: re-coleta só as fontes primárias. Um jogo que termina
+  // depois do corte no mesmo dia UTC não pode esperar ~24h; as fontes
+  // secundárias (365scores/API Futebol BR) têm orçamento próprio e só rodam
+  // quando há dia novo.
+  const plan = planCollectionRun({ today, lastCutoffDate })
+  console.log(plan.refreshSecondary
+    ? 'Dia novo desde o corte: coleta completa, com fontes secundárias.'
+    : 'Mesmo dia do corte: re-coleta primária (ESPN/Football-Data); fontes secundárias preservadas.')
 
   // 1. Coleta: CSV Football-Data + scoreboards ESPN de cada dia desde o corte.
   const localCsv = join(snapshotsDir, 'football-data-BR.csv')
@@ -177,7 +186,7 @@ async function main() {
   //     Segue o mesmo padrão de rede das outras fontes: em dry-run local sem
   //     FETCH, usa o snapshot existente e não coleta nada.
   const networkAvailable = !dryRun || Boolean(process.env.FETCH)
-  if (networkAvailable) {
+  if (networkAvailable && plan.refreshSecondary) {
     try {
       await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`) })
     } catch (error) {

@@ -89,7 +89,7 @@ function XgBlendBlock(): JSX.Element | null {
         modelo de gols da base longa: λ final = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub>. O teste treina até a rodada
         t−1 (o xG da própria rodada nunca entra) e mede o Brier de resultado H/empate/F na rodada t, acumulado sobre
         {' '}{ablation.rounds.length} rodadas. Pesos 0 e 1 delimitam os modelos puros. A fonte é o snapshot 365scores
-        capturado em 2026-11-07T15:25:20.960Z, após o corte analítico, sem timestamp temporal por partida. Assim,
+        capturado em {advancedStatsCaptureLabel}, {advancedStatsCaptureRelation}, sem timestamp temporal por partida. Assim,
         t−1 descreve apenas a separação das rodadas neste cálculo walk-forward: não comprova que o xG de cada partida
         estivesse disponível até aquela rodada ou no corte.
       </p>

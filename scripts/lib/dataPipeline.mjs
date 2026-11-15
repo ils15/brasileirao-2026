@@ -362,6 +362,26 @@ export function readCurrentCutoff(source) {
   return utc
 }
 
+/**
+ * Decide o que uma execução deve fazer a partir do dia UTC do corte empacotado.
+ *
+ * - `today < lastCutoffDate`: o corte é posterior ao dia corrente; nada a coletar.
+ * - `today === lastCutoffDate`: re-coleta no mesmo dia. Um jogo que termina
+ *   depois do corte não pode esperar ~24h, então as fontes primárias
+ *   (ESPN/Football-Data) rodam de novo; as secundárias (365scores e API
+ *   Futebol BR) têm orçamento por ciclo e ficam preservadas.
+ * - `today > lastCutoffDate`: coleta completa, incluindo as secundárias.
+ *
+ * Função pura: é o contrato que os testes exercitam sem rede.
+ */
+export function planCollectionRun({ today, lastCutoffDate }) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(today) || !/^\d{4}-\d{2}-\d{2}$/.test(lastCutoffDate)) {
+    throw new Error(`Dia inválido para o plano de coleta: today=${today}, lastCutoffDate=${lastCutoffDate}`)
+  }
+  if (today < lastCutoffDate) return { collect: false, refreshSecondary: false }
+  return { collect: true, refreshSecondary: today > lastCutoffDate }
+}
+
 /** Serializa os módulos TS regenerados (ordem determinística). */
 export function renderCurrentSeasonResults({ results, metadata }) {
   const lines = results.map((match) =>
