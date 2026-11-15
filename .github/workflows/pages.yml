@@ -56,3 +56,30 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+  # Alarme de defasagem do bundle publicado: confere se o Pages já serve o
+  # corte analítico deste commit. É alerta, não gate — `continue-on-error` no
+  # job e no passo, e o script sempre sai com código 0. Roda depois do deploy,
+  # então não atrasa nem condiciona a publicação.
+  freshness:
+    needs: deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Compare published cutoff with the repository
+        continue-on-error: true
+        env:
+          FRESHNESS_URL: https://ils15.github.io/brasileirao-2026/
+        run: node scripts/check-deploy-freshness.mjs
