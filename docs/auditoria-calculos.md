@@ -34,7 +34,7 @@ multiplicadores neutros quando `jogos + k = 0` e preserva as médias quando
 
 - **Antes:** a metodologia exibia `leagueAverageGoals` (média do histórico puro
   2021–2025, 1.900 jogos) como se fosse a μ do modelo, mas o modelo de produção
-  calculava μ sobre histórico **+ 339 jogos de 2026 até o corte**
+  calculava μ sobre histórico **+ 341 jogos de 2026 até o corte**
   (`buildProductionTrainingMatches`).
 - **Depois:** `ProjectionResult` expõe as duas (`leagueAverageGoals` e a nova
   `trainingGoalAverages`), e a metodologia declara qual é usada pelo modelo e
@@ -119,16 +119,16 @@ comportamento é determinístico e agora está declarado aqui; não altera resul
 
 O HTML CBF arquivado exibe `04/11/2026 - 19:41`, sem fuso ou semântica de
 publicação/captura declarados; sua tabela soma 332 jogos, portanto não valida
-o pacote atual de 339 resultados nem seus placares individuais. A tabela
+o pacote atual de 341 resultados nem seus placares individuais. A tabela
 empacotada é reconciliada internamente com os resultados por testes e pela
 guarda `validateCurrentSeason`; isso não equivale a uma conferência externa
 atual com a CBF. Sem mudança de comportamento.
 
 ## 12. Corte conservador de Football-Data por string de data — **Documentado**
 
-O corte analítico é `2026-11-06T21:58:14-03:00`
-(`2026-11-07T00:58:14Z`). Registros sem fuso (Football-Data) usam comparação
-de string de data (`< 2026-11-07`), descartando o dia UTC limítrofe inteiro;
+O corte analítico é `2026-11-14T23:39:43-03:00`
+(`2026-11-15T02:39:43Z`). Registros sem fuso (Football-Data) usam comparação
+de string de data (`< 2026-11-15`), descartando o dia UTC limítrofe inteiro;
 ESPN usa timestamp com fuso explícito e o instante exato. Assimetria
 consciente, registrada no README e na UI.
 
@@ -251,7 +251,7 @@ cartões ou sorteio. É a ordenação analítica da tabela local, não uma
 classificação oficial CBF nem a aplicação completa do Art. 15. Os testes
 verificam valores/ordem derivados do pacote; não validam a classificação
 contra uma tabela CBF contemporânea nem cobrem a regra oficial de desempate.
-A cópia CBF arquivada soma 332 jogos, frente aos 339 resultados do pacote.
+A cópia CBF arquivada soma 332 jogos, frente aos 341 resultados do pacote.
 
 **Comparador da tabela simulada (`src/projection.ts`):** usa os quatro
 critérios gerais (pontos → vitórias → saldo → gols pró). Para exatamente dois
@@ -265,8 +265,8 @@ entre dois difere da regra oficial. Ela não deve ser descrita como posição
 oficial no corte.
 
 **Limitação temporal dos cartões:** o snapshot 365scores usado na projeção
-foi capturado em `2026-11-07T15:25:20.960Z`, depois do corte
-`2026-11-07T00:58:14.422Z`; não há timestamp por partida suficiente para
+foi capturado em `2026-11-07T15:25:20.960Z`, antes do corte
+`2026-11-15T02:39:43.313Z`; não há timestamp por partida suficiente para
 certificar o estado histórico. Ver §20. Não relatar totais desse snapshot ou
 estimativas derivadas como cartões oficiais existentes no corte.
 
@@ -283,7 +283,7 @@ melhoria de grande porte candidata para o modelo (Dixon-Coles §15 e Elo
 sem navegador (403 testado em nov/2026). A API pública **365scores**
 responde JSON estável, sem key, com xG por chute (`chartEvents.events[].xg`,
 competitorNum 1/2) e cartões por partida (`events[].eventType.name` +
-`competitorId`). Validada na adesão: **339/339 pares ordenados e placares
+`competitorId`). Validada na adesão: **339/341 pares ordenados e placares
 idênticos** aos resultados empacotados; ΣxG auditado contra Σgols
 (±25%) a cada coleta. **Cartões:** a fonte tem duas visões que contam
 diferente — a soma dos eventos por partida é sistematicamente ~4–6
@@ -296,8 +296,8 @@ pode ser menor que o agregado). Parser: `scripts/lib/threesixfive.mjs`;
 coleta incremental: `scripts/backfill-xg-cards.mjs`, chamado pelo updater
 (falha da fonte não bloqueia o resultado — mantém snapshot anterior).
 **Ressalva temporal para cartões:** o snapshot atualmente empacotado foi
-capturado em `2026-11-07T15:25:20.960Z`, depois do corte analítico
-`2026-11-07T00:58:14.422Z`; a validação de pares/placares não prova que os
+capturado em `2026-11-07T15:25:20.960Z`, antes do corte analítico
+`2026-11-15T02:39:43.313Z`; a validação de pares/placares não prova que os
 valores de cartões eram os mesmos no corte. Ver §20.
 
 **Blend:** λ final = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub>, com o λ em
@@ -389,14 +389,14 @@ recalibrado sob o mesmo protocolo do k de produção.
 ## 20. Disponibilidade temporal de cartões no corte 2026 — **Lacuna documentada**
 
 **Verificação de cobertura:** os cartões do snapshot 365scores
-(`src/advancedStats2026.ts`) correspondem a **339/339** pares ordenados e
+(`src/advancedStats2026.ts`) correspondem a **339/341** pares ordenados e
 placares do conjunto incluído no corte, sem partidas extras. Porém, o snapshot
-registra captura em `2026-11-07T15:25:20.960Z`, cerca de 14h27 depois do corte
-`2026-11-07T00:58:14.422Z`; os registros por partida não têm timestamp de
-captura próprio. Portanto, cobertura integral de jogos não estabelece a
+registra captura em `2026-11-07T15:25:20.960Z`, cerca de 7 dias e 11 horas antes
+do corte `2026-11-15T02:39:43.313Z`; os registros por partida não têm timestamp
+de captura próprio. Portanto, a cobertura de jogos não estabelece a
 vigência dos cartões naquele corte. O snapshot da API Futebol BR foi capturado
-em `2026-11-07T16:02:11.037Z`, tem 330/339 pares e placares correspondentes e
-não contém os outros nove; também não fornece timestamp de captura por jogo.
+em `2026-11-07T16:02:11.037Z`, tem 330/341 pares e placares correspondentes e
+não contém os outros onze; também não fornece timestamp de captura por jogo.
 Nenhum dos dois pode ser tratado como contagem de cartões contemporânea ao
 corte.
 

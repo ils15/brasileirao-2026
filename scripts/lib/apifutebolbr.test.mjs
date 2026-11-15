@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { scorers } from '../../src/data.ts'
 import { SCORERS_SOURCE, scorers2026 } from '../../src/scorers2026.ts'
 import { ANALYTICAL_CUTOFF_UTC } from '../../src/sourceMetadata.ts'
+import { scorersCaptureRelation } from '../../src/seasonFacts.ts'
 import {
   mergeMatches,
   parseMatchDetail,
@@ -188,7 +189,14 @@ describe('renderScorersModule', () => {
       fetchedAt: '2026-11-07T16:00:24.137Z',
       sha256: sourceSha,
     })
-    expect(Date.parse(SCORERS_SOURCE.fetchedAt)).toBeGreaterThan(Date.parse(ANALYTICAL_CUTOFF_UTC))
+    // A artilharia é fonte secundária: a relação declarada na UI precisa ser
+    // derivada do corte vigente. Quando a fonte não pode ser recoletada, a
+    // captura fica anterior ao corte — e a UI diz isso, em vez de afirmar
+    // atualidade que não existe.
+    const expectedRelation = Date.parse(SCORERS_SOURCE.fetchedAt) > Date.parse(ANALYTICAL_CUTOFF_UTC)
+      ? 'posterior ao corte analítico'
+      : 'anterior ao corte analítico'
+    expect(scorersCaptureRelation).toBe(expectedRelation)
     expect(moduleScorers.match(/\{ name: /g)).toHaveLength(snapshot.scorers.length)
     expect(readFileSync('src/scorers2026.ts', 'utf8')).toBe(moduleScorers)
     expect(moduleScorers).toContain("fetchedAt: '2026-11-07T16:00:24.137Z'")

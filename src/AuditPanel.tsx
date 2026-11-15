@@ -6,7 +6,7 @@ import { currentClubs, remainingFixtures } from './projectionData'
 import { validateHistoricalSeason } from './projection'
 import { validateCurrentSeason } from './seasonStats'
 import { filterAtOrBeforeAnalyticalCutoff, ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
-import { cutoffLabel, scorersCaptureLabel } from './seasonFacts'
+import { cutoffLabel, scorersCaptureLabel, scorersCaptureRelation, advancedStatsCaptureRelation } from './seasonFacts'
 import { SCORERS_SOURCE } from './data'
 import { buildXlsx, downloadFile, toCSV, toJson, type ExportSheet } from './exporters'
 
@@ -279,7 +279,7 @@ export function AuditPanel(): JSX.Element {
           </p>
           <p className="audit-note">
             A cópia CBF arquivada soma 332 jogos e não valida este pacote; placares individuais não foram conferidos jogo a jogo
-            contra a fonte oficial. Correspondência de placares 365scores ↔ pacote: {matchingAdvancedScoreCount}/{advancedMatches.length}; isso não comprova cobertura temporal por partida. O snapshot 365scores foi obtido em {ADVANCED_STATS_SOURCE.fetchedAt} (posterior ao corte e à geração do pacote); sem timestamps por partida, dados pós-corte não são garantidos como parte do corte analítico. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, posterior ao corte; sem timestamp por partida, cobertura temporal não verificada.
+            contra a fonte oficial. Correspondência de placares 365scores ↔ pacote: {matchingAdvancedScoreCount}/{advancedMatches.length}; isso não comprova cobertura temporal por partida. O snapshot 365scores foi obtido em {ADVANCED_STATS_SOURCE.fetchedAt} ({advancedStatsCaptureRelation}; anterior à geração do pacote); sem timestamps por partida, a cobertura de xG e cartões no pacote não é garantida. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.
           </p>
         </section>
 

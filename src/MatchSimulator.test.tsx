@@ -92,9 +92,12 @@ describe('simulador de confrontos (MatchSimulator)', () => {
     const diceButton = screen.getByRole('button', { name: /Sortear Rodada/i })
     await user.click(diceButton)
 
-    // Verifica que os placares foram selecionados nos cards da rodada 35
+    // Verifica que os placares foram selecionados nos cards da rodada 35 —
+    // um card por jogo pendente da rodada no snapshot de dados vigente.
+    const round35Fixtures = remainingFixtures.filter((fixture) => fixture.round === '35')
+    expect(round35Fixtures.length).toBeGreaterThan(0)
     const matchCards = screen.getAllByRole('article')
-    expect(matchCards.length).toBe(10)
+    expect(matchCards.length).toBe(round35Fixtures.length)
     expect(screen.getByRole('heading', { level: 3, name: /Impacto na Classificação & Probabilidades/i })).toBeInTheDocument()
   })
 

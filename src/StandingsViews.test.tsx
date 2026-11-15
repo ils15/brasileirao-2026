@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest'
 import { StandingsViews } from './StandingsViews'
 import { standingsFromResults } from './rounds'
 import { currentClubs } from './projectionData'
+import { advancedStatsCaptureRelation } from './seasonFacts'
+import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
 describe('aba classificações', () => {
   it('abre na vista geral com as 20 linhas e colunas completas', () => {
@@ -67,7 +69,7 @@ describe('aba classificações', () => {
     expect(limitation).toHaveTextContent(/Art\. 15 — norma oficial:.*confronto direto.*menos cartões vermelhos.*menos cartões amarelos.*sorteio/)
     expect(limitation).toHaveTextContent(/para três ou mais, H2H não se aplica/)
     expect(limitation).toHaveTextContent(/Nesta tabela:.*pontos.*nome do clube; não aplica integralmente o Art\. 15 nem representa uma classificação oficial da CBF/)
-    expect(limitation).toHaveTextContent(/Limite temporal:.*posterior ao corte analítico 2026-11-07T00:58:14\.422Z.*não tem cobertura temporal por partida suficiente.*naquele corte/)
+    expect(limitation).toHaveTextContent(new RegExp(`Limite temporal:.*${advancedStatsCaptureRelation} ${ANALYTICAL_CUTOFF_UTC}.*não tem cobertura temporal por partida suficiente.*naquele corte`))
     expect(limitation.compareDocumentPosition(viewTabs) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 

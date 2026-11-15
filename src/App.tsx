@@ -15,7 +15,7 @@ import { HeadToHeadPanel } from './HeadToHeadPanel'
 import { espnLogoUrlByClub, currentClubs } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
-import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, updateClock } from './seasonFacts'
+import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, updateClock } from './seasonFacts'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const ESPN_URL = 'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols'
@@ -435,8 +435,8 @@ function App(): JSX.Element {
                 </nav>
                 <details className="clean-disclosure">
                   <summary><InfoIcon className="inline-icon" /> Fontes e critérios da artilharia</summary>
-                  <p className="scorers-caption">Lista informativa da temporada; captura pós-corte, não representa a artilharia no corte.</p>
-                  <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {scorersCaptureLabel} · posterior ao corte analítico; sem timestamp por partida, cobertura temporal não verificada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
+                  <p className="scorers-caption">Lista informativa da temporada; captura declarada, não representa a artilharia no corte.</p>
+                  <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {scorersCaptureLabel} · {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
                   <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
                 </details>
                 <a className="text-link" href={ESPN_URL} target="_blank" rel="noreferrer">Ver estatísticas na ESPN <span aria-hidden="true">↗</span></a>
@@ -503,7 +503,7 @@ function App(): JSX.Element {
         <div className="footer-brand"><BrandMark /><strong>BRASILEIRÃO <span>2026</span></strong></div>
         <p>Snapshot estático · Simulações em segundo plano · Sem dados ao vivo.</p>
         <div className="footer-sources"><a href={CBF_URL} target="_blank" rel="noreferrer"><img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} /> CBF · Página atual de classificação ↗</a><a href={ESPN_URL} target="_blank" rel="noreferrer">ESPN · Consulta externa ↗</a></div>
-        <small>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; o HTML CBF arquivado soma 332 jogos e não valida o conjunto. A página atual consultada em 08/11 é pós-corte. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, posterior ao corte; sem timestamp por partida, cobertura temporal não verificada.</small>
+        <small>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; o HTML CBF arquivado soma 332 jogos e não valida o conjunto. A página atual consultada em 08/11 é pós-corte. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.</small>
       </footer>
     </>
   )

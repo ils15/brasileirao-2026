@@ -1,5 +1,6 @@
 import { currentSeasonResults, CURRENT_SEASON_SOURCE } from './currentSeasonResults'
 import { SCORERS_SOURCE } from './scorers2026'
+import { ADVANCED_STATS_SOURCE } from './advancedStats2026'
 import { currentClubs, remainingFixtures, historicalSeasons } from './projectionData'
 import { modelableHistoricalSeasons } from './historicalSeasons'
 import { cbfOfficialSchedule } from './cbfOfficialSchedule'
@@ -63,6 +64,24 @@ export const cutoffSummaryLine = (() => {
 
 /** Captura da fonte de artilharia; não implica cobertura por partida até esse horário. */
 export const scorersCaptureLabel = formatUtcIso(SCORERS_SOURCE.fetchedAt)
+
+/**
+ * Relação declarada entre a captura de uma fonte secundária e o corte vigente.
+ * O corte avança a cada rodada; quando a fonte secundária não pode ser
+ * recoletada, a captura fica anterior ao corte e a UI precisa dizer isso em
+ * vez de afirmar uma defasagem que não existe.
+ */
+export function captureRelation(fetchedAt: string): 'anterior ao corte analítico' | 'posterior ao corte analítico' {
+  return Date.parse(fetchedAt) > Date.parse(ANALYTICAL_CUTOFF_UTC)
+    ? 'posterior ao corte analítico'
+    : 'anterior ao corte analítico'
+}
+
+export const scorersCaptureRelation = captureRelation(SCORERS_SOURCE.fetchedAt)
+
+/** Captura e relação da fonte de xG/cartões (365scores). */
+export const advancedStatsCaptureLabel = formatUtcIso(ADVANCED_STATS_SOURCE.fetchedAt)
+export const advancedStatsCaptureRelation = captureRelation(ADVANCED_STATS_SOURCE.fetchedAt)
 
 /** Relógio de atualização: quando os dados foram cortados e quando o site se atualiza de novo. */
 export const updateClock = {

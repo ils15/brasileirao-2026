@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
 import { currentClubs } from './projectionData'
-import { cutoffSummaryLine } from './seasonFacts'
+import { cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation } from './seasonFacts'
 import { scorers, SCORERS_SOURCE } from './data'
 
 describe('painel do Brasileirão 2026', () => {
@@ -200,7 +200,7 @@ describe('painel do Brasileirão 2026', () => {
     ]))
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
     expect(within(sourceSummary).getByText(cutoffSummaryLine)).toBeInTheDocument()
-    expect(screen.getByText(/Corte analítico dos resultados: 06\/11\/2026 · 21:58:14 BRT/)).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`Corte analítico dos resultados: ${cutoffLabel}`))).toBeInTheDocument()
     expect(screen.getByText(/o HTML CBF arquivado soma 332 jogos e não valida o conjunto/i)).toBeInTheDocument()
     expect(screen.queryByText(/snapshot CBF de 04\/11\/2026 às 13:00/)).not.toBeInTheDocument()
   })
@@ -217,8 +217,8 @@ describe('painel do Brasileirão 2026', () => {
     render(<App />)
 
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
-    expect(within(sourceSummary).getByText('Resultados e análises até 06/11/2026 · 21:58:14 BRT · nova verificação automática a cada 2 horas')).toBeInTheDocument()
-    expect(screen.getByText(/captura 07\/11\/2026 · 16:00:24 UTC · posterior ao corte analítico; sem timestamp por partida, cobertura temporal não verificada/)).toBeInTheDocument()
+    expect(within(sourceSummary).getByText(cutoffSummaryLine)).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`captura ${scorersCaptureLabel} · ${scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada`))).toBeInTheDocument()
   })
 
   it('pesquisa a classificação pelo nome do clube', async () => {

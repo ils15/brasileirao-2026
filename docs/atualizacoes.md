@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-07T00:58:14.422Z` (`2026-11-06T21:58:14.422-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-15T02:39:43.313Z` (`2026-11-14T23:39:43.313-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -17,3 +17,14 @@ Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`
 ## 2026-11-07 — 1 novo(s) resultado(s)
 
 - vitoria 0–3 fluminense (espn, 401841302)
+
+## 2026-11-15 — 2 novo(s) resultado(s)
+
+- mirassol 0–0 atletico-mg (espn, 401841311) — rodada 35
+- chapecoense 0–2 vasco (espn, 401841175) — rodada 21 (jogo atrasado), Arena Condá; gols de Bruno Duarte (36') e (81')
+
+Corte do pacote: `2026-11-15T02:39:43Z` (`2026-11-14T23:39:43-03:00`); gerado em `2026-11-15T02:39:43.313Z`.
+Resultados de 2026: 339 → 341; pendentes: 41 → 39 (341 disputados + 39 pendentes = 380 do calendário CBF).
+Crosscheck 2026 da coleta: 20 clubes ESPN × 20 clubes valorfinal, 0 divergências em ambas as fontes.
+`npm run crosscheck` (camada histórica 2003–2011, inalterada): 1.898 partidas comparadas, 9 divergências abertas (2006: 2; 2007: 6; 2009: 1) e 2 ambiguidades de identidade — todas pré-existentes, nenhum placar canônico alterado.
+Fontes secundárias não recoletadas nesta execução (sem `API_FUTEBOL_BR_KEY` e com o guard de xG recusando o refresh): artilharia (captura `2026-11-07T16:00:24.137Z`) e 365scores (captura `2026-11-07T15:25:20.960Z`) ficaram **anteriores** ao novo corte. A UI agora deriva essa relação dos dados em vez de afirmar captura pós-corte.

@@ -12,29 +12,35 @@ import { getHeadToHeadSummary } from './seasonStats'
 describe('painel da próxima rodada', () => {
   it('abre na menor rodada pendente com λ e probabilidades por jogo', () => {
     render(<NextRoundPanel />)
-    // A menor rodada pendente: '21 adiado' tem 1 jogo (ordenação por número)
+    // Menor rodada pendente do snapshot vigente, derivada dos dados (hoje: 35).
+    const pendingRounds = [...new Set(remainingFixtures.map(({ round }) => round))].sort(
+      (left, right) => Number.parseInt(left, 10) - Number.parseInt(right, 10),
+    )
+    const firstRound = pendingRounds[0]!
+    const firstRoundFixtures = remainingFixtures.filter(({ round }) => round === firstRound)
     const select = screen.getByRole('combobox', { name: 'Selecionar rodada pendente' })
-    expect(select).toHaveValue('21 adiado')
-    expect(within(select).getByRole('option', { name: /Rodada 21 \(adiado\) · 1 jogos?/ })).toBeInTheDocument()
+    expect(select).toHaveValue(firstRound)
+    expect(within(select).getByRole('option', { name: new RegExp(`Rodada ${firstRound} · ${firstRoundFixtures.length} jogos?`) })).toBeInTheDocument()
 
     const matches = screen.getAllByRole('article')
-    expect(matches).toHaveLength(1)
+    expect(matches).toHaveLength(firstRoundFixtures.length)
     const match = matches[0]!
     // λ explícito para os dois lados
     expect(within(match).getAllByText(/^λ /)).toHaveLength(2)
     // Barra com rótulo acessível contendo as três probabilidades
-    const fixture = remainingFixtures.find(({ round }) => round === '21 adiado')!
+    const fixture = firstRoundFixtures[0]!
     const { probabilities } = matchProbabilities(fixture.home, fixture.away)
     const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
     expect(within(match).getByRole('img')).toHaveAttribute('aria-label', expect.stringContaining(percent.format(probabilities[0])))
   })
 
-  it('troca de rodada e mostra os 10 jogos da rodada 35', async () => {
+  it('troca de rodada e mostra os jogos da rodada 35', async () => {
     const user = userEvent.setup()
     render(<NextRoundPanel />)
     await user.selectOptions(screen.getByRole('combobox', { name: 'Selecionar rodada pendente' }), '35')
-    expect(screen.getAllByRole('article')).toHaveLength(10)
-    expect(screen.getAllByRole('img')).toHaveLength(10)
+    const round35Fixtures = remainingFixtures.filter(({ round }) => round === '35')
+    expect(screen.getAllByRole('article')).toHaveLength(round35Fixtures.length)
+    expect(screen.getAllByRole('img')).toHaveLength(round35Fixtures.length)
     // Cada artigo tem os dois λ e a nota de metodologia segue no painel
     for (const match of screen.getAllByRole('article')) {
       expect(within(match).getAllByText(/^λ /)).toHaveLength(2)

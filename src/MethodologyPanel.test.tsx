@@ -6,6 +6,8 @@ import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { expectedGoalsBreakdown } from './matchModel'
 import { productionTrainingMatches } from './modelBacktest'
+import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './seasonFacts'
+import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
 describe('aba metodologia & validação', () => {
   it('apresenta backtest, ablação e as limitações do modelo', { timeout: 30_000 }, () => {
@@ -33,7 +35,7 @@ describe('aba metodologia & validação', () => {
     expect(implementedComparator).toHaveTextContent(/cartões reais disponíveis no snapshot 365scores.*cartões projetados pela taxa por jogo, não simulados partida a partida/i)
     expect(implementedComparator).toHaveTextContent(/não reproduz integralmente o Art\. 15 nem certifica uma classificação oficial/i)
     const temporalLimit = screen.getByText('Limite temporal:').closest('p')!
-    expect(temporalLimit).toHaveTextContent(/snapshot 365scores.*após o corte analítico 2026-11-07T00:58:14\.422Z.*não tem cobertura temporal por partida suficiente.*não certificam o desempate oficial no corte/i)
+    expect(temporalLimit).toHaveTextContent(new RegExp(`snapshot 365scores.*${advancedStatsCaptureLabel}.*${advancedStatsCaptureRelation}.*${ANALYTICAL_CUTOFF_UTC}.*não tem cobertura temporal por partida suficiente.*não certificam o desempate oficial no corte`, 'i'))
   })
 
   it('apresenta os quatro modelos de ablação em cada dobra temporal sem sugerir ganho consistente', () => {

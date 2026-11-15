@@ -87,24 +87,24 @@ describe('painel de projeções', () => {
     const valueOf = (row: HTMLElement): HTMLElement => row.querySelector<HTMLElement>('td.games-cell')!
     const pointsOf = (row: HTMLElement): string => row.querySelector('th')?.textContent ?? ''
 
-    // Rebaixamento: 21, 22 e 23 exibem 100,00% e viram uma única faixa 21–23.
+    // Rebaixamento: 22 a 27 exibem 100,00% e viram uma única faixa 22–27.
     const relegationTable = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
     const relegationRows = within(relegationTable).getAllByRole('row').slice(1)
-    const certain = relegationRows.find((row) => pointsOf(row) === '21–23')!
+    const certain = relegationRows.find((row) => pointsOf(row) === '22–27')!
     expect(certain).toBeDefined()
     expect(valueOf(certain)).toHaveTextContent('100,00%')
-    for (const points of ['21', '22', '23']) {
+    for (const points of ['22', '23', '24', '25', '26', '27']) {
       expect(relegationRows.some((row) => pointsOf(row) === points)).toBe(false)
     }
-    // 24 e 25 não foram observados, então a próxima faixa de 100% começa em 26.
-    expect(relegationRows.some((row) => pointsOf(row) === '26–29')).toBe(true)
+    // Pontuações sem simulações abrem lacunas; o bloco cheio seguinte é 35–40.
+    expect(relegationRows.some((row) => pointsOf(row) === '35–40')).toBe(true)
     // Uma barra por faixa, com o intervalo no nome acessível.
     for (const row of relegationRows) expect(row.querySelectorAll('.magic-bar')).toHaveLength(1)
-    expect(certain.querySelector('.magic-bar')).toHaveAccessibleName(/^De 21 a 23 pontos: 100,00% de rebaixado para a Série B; intervalo de confiança não exibido porque pode variar entre os pontos(?:; amostra baixa)?$/)
+    expect(certain.querySelector('.magic-bar')).toHaveAccessibleName(/^De 22 a 27 pontos: 100,00% de rebaixado para a Série B; intervalo de confiança não exibido porque pode variar entre os pontos(?:; amostra baixa)?$/)
     // Valores que mudam continuam visíveis.
-    expect(within(relegationTable).getByText('28,57%')).toBeVisible()
-    expect(within(relegationTable).getByText('33,33%')).toBeVisible()
-    expect(within(relegationTable).getByText('22,22%')).toBeVisible()
+    expect(within(relegationTable).getByText('60,00%')).toBeVisible()
+    expect(within(relegationTable).getByText('80,00%')).toBeVisible()
+    expect(within(relegationTable).getByText('20,00%')).toBeVisible()
 
     // Libertadores: pontos sem nenhum sucesso no destino mostram a ausência
     // em texto e formam uma única faixa contígua.
