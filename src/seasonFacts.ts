@@ -79,6 +79,14 @@ export function captureRelation(fetchedAt: string): 'anterior ao corte analític
 
 export const scorersCaptureRelation = captureRelation(SCORERS_SOURCE.fetchedAt)
 
+/**
+ * Relação entre a cópia CBF arquivada e o pacote, derivada do metadata da fonte.
+ * O pacote não guarda o total de jogos que a tabela CBF imprime, então a UI
+ * descreve a relação (marca exibida + ausência de reconciliação) em vez de
+ * citar uma contagem que a próxima coleta invalidaria.
+ */
+export const cbfArchiveProvenance = `a cópia CBF arquivada (${CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp}, fuso não declarado) não é reconciliada com os resultados empacotados`
+
 /** Captura e relação da fonte de xG/cartões (365scores). */
 export const advancedStatsCaptureLabel = formatUtcIso(ADVANCED_STATS_SOURCE.fetchedAt)
 export const advancedStatsCaptureRelation = captureRelation(ADVANCED_STATS_SOURCE.fetchedAt)

@@ -6,7 +6,7 @@ import { currentClubs, remainingFixtures } from './projectionData'
 import { validateHistoricalSeason } from './projection'
 import { validateCurrentSeason } from './seasonStats'
 import { filterAtOrBeforeAnalyticalCutoff, ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
-import { cutoffLabel, scorersCaptureLabel, scorersCaptureRelation, advancedStatsCaptureRelation } from './seasonFacts'
+import { cutoffLabel, scorersCaptureLabel, scorersCaptureRelation, advancedStatsCaptureRelation, cbfArchiveProvenance } from './seasonFacts'
 import { SCORERS_SOURCE } from './data'
 import { buildXlsx, downloadFile, toCSV, toJson, type ExportSheet } from './exporters'
 
@@ -70,7 +70,7 @@ const datasets: DatasetDefinition[] = [
   {
     id: 'classificacao',
     title: 'Classificação derivada do pacote (20 clubes)',
-    description: 'Agregados reconciliados internamente; a cópia CBF arquivada soma 332 jogos e não valida o pacote atual.',
+    description: `Agregados reconciliados internamente; ${cbfArchiveProvenance}.`,
     filename: 'brasileirao-2026-classificacao',
     build: () => ({
       name: 'Classificação',
@@ -258,7 +258,7 @@ export function AuditPanel(): JSX.Element {
               timestamp={CURRENT_SEASON_SOURCE.espn.collectedAt} hash={CURRENT_SEASON_SOURCE.espn.sha256} />
             <SourceCard title="CBF (HTML de classificação arquivado)" url={CURRENT_SEASON_SOURCE.cbfStandings.url}
               timestamp={CURRENT_SEASON_SOURCE.cbfStandings.collectedAt} hash={CURRENT_SEASON_SOURCE.cbfStandings.sha256}
-              note="Exibe 04/11/2026 - 19:41 (fuso e significado não declarados); soma 332 jogos. A captura individual não foi registrada e o arquivo não valida o pacote nem placares individuais." />
+              note={`Exibe ${CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp} (fuso e significado não declarados); a captura individual não foi registrada e o arquivo não valida o pacote nem placares individuais.`} />
             <SourceCard title="Football-Data (histórico empacotado)" url={HISTORICAL_SOURCE.url}
               timestamp={HISTORICAL_SOURCE.localFileMtime} timestampLabel="mtime do arquivo" hash={HISTORICAL_SOURCE.sha256}
               note="Última modificação local; não comprova captura ou coleta." />
@@ -278,7 +278,7 @@ export function AuditPanel(): JSX.Element {
             RSSSF valida uma partida amostral por temporada, não tabelas finais de 2003–2011. 2004: RSSSF lista Figueirense com 45 jogos na tabela, mas a lista de resultados e OpenFootball somam 46; a dedução de 24 pontos do São Caetano não é apresentada como tabela oficial no app. 2005: Brasiliense–Vasco em 24/04 é 2–2 no placar jogado OpenFootball; RSSSF registra 0–1 administrativo, sem substituir o placar da fonte. Os 11 pares de replay de 2005 permanecem como partidas distintas.
           </p>
           <p className="audit-note">
-            A cópia CBF arquivada soma 332 jogos e não valida este pacote; placares individuais não foram conferidos jogo a jogo
+            A cópia CBF arquivada não valida este pacote; placares individuais não foram conferidos jogo a jogo
             contra a fonte oficial. Correspondência de placares 365scores ↔ pacote: {matchingAdvancedScoreCount}/{advancedMatches.length}; isso não comprova cobertura temporal por partida. O snapshot 365scores foi obtido em {ADVANCED_STATS_SOURCE.fetchedAt} ({advancedStatsCaptureRelation}; anterior à geração do pacote); sem timestamps por partida, a cobertura de xG e cartões no pacote não é garantida. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.
           </p>
         </section>

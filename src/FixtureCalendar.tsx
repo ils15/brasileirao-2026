@@ -2,6 +2,7 @@ import { useMemo, useState, type JSX } from 'react'
 import { HomeIcon, AwayIcon, BallIcon } from './icons'
 import { ScoreLine } from './ScoreLine'
 import { currentClubs, remainingFixtures } from './projectionData'
+import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './seasonFacts'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type VenueStats } from './seasonStats'
 import { matchProbabilities } from './matchProbabilities'
 
@@ -146,7 +147,7 @@ export function FixtureCalendar(): JSX.Element {
           )
         })}
       </ol>
-      <p className="fixture-calendar-note">Sem índice de dificuldade: adversários, mando e forças casa/fora são explícitos. Probabilidades de V/E/D são do modelo, não odds. O desempate simulado (não é classificação oficial) usa pontos → vitórias → saldo → gols pró; confronto direto entre dois clubes; disciplina estimada em grupos de três ou mais e sorteio residual. O snapshot 365scores de 07/11/2026 15:25:20 UTC é pós-corte e não tem timestamp por partida; não comprova cartões no corte nem aplicação integral do Art. 15.</p>
+      <p className="fixture-calendar-note">Sem índice de dificuldade: adversários, mando e forças casa/fora são explícitos. Probabilidades de V/E/D são do modelo, não odds. O desempate simulado (não é classificação oficial) usa pontos → vitórias → saldo → gols pró; confronto direto entre dois clubes; disciplina estimada em grupos de três ou mais e sorteio residual. O snapshot 365scores de {advancedStatsCaptureLabel} é {advancedStatsCaptureRelation} e não tem timestamp por partida; não comprova cartões no corte nem aplicação integral do Art. 15.</p>
     </section>
   )
 }

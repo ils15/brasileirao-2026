@@ -1,6 +1,7 @@
 import { useMemo, useState, type JSX } from 'react'
 import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonResults'
 import { currentClubs, espnLogoUrl } from './projectionData'
+import { cbfOfficialSchedule } from './cbfOfficialSchedule'
 import { cutoffLabel } from './seasonFacts'
 import { ScoreLine } from './ScoreLine'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
@@ -17,6 +18,23 @@ const SOURCE_LABELS: Record<CurrentSeasonMatch['source'], string> = {
   'football-data': 'Football-Data',
   espn: 'ESPN',
 }
+
+/**
+ * Caso editorial do log: a partida cujo registro ESPN no pacote informa
+ * data/hora anterior à data que a tabela CBF lista para a rodada. Ref, rodada e
+ * kickoff são lidos do pacote; a nota não crava data, hora nem contagem, então
+ * continua verdadeira depois de qualquer coleta.
+ */
+const KICKOFF_DIVERGENCE_PAIR = { home: 'chapecoense', away: 'mirassol' } as const
+
+const kickoffDivergenceNote = ((): string | null => {
+  const { home, away } = KICKOFF_DIVERGENCE_PAIR
+  const fixture = cbfOfficialSchedule.find(([, , fixtureHome, fixtureAway]) => fixtureHome === home && fixtureAway === away)
+  const record = currentSeasonResults.find((match) => match.home === home && match.away === away)
+  if (!fixture || !record) return null
+  const [cbfRef, round] = fixture
+  return `REF ${cbfRef} (rodada ${round}): o registro ${SOURCE_LABELS[record.source]} do pacote informa ${record.kickoff} como data/hora na fonte; a tabela básica CBF empacotada não traz data/hora e o pacote não confirma o kickoff oficial.`
+})()
 
 type ResultRow = CurrentSeasonMatch
 
@@ -81,7 +99,7 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
       <p className="table-note">
         Todos os {cutoffMatches.length} resultados até o corte analítico ({cutoffLabel}), com fonte de cada placar.
         Data/hora na fonte não é programação CBF: ESPN usa UTC; Football-Data não declara fuso. A Tabela Básica prevê datas sujeitas a mudança.
-        REF 340: CBF lista 04/11 ou 05/11; o registro ESPN local informa 2026-11-03T22:30Z (19:30 BRT). O pacote não confirma o kickoff oficial.
+        {kickoffDivergenceNote && <> {kickoffDivergenceNote}</>}
         Cada linha mantém sua referência original (linha do CSV ou evento ESPN).
       </p>
 

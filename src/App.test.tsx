@@ -3,10 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
 import { currentClubs } from './projectionData'
-import { cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation } from './seasonFacts'
+import { cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, cbfArchiveProvenance } from './seasonFacts'
 import { scorers, SCORERS_SOURCE } from './data'
 import { scorers2026 } from './scorers2026'
-import { CURRENT_SEASON_SOURCE } from './currentSeasonResults'
+import { CURRENT_SEASON_SOURCE, currentSeasonResults } from './currentSeasonResults'
+import { cbfOfficialSchedule } from './cbfOfficialSchedule'
 
 /** Escapa um literal do pacote para uso em RegExp (o teste não crava o texto). */
 function escapeRegExp(value: string): string {
@@ -162,7 +163,8 @@ describe('painel do Brasileirão 2026', () => {
     expect(g6Note).toBeVisible()
     expect(zoneLegend).toHaveAttribute('aria-describedby', g6Note.id)
     expect(screen.getByText((_, element) => element?.classList.contains('leader-stat-caption') ?? false)).toHaveTextContent('Classificação derivada do pacote')
-    expect(screen.getByText(/classificação calculada dos resultados do pacote; a cópia CBF arquivada soma 332 jogos e não valida este conjunto/i)).toBeInTheDocument()
+    // Prosa de proveniência derivada do metadata da fonte: sem contagem fixa.
+    expect(screen.getByText(new RegExp(`classificação calculada dos resultados do pacote; ${escapeRegExp(cbfArchiveProvenance)}`, 'i'))).toBeInTheDocument()
     expect(screen.queryByText('Classificação oficial')).not.toBeInTheDocument()
   })
 
@@ -208,7 +210,7 @@ describe('painel do Brasileirão 2026', () => {
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
     expect(within(sourceSummary).getByText(cutoffSummaryLine)).toBeInTheDocument()
     expect(screen.getByText(new RegExp(`Corte analítico dos resultados: ${cutoffLabel}`))).toBeInTheDocument()
-    expect(screen.getByText(/o HTML CBF arquivado soma 332 jogos e não valida o conjunto/i)).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`não uma classificação CBF oficial; ${escapeRegExp(cbfArchiveProvenance)}`))).toBeInTheDocument()
     expect(screen.queryByText(/snapshot CBF de 04\/11\/2026 às 13:00/)).not.toBeInTheDocument()
   })
 
@@ -295,10 +297,13 @@ describe('painel do Brasileirão 2026', () => {
     await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
     expect(screen.getByRole('columnheader', { name: 'Data/hora na fonte' })).toBeInTheDocument()
     const eventDateNote = screen.getByText(/Todos os .* resultados até o corte analítico/)
-    expect(eventDateNote.textContent).toContain('REF 340')
-    expect(eventDateNote.textContent).toContain('04/11 ou 05/11')
-    expect(eventDateNote.textContent).toContain('2026-11-03T22:30Z') // data-fixa: registro do pacote (kickoff ESPN já disputado)
-    expect(eventDateNote.textContent).toContain('O pacote não confirma o kickoff oficial.')
+    // Ref, rodada e kickoff da nota vêm do pacote: nada de data fixa.
+    const cbfFixture = cbfOfficialSchedule.find(([, , home, away]) => home === 'chapecoense' && away === 'mirassol')!
+    const espnRecord = currentSeasonResults.find((match) => match.home === 'chapecoense' && match.away === 'mirassol')!
+    expect(eventDateNote.textContent).toContain(`REF ${cbfFixture[0]}`)
+    expect(eventDateNote.textContent).toContain(`rodada ${cbfFixture[1]}`)
+    expect(eventDateNote.textContent).toContain(espnRecord.kickoff)
+    expect(eventDateNote.textContent).toContain('não confirma o kickoff oficial')
 
     const tiebreakNote = screen.getByText(/O desempate simulado \(não é classificação oficial\)/)
     expect(tiebreakNote.textContent).toContain('nem aplicação integral do Art. 15')
