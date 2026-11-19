@@ -3,6 +3,7 @@ import { currentClubs, remainingFixtures } from './projectionData'
 import { Crest } from './Crest'
 import { matchProbabilities } from './matchProbabilities'
 import { seasonFacts } from './seasonFacts'
+import { EmptyState } from './EmptyState'
 
 /**
  * Painel da próxima rodada: jogos pendentes da rodada selecionada com os λ
@@ -89,8 +90,9 @@ export function NextRoundPanel(): JSX.Element {
         </label>
       )}
 
-      <div className="next-round-grid">
-        {group?.fixtures.map((fixture) => {
+      {group ? (
+        <div className="next-round-grid">
+        {group.fixtures.map((fixture) => {
           const home = clubNames.get(fixture.home) ?? fixture.home
           const away = clubNames.get(fixture.away) ?? fixture.away
           const { expected, probabilities } = matchProbabilities(fixture.home, fixture.away)
@@ -109,7 +111,13 @@ export function NextRoundPanel(): JSX.Element {
             </article>
           )
         })}
-      </div>
+        </div>
+      ) : (
+        <EmptyState
+          title="Sem rodadas pendentes"
+          description="Todas as partidas do calendário empacotado já estão no corte analítico, então não há confronto pendente para projetar."
+        />
+      )}
       <details className="clean-disclosure">
         <summary>Como λ e as barras H/E/F são calculados</summary>
         <p className="table-note">

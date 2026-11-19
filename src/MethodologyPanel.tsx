@@ -12,6 +12,7 @@ import { historicalFacts } from './historicalFacts'
 import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
 import type { ProjectionStatus } from './ProjectionContext'
+import { AsyncStatus, SIMULATIONS_LOADING, SIMULATIONS_UNAVAILABLE } from './AsyncStatus'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const FIXTURES_URL = 'https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/Tabela_BA_sica_Brasileiro_SA_rie_A_2026_d64996b4d8.pdf'
@@ -187,12 +188,13 @@ export function MethodologyPanel({ result, status, onRetry }: MethodologyPanelPr
         <span className="section-index">06 <span>/ MÉTODO</span></span>
       </div>
 
-      {status === 'loading' && <p className="projection-status" role="status">Calculando validação em segundo plano…</p>}
+      {status === 'loading' && <AsyncStatus phase="loading" message={SIMULATIONS_LOADING} />}
       {status === 'error' && (
-        <div className="projection-status projection-error" role="alert">
-          <p>Não foi possível executar as simulações neste navegador. As estatísticas de validação não serão substituídas por estimativa manual.</p>
-          <button className="filter-button" type="button" onClick={onRetry}>Tentar novamente</button>
-        </div>
+        <AsyncStatus
+          phase="error"
+          message={`${SIMULATIONS_UNAVAILABLE} As estatísticas de validação não serão substituídas por estimativa manual.`}
+          onRetry={onRetry}
+        />
       )}
 
       {result && (

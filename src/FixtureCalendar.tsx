@@ -5,6 +5,7 @@ import { currentClubs, remainingFixtures } from './projectionData'
 import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type VenueStats } from './seasonStats'
 import { matchProbabilities } from './matchProbabilities'
+import { EmptyState } from './EmptyState'
 
 const pointsPerMatchFormat = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -82,6 +83,7 @@ export function FixtureCalendar(): JSX.Element {
         <h3>Jogos de {selectedClub.club}</h3>
         <span>{fixtures.length} pendentes · {fixtures.filter(({ home }) => home === selectedClub.id).length} em casa · {fixtures.filter(({ away }) => away === selectedClub.id).length} fora</span>
       </div>
+      {fixtures.length > 0 ? (
       <ol className="remaining-fixture-list">
         {fixtures.map((fixture) => {
           const home = clubNames.get(fixture.home) ?? fixture.home
@@ -151,6 +153,12 @@ export function FixtureCalendar(): JSX.Element {
           )
         })}
       </ol>
+      ) : (
+        <EmptyState
+          title={`Sem jogos pendentes para ${selectedClub.club}`}
+          description="O calendário empacotado não tem confronto restante deste clube no corte analítico."
+        />
+      )}
       <details className="clean-disclosure">
         <summary>Critérios do calendário, das probabilidades e do desempate simulado</summary>
         <p className="fixture-calendar-note">Sem índice de dificuldade: adversários, mando e forças casa/fora são explícitos. Probabilidades de V/E/D são do modelo, não odds. O desempate simulado (não é classificação oficial) usa pontos → vitórias → saldo → gols pró; confronto direto entre dois clubes; disciplina estimada em grupos de três ou mais e sorteio residual. O snapshot 365scores de {advancedStatsCaptureLabel} é {advancedStatsCaptureRelation} e não tem timestamp por partida; não comprova cartões no corte nem aplicação integral do Art. 15.</p>

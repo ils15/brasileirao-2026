@@ -4,6 +4,7 @@ import { ScorersPanel } from './ScorersPanel'
 import { InfoIcon } from './icons'
 import { ZoneLegend } from './ZoneLegend'
 import { ProjectionProvider } from './ProjectionContext'
+import { AsyncStatus } from './AsyncStatus'
 import { espnLogoUrlByClub, currentClubs } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
@@ -22,7 +23,7 @@ const ProjecoesTab = lazy(() => import('./ProjecoesTab').then((module) => ({ def
 const MetodologiaTab = lazy(() => import('./MetodologiaTab').then((module) => ({ default: module.MetodologiaTab })))
 
 function TabLoading({ label }: { label: string }): JSX.Element {
-  return <p className="projection-status" role="status">Carregando {label}…</p>
+  return <AsyncStatus phase="loading" message={`Carregando ${label}…`} />
 }
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
@@ -81,6 +82,17 @@ function getSavedTheme(): ThemeMode {
 function parseTheme(value: string): ThemeMode {
   if (value === 'light' || value === 'dark') return value
   return 'system'
+}
+
+/**
+ * Marcador de aba pronta: fica dentro do Suspense, então só monta quando o
+ * chunk lazy resolve — é o sinal que tira o `aria-busy` do tabpanel.
+ */
+function TabReady({ tab, onReady }: { tab: TabId; onReady: (tab: TabId) => void }): null {
+  useEffect(() => {
+    onReady(tab)
+  }, [onReady, tab])
+  return null
 }
 
 const filters: { id: ClubFilter; label: string }[] = [
@@ -154,6 +166,8 @@ function App(): JSX.Element {
   const [theme, setTheme] = useState<ThemeMode>(getSavedTheme)
   const [activeTab, setActiveTab] = useState<TabId>('visao-geral')
   const [visitedTabs, setVisitedTabs] = useState<ReadonlySet<TabId>>(() => new Set<TabId>(['visao-geral']))
+  // `visao-geral` é síncrona: já nasce pronta. As lazy entram quando o marcador monta.
+  const [readyTabs, setReadyTabs] = useState<ReadonlySet<TabId>>(() => new Set<TabId>(['visao-geral']))
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const leader = standings[0]!
   const leaderClub = currentClubs[0]!
@@ -205,6 +219,11 @@ function App(): JSX.Element {
   }, [activeTab])
 
   const isTabMounted = (tab: TabId): boolean => tab === activeTab || visitedTabs.has(tab)
+  /** Aba ativa sem chunk montado fica `aria-busy`; aba oculta não declara estado. */
+  const isTabBusy = (tab: TabId): boolean | undefined => (activeTab === tab ? !readyTabs.has(tab) : undefined)
+  const markTabReady = useCallback((tab: TabId) => {
+    setReadyTabs((current) => (current.has(tab) ? current : new Set(current).add(tab)))
+  }, [])
   const projectionTabsActive = activeTab === 'projecoes' || activeTab === 'metodologia'
 
   function selectTab(tab: TabId): void {
@@ -326,7 +345,7 @@ function App(): JSX.Element {
         </nav>
 
         <div className="content-wrap">
-          <section id="painel-visao-geral" role="tabpanel" aria-labelledby="aba-visao-geral" hidden={activeTab !== 'visao-geral'}>
+          <section id="painel-visao-geral" role="tabpanel" aria-labelledby="aba-visao-geral" aria-busy={isTabBusy('visao-geral')} hidden={activeTab !== 'visao-geral'}>
             <section className="kpi-strip" aria-label="Indicadores da temporada">
               <div className="kpi-card"><strong className="kpi-value">{leader.points}</strong><span className="kpi-label">Pontos do líder · {leader.club}</span></div>
               <div className="kpi-card"><strong className="kpi-value">{seasonFacts.playedCount}<span className="kpi-divider">/{seasonFacts.scheduledCount}</span></strong><span className="kpi-label">Jogos disputados no corte</span></div>
@@ -440,35 +459,39 @@ function App(): JSX.Element {
             </section>
           </section>
 
-          <section id="painel-classificacoes" role="tabpanel" aria-labelledby="aba-classificacoes" hidden={activeTab !== 'classificacoes'}>
+          <section id="painel-classificacoes" role="tabpanel" aria-labelledby="aba-classificacoes" aria-busy={isTabBusy('classificacoes')} hidden={activeTab !== 'classificacoes'}>
             {isTabMounted('classificacoes') && (
               <Suspense fallback={<TabLoading label="classificações" />}>
                 <ClassificacoesTab />
+                <TabReady tab="classificacoes" onReady={markTabReady} />
               </Suspense>
             )}
           </section>
 
-          <section id="painel-jogos" role="tabpanel" aria-labelledby="aba-jogos" hidden={activeTab !== 'jogos'}>
+          <section id="painel-jogos" role="tabpanel" aria-labelledby="aba-jogos" aria-busy={isTabBusy('jogos')} hidden={activeTab !== 'jogos'}>
             {isTabMounted('jogos') && (
               <Suspense fallback={<TabLoading label="jogos e confrontos" />}>
                 <JogosTab />
+                <TabReady tab="jogos" onReady={markTabReady} />
               </Suspense>
             )}
             <div id="painel-confrontos" hidden={activeTab !== 'jogos'} />
           </section>
 
-          <section id="painel-projecoes" role="tabpanel" aria-labelledby="aba-projecoes" hidden={activeTab !== 'projecoes'}>
+          <section id="painel-projecoes" role="tabpanel" aria-labelledby="aba-projecoes" aria-busy={isTabBusy('projecoes')} hidden={activeTab !== 'projecoes'}>
             {isTabMounted('projecoes') && (
               <Suspense fallback={<TabLoading label="projeções" />}>
                 <ProjecoesTab />
+                <TabReady tab="projecoes" onReady={markTabReady} />
               </Suspense>
             )}
           </section>
 
-          <section id="painel-metodologia" role="tabpanel" aria-labelledby="aba-metodologia" hidden={activeTab !== 'metodologia'}>
+          <section id="painel-metodologia" role="tabpanel" aria-labelledby="aba-metodologia" aria-busy={isTabBusy('metodologia')} hidden={activeTab !== 'metodologia'}>
             {isTabMounted('metodologia') && (
               <Suspense fallback={<TabLoading label="metodologia e auditoria" />}>
                 <MetodologiaTab />
+                <TabReady tab="metodologia" onReady={markTabReady} />
               </Suspense>
             )}
             <div id="painel-dados" hidden={activeTab !== 'metodologia'} />

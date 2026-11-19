@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
 import { currentClubs } from './projectionData'
 import { cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, cbfArchiveProvenance } from './seasonFacts'
@@ -23,6 +23,35 @@ function escapeRegExp(value: string): string {
  * em vez de virar timeout genérico do teste.
  */
 const LAZY_TIMEOUT = 20_000
+
+/**
+ * Portão do chunk de Classificações: aberto por padrão, para as demais provas
+ * carregarem a aba normalmente. O caso de `aria-busy` fecha o portão antes do
+ * clique, o que prende o import dinâmico no `Suspense`, e o abre no `finally`.
+ */
+const classificacoesChunk = vi.hoisted(() => {
+  const gate: { closed: boolean; release: (() => void) | null } = { closed: false, release: null }
+  return {
+    close(): void {
+      gate.closed = true
+    },
+    open(): void {
+      gate.closed = false
+      gate.release?.()
+      gate.release = null
+    },
+    async wait(): Promise<void> {
+      if (!gate.closed) return
+      await new Promise<void>((resolve) => { gate.release = () => resolve() })
+    },
+  }
+})
+
+vi.mock('./ClassificacoesTab', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./ClassificacoesTab')>()
+  await classificacoesChunk.wait()
+  return actual
+})
 
 describe('painel do Brasileirão 2026', () => {
   beforeEach(() => {
@@ -99,6 +128,32 @@ describe('painel do Brasileirão 2026', () => {
     await user.keyboard('{Home}')
     expect(screen.getByRole('tab', { name: 'Visão Geral' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('tabpanel', { name: 'Visão Geral' })).toBeVisible()
+  })
+
+  it('mantém aria-busy no tabpanel enquanto o chunk lazy da aba não monta', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    const panel = document.getElementById('painel-classificacoes')!
+    // Aba oculta não declara estado; só a ativa anuncia que está carregando.
+    expect(panel).not.toHaveAttribute('aria-busy')
+
+    classificacoesChunk.close()
+    try {
+      await user.click(screen.getByRole('tab', { name: 'Classificações & Análises' }))
+
+      // O import dinâmico está preso: o painel mostra o fallback e continua ocupado.
+      expect(panel).toHaveAttribute('aria-busy', 'true')
+      expect(screen.getByRole('status')).toHaveTextContent('Carregando classificações')
+      expect(panel).not.toHaveTextContent('ANÁLISES DA TABELA')
+    } finally {
+      classificacoesChunk.open()
+    }
+
+    // Quando o chunk monta, o marcador de prontidão libera o aria-busy.
+    expect(await screen.findByRole('heading', { name: 'Classificações' }, { timeout: LAZY_TIMEOUT })).toBeVisible()
+    await waitFor(() => expect(panel).toHaveAttribute('aria-busy', 'false'))
+    expect(screen.queryByText('Carregando classificações…')).not.toBeInTheDocument()
   })
 
   it('mostra uma legenda única das quatro zonas acima da classificação, sem repetir chips por linha', () => {

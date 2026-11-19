@@ -6,6 +6,7 @@ import { HomeIcon, AwayIcon, CalendarIcon } from './icons'
 import { recentForm, currentStreaks, attackDefenseLeaders } from './rounds'
 import { matchProbabilities } from './matchProbabilities'
 import { useProjection } from './ProjectionContext'
+import { SIMULATIONS_LOADING, SIMULATIONS_UNAVAILABLE } from './AsyncStatus'
 import { VenueStatsCard } from './FixtureCalendar'
 import { ZONES } from './projectionConfig'
 import { seasonFacts } from './seasonFacts'
@@ -83,13 +84,19 @@ function VenuePair({ clubId }: { clubId: string }): JSX.Element {
 }
 
 function FinalProjection({ clubId, clubName }: { clubId: string; clubName: string }): JSX.Element | null {
-  const { result, status } = useProjection()
+  const { result, status, retry } = useProjection()
   const club = result?.clubProbabilities.find((entry) => entry.id === clubId)
   if (!result || !club || status !== 'ready') {
+    const failed = status === 'error'
     return (
-      <div className="team-kpi team-kpi--wide">
-        <strong>{status === 'error' ? 'Projeção indisponível' : 'Projeção em cálculo…'}</strong>
-        <span>{status === 'error' ? 'A distribuição de destinos não é substituída por estimativa manual.' : 'A distribuição de destinos aparece quando as simulações concluírem.'}</span>
+      <div className="team-kpi team-kpi--wide" role={failed ? 'alert' : 'status'}>
+        <strong>{failed ? 'Projeção indisponível' : SIMULATIONS_LOADING}</strong>
+        <span>
+          {failed
+            ? `${SIMULATIONS_UNAVAILABLE} A distribuição de destinos não é substituída por estimativa manual.`
+            : 'A distribuição de destinos aparece quando as simulações concluírem.'}
+        </span>
+        {failed && <button className="filter-button" type="button" onClick={retry}>Tentar novamente</button>}
       </div>
     )
   }

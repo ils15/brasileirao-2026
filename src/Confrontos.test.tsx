@@ -125,8 +125,11 @@ describe('análise por clube', () => {
     // Casa/fora
     expect(screen.getByText('Como mandante')).toBeInTheDocument()
     expect(screen.getByText('Como visitante')).toBeInTheDocument()
-    // Card de projeção degradado (sem Worker no jsdom)
-    expect(screen.getByText(/Projeção indisponível|Projeção em cálculo/)).toBeInTheDocument()
+    // Card de projeção degradado (sem Worker no jsdom): falha anunciada com recuperação.
+    const projectionCard = screen.getByRole('alert')
+    expect(projectionCard).toHaveTextContent(/Projeção indisponível|Projeção em cálculo/)
+    expect(projectionCard).toHaveTextContent('Não foi possível executar as simulações neste navegador.')
+    expect(within(projectionCard).getByRole('button', { name: 'Tentar novamente' })).toBeInTheDocument()
   })
 
   it('troca o clube e atualiza forma, projeção e calendário', async () => {

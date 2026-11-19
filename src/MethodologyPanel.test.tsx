@@ -113,7 +113,7 @@ describe('aba metodologia & validação', () => {
   it('mantém o destino #estatisticas disponível nos estados loading e error', () => {
     const { rerender } = render(<MethodologyPanel result={null} status="loading" onRetry={vi.fn()} />)
     expect(document.getElementById('estatisticas')).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveTextContent('Calculando validação')
+    expect(screen.getByRole('status')).toHaveTextContent('Carregando simulações')
 
     rerender(<MethodologyPanel result={null} status="error" onRetry={vi.fn()} />)
     expect(document.getElementById('estatisticas')).toBeInTheDocument()

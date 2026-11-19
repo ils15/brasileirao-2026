@@ -722,7 +722,7 @@ describe('painel de projeções', () => {
 
   it('informa quando as simulações ainda estão em processamento', () => {
     render(<ProjectionPanel result={null} status="loading" onRetry={vi.fn()} />)
-    expect(screen.getByRole('status')).toHaveTextContent('Calculando cenários em segundo plano')
+    expect(screen.getByRole('status')).toHaveTextContent('Carregando simulações')
   })
 
   it.each(['loading', 'error'] as const)('mantém destinos de navegação disponíveis no estado %s', (status) => {

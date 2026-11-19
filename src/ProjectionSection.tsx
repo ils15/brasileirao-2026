@@ -3,6 +3,7 @@ import { SIMULATION_COUNT, SIMULATION_SEED } from './projectionConfig'
 import type { ClubProbability, ProjectionResult } from './projection'
 import type { PointCurveAggregateRow } from './pointCurve'
 import { useProjection, type ProjectionStatus } from './ProjectionContext'
+import { AsyncStatus, SIMULATIONS_LOADING, SIMULATIONS_UNAVAILABLE } from './AsyncStatus'
 import { Crest } from './Crest'
 import { GamepadIcon } from './icons'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
@@ -691,13 +692,14 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
         <p className="projection-table-note"><strong>Regulamento:</strong> o <a href="https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf" target="_blank" rel="noreferrer">REC CBF 2026 (Art. 7)</a> aloca à Sul-Americana os seis clubes seguintes que não estejam na Libertadores (7º–12º neste cenário). A redistribuição depende das regras aplicáveis e da sobreposição de classificados; títulos e vagas de copas não são simulados.</p>
       </details>
 
-      {status === 'loading' && <p className="projection-status" role="status">Calculando cenários em segundo plano…</p>}
+      {status === 'loading' && <AsyncStatus phase="loading" message={SIMULATIONS_LOADING} />}
       {status === 'ready' && <p className="sr-only" role="status">Projeção concluída: probabilidades e distribuições para {integer.format(result?.simulations ?? SIMULATION_COUNT)} simulações disponíveis.</p>}
       {status === 'error' && (
-        <div className="projection-status projection-error" role="alert">
-          <p>Não foi possível executar as simulações neste navegador. Nenhum percentual foi substituído por estimativa manual.</p>
-          <button className="filter-button" type="button" onClick={onRetry}>Tentar novamente</button>
-        </div>
+        <AsyncStatus
+          phase="error"
+          message={`${SIMULATIONS_UNAVAILABLE} Nenhum percentual foi substituído por estimativa manual.`}
+          onRetry={onRetry}
+        />
       )}
 
       <div className="subtabs" role="tablist" aria-label="Análises da projeção">
