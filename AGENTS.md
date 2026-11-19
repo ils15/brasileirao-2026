@@ -13,7 +13,7 @@ Documentação canônica: `docs/metodologia.md` (fórmulas e constantes), `docs/
 ```
 src/                    # React + TS: modelos, dados versionados, worker e testes ao lado do código
 scripts/                # pipeline ESM (.mjs): coleta, conciliação, empacotamento e crosscheck; parsers puros em scripts/lib/
-data/source-snapshots/  # snapshots brutos (Football-Data, ESPN diário, CBF, OpenFootball, 365scores, API Futebol BR)
+data/source-snapshots/  # snapshots brutos (Football-Data, ESPN diário, CBF, OpenFootball, 365scores)
 data/corroboration/     # sidecar Wikipédia (CC BY-SA 4.0) para o crosscheck
 docs/                   # metodologia, auditoria, dicionário, atualizações e convenções
 reports/                # saída gerada do crosscheck

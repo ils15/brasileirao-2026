@@ -23,8 +23,8 @@ CBF calendário (380 jogos)  ─┘        │                     src/sourceMet
 - Fontes secundárias (`scripts/backfill-xg-cards.mjs` → 365scores,
   `scripts/refresh-espn-scorers.mjs` → eventos de partida da ESPN para a artilharia)
   rodam só quando o plano de coleta pede, e falham de forma branda (mantêm snapshot
-  anterior). `scripts/refresh-apifutebolbr.mjs` está **descontinuado** (trial encerrado,
-  HTTP 429 permanente) e não é mais chamado pelo updater.
+  anterior). `scripts/refresh-apifutebolbr.mjs` foi **removido** (trial encerrado,
+  HTTP 429 permanente).
 - Artilharia: um snapshot normalizado por partida em
   `data/source-snapshots/espn-events-<eventId>.json`; o módulo `src/scorers2026.ts` é
   agregado desses snapshots (nunca da rede direto) e declara cobertura. Cartões do ESPN

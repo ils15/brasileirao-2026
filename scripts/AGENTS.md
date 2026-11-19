@@ -5,13 +5,13 @@ Aplicam-se a `scripts/**`; regras do projeto em `../AGENTS.md`.
 ## Mapa
 
 - `update-data.mjs` orquestra a coleta pós-rodada: Football-Data + ESPN (e secundárias), concilia com o calendário CBF, regenera módulos, roda a suíte e commita. `--dry-run` coleta e mostra o diff sem escrever.
-- `lib/dataPipeline.mjs` concentra parsers e validações puras; `lib/threesixfive.mjs` (xG/cartões), `lib/espnMatchEvents.mjs` (gols/cartões por partida da ESPN) e `lib/apifutebolbr.mjs` (descontinuado) têm parsers por fonte.
+- `lib/dataPipeline.mjs` concentra parsers e validações puras; `lib/threesixfive.mjs` (xG/cartões) e `lib/espnMatchEvents.mjs` (gols/cartões por partida da ESPN) têm parsers por fonte.
 - `pack-history.mjs` empacota 2003–2025 em `src/historicalSeasons.ts`; `crosscheck-wikipedia.mjs` grava `reports/crosscheck-2003-2011.md` e `reports/conflicts.json`; `check-pages-build.mjs` é o `npm run smoke:pages`.
-- `backfill-xg-cards.mjs` e `refresh-espn-scorers.mjs` rodam isolados ou por chamada do updater (`refresh-apifutebolbr.mjs` está descontinuado e não é chamado); `install-hooks.mjs` instala `.githooks`; `check-deploy-freshness.mjs` é alerta de CI (sempre sai com 0) e `check-data-freshness.mjs` (com `lib/freshness.mjs`) é o alarme agendado de defasagem, que reprova o run.
+- `backfill-xg-cards.mjs` e `refresh-espn-scorers.mjs` rodam isolados ou por chamada do updater; `install-hooks.mjs` instala `.githooks`; `check-deploy-freshness.mjs` é alerta de CI (sempre sai com 0) e `check-data-freshness.mjs` (com `lib/freshness.mjs`) é o alarme agendado de defasagem, que reprova o run.
 
 ## Regras
 
-- **Nunca fabrique dado.** Sem rede ou sem chave (ex.: `API_FUTEBOL_BR_KEY`), use os snapshots versionados; modo offline/`--dry-run` deve produzir o mesmo pacote, senão a reprodução mente.
+- **Nunca fabrique dado.** Sem rede (ou sem `FETCH`), use os snapshots versionados; modo offline/`--dry-run` deve produzir o mesmo pacote, senão a reprodução mente.
 - **Preserve procedência.** Todo dado coletado vira snapshot bruto + SHA-256 no módulo gerado. Não “conserte” placar sem fonte nem reescreva snapshot para bater com o resultado.
 - **Crosscheck obrigatório ao mexer em histórico.** Divergência com a Wikipédia nunca é resolvida por maioria, recência ou votação: a camada canônica segue OpenFootball e o conflito fica aberto em `reports/conflicts.json`.
 - **Falhe alto.** `validateIntegrity`/`validateAdvancedStats` abortam com calendário CBF quebrado, par (casa, fora) duplicado, xG fora da tolerância ou tabela divergente demais. Não adicione fallback silencioso.
@@ -27,6 +27,6 @@ Aplicam-se a `scripts/**`; regras do projeto em `../AGENTS.md`.
 
 ## Verificação
 
-- Rode o teste irmão do que mudou: `npx vitest run scripts/lib/dataPipeline.test.mjs`, `npx vitest run scripts/pack-history.test.mjs`, `npx vitest run scripts/crosscheck-wikipedia.test.mjs` (ou `scripts/lib/threesixfive.test.mjs`, `scripts/lib/apifutebolbr.test.mjs`, `scripts/install-hooks.test.mjs`).
+- Rode o teste irmão do que mudou: `npx vitest run scripts/lib/dataPipeline.test.mjs`, `npx vitest run scripts/pack-history.test.mjs`, `npx vitest run scripts/crosscheck-wikipedia.test.mjs` (ou `scripts/lib/threesixfive.test.mjs`, `scripts/lib/espnMatchEvents.test.mjs`, `scripts/lib/freshness.test.mjs`, `scripts/install-hooks.test.mjs`).
 - Depois rode o script afetado em `--dry-run` quando existir e confira o diff antes de reportar.
 - `npm test` completo só no gate final; o pre-commit também o executa.
