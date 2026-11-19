@@ -119,18 +119,18 @@ comportamento é determinístico e agora está declarado aqui; não altera resul
 
 O HTML CBF arquivado exibe `04/11/2026 - 19:41`, sem fuso ou semântica de
 publicação/captura declarados; sua tabela soma 332 jogos, portanto não valida
-o pacote atual de 341 resultados nem seus placares individuais. A tabela
+o pacote vigente de resultados nem seus placares individuais. A tabela
 empacotada é reconciliada internamente com os resultados por testes e pela
 guarda `validateCurrentSeason`; isso não equivale a uma conferência externa
 atual com a CBF. Sem mudança de comportamento.
 
 ## 12. Corte conservador de Football-Data por string de data — **Documentado**
 
-O corte analítico é `2026-11-14T23:39:43-03:00`
-(`2026-11-15T02:39:43Z`). Registros sem fuso (Football-Data) usam comparação
-de string de data (`< 2026-11-15`), descartando o dia UTC limítrofe inteiro;
-ESPN usa timestamp com fuso explícito e o instante exato. Assimetria
-consciente, registrada no README e na UI.
+O corte analítico vigente (instante em `docs/atualizacoes.md` e na aba
+Metodologia & Auditoria) é aplicado a registros sem fuso (Football-Data) por
+comparação de string de data contra o dia UTC do corte, descartando o dia
+limítrofe inteiro; ESPN usa timestamp com fuso explícito e o instante exato.
+Assimetria consciente, registrada no README e na UI.
 
 ## 13. `lowSample` por largura de IC com limiar fixo — **Documentado**
 
@@ -251,7 +251,7 @@ cartões ou sorteio. É a ordenação analítica da tabela local, não uma
 classificação oficial CBF nem a aplicação completa do Art. 15. Os testes
 verificam valores/ordem derivados do pacote; não validam a classificação
 contra uma tabela CBF contemporânea nem cobrem a regra oficial de desempate.
-A cópia CBF arquivada soma 332 jogos, frente aos 341 resultados do pacote.
+A cópia CBF arquivada soma 332 jogos, frente aos resultados do pacote vigente.
 
 **Comparador da tabela simulada (`src/projection.ts`):** usa os quatro
 critérios gerais (pontos → vitórias → saldo → gols pró). Para exatamente dois

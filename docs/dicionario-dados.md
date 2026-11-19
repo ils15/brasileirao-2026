@@ -71,10 +71,10 @@ com fórmula explícita e base amostral declarada.
 |---|---|---|
 | **Referência da Fonte** | Linha do CSV Football-Data (`csv-line-N`) ou ID de evento ESPN | Log de resultados, exportações |
 | **Proveniência (bloco de exportação)** | `fonte` (URL + SHA-256 + captura, quando registrada), `corteAnalitico` e `geradoEm` do arquivo exportado; a geração do pacote não é a publicação | Aba Dados & Auditoria |
-| **Validação da temporada 2026** | 341 resultados + 39 pendentes = 380 pares únicos do calendário local CBF; estatísticas por mando fecham com o agregado derivado dos resultados (pontos/V/E/D/GP/GC). A cópia HTML da classificação CBF soma 332 jogos e não valida o conjunto atual | Aba Dados & Auditoria |
+| **Validação da temporada 2026** | `docs/atualizacoes.md` registra, a cada coleta, os resultados e pendentes do pacote, cuja soma é sempre 380 pares únicos do calendário local CBF; estatísticas por mando fecham com o agregado derivado dos resultados (pontos/V/E/D/GP/GC). A cópia HTML da classificação CBF soma 332 jogos e não valida o conjunto atual | Aba Dados & Auditoria |
 | **Validação histórica** | Totais oficiais CBF de cada temporada 2021–2025 conferem com os placares empacotados (100 clubes-temporada, sem divergências). Para OpenFootball 2003–2011 há uma partida datada amostral por ano contra RSSSF; não certifica tabelas completas. Diferenças 2004/2005 estão documentadas e os placares do snapshot não são substituídos | Aba Dados & Auditoria · `docs/historico-2003-2011.md` |
 | **Fronteira do modelo** | 5.319 partidas completas de 2012–2025 podem alimentar treino, projeções, calibração e backtests. As 3.857 partidas OpenFootball de 2003–2011 servem apenas ao H2H descritivo | Metodologia · `historicalSeasons.ts` |
-| **Snapshot estático** | Sem API nem atualização em runtime; pacote gerado em 15/11/2026 02:39:43.313Z (14/11/2026 23:39:43.313 BRT). Captura individual das fontes e horário da publicação não foram registrados | Badge em todas as telas |
+| **Snapshot estático** | Sem API nem atualização em runtime; o instante de geração e o corte do pacote corrente ficam em `docs/atualizacoes.md` e na aba Dados & Auditoria. Captura individual das fontes e horário da publicação não foram registrados | Badge em todas as telas |
 
 ## Convenções de exibição
 

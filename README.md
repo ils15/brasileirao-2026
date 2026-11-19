@@ -17,7 +17,7 @@ Aplicação 100% client-side (React + TypeScript + Vite) com dados estáticos ve
 - **Projeções & Simulador** — 500.000 simulações Monte Carlo em Web Worker (título, Libertadores, Sul-Americana e rebaixamento) e simulador interativo de resultados restantes
 - **Metodologia & Auditoria** — backtest walk-forward, Brier Score e conciliação entre fontes
 
-O **corte analítico** atual é **14/11/2026 às 23:39:43 BRT** (`2026-11-15T02:39:43Z`), reunindo 341 resultados de 2026 (380 partidas no calendário, 39 pendentes) e retrospecto histórico de 9.176 partidas (2003–2025).
+O **corte analítico** separa o que já entrou do que ainda está pendente: partidas disputadas até o corte alimentam classificação, retrospecto e projeções; as posteriores ficam de fora da conta. O instante vigente, junto da captura de cada fonte e da conciliação entre elas, aparece na aba **Metodologia & Auditoria** do site e em `docs/atualizacoes.md`, o log gerado a cada coleta.
 
 Detalhes do modelo em [docs/metodologia.md](docs/metodologia.md). Demais documentação: [auditoria de cálculos](docs/auditoria-calculos.md), [dicionário de dados](docs/dicionario-dados.md), [log de atualizações](docs/atualizacoes.md) e [histórico 2003–2011](docs/historico-2003-2011.md).
 

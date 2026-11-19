@@ -13,7 +13,7 @@ const ProjectionContext = createContext<ProjectionContextValue | null>(null)
 
 /**
  * Um único Web Worker de projeção compartilhado pelas abas Projeções e
- * Metodologia & Validação — as 20.000 simulações rodam uma vez, não duas.
+ * Metodologia & Validação — as `SIMULATION_COUNT` simulações rodam uma vez, não duas.
  * `enabled` adia a criação do worker até a primeira aba que consome a projeção
  * abrir; depois disso o worker permanece (o resultado é compartilhado).
  */
