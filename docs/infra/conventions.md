@@ -201,3 +201,33 @@ em falha de release — foi assim que o pipeline parou por dias.
    `before != after` com dado novo e `changed=false` na segunda execução.
 5. Não reescrever histórico nem dar `git add -A`: o updater e outras sessões mexem
    nos mesmos arquivos.
+
+## 8. Dependências
+
+- **Versões exatas no manifesto.** `package.json` não usa `latest`, `^` nem `~`:
+  a string é a versão resolvida. `latest` fazia a instalação depender do dia do
+  clone, não do que foi testado.
+- **`package-lock.json` é a fonte de verdade.** `npm ci` instala exatamente o
+  lock; mudança de dependência aparece como diff do lock e é revisada como
+  código. Um diff de lock que altere `node_modules/<pkg>/version` é atualização
+  de dependência, não efeito colateral de outra tarefa.
+- **Atualização só em PR dedicado, mensal**, uma dependência por vez:
+
+  ```sh
+  npm outdated
+  npm install <pkg>@<x.y.z>
+  npm test
+  GITHUB_PAGES=true npm run build && npm run smoke:pages
+  ```
+
+- **Nunca `npm update`** no meio de outra tarefa: ele reescreve o lock inteiro e
+  esconde regressão dentro de um diff de feature.
+- **Runtime declarado**: `engines.node` é `>=24` e `.nvmrc` é `24`. O mínimo é
+  Node 24, que é o que o CI pina; o ambiente de desenvolvimento pode ser mais
+  novo sem virar `EBADENGINE`. `@types/node` acompanha a versão resolvida, não um
+  range (dívida conhecida: types acima do runtime do CI deixam passar API que o
+  CI não tem).
+- **Dependência nova exige justificativa**: prefira a stdlib; se entrar, entra em
+  versão exata e com teste que a exercite.
+- `CHANGELOG.md` registra a versão pública; `scripts/release-consistency.test.mjs`
+  reprova se a primeira versão publicada divergir de `package.json`.
