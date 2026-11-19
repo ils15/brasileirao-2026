@@ -2,10 +2,12 @@ import { createHash } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import {
+  classifyMergeOutcome,
   computeRemaining,
   computeStandings,
   formatBrazilLocalIso,
   mergeResults,
+  overduePending,
   parseEspnScoreboard,
   parseFootballDataCsv,
   parseCbfSchedule,
@@ -273,5 +275,44 @@ describe('parseCbfSchedule', () => {
     const parsed = parseCbfSchedule(source)
     expect(parsed).toHaveLength(380)
     expect(parsed[0]).toEqual({ ref: '001', round: 1, home: 'fluminense', away: 'gremio' })
+  })
+})
+
+describe('overduePending', () => {
+  it('marca furo de rodada anterior quando a rodada seguinte já tem resultado', () => {
+    const results = [{ home: 'a', away: 'b' }, { home: 'b', away: 'c' }]
+    const remaining = computeRemaining(results, schedule)
+    expect(overduePending({ schedule, results, remaining }))
+      .toEqual([{ round: '1', home: 'c', away: 'd', cbfRef: '002' }])
+  })
+
+  it('não marca furo da rodada corrente (jogo pode ainda acontecer)', () => {
+    const results = [{ home: 'a', away: 'b' }, { home: 'c', away: 'd' }, { home: 'b', away: 'c' }]
+    const remaining = computeRemaining(results, schedule)
+    expect(overduePending({ schedule, results, remaining })).toEqual([])
+  })
+})
+
+describe('classifyMergeOutcome', () => {
+  const rejectedPair = { match: { home: 'x', away: 'y' }, reason: 'par fora do calendário CBF 2026' }
+
+  it('publica quando há resultado novo conciliado e nenhum rejeitado', () => {
+    expect(classifyMergeOutcome({ incoming: [{}], added: [{}], rejected: [] })).toBe('published')
+  })
+
+  it('sinaliza ausência total de entrada quando a coleta não trouxe candidato', () => {
+    expect(classifyMergeOutcome({ incoming: [], added: [], rejected: [] })).toBe('no-input')
+  })
+
+  it('sinaliza duplicados quando toda a entrada já está empacotada', () => {
+    expect(classifyMergeOutcome({ incoming: [{}, {}], added: [], rejected: [] })).toBe('duplicates-only')
+  })
+
+  it('trata qualquer rejeição como falha, mesmo com resultados publicáveis no mesmo lote', () => {
+    expect(classifyMergeOutcome({ incoming: [{}, {}], added: [{}], rejected: [rejectedPair] })).toBe('rejected')
+  })
+
+  it('recusa contrato incompleto em vez de adivinhar a classificação', () => {
+    expect(() => classifyMergeOutcome({ incoming: [], added: [] })).toThrow(/rejected/)
   })
 })

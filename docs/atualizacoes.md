@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-15T02:39:43.313Z` (`2026-11-14T23:39:43.313-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-19T13:05:52.134Z` (`2026-11-19T10:05:52-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -37,3 +37,6 @@ Fontes secundárias não recoletadas nesta execução (sem `API_FUTEBOL_BR_KEY` 
 - flamengo 2–1 athletico-pr (espn, 401841313)
 - corinthians 4–0 botafogo (espn, 401841316)
 - gremio 0–0 bahia (espn, 401841312)
+
+Corte do pacote: `2026-11-19T13:05:52Z` (`2026-11-19T10:05:52-03:00`); gerado em `2026-11-19T13:05:52.134Z`.
+Resultados de 2026: 341 → 347; pendentes: 39 → 33 (347 disputados + 33 pendentes = 380 do calendário CBF; 0 adiado(s)).

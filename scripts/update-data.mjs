@@ -22,6 +22,7 @@ import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
 import { refreshEspnScorers } from './refresh-espn-scorers.mjs'
 import { parseUpdateArgs } from './lib/updateArgs.mjs'
 import {
+  classifyMergeOutcome,
   parseEspnStandings,
   parseValorfinalClubes,
   reconcileStandings,
@@ -34,12 +35,14 @@ import {
   parseFootballDataCsv,
   planCollectionRun,
   summarizeEspnFootballDataCoverage,
+  overduePending,
   readCurrentCutoff,
   renderCurrentSeasonResults,
   renderProjectionData,
   renderSourceMetadata,
   validateIntegrity,
 } from './lib/dataPipeline.mjs'
+import { renderUpdateLog, updateLogTotals } from './lib/updateLog.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const srcDir = join(root, 'src')
@@ -173,12 +176,33 @@ async function main() {
   // 3. Fusão com os existentes (precedência do empacotamento anterior).
   const incoming = [...fdMatches, ...espnMatches]
   const { merged, added, rejected } = mergeResults({ schedule, existing: existingResults, incoming })
+  const outcome = classifyMergeOutcome({ incoming, added, rejected })
   const espnCoverage = summarizeEspnFootballDataCoverage(merged, fdMatches)
   console.log(`Novos efetivos: ${added.length} (FD ${fdMatches.length}, ESPN ${espnMatches.length}) · rejeitados: ${rejected.length}`)
-  for (const { match, reason } of rejected) console.warn(`  rejeitado: ${match.home}–${match.away} (${reason})`)
 
-  if (added.length === 0) {
-    console.log('Sem resultados novos conciliáveis; nada a publicar.')
+  // Par fora do calendário não é no-op: é sinal de fonte ou calendário
+  // divergentes. Publicar o resto esconderia o problema — aborta o run.
+  if (outcome === 'rejected') {
+    const pairs = rejected.map(({ match, reason }) => `- ${match.home} × ${match.away}: ${reason}`).join('\n')
+    throw new Error(`Coleta rejeitada: ${rejected.length} par(es) fora do calendário CBF 2026; nada foi publicado.\n${pairs}`)
+  }
+
+  if (outcome === 'no-input') {
+    // Zero candidatos nas duas fontes. Se existe furo de rodada anterior
+    // (jogo sem resultado numa rodada que já começou), o silêncio é suspeito:
+    // avisa alto sem falhar, porque pode simplesmente não haver jogo no dia.
+    const remaining = computeRemaining(merged, schedule)
+    const overdue = overduePending({ schedule, results: merged, remaining })
+    if (overdue.length > 0) {
+      console.log(`::warning::Sem entrada de resultados na coleta (${incoming.length} candidatos) e ${overdue.length} jogo(s) pendente(s) de rodada anterior; corte empacotado ${cutoffUtc}.`)
+    } else {
+      console.log('Sem entrada de resultados na coleta e sem pendente de rodada anterior; nada a publicar.')
+    }
+    process.exit(0)
+  }
+
+  if (outcome === 'duplicates-only') {
+    console.log(`::notice::Nenhum resultado novo: ${incoming.length} candidato(s) da coleta já estavam empacotados; nada a publicar.`)
     process.exit(0)
   }
 
@@ -286,7 +310,7 @@ async function main() {
 
   if (dryRun) {
     console.log('DRY RUN: nenhum arquivo foi escrito.')
-    for (const { match } of added) console.log(`  + ${match.home} ${match.homeGoals}–${match.awayGoals} ${match.away} (${match.source} ${match.sourceRef})`)
+    for (const match of added) console.log(`  + ${match.home} ${match.homeGoals}–${match.awayGoals} ${match.away} (${match.source} ${match.sourceRef})`)
     process.exit(0)
   }
 
@@ -298,14 +322,20 @@ async function main() {
   writeFileSync(join(snapshotsDir, 'football-data-BR.csv'), csvText)
   for (const [date, jsonText] of espnSnapshots) writeFileSync(join(snapshotsDir, `espn-scoreboard-${date}.json`), jsonText)
 
-  // Log de atualizações (entrega pública do histórico)
+  // Log de atualizações (entrega pública do histórico): cabeçalho derivado do
+  // instante do pacote e entrada com o bloco de fechamento (corte, contagem,
+  // adiados). Entradas anteriores são preservadas verbatim.
   const logPath = join(root, 'docs/atualizacoes.md')
-  const logEntry = `\n## ${processingUtcDate} — ${added.length} novo(s) resultado(s)\n\n${added.map((match) => `- ${match.home} ${match.homeGoals}–${match.awayGoals} ${match.away} (${match.source}, ${match.sourceRef})`).join('\n')}\n`
-  if (existsSync(logPath)) {
-    writeFileSync(logPath, readFileSync(logPath, 'utf8').replace(/$/, logEntry))
-  } else {
-    writeFileSync(logPath, `# Log de atualizações automáticas\n\nCada entrada é uma execução pós-rodada do updater (scripts/update-data.mjs); resultados só entram se conciliarem com o calendário CBF 380 e a suíte passar.${logEntry}`)
-  }
+  const previousLog = existsSync(logPath) ? readFileSync(logPath, 'utf8') : null
+  writeFileSync(logPath, renderUpdateLog({
+    previous: previousLog,
+    entry: {
+      date: processingUtcDate,
+      added,
+      generatedAt: now,
+      totals: updateLogTotals({ results: merged, remaining, addedCount: added.length, scheduleLength: schedule.length }),
+    },
+  }))
 
   console.log('Executando suíte de testes...')
   runShell(options.testCommand)

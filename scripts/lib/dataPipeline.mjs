@@ -218,6 +218,28 @@ export function mergeResults({ schedule, existing, incoming }) {
   return { merged, added, rejected }
 }
 
+/**
+ * Classifica o resultado de `mergeResults` para o updater decidir entre
+ * publicar, avisar ou abortar.
+ *
+ * Precedência: **qualquer** par rejeitado vira `rejected` (mesmo que outros
+ * tenham entrado) — par fora do calendário é sinal de fonte/calendário
+ * divergentes, não de "nada a publicar". Sem candidato algum é `no-input`;
+ * entrada toda já empacotada é `duplicates-only`; caso contrário `published`.
+ *
+ * @param {{ incoming: unknown[], added: unknown[], rejected: unknown[] }} outcome
+ * @returns {'rejected' | 'duplicates-only' | 'published' | 'no-input'}
+ */
+export function classifyMergeOutcome({ incoming, added, rejected }) {
+  if (!Array.isArray(incoming) || !Array.isArray(added) || !Array.isArray(rejected)) {
+    throw new TypeError('classifyMergeOutcome exige incoming, added e rejected como arrays')
+  }
+  if (rejected.length > 0) return 'rejected'
+  if (incoming.length === 0) return 'no-input'
+  if (added.length > 0) return 'published'
+  return 'duplicates-only'
+}
+
 /** Agregado por clube na ordem de classificação (pontos → vitórias → saldo → gols pró). */
 export function computeStandings(results, schedule) {
   const slugs = new Set(schedule.flatMap(({ home, away }) => [home, away]))
@@ -265,6 +287,21 @@ export function computeRemaining(results, schedule) {
       away: fixture.away,
       cbfRef: fixture.ref,
     }))
+}
+
+/**
+ * Pendentes de rodada **anterior** à última rodada que já tem resultado.
+ * "Vencido" = a rodada seguinte já começou e o furo persistiu; furo na própria
+ * rodada corrente pode ser jogo ainda por acontecer. Usado pelo aviso de
+ * `no-input` do updater.
+ */
+export function overduePending({ schedule, results, remaining }) {
+  const roundByPair = new Map(schedule.map(({ home, away, round }) => [`${home}:${away}`, round]))
+  const latestPlayedRound = results.reduce(
+    (latest, { home, away }) => Math.max(latest, roundByPair.get(`${home}:${away}`) ?? 0),
+    0,
+  )
+  return remaining.filter(({ home, away }) => (roundByPair.get(`${home}:${away}`) ?? 0) < latestPlayedRound)
 }
 
 /** Validações de integridade: nada é publicado se alguma falhar. */
