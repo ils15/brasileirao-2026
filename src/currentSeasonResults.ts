@@ -1,7 +1,7 @@
-// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-15T02:39:43.313Z.
+// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-19T13:05:52.134Z.
 // Fontes e hashes em CURRENT_SEASON_SOURCE; cópias brutas em data/source-snapshots/.
-// Football-Data: 339 linhas 2026 no CSV da coleta (sha256 a619290484a5e2c00c34e3c565033f87014f4a12771ddedc2e239f735690b4dc).
-// ESPN: 10 resultados atribuídos à fonte no conjunto empacotado.
+// Football-Data: 341 linhas 2026 no CSV da coleta (sha256 54587cb3a55765b475d397b7937376489cee7f832b0c725175e1777ce441504d).
+// ESPN: 16 resultados atribuídos à fonte no conjunto empacotado.
 export type CurrentSeasonMatch = {
   home: string
   away: string
@@ -12,25 +12,25 @@ export type CurrentSeasonMatch = {
   sourceRef: string
 }
 
-export const CURRENT_SEASON_PACK_GENERATED_AT = '2026-11-15T02:39:43.313Z'
+export const CURRENT_SEASON_PACK_GENERATED_AT = '2026-11-19T13:05:52.134Z'
 
 export const CURRENT_SEASON_SOURCE = {
   footballData: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
     collectedAt: 'não registrada no snapshot',
     timezone: 'not specified by the source; original date/time preserved',
-    sha256: 'a619290484a5e2c00c34e3c565033f87014f4a12771ddedc2e239f735690b4dc',
+    sha256: '54587cb3a55765b475d397b7937376489cee7f832b0c725175e1777ce441504d',
     file: 'data/source-snapshots/football-data-BR.csv',
-    rows2026: 339,
+    rows2026: 341,
   },
   espn: {
     url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard',
     collectedAt: 'não registrada no snapshot',
     timezone: 'UTC (kickoff timestamps include Z)',
-    sha256: 'de237bb3d54ae2b172895d33f969b1021495b1ba379eb254ad05f2f52a14dd29',
-    file: 'data/source-snapshots/espn-scoreboard-2026-11-03.json | data/source-snapshots/espn-scoreboard-2026-11-04.json | data/source-snapshots/espn-scoreboard-2026-11-05.json | data/source-snapshots/espn-scoreboard-2026-11-06.json | data/source-snapshots/espn-scoreboard-2026-11-07.json | data/source-snapshots/espn-scoreboard-2026-11-08.json | data/source-snapshots/espn-scoreboard-2026-11-09.json | data/source-snapshots/espn-scoreboard-2026-11-10.json | data/source-snapshots/espn-scoreboard-2026-11-11.json | data/source-snapshots/espn-scoreboard-2026-11-12.json | data/source-snapshots/espn-scoreboard-2026-11-13.json | data/source-snapshots/espn-scoreboard-2026-11-14.json | data/source-snapshots/espn-scoreboard-2026-11-15.json',
-    completedMatches: 10,
-    withoutFootballDataScore: 2,
+    sha256: '086d18bd49a95954949240c1c2299bc4d5c5fb2211a75389ed046da171af7522',
+    file: 'data/source-snapshots/espn-scoreboard-2026-11-03.json | data/source-snapshots/espn-scoreboard-2026-11-04.json | data/source-snapshots/espn-scoreboard-2026-11-05.json | data/source-snapshots/espn-scoreboard-2026-11-06.json | data/source-snapshots/espn-scoreboard-2026-11-07.json | data/source-snapshots/espn-scoreboard-2026-11-08.json | data/source-snapshots/espn-scoreboard-2026-11-09.json | data/source-snapshots/espn-scoreboard-2026-11-10.json | data/source-snapshots/espn-scoreboard-2026-11-11.json | data/source-snapshots/espn-scoreboard-2026-11-12.json | data/source-snapshots/espn-scoreboard-2026-11-13.json | data/source-snapshots/espn-scoreboard-2026-11-14.json | data/source-snapshots/espn-scoreboard-2026-11-15.json | data/source-snapshots/espn-scoreboard-2026-11-16.json | data/source-snapshots/espn-scoreboard-2026-11-17.json | data/source-snapshots/espn-scoreboard-2026-11-18.json | data/source-snapshots/espn-scoreboard-2026-11-19.json',
+    completedMatches: 16,
+    withoutFootballDataScore: 6,
   },
   historical: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
@@ -390,4 +390,10 @@ export const currentSeasonResults: CurrentSeasonMatch[] = [
   { home: "vitoria", away: "fluminense", homeGoals: 0, awayGoals: 3, kickoff: "2026-11-06T23:00Z", source: "espn", sourceRef: "401841302" },
   { home: "mirassol", away: "atletico-mg", homeGoals: 0, awayGoals: 0, kickoff: "2026-11-14T21:30Z", source: "espn", sourceRef: "401841311" },
   { home: "chapecoense", away: "vasco", homeGoals: 0, awayGoals: 2, kickoff: "2026-11-14T23:30Z", source: "espn", sourceRef: "401841175" },
+  { home: "coritiba", away: "santos", homeGoals: 0, awayGoals: 1, kickoff: "2026-11-18T22:30Z", source: "espn", sourceRef: "401841315" },
+  { home: "remo", away: "chapecoense", homeGoals: 2, awayGoals: 0, kickoff: "2026-11-18T23:00Z", source: "espn", sourceRef: "401841310" },
+  { home: "cruzeiro", away: "palmeiras", homeGoals: 2, awayGoals: 1, kickoff: "2026-11-18T23:30Z", source: "espn", sourceRef: "401841314" },
+  { home: "flamengo", away: "athletico-pr", homeGoals: 2, awayGoals: 1, kickoff: "2026-11-18T23:30Z", source: "espn", sourceRef: "401841313" },
+  { home: "corinthians", away: "botafogo", homeGoals: 4, awayGoals: 0, kickoff: "2026-11-19T00:30Z", source: "espn", sourceRef: "401841316" },
+  { home: "gremio", away: "bahia", homeGoals: 0, awayGoals: 0, kickoff: "2026-11-19T00:30Z", source: "espn", sourceRef: "401841312" },
 ]

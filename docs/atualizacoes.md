@@ -28,3 +28,12 @@ Resultados de 2026: 339 → 341; pendentes: 41 → 39 (341 disputados + 39 pende
 Crosscheck 2026 da coleta: 20 clubes ESPN × 20 clubes valorfinal, 0 divergências em ambas as fontes.
 `npm run crosscheck` (camada histórica 2003–2011, inalterada): 1.898 partidas comparadas, 9 divergências abertas (2006: 2; 2007: 6; 2009: 1) e 2 ambiguidades de identidade — todas pré-existentes, nenhum placar canônico alterado.
 Fontes secundárias não recoletadas nesta execução (sem `API_FUTEBOL_BR_KEY` e com o guard de xG recusando o refresh): artilharia (captura `2026-11-07T16:00:24.137Z`) e 365scores (captura `2026-11-07T15:25:20.960Z`) ficaram **anteriores** ao novo corte. A UI agora deriva essa relação dos dados em vez de afirmar captura pós-corte.
+
+## 2026-11-19 — 6 novo(s) resultado(s)
+
+- coritiba 0–1 santos (espn, 401841315)
+- remo 2–0 chapecoense (espn, 401841310)
+- cruzeiro 2–1 palmeiras (espn, 401841314)
+- flamengo 2–1 athletico-pr (espn, 401841313)
+- corinthians 4–0 botafogo (espn, 401841316)
+- gremio 0–0 bahia (espn, 401841312)
