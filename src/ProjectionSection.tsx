@@ -25,8 +25,8 @@ const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1,
  * Texto do IC 95% na tabela por pontuação. Só faixas de 1 ponto exibem IC: em
  * faixas com 2+ pontos o intervalo varia por pontuação e um envelope
  * (min/max de membros distintos) não corresponde a nenhum ponto do range.
- * Mesmo em faixa de 1 ponto, o texto é omitido quando idêntico ao da faixa
- * anterior.
+ * Mesmo em faixa de 1 ponto, o texto é omitido quando idêntico ao último
+ * IC exibido.
  */
 function intervalTextFor(lower: number, upper: number): string {
   return `IC 95% ${percent.format(lower)}–${percent.format(upper)}`
@@ -280,6 +280,25 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
     }
     return groups
   }, [displayRows, destiny])
+  /**
+   * Texto do IC efetivamente exibido em cada faixa, na ordem da tabela.
+   * `null` significa que a faixa não exibe IC: faixa com 2+ pontos (o intervalo
+   * varia por pontuação) ou sem observação do destino. Faixas de 1 ponto com
+   * observação exibem o IC, exceto quando ele é idêntico ao **último IC
+   * exibido** — repetir o mesmo texto em linhas seguidas não acrescenta
+   * informação. O nome acessível da barra continua citando o intervalo da
+   * própria linha, mesmo quando o texto visível é omitido.
+   */
+  const shownIntervalTexts = useMemo<(string | null)[]>(() => {
+    let lastShownInterval: string | null = null
+    return compactRows.map((group) => {
+      if (showsRangeOf(group) || !hasObservationsFor(group.row)) return null
+      const text = intervalTextFor(...intervalFor(group.row))
+      if (text === lastShownInterval) return null
+      lastShownInterval = text
+      return text
+    })
+  }, [compactRows])
   // Sinaliza ao usuário quando a tabela do rebaixamento foi truncada abaixo
   // do primeiro 100,00%.
   const truncatedBelowFull = escaping && displayRows.length < rows.length
@@ -410,18 +429,14 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
               const row = group.row
               const hasObservations = hasObservationsFor(row)
               const chance = chanceOf(row)
-              const previousGroup = index > 0 ? compactRows[index - 1] : undefined
               const showsRange = showsRangeOf(group)
               const chanceText = percent.format(chance)
               const pointsLabel = showsRange ? `De ${group.from} a ${group.to} pontos` : `Com ${group.from} pontos`
-              // Faixa de 1 ponto: IC normal, omitido só quando repete o da
-              // faixa anterior de 1 ponto. Faixa com 2+ pontos: sem IC, pois
-              // ele varia entre as pontuações do range.
+              // Faixa de 1 ponto: IC normal, omitido só quando repete o último
+              // IC exibido. Faixa com 2+ pontos: sem IC, pois ele varia entre
+              // as pontuações do range.
               const intervalText = showsRange ? null : intervalTextFor(...intervalFor(row))
-              const previousIntervalText = previousGroup && !showsRangeOf(previousGroup) && hasObservationsFor(previousGroup.row)
-                ? intervalTextFor(...intervalFor(previousGroup.row))
-                : null
-              const showsIntervalText = Boolean(hasObservations && intervalText && intervalText !== previousIntervalText)
+              const shownIntervalText = shownIntervalTexts[index] ?? null
               // Sem observação: o N varia por pontuação, então o nome acessível
               // cita o intervalo de simulações em vez de inventar um N único.
               const singlePoint = group.from === group.to
@@ -454,7 +469,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
                       {hasObservations && <span className="magic-bar-fill" style={{ width: `${chance * 100}%` }} aria-hidden="true" />}
                       {hasObservations && group.lowSample && <span className="magic-bar-low" aria-hidden="true">amostra baixa</span>}
                     </div>
-                    {showsIntervalText && <span className="cell-ci" aria-hidden="true">{intervalText}</span>}
+                    {shownIntervalText !== null && <span className="cell-ci" aria-hidden="true">{shownIntervalText}</span>}
                   </td>
                 </tr>
               )
@@ -464,7 +479,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       </div>
       <p className="projection-table-note">
         Faixas agrupam pontos com o mesmo valor exibido; o percentual aparece uma vez por faixa.
-        O IC 95% é omitido em faixas com mais de um ponto, porque o intervalo varia entre os pontos e um envelope não representaria nenhum deles; nas faixas de um ponto, o IC só se repete quando difere da faixa anterior.
+        O IC 95% é omitido em faixas com mais de um ponto, porque o intervalo varia entre os pontos e um envelope não representaria nenhum deles; nas faixas de um ponto, o IC só é omitido quando repete o último IC exibido.
         Valores apenas parecidos não são agrupados: o critério é o texto formatado idêntico, nunca a igualdade estatística.
         Faixas sem nenhuma observação do destino mostram “nenhum rebaixamento” (ou “nenhum título”, “nenhuma vaga na Libertadores”, “nenhuma na Sul-Americana”), com barra vazia e sem IC; elas agrupam pontos consecutivos independentemente do N e atravessam totais de pontos sem simulações, e o total de simulações é anunciado como intervalo quando varia. Pontuações com 0,00% arredondado, mas com ao menos um sucesso observado, continuam como linha própria com percentual e IC.
         {truncatedBelowFull && ' A tabela começa na primeira pontuação com 100,00% de rebaixamento; valores menores não são exibidos.'}

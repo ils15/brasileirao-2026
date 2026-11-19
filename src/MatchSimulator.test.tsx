@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { MatchSimulator } from './MatchSimulator'
 import { matchProbabilities } from './matchProbabilities'
 import { remainingFixtures } from './projectionData'
+import { groupPendingRounds } from './roundGroups'
 
 describe('simulador de confrontos (MatchSimulator)', () => {
   it('renderiza os cards da rodada com xG, escudos e botões semânticos com placares prováveis', () => {
@@ -13,9 +14,21 @@ describe('simulador de confrontos (MatchSimulator)', () => {
     expect(screen.getByRole('button', { name: /Mais Prováveis/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Favoritos/i })).toBeInTheDocument()
 
-    // O primeiro jogo pendente é da rodada 21 adiado (Chapecoense vs Vasco)
-    const firstFixture = remainingFixtures[0]!
-    const { expected, mostProbable } = matchProbabilities(firstFixture.home, firstFixture.away)
+    // A rodada exibida é a primeira do agrupamento — o componente e o teste
+    // usam a mesma função, então nenhum dos dois depende de qual rodada está
+    // pendente no pacote de dados de hoje.
+    const [firstGroup] = groupPendingRounds(remainingFixtures)
+    const select = screen.getByRole('combobox', { name: /Selecionar rodada para simular/i })
+    expect(select).toHaveValue(firstGroup!.round)
+
+    const firstFixture = firstGroup!.fixtures[0]!
+    // O componente calcula os placares com o multiplicador do perfil ativo
+    // (Elástico por padrão); o teste lê esse multiplicador do próprio DOM em
+    // vez de cravar o perfil ou o número.
+    const activeMultiplier = Number.parseFloat(
+      screen.getByRole('radio', { checked: true }).querySelector('.sim-profile-badge')?.textContent ?? '1',
+    )
+    const { expected, mostProbable } = matchProbabilities(firstFixture.home, firstFixture.away, activeMultiplier)
 
     // O card exibe o xG com base nas forças de ataque e defesa
     expect(screen.getByText(expected.home.toFixed(2))).toBeInTheDocument()
@@ -31,9 +44,11 @@ describe('simulador de confrontos (MatchSimulator)', () => {
     const user = userEvent.setup()
     render(<MatchSimulator />)
 
-    // Seleciona uma rodada completa com 10 jogos (Rodada 35)
+    // Seleciona uma rodada completa com jogos pendentes — derivada do
+    // agrupamento, nunca de um número de rodada cravado no teste.
+    const targetGroup = groupPendingRounds(remainingFixtures).at(-1)!
     const select = screen.getByRole('combobox', { name: /Selecionar rodada para simular/i })
-    await user.selectOptions(select, '35')
+    await user.selectOptions(select, targetGroup.round)
 
     // Clica no cenário rápido 'Mais Prováveis'
     await user.click(screen.getByRole('button', { name: /Mais Prováveis/i }))
@@ -84,20 +99,20 @@ describe('simulador de confrontos (MatchSimulator)', () => {
     expect(goleadaRadio).toHaveAttribute('aria-checked', 'true')
     expect(elasticRadio).toHaveAttribute('aria-checked', 'false')
 
-    // Seleciona a Rodada 35
+    // Seleciona a última rodada pendente do agrupamento e sorteia
+    const targetGroup = groupPendingRounds(remainingFixtures).at(-1)!
     const select = screen.getByRole('combobox', { name: /Selecionar rodada para simular/i })
-    await user.selectOptions(select, '35')
+    await user.selectOptions(select, targetGroup.round)
 
     // Clica no botão de sortear rodada estocástica
     const diceButton = screen.getByRole('button', { name: /Sortear Rodada/i })
     await user.click(diceButton)
 
-    // Verifica que os placares foram selecionados nos cards da rodada 35 —
-    // um card por jogo pendente da rodada no snapshot de dados vigente.
-    const round35Fixtures = remainingFixtures.filter((fixture) => fixture.round === '35')
-    expect(round35Fixtures.length).toBeGreaterThan(0)
+    // Verifica que os placares foram selecionados nos cards da rodada sorteada —
+    // um card por jogo pendente daquela rodada, derivado do agrupamento.
+    expect(targetGroup.fixtures.length).toBeGreaterThan(0)
     const matchCards = screen.getAllByRole('article')
-    expect(matchCards.length).toBe(round35Fixtures.length)
+    expect(matchCards.length).toBe(targetGroup.fixtures.length)
     expect(screen.getByRole('heading', { level: 3, name: /Impacto na Classificação & Probabilidades/i })).toBeInTheDocument()
   })
 

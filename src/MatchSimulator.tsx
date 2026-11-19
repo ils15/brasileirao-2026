@@ -1,11 +1,12 @@
 import { useMemo, useState, type JSX } from 'react'
-import { currentClubs, remainingFixtures } from './projectionData'
+import { currentClubs, remainingFixtures, type RemainingFixture } from './projectionData'
 import { matchProbabilities } from './matchProbabilities'
 import { sampleMatchScore } from './matchModel'
 import { Crest } from './Crest'
 import { ZONES, SIMULATION_SEED } from './projectionConfig'
 import { runScenarioProjection, type ProjectionResult, type UserScore } from './projection'
 import { GearIcon, DiceIcon, TargetIcon, BoltIcon, HomeIcon, BurstIcon, ShieldIcon, ScalesIcon, FireIcon, InfoIcon } from './icons'
+import { groupPendingRounds, type RoundGroup } from './roundGroups'
 
 export type GoalProfile = 'tight' | 'balanced' | 'elastic' | 'goleada'
 
@@ -38,27 +39,7 @@ function ProfileGlyph({ profile }: { profile: GoalProfile }): JSX.Element {
   return <Icon className="inline-icon" />
 }
 
-interface RoundGroup {
-  round: string
-  roundNumber: number
-  suffix: string
-  fixtures: typeof remainingFixtures
-}
-
-function pendingRounds(): RoundGroup[] {
-  const groups = new Map<string, typeof remainingFixtures>()
-  for (const fixture of remainingFixtures) {
-    const list = groups.get(fixture.round) ?? []
-    list.push(fixture)
-    groups.set(fixture.round, list)
-  }
-  return [...groups.entries()]
-    .map(([round, fixtures]) => {
-      const [numberPart, ...suffixParts] = round.split(' ')
-      return { round, roundNumber: Number.parseInt(numberPart!, 10), suffix: suffixParts.join(' '), fixtures }
-    })
-    .sort((left, right) => left.roundNumber - right.roundNumber || left.suffix.localeCompare(right.suffix))
-}
+const pendingRounds = (): RoundGroup<RemainingFixture>[] => groupPendingRounds(remainingFixtures)
 
 const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 })
 const signedPercent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })

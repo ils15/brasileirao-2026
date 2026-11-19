@@ -61,8 +61,8 @@ describe('painel de projeções', () => {
     expect(screen.getByRole('group', { name: 'Destino para a pontuação mágica' })).toBeInTheDocument()
     const magicTable = screen.getByRole('region', { name: /Chance de ser rebaixado para a Série B por pontuação exata/ })
     // Toda linha tem barra, inclusive nos extremos; o percentual aparece uma
-    // vez por faixa e o IC, nas faixas de um ponto, só se repete quando difere
-    // do da faixa anterior.
+    // vez por faixa e o IC, nas faixas de um ponto, só é omitido quando repete
+    // o último IC exibido.
     const dataRows = within(magicTable).getAllByRole('row').slice(1)
     expect(dataRows.length).toBeGreaterThan(0)
     for (const row of dataRows) {
@@ -142,29 +142,49 @@ describe('painel de projeções', () => {
       expect(row.querySelector('.magic-bar')).toHaveAccessibleName(/^(Com \d+ pontos|De \d+ a \d+ pontos): nenhuma vaga na Libertadores nas simulações(; (de [\d.]+ a [\d.]+ simulações por pontuação|\d+ simulações desta pontuação|\d+ simulações nesta faixa))?$/)
     }
     expect(libertadoresRows.filter((row) => valueOf(row).textContent === '100,00%').length).toBeGreaterThan(0)
-    // IC 95% idêntico ao da faixa anterior também não se repete.
-    const visibleIntervals = libertadoresRows
-      .map((row) => row.querySelector('.cell-ci')?.textContent)
-      .filter((text): text is string => Boolean(text))
-    expect(visibleIntervals.length).toBeGreaterThan(1)
-    for (let index = 1; index < visibleIntervals.length; index += 1) {
-      expect(visibleIntervals[index]).not.toBe(visibleIntervals[index - 1])
+    // Invariantes do IC, todas derivadas do DOM — nenhum literal do pacote:
+    // formato, `from <= to`, presença só em faixa de 1 ponto com observação,
+    // ausência em faixa de 2+ pontos e nenhuma repetição do IC imediatamente
+    // anterior visível.
+    const intervalFromName = (row: HTMLElement): string | null => {
+      const isRange = (row.querySelector('th')?.textContent ?? '').includes('–')
+      const observed = /^\d{1,3},\d{2}%$/.test(valueOf(row).textContent ?? '')
+      if (isRange || !observed) return null
+      const name = within(row).getByRole('img').getAttribute('aria-label') ?? ''
+      const match = name.match(/(IC 95% \d{1,3},\d{2}%–\d{1,3},\d{2}%)(?:; amostra baixa)?$/)
+      expect(match).not.toBeNull()
+      return match![1]!
+    }
+
+    // O IC exibido é exatamente o do nome acessível de cada ponto único com
+    // observação, descartando repetições do último exibido.
+    const expectedIntervals: string[] = []
+    for (const row of libertadoresRows) {
+      const interval = intervalFromName(row)
+      if (!interval) continue
+      if (expectedIntervals[expectedIntervals.length - 1] !== interval) expectedIntervals.push(interval)
+    }
+    const shownIntervals = libertadoresRows
+      .map((row) => row.querySelector('.cell-ci'))
+      .filter((cell): cell is Element => cell !== null)
+    expect(shownIntervals.map((cell) => cell.textContent)).toEqual(expectedIntervals)
+
+    for (const cell of shownIntervals) {
+      expect(cell.textContent).toMatch(/^IC 95% \d{1,3},\d{2}%–\d{1,3},\d{2}%$/)
+      const [, from, to] = cell.textContent!.match(/(\d{1,3},\d{2})%–(\d{1,3},\d{2})%/)!
+      expect(Number(from!.replace(',', '.'))).toBeLessThanOrEqual(Number(to!.replace(',', '.')))
     }
     for (const row of libertadoresRows) {
       expect(row.querySelector('.magic-bar')).not.toBeNull()
     }
-    // Toda faixa com observação exibe o próprio percentual uma única vez; o
-    // IC só existe em faixas de 1 ponto.
-    const rateRows = libertadoresRows.filter((row) => /^\d{1,3},\d{2}%$/.test(valueOf(row).textContent ?? ''))
-    expect(rateRows.length).toBeGreaterThan(0)
-    for (const row of rateRows) {
-      const isRange = (row.querySelector('th')?.textContent ?? '').includes('–')
-      if (isRange) {
-        expect(row.querySelector('.magic-bar')).toHaveAccessibleName(/^De \d+ a \d+ pontos: \d{1,3},\d{2}% de classificado para a Libertadores; intervalo de confiança não exibido porque pode variar entre os pontos/)
-        expect(row.querySelector('.cell-ci')).toBeNull()
-      } else {
-        expect(row.querySelector('.magic-bar')).toHaveAccessibleName(/^Com \d+ pontos: \d{1,3},\d{2}% de classificado para a Libertadores; IC 95% /)
-      }
+    // Faixa de 2+ pontos não exibe IC; com observação, anuncia o próprio
+    // intervalo no nome acessível.
+    const rangeRows = libertadoresRows.filter((row) =>
+      (row.querySelector('th')?.textContent ?? '').includes('–')
+      && /^\d{1,3},\d{2}%$/.test(valueOf(row).textContent ?? ''))
+    for (const row of rangeRows) {
+      expect(row.querySelector('.cell-ci')).toBeNull()
+      expect(row.querySelector('.magic-bar')).toHaveAccessibleName(/^De \d+ a \d+ pontos: .*intervalo de confiança não exibido porque pode variar entre os pontos/)
     }
   })
 
@@ -501,7 +521,7 @@ describe('painel de projeções', () => {
     expect(within(table).queryByRole('row', { name: /50–52/ })).not.toBeInTheDocument()
     expect(screen.getByText(/Faixas agrupam pontos com o mesmo valor exibido/)).toBeVisible()
     expect(screen.getByText(/o percentual aparece uma vez por faixa/)).toBeVisible()
-    expect(screen.getByText(/nas faixas de um ponto, o IC só se repete quando difere da faixa anterior/)).toBeVisible()
+    expect(screen.getByText(/nas faixas de um ponto, o IC só é omitido quando repete o último IC exibido/)).toBeVisible()
     expect(screen.getByText(/IC 95% é omitido em faixas com mais de um ponto/)).toBeVisible()
   })
 
