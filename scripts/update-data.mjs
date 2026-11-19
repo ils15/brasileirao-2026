@@ -5,7 +5,7 @@
  *
  * Uso:
  *   node scripts/update-data.mjs --dry-run   # coleta/mostra diff sem escrever
- *   node scripts/update-data.mjs             # escreve, roda testes e commita
+ *   node scripts/update-data.mjs             # escreve, roda o gate de dados e commita
  *   node scripts/update-data.mjs --offline --no-commit --today=2026-11-16 \
  *     --test="npx vitest run src/a.test.tsx"  # reprodução determinística sem rede
  *

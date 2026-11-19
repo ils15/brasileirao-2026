@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_TEST_COMMAND, isIsoDate, isIsoInstant, parseUpdateArgs } from './updateArgs.mjs'
 
-describe('parseUpdateArgs — default preserva o comportamento atual', () => {
-  it('sem argumentos: escreve, roda `npm test` e commita', () => {
+describe('parseUpdateArgs — default da camada de contrato', () => {
+  it('sem argumentos: escreve, roda `npm run test:data` e commita', () => {
     expect(parseUpdateArgs([])).toEqual({
       dryRun: false,
       offline: false,
@@ -11,7 +11,7 @@ describe('parseUpdateArgs — default preserva o comportamento atual', () => {
       testCommand: DEFAULT_TEST_COMMAND,
       noCommit: false,
     })
-    expect(DEFAULT_TEST_COMMAND).toBe('npm test')
+    expect(DEFAULT_TEST_COMMAND).toBe('npm run test:data')
   })
 })
 

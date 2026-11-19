@@ -15,10 +15,12 @@
  *                   `src/sourceMetadata.ts` (reprodução independente do estado vivo).
  *                   Default: o corte do pacote, sem mudança de comportamento.
  * - `--test=<cmd>`  comando do gate executado antes do commit.
+ *                   Default: `npm run test:data` (contrato de dados). O gate
+ *                   completo (`npm test`) roda no workflow, antes da publicação.
  * - `--no-commit`   escreve módulos/snapshots/log e roda o gate, sem `git add/commit`.
  */
 
-export const DEFAULT_TEST_COMMAND = 'npm test'
+export const DEFAULT_TEST_COMMAND = 'npm run test:data'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/

@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:data": "vitest run scripts/data-assertions.test.mjs scripts/lib/dataPipeline.test.mjs scripts/lib/threesixfive.test.mjs scripts/lib/espnMatchEvents.test.mjs scripts/scorers-module.test.mjs scripts/refresh-espn-scorers.test.mjs scripts/lib/updateLog.test.mjs src/seasonStats.test.ts src/pointsDistribution.test.ts",
     "test:watch": "vitest",
     "smoke:pages": "node scripts/check-pages-build.mjs",
     "pack:history": "node scripts/pack-history.mjs",

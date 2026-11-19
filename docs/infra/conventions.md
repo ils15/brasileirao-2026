@@ -45,11 +45,29 @@ node scripts/update-data.mjs
 after=$(git rev-parse HEAD)
 ```
 
-- `before != after` → houve commit de dados: build, upload e deploy.
-- Árvore suja nos caminhos de dados → **fallback**: o workflow commita o que ficou
-  solto, com `::warning::`, para nunca publicar um `dist` sem o dado versionado.
+- `before != after` → houve commit de dados: suíte completa, push, build, upload e deploy.
+- Falha do updater → step vermelho com `::error::` listando `git status --porcelain`
+  nos caminhos de dados. **Não existe fallback** que commite árvore suja: o que o
+  updater não validou não é publicado, nem fica como alteração solta no runner.
 - No-op (nenhum resultado novo, ou regeneração idêntica) → `changed=false`, nenhum
   build nem deploy; o run termina rápido e verde.
+
+### 2.1. Gate em duas camadas
+
+| camada | onde roda | escopo | por quê |
+|---|---|---|---|
+| contrato de dados | `npm run test:data`, default do updater | sentinela de dados, parsers, módulos de dados e estatística pura — nunca UI/jsdom | a ingestão não pode ser refém de teste de apresentação que depende do pacote |
+| suíte completa | `npm test`, step `Full test suite gate` no workflow | repositório inteiro | regressão de UI/renderização continua bloqueando a publicação |
+
+O updater falha alto no contrato de dados; o workflow roda a suíte completa só
+quando `changed == 'true'` e **antes** do push, então um teste vermelho bloqueia a
+publicação mesmo já havendo commit local. Para reproduzir o gate completo no
+updater, `--test="npm test"`; o default não volta ao gate completo.
+
+Push do commit de dados: até 3 tentativas com `git fetch origin main` +
+`git rebase origin/main`; conflito em arquivo gerado aborta o rebase e o run com
+`::error::` (intervenção humana), nunca `--force`.
+
 
 Caminhos que contam como dado: `src/currentSeasonResults.ts`, `src/projectionData.ts`,
 `src/sourceMetadata.ts`, `src/advancedStats2026.ts`, `src/scorers2026.ts`,
@@ -101,6 +119,10 @@ em falha de release — foi assim que o pipeline parou por dias.
   sintética ou registro histórico imutável — nunca para o corte vigente.
 - O sentinela é tripwire de linha, não prova: um literal guardado em variável e
   afirmado depois ainda passa. Por isso os testes de dados importam os módulos.
+- O contrato de dados (`npm run test:data`, §2.1) é o que o updater roda: ele
+  cobre sentinela, parsers e módulos de dados. A suíte completa continua sendo o
+  gate de publicação no workflow — teste de UI que dependa do pacote não bloqueia
+  a coleta, mas bloqueia o push.
 
 ## 6. Alerta de frescor do Pages (não é gate)
 
@@ -136,7 +158,8 @@ em falha de release — foi assim que o pipeline parou por dias.
 
 ## 7. Checklist ao mexer no pipeline
 
-1. `npm test` — suíte completa, incluindo o sentinela de dados.
+1. `npm run test:data` durante o ciclo do pipeline e `npm test` — suíte completa,
+   incluindo o sentinela de dados — no gate final.
 2. `npm run build` — `tsc -b` + Vite; o build não pode depender de dado de rede.
 3. `npm run smoke:pages` — rebuilda com `GITHUB_PAGES=true` e valida assets e o
    worker sob `/brasileirao-2026/`.

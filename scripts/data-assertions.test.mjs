@@ -2,7 +2,8 @@
  * Sentinela antirregressão da suíte: um teste não pode voltar a cravar dado
  * que o pacote regenera a cada coleta automática.
  *
- * O cron pós-rodada roda `npm test` com dados recém-coletados; uma data de
+ * O pipeline roda o gate de dados (`npm run test:data`, este arquivo incluso)
+ * com dados recém-coletados e a suíte completa no workflow; uma data de
  * corte ou uma contagem do pacote escrita à mão transforma a atualização
  * automática em falha de release (foi assim que o pipeline parou por dias).
  *
