@@ -16,9 +16,13 @@ function escapeRegExp(value: string): string {
 
 /**
  * Conteúdo de aba lazy: o primeiro painel de Jogos paga o cold start do
- * backtest walk-forward (o mesmo motivo do testTimeout de 30s no vite.config).
+ * backtest walk-forward dentro do chunk lazy (o mesmo motivo do testTimeout
+ * de 30s no vite.config). No runner do CI o cold start levou ~11,8s, então
+ * 10s era marginal; 20s dá margem para o módulo frio e continua abaixo do
+ * testTimeout — se estourar aqui, a falha aponta a asserção com mensagem útil
+ * em vez de virar timeout genérico do teste.
  */
-const LAZY_TIMEOUT = 10_000
+const LAZY_TIMEOUT = 20_000
 
 describe('painel do Brasileirão 2026', () => {
   beforeEach(() => {
