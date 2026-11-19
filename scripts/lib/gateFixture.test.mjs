@@ -4,9 +4,14 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseEspnScoreboard } from './dataPipeline.mjs'
 import {
+  GATE_TEST_FILES,
+  SCORE_PALETTE,
   addUtcDays,
   buildFixtureBundle,
   buildScoreboardPayload,
+  enumerateGateCandidates,
+  failedGateTests,
+  gateCandidateSpaceSize,
   kickoffFor,
   parsePackedResults,
   pickSyntheticPairs,
@@ -156,6 +161,148 @@ describe('readFixtureBundle', () => {
     } finally {
       rmSync(directory, { recursive: true, force: true })
     }
+  })
+})
+
+describe('enumerateGateCandidates', () => {
+  const searchSchedule = Array.from({ length: 10 }, (_, position) => {
+    const index = position + 1
+    return {
+      ref: `R${String(index).padStart(2, '0')}`,
+      round: 30,
+      home: `casa-${index}`,
+      away: `fora-${index}`,
+    }
+  })
+  const alreadyPlayed = [{ home: 'casa-1', away: 'fora-1' }]
+
+  it('sempre inclui o primeiro pendente e devolve exatamente count pares', () => {
+    const candidates = enumerateGateCandidates({ schedule: searchSchedule, existing: alreadyPlayed })
+    expect(candidates.length).toBeGreaterThan(0)
+    for (const candidate of candidates) {
+      expect(candidate.pairs).toHaveLength(6)
+      expect(candidate.pairRefs).toContain('R02')
+      expect(candidate.pairRefs).toHaveLength(6)
+    }
+  })
+
+  it('é determinístico e numera os candidatos pela posição no espaço', () => {
+    const once = enumerateGateCandidates({ schedule: searchSchedule, existing: alreadyPlayed })
+    const twice = enumerateGateCandidates({ schedule: searchSchedule, existing: alreadyPlayed })
+    expect(twice).toEqual(once)
+    expect(once.map((candidate) => candidate.index)).toEqual(once.map((_, position) => position))
+  })
+
+  it('aplica o vetor da paleta por posição dentro do conjunto', () => {
+    const [first] = enumerateGateCandidates({ schedule: searchSchedule, existing: alreadyPlayed, maxAttempts: 1 })
+    const palette = SCORE_PALETTE.find((entry) => entry.id === first.scoreVector)
+    expect(palette).toBeDefined()
+    expect(first.pairs.map((pair) => [pair.homeGoals, pair.awayGoals])).toEqual(palette.scores.map(([home, away]) => [home, away]))
+  })
+
+  it('respeita o limite de tentativas e recusa limite inválido', () => {
+    const limited = enumerateGateCandidates({ schedule: searchSchedule, existing: alreadyPlayed, maxAttempts: 3 })
+    expect(limited).toHaveLength(3)
+    expect(() => enumerateGateCandidates({ schedule: searchSchedule, existing: alreadyPlayed, maxAttempts: 0 })).toThrow(/Limite de tentativas/)
+  })
+
+  it('falha alto quando o calendário não tem pendentes suficientes', () => {
+    expect(() => enumerateGateCandidates({ schedule: searchSchedule.slice(0, 2), existing: alreadyPlayed })).toThrow(/pendentes/)
+  })
+
+  it('expõe o tamanho do espaço antes do corte por tentativas', () => {
+    const size = gateCandidateSpaceSize({ schedule: searchSchedule, existing: alreadyPlayed })
+    expect(size).toBe(56 * SCORE_PALETTE.length)
+    const full = enumerateGateCandidates({ schedule: searchSchedule, existing: alreadyPlayed, maxAttempts: size })
+    expect(full).toHaveLength(size)
+    expect(new Set(full.map((candidate) => candidate.pairRefs.join(','))).size).toBe(56)
+  })
+})
+
+describe('failedGateTests', () => {
+  const files = ['src/A.test.tsx', 'src/B.test.tsx']
+
+  it('reconhece a linha FAIL e a linha de arquivo do relatório', () => {
+    const output = [
+      ' FAIL  src/A.test.tsx > caso > falha',
+      ' ❯ src/B.test.tsx (4 tests | 1 failed) 900ms',
+    ].join('\n')
+    expect([...failedGateTests(output, files)]).toEqual(['src/A.test.tsx', 'src/B.test.tsx'])
+  })
+
+  it('não confunde um arquivo aprovado com falha', () => {
+    const output = [' ✓ src/A.test.tsx (17 tests) 900ms', ' Test Files  1 passed (1)'].join('\n')
+    expect([...failedGateTests(output, files)]).toEqual([])
+  })
+})
+
+describe('manifest com registro da busca', () => {
+  const pairs = [
+    { ref: 'P1', round: 9, home: 'flamengo', away: 'palmeiras', homeGoals: 2, awayGoals: 1 },
+    { ref: 'P2', round: 9, home: 'santos', away: 'gremio', homeGoals: 0, awayGoals: 0 },
+  ]
+  const search = {
+    method: 'deterministic-bounded',
+    winningIndex: 0,
+    winningPairRefs: ['P1', 'P2'],
+    winningScoreVector: 'A',
+    attempts: 1,
+  }
+
+  it('grava expectedFailures e o registro da busca', () => {
+    const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length, search })
+    const manifest = JSON.parse(bundle.files.find((file) => file.path === 'manifest.json').content)
+    expect(manifest.expectedFailures).toEqual([...GATE_TEST_FILES])
+    expect(manifest.search).toEqual(search)
+  })
+
+  it('a leitura devolve expectedFailures e o registro da busca', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
+    try {
+      const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length, search })
+      for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
+      const read = readFixtureBundle(directory)
+      expect(read.expectedFailures).toEqual([...GATE_TEST_FILES])
+      expect(read.search).toEqual(search)
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('sem registro da busca, expectedFailures cai no gate estreito padrão', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
+    try {
+      const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length })
+      for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
+      const manifestPath = join(directory, 'manifest.json')
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+      delete manifest.expectedFailures
+      writeFileSync(manifestPath, serializeJson(manifest))
+      const read = readFixtureBundle(directory)
+      expect(read.expectedFailures).toEqual([...GATE_TEST_FILES])
+      expect(read.search).toBeNull()
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('recusa expectedFailures fora de src/**', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
+    try {
+      const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length })
+      for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
+      const manifestPath = join(directory, 'manifest.json')
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+      manifest.expectedFailures = ['scripts/algo.test.mjs']
+      writeFileSync(manifestPath, serializeJson(manifest))
+      expect(() => readFixtureBundle(directory)).toThrow(/fora de src/)
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('recusa contagem de pares diferente da esperada', () => {
+    expect(() => buildFixtureBundle({ targetDate, pairs: pairs.slice(0, 1) })).toThrow(/exige 6 pares/)
   })
 })
 

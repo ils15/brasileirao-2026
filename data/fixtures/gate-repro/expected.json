@@ -7,31 +7,15 @@
       "round": 35,
       "home": "flamengo",
       "away": "athletico-pr",
-      "homeGoals": 0,
+      "homeGoals": 2,
       "awayGoals": 1
-    },
-    {
-      "ref": "342",
-      "round": 35,
-      "home": "vasco",
-      "away": "internacional",
-      "homeGoals": 1,
-      "awayGoals": 0
     },
     {
       "ref": "343",
       "round": 35,
       "home": "sao-paulo",
       "away": "fluminense",
-      "homeGoals": 2,
-      "awayGoals": 1
-    },
-    {
-      "ref": "344",
-      "round": 35,
-      "home": "corinthians",
-      "away": "botafogo",
-      "homeGoals": 0,
+      "homeGoals": 4,
       "awayGoals": 0
     },
     {
@@ -39,14 +23,30 @@
       "round": 35,
       "home": "cruzeiro",
       "away": "palmeiras",
-      "homeGoals": 1,
+      "homeGoals": 2,
       "awayGoals": 1
     },
     {
-      "ref": "347",
+      "ref": "348",
       "round": 35,
-      "home": "gremio",
-      "away": "bahia",
+      "home": "coritiba",
+      "away": "santos",
+      "homeGoals": 0,
+      "awayGoals": 0
+    },
+    {
+      "ref": "349",
+      "round": 35,
+      "home": "vitoria",
+      "away": "bragantino",
+      "homeGoals": 0,
+      "awayGoals": 1
+    },
+    {
+      "ref": "350",
+      "round": 35,
+      "home": "remo",
+      "away": "chapecoense",
       "homeGoals": 2,
       "awayGoals": 0
     }

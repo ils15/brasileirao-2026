@@ -23,15 +23,15 @@
           "competitors": [
             {
               "homeAway": "home",
-              "winner": false,
-              "score": "0",
+              "winner": true,
+              "score": "2",
               "team": {
                 "displayName": "Flamengo"
               }
             },
             {
               "homeAway": "away",
-              "winner": true,
+              "winner": false,
               "score": "1",
               "team": {
                 "displayName": "Athletico Paranaense"
@@ -42,43 +42,8 @@
       ]
     },
     {
-      "id": "gate-342",
-      "date": "2026-11-16T19:00:00Z",
-      "name": "Vasco da Gama at Internacional",
-      "status": {
-        "type": {
-          "state": "post",
-          "completed": true,
-          "detail": "FT",
-          "shortDetail": "FT"
-        }
-      },
-      "competitions": [
-        {
-          "competitors": [
-            {
-              "homeAway": "home",
-              "winner": true,
-              "score": "1",
-              "team": {
-                "displayName": "Vasco da Gama"
-              }
-            },
-            {
-              "homeAway": "away",
-              "winner": false,
-              "score": "0",
-              "team": {
-                "displayName": "Internacional"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "gate-343",
-      "date": "2026-11-16T20:00:00Z",
+      "date": "2026-11-16T19:00:00Z",
       "name": "São Paulo at Fluminense",
       "status": {
         "type": {
@@ -94,7 +59,7 @@
             {
               "homeAway": "home",
               "winner": true,
-              "score": "2",
+              "score": "4",
               "team": {
                 "displayName": "São Paulo"
               }
@@ -102,7 +67,7 @@
             {
               "homeAway": "away",
               "winner": false,
-              "score": "1",
+              "score": "0",
               "team": {
                 "displayName": "Fluminense"
               }
@@ -112,43 +77,8 @@
       ]
     },
     {
-      "id": "gate-344",
-      "date": "2026-11-16T21:00:00Z",
-      "name": "Corinthians at Botafogo",
-      "status": {
-        "type": {
-          "state": "post",
-          "completed": true,
-          "detail": "FT",
-          "shortDetail": "FT"
-        }
-      },
-      "competitions": [
-        {
-          "competitors": [
-            {
-              "homeAway": "home",
-              "winner": false,
-              "score": "0",
-              "team": {
-                "displayName": "Corinthians"
-              }
-            },
-            {
-              "homeAway": "away",
-              "winner": false,
-              "score": "0",
-              "team": {
-                "displayName": "Botafogo"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "gate-346",
-      "date": "2026-11-16T22:00:00Z",
+      "date": "2026-11-16T20:00:00Z",
       "name": "Cruzeiro at Palmeiras",
       "status": {
         "type": {
@@ -163,8 +93,8 @@
           "competitors": [
             {
               "homeAway": "home",
-              "winner": false,
-              "score": "1",
+              "winner": true,
+              "score": "2",
               "team": {
                 "displayName": "Cruzeiro"
               }
@@ -182,9 +112,79 @@
       ]
     },
     {
-      "id": "gate-347",
+      "id": "gate-348",
+      "date": "2026-11-16T21:00:00Z",
+      "name": "Coritiba at Santos",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Coritiba"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Santos"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gate-349",
+      "date": "2026-11-16T22:00:00Z",
+      "name": "Vitória at Red Bull Bragantino",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Vitória"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": true,
+              "score": "1",
+              "team": {
+                "displayName": "Red Bull Bragantino"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gate-350",
       "date": "2026-11-16T23:00:00Z",
-      "name": "Grêmio at Bahia",
+      "name": "Remo at Chapecoense",
       "status": {
         "type": {
           "state": "post",
@@ -201,7 +201,7 @@
               "winner": true,
               "score": "2",
               "team": {
-                "displayName": "Grêmio"
+                "displayName": "Remo"
               }
             },
             {
@@ -209,7 +209,7 @@
               "winner": false,
               "score": "0",
               "team": {
-                "displayName": "Bahia"
+                "displayName": "Chapecoense"
               }
             }
           ]

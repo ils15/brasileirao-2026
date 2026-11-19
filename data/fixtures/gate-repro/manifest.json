@@ -7,11 +7,38 @@
   "payloads": [
     {
       "path": "espn-scoreboard-2026-11-16.json",
-      "sha256": "7fdc4739b022e34ac97c5e52d69cdda964c29161f82dbd3ed34fb4adf4e3cc3e"
+      "sha256": "b15d9cd6ae96033dbf2d29e5572c7c561a8d00f6c80ec163241bde0aa53dcd8d"
     }
   ],
   "expected": {
     "path": "expected.json",
-    "sha256": "b3c8ded9de11ca51defeacb9141227e128604f4084f026373db90179b915a604"
+    "sha256": "93d73a00b7487b65062922286f7259c7aad0afba749852abc9c5cef58e4677a5"
+  },
+  "expectedFailures": [
+    "src/ProjectionSection.test.tsx",
+    "src/MatchSimulator.test.tsx"
+  ],
+  "search": {
+    "method": "deterministic-bounded",
+    "version": 1,
+    "winningIndex": 10,
+    "winningPairRefs": [
+      "341",
+      "343",
+      "346",
+      "348",
+      "349",
+      "350"
+    ],
+    "winningScoreVector": "A",
+    "attempts": 11,
+    "spaceSize": 112,
+    "attemptSpace": 40,
+    "maxAttempts": 40,
+    "deadlineMinutes": 15,
+    "order": "ref médio decrescente; desempate pela lista de refs",
+    "space": "6 pares entre os 9 primeiros pendentes por ref, sempre com o primeiro, × 2 vetores fixos de placar",
+    "scoreSource": "paleta fixa e sintética (SCORE_PALETTE) — nenhum placar de origem real",
+    "gateCommand": "npx vitest run src/ProjectionSection.test.tsx src/MatchSimulator.test.tsx"
   }
 }

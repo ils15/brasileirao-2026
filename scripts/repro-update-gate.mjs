@@ -7,11 +7,15 @@
  * 2. Copia os payloads da fixture para `data/source-snapshots/`.
  * 3. Roda o updater com `--offline --no-commit --today=<corte+1>` e o gate estreito.
  * 4. Exige que o pacote tenha se movido (`Novos efetivos: <added>`), senão sai 3.
- * 5. Restaura os caminhos de dados no `finally` e confere que ficaram limpos, senão sai 4.
- * 6. Propaga o código do updater: 1 = deadlock reproduzido, 0 = destravado.
+ * 5. Com o gate vermelho, exige que **todos** os `expectedFailures` do manifest
+ *    apareçam na saída — uma fixture que só quebra um dos testes não protege a
+ *    correção, e o harness sai 5 mandando regenerar.
+ * 6. Restaura os caminhos de dados no `finally` e confere que ficaram limpos, senão sai 4.
+ * 7. Propaga o código do updater: 1 = deadlock reproduzido, 0 = destravado.
  *
  * Códigos: 0 ok · 1 gate vermelho (esperado antes de T03/T04) · 2 árvore suja ·
- * 3 fixture não moveu o pacote · 4 restauração falhou.
+ * 3 fixture não moveu o pacote · 4 restauração falhou · 5 fixture não reproduz
+ * as duas falhas declaradas.
  */
 
 import { spawnSync } from 'node:child_process'
@@ -19,7 +23,7 @@ import { copyFileSync, existsSync, readFileSync, rmSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { readCurrentCutoff } from './lib/dataPipeline.mjs'
-import { addUtcDays, listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
+import { addUtcDays, failedGateTests, listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const fixtureDir = join(root, 'data/fixtures/gate-repro')
@@ -117,13 +121,28 @@ function main() {
 
     const expectedLine = `Novos efetivos: ${fixture.added}`
     const moved = run.stdout.split('\n').some((line) => line.startsWith(expectedLine))
+    const failures = failedGateTests(`${run.stdout}\n${run.stderr}`, fixture.expectedFailures)
+    const gateStatus = run.status ?? 1
+
     if (!moved) {
       console.error(`repro:gate: fixture não moveu o pacote — esperava "${expectedLine}".`)
       const seen = run.stdout.split('\n').find((line) => line.startsWith('Novos efetivos:')) ?? '(sem linha "Novos efetivos")'
       console.error(`  observado: ${seen}`)
+      console.error('  Rode `npm run fixture:gate` para regenerar a fixture.')
       exitCode = 3
+    } else if (gateStatus === 0) {
+      // Gate verde: deadlock destravado (estado pós-correção).
+      exitCode = 0
     } else {
-      exitCode = run.status ?? 1
+      const missing = fixture.expectedFailures.filter((file) => !failures.has(file))
+      if (missing.length > 0) {
+        console.error('repro:gate: fixture não reproduz o deadlock; rode npm run fixture:gate')
+        console.error(`  esperava vermelhos: ${fixture.expectedFailures.join(', ')}`)
+        console.error(`  vermelhos observados: ${[...failures].join(', ') || 'nenhum'}`)
+        exitCode = 5
+      } else {
+        exitCode = gateStatus
+      }
     }
   } finally {
     try {
@@ -141,11 +160,13 @@ function main() {
     return 4
   }
 
-  console.log(
-    exitCode === 0
-      ? 'repro:gate: gate verde com a fixture — o deadlock está destravado.'
-      : `repro:gate: gate vermelho com a fixture (exit ${exitCode}) — deadlock reproduzido; árvore restaurada.`,
-  )
+  if (exitCode === 0) {
+    console.log('repro:gate: gate verde com a fixture — o deadlock está destravado.')
+  } else if (exitCode === 5) {
+    console.log('repro:gate: fixture não reproduz o deadlock; árvore restaurada.')
+  } else {
+    console.log(`repro:gate: gate vermelho com a fixture (exit ${exitCode}) — deadlock reproduzido; árvore restaurada.`)
+  }
   return exitCode
 }
 

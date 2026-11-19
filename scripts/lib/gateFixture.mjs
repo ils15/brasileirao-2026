@@ -22,6 +22,32 @@ export const FIXTURE_ID = 'gate-repro'
 export const FIXTURE_KIND = 'synthetic'
 export const DEFAULT_PAIR_COUNT = 6
 
+/** Arquivos do gate estreito: o harness só aceita a fixture se os dois ficarem vermelhos. */
+export const GATE_TEST_FILES = Object.freeze(['src/ProjectionSection.test.tsx', 'src/MatchSimulator.test.tsx'])
+export const GATE_TEST_COMMAND = `npx vitest run ${GATE_TEST_FILES.join(' ')}`
+
+/** Limites da busca que escolhe a fixture (tentativas = execuções do gate). */
+export const GATE_SEARCH_LIMITS = Object.freeze({ maxAttempts: 40, deadlineMinutes: 15 })
+
+/**
+ * Versão do algoritmo de busca. Entra no manifest: se espaço, ordem ou paleta
+ * mudarem, o vencedor registrado deixa de ser reaproveitado e a busca roda de novo.
+ */
+export const GATE_SEARCH_VERSION = 1
+
+/** Pendentes extras além dos 6 jogados: janela de onde os conjuntos são combinados. */
+const SEARCH_WINDOW_EXTRA = 3
+
+/**
+ * Paleta FIXA de placares da busca. Nenhum placar aqui tem origem real: são
+ * resultados plausíveis inventados, gravados como literal para que a busca seja
+ * determinística. O vetor é aplicado por posição dentro do conjunto de 6 pares.
+ */
+export const SCORE_PALETTE = Object.freeze([
+  Object.freeze({ id: 'A', scores: Object.freeze([[2, 1], [4, 0], [2, 1], [0, 0], [0, 1], [2, 0]]) }),
+  Object.freeze({ id: 'B', scores: Object.freeze([[1, 0], [2, 1], [1, 1], [3, 0], [0, 0], [1, 2]]) }),
+])
+
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const SCOREBOARD_FILE = /^espn-scoreboard-\d{4}-\d{2}-\d{2}\.json$/
 const SCOREBOARD_SCHEMA_VERSION = 1
@@ -61,24 +87,113 @@ export function syntheticScoreFor(index) {
 }
 
 /**
+ * Pares pendentes em ordem de `ref`: o par ordenado (casa, fora) está fora dos
+ * resultados empacotados.
+ */
+export function pendingFixtures({ schedule, existing }) {
+  if (!Array.isArray(schedule) || schedule.length === 0) throw new Error('pendingFixtures exige um calendário não vazio')
+  if (!Array.isArray(existing)) throw new Error('pendingFixtures exige os resultados empacotados')
+  const played = new Set(existing.map((match) => `${match.home}:${match.away}`))
+  return schedule
+    .filter((fixture) => !played.has(`${fixture.home}:${fixture.away}`))
+    .sort((left, right) => left.ref.localeCompare(right.ref))
+}
+
+/**
  * Os `count` primeiros pares pendentes em ordem de `ref` do calendário CBF.
  * "Pendente" = par ordenado (casa, fora) ausente dos resultados empacotados.
  */
 export function pickSyntheticPairs({ schedule, existing, count = DEFAULT_PAIR_COUNT }) {
-  if (!Array.isArray(schedule) || schedule.length === 0) throw new Error('pickSyntheticPairs exige um calendário não vazio')
-  if (!Array.isArray(existing)) throw new Error('pickSyntheticPairs exige os resultados empacotados')
   if (!Number.isInteger(count) || count < 1) throw new Error(`Contagem inválida de pares: ${count}`)
 
-  const played = new Set(existing.map((match) => `${match.home}:${match.away}`))
-  const pending = schedule
-    .filter((fixture) => !played.has(`${fixture.home}:${fixture.away}`))
-    .sort((left, right) => left.ref.localeCompare(right.ref))
-
+  const pending = pendingFixtures({ schedule, existing })
   if (pending.length < count) {
     throw new Error(`Calendário tem ${pending.length} pendentes; a fixture exige ${count}.`)
   }
 
   return pending.slice(0, count).map((fixture, index) => ({ ...fixture, ...syntheticScoreFor(index) }))
+}
+
+/** Combinações de `size` itens, em ordem lexicográfica da entrada. */
+function combinations(items, size) {
+  if (size === 0) return [[]]
+  if (items.length < size) return []
+  const [head, ...tail] = items
+  return [
+    ...combinations(tail, size - 1).map((rest) => [head, ...rest]),
+    ...combinations(tail, size),
+  ]
+}
+
+function meanRef(fixtures) {
+  return fixtures.reduce((total, fixture) => total + Number.parseInt(fixture.ref, 10), 0) / fixtures.length
+}
+
+function compareRefLists(left, right) {
+  for (let index = 0; index < Math.min(left.length, right.length); index += 1) {
+    const order = left[index].ref.localeCompare(right[index].ref)
+    if (order !== 0) return order
+  }
+  return left.length - right.length
+}
+
+/**
+ * Espaço de busca da fixture, determinístico e finito.
+ *
+ * Os conjuntos saem dos `count + 3` primeiros pendentes por `ref`, **sempre com
+ * o primeiro** (é o confronto que o simulador renderiza por padrão; tirá-lo é o
+ * que deixa o teste do simulador vermelho). Cada conjunto recebe, por posição,
+ * um vetor fixo de `SCORE_PALETTE`.
+ *
+ * Ordem: `ref` médio decrescente — os conjuntos que incluem os confrontos do fim
+ * da rodada vêm primeiro, porque a falha do painel de projeções aparece na faixa
+ * de pontuação dos clubes de tabela mais baixa. É heurística declarada, não
+ * afirmação de otimalidade; o resultado é o mesmo em qualquer máquina.
+ */
+export function enumerateGateCandidates({ schedule, existing, count = DEFAULT_PAIR_COUNT, maxAttempts = GATE_SEARCH_LIMITS.maxAttempts }) {
+  if (!Number.isInteger(maxAttempts) || maxAttempts < 1) throw new Error(`Limite de tentativas inválido: ${maxAttempts}`)
+
+  const pending = pendingFixtures({ schedule, existing })
+  const window = pending.slice(0, count + SEARCH_WINDOW_EXTRA)
+  if (window.length < count) {
+    throw new Error(`Calendário tem ${pending.length} pendentes; a busca exige ao menos ${count}.`)
+  }
+
+  const [anchor, ...rest] = window
+  const sets = combinations(rest, count - 1)
+    .map((subset) => [anchor, ...subset].sort((left, right) => left.ref.localeCompare(right.ref)))
+    .sort((left, right) => meanRef(right) - meanRef(left) || compareRefLists(left, right))
+
+  const candidates = []
+  for (const set of sets) {
+    for (const palette of SCORE_PALETTE) {
+      candidates.push({
+        index: candidates.length,
+        pairRefs: set.map((fixture) => fixture.ref),
+        scoreVector: palette.id,
+        pairs: set.map((fixture, position) => ({
+          ...fixture,
+          homeGoals: palette.scores[position][0],
+          awayGoals: palette.scores[position][1],
+        })),
+      })
+    }
+  }
+
+  return candidates.slice(0, maxAttempts)
+}
+
+/**
+ * Tamanho do espaço completo de candidatos (antes do corte por tentativas).
+ * O manifest registra os dois números para não sugerir que a busca foi exaustiva.
+ */
+export function gateCandidateSpaceSize({ schedule, existing, count = DEFAULT_PAIR_COUNT }) {
+  const pending = pendingFixtures({ schedule, existing })
+  const window = pending.slice(0, count + SEARCH_WINDOW_EXTRA)
+  if (window.length < count) {
+    throw new Error(`Calendário tem ${pending.length} pendentes; a busca exige ao menos ${count}.`)
+  }
+  return combinations(window.slice(1), count - 1).length * SCORE_PALETTE.length
 }
 
 /** Instante UTC do kickoff sintético: 18h..23h do dia da coleta (≤ 23:59:59Z). */
@@ -138,18 +253,21 @@ export function parsePackedResults(source) {
  * Conteúdo completo da fixture (payload + expected + manifest com sha256).
  * Devolve `files` em ordem estável para escrita determinística no disco.
  */
-export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_COUNT, targetDate }) {
+export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_COUNT, targetDate, pairs, search }) {
   if (!ISO_DATE.test(targetDate)) throw new Error(`targetDate inválido: ${targetDate}`)
-  const pairs = pickSyntheticPairs({ schedule, existing, count })
+  const resolvedPairs = pairs ?? pickSyntheticPairs({ schedule, existing, count })
+  if (!Array.isArray(resolvedPairs) || resolvedPairs.length !== count) {
+    throw new Error(`A fixture exige ${count} pares; recebeu ${Array.isArray(resolvedPairs) ? resolvedPairs.length : 'nada'}.`)
+  }
   const payloadName = `espn-scoreboard-${targetDate}.json`
 
-  const payload = buildScoreboardPayload({ targetDate, pairs })
+  const payload = buildScoreboardPayload({ targetDate, pairs: resolvedPairs })
   const payloadContent = serializeJson(payload)
 
   const expectedContent = serializeJson({
     targetDate,
-    added: pairs.length,
-    newResults: pairs.map((pair) => ({
+    added: resolvedPairs.length,
+    newResults: resolvedPairs.map((pair) => ({
       ref: pair.ref,
       round: pair.round,
       home: pair.home,
@@ -164,14 +282,16 @@ export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_CO
     kind: FIXTURE_KIND,
     warning: 'DADOS SINTÉTICOS — não é coleta real; ver README.md desta pasta',
     targetDate,
-    added: pairs.length,
+    added: resolvedPairs.length,
     payloads: [{ path: payloadName, sha256: sha256(payloadContent) }],
     expected: { path: 'expected.json', sha256: sha256(expectedContent) },
+    expectedFailures: [...GATE_TEST_FILES],
+    ...(search ? { search } : {}),
   })
 
   return {
     targetDate,
-    pairs,
+    pairs: resolvedPairs,
     files: [
       { path: payloadName, content: payloadContent },
       { path: 'expected.json', content: expectedContent },
@@ -221,7 +341,17 @@ export function readFixtureBundle(directory) {
     throw new Error(`expected.added (${expected.added}) difere de manifest.added (${manifest.added})`)
   }
 
-  return { targetDate: manifest.targetDate, added: manifest.added, payloads, expected }
+  const expectedFailures = manifest.expectedFailures ?? [...GATE_TEST_FILES]
+  if (!Array.isArray(expectedFailures) || expectedFailures.length === 0) {
+    throw new Error(`expectedFailures inválido no manifest: ${JSON.stringify(manifest.expectedFailures)}`)
+  }
+  for (const file of expectedFailures) {
+    if (typeof file !== 'string' || !/^src\/[\w./-]+\.test\.tsx?$/.test(file)) {
+      throw new Error(`expectedFailures aponta caminho fora de src/**: ${file}`)
+    }
+  }
+
+  return { targetDate: manifest.targetDate, added: manifest.added, payloads, expected, expectedFailures, search: manifest.search ?? null }
 }
 
 /** Payloads de scoreboard presentes numa pasta (ordem estável). */
@@ -229,4 +359,16 @@ export function listScoreboardPayloads(directory) {
   return readdirSync(directory)
     .filter((file) => SCOREBOARD_FILE.test(file))
     .sort()
+}
+
+/** Arquivos do gate que apareceram vermelhos na saída do vitest. */
+export function failedGateTests(output, files = GATE_TEST_FILES) {
+  const failures = new Set()
+  for (const file of files) {
+    const escaped = file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    if (new RegExp(`FAIL\\s+${escaped}`).test(output) || new RegExp(`❯\\s+${escaped}\\s+\\([^)]*failed`).test(output)) {
+      failures.add(file)
+    }
+  }
+  return failures
 }
