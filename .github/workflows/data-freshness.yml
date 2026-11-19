@@ -1,0 +1,137 @@
+name: Alarme de frescor dos dados
+
+# Alarme que se sustenta sozinho: não depende de push, deploy ou do updater.
+# `update-data.yml` pode parar de commitar — este workflow continua acordando e
+# gritando quando o corte analítico envelhece além do limite.
+on:
+  schedule:
+    # Três vezes por dia (06h/12h/18h em Brasília). O updater roda a cada 2h;
+    # 24h de idade já significa que várias rodadas falharam em publicar.
+    - cron: '0 9,15,21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # `actions: read` é exigido por `gh run list`, que conta as falhas
+  # consecutivas. Sem ela a contagem falha e o alarme abre issue toda vez.
+  actions: read
+  issues: write
+
+concurrency:
+  group: data-freshness
+  cancel-in-progress: false
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      ISSUE_TITLE: '[alarme] Pacote de dados defasado'
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      # Sem `npm ci`/`npm install`: o alarme usa só a stdlib do Node e lê
+      # `src/sourceMetadata.ts`. Instalar dependências só criaria mais um ponto
+      # de falha para um verificador que precisa funcionar quando tudo falha.
+      - name: Check data package freshness
+        id: check
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/check-data-freshness.mjs --max-age-hours=24 | tee freshness.log
+      - name: Report staleness
+        if: steps.check.outcome == 'failure'
+        run: |
+          set -euo pipefail
+
+          # Falhas consecutivas: esta + as imediatamente anteriores do workflow.
+          # O run atual aparece como in-progress (conclusion nula), então ele é
+          # descartado pelo id e contado à parte.
+          consecutive=1
+          if runs=$(gh run list --workflow=data-freshness.yml --limit 5 --json databaseId,conclusion); then
+            prior=$(printf '%s' "$runs" | jq -r --arg me "$GITHUB_RUN_ID" '
+              [ .[] | select((.databaseId | tostring) != $me) | .conclusion ]
+              | map(select(. != null and . != ""))
+              | reduce .[] as $c ({ failures: 0, stopped: false };
+                  if .stopped then .
+                  elif ($c == "failure" or $c == "timed_out" or $c == "startup_failure") then .failures += 1
+                  else .stopped = true end)
+              | .failures')
+            consecutive=$((prior + 1))
+            echo "Falhas consecutivas (incluindo esta): $consecutive (${prior} anterior(es))."
+          else
+            # Listar runs falhou (permissão, API fora do ar, workflow recém-criado
+            # sem histórico). Na dúvida, lado ruidoso: abre a issue mesmo assim.
+            echo "::warning::gh run list falhou; assumindo reincidência e abrindo a issue."
+            consecutive=2
+          fi
+
+          if [ "$consecutive" -lt 2 ]; then
+            echo "::notice::Primeira execução com falha; a issue abre se a próxima também falhar — o run agendado seguinte continua sendo o alarme."
+            exit 0
+          fi
+
+          {
+            echo 'O pacote de dados versionado passou do limite de idade. Isto significa que o updater não publicou dados novos (ou o push do workflow não chegou em `main`).'
+            echo
+            echo "Falhas consecutivas deste alarme: **$consecutive**"
+            echo
+            echo '```'
+            cat freshness.log
+            echo '```'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > issue-body.md
+
+          # Dedupe por título exato, sem depender da sintaxe de busca do GitHub.
+          open_issue=$(gh issue list --state open --limit 200 --json number,title \
+            | jq -r --arg t "$ISSUE_TITLE" '[ .[] | select(.title == $t) | .number ] | first // empty')
+          if [ -n "$open_issue" ]; then
+            gh issue comment "$open_issue" --body-file issue-body.md
+            echo "Issue #$open_issue já aberta: comentário adicionado."
+            exit 0
+          fi
+
+          closed_issue=$(gh issue list --state closed --limit 200 --json number,title \
+            | jq -r --arg t "$ISSUE_TITLE" '[ .[] | select(.title == $t) | .number ] | first // empty')
+          if [ -n "$closed_issue" ]; then
+            gh issue reopen "$closed_issue"
+            gh issue comment "$closed_issue" --body-file issue-body.md
+            echo "Issue #$closed_issue reaberta e comentada."
+            exit 0
+          fi
+
+          gh issue create --title "$ISSUE_TITLE" --body-file issue-body.md
+      - name: Close stale alarm
+        if: steps.check.outcome == 'success'
+        # Falha de `gh` aqui não pode marcar o run como falho: a contagem de
+        # falhas consecutivas lê `conclusion` e abriria issue por engano.
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          open_issue=$(gh issue list --state open --limit 200 --json number,title \
+            | jq -r --arg t "$ISSUE_TITLE" '[ .[] | select(.title == $t) | .number ] | first // empty')
+          if [ -z "$open_issue" ]; then
+            echo "Pacote em dia; nenhuma issue de alarme aberta."
+            exit 0
+          fi
+          {
+            echo 'O pacote de dados voltou a ficar dentro do limite de idade; fechando o alarme.'
+            echo
+            echo '```'
+            cat freshness.log
+            echo '```'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > close-body.md
+          gh issue comment "$open_issue" --body-file close-body.md
+          gh issue close "$open_issue" --reason completed
+          echo "Issue #$open_issue fechada."

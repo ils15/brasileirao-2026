@@ -7,7 +7,7 @@ Aplicam-se a `scripts/**`; regras do projeto em `../AGENTS.md`.
 - `update-data.mjs` orquestra a coleta pós-rodada: Football-Data + ESPN (e secundárias), concilia com o calendário CBF, regenera módulos, roda a suíte e commita. `--dry-run` coleta e mostra o diff sem escrever.
 - `lib/dataPipeline.mjs` concentra parsers e validações puras; `lib/threesixfive.mjs` (xG/cartões), `lib/espnMatchEvents.mjs` (gols/cartões por partida da ESPN) e `lib/apifutebolbr.mjs` (descontinuado) têm parsers por fonte.
 - `pack-history.mjs` empacota 2003–2025 em `src/historicalSeasons.ts`; `crosscheck-wikipedia.mjs` grava `reports/crosscheck-2003-2011.md` e `reports/conflicts.json`; `check-pages-build.mjs` é o `npm run smoke:pages`.
-- `backfill-xg-cards.mjs` e `refresh-espn-scorers.mjs` rodam isolados ou por chamada do updater (`refresh-apifutebolbr.mjs` está descontinuado e não é chamado); `install-hooks.mjs` instala `.githooks`; `check-deploy-freshness.mjs` é alerta de CI (sempre sai com 0).
+- `backfill-xg-cards.mjs` e `refresh-espn-scorers.mjs` rodam isolados ou por chamada do updater (`refresh-apifutebolbr.mjs` está descontinuado e não é chamado); `install-hooks.mjs` instala `.githooks`; `check-deploy-freshness.mjs` é alerta de CI (sempre sai com 0) e `check-data-freshness.mjs` (com `lib/freshness.mjs`) é o alarme agendado de defasagem, que reprova o run.
 
 ## Regras
 

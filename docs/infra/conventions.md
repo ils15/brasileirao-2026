@@ -117,6 +117,23 @@ em falha de release — foi assim que o pipeline parou por dias.
   o deploy. Se aparecer warning recorrente, é sinal de build publicado errado, não
   de pipeline quebrado.
 
+## 6.1. Alarme de defasagem do pacote (independe de push)
+
+`scripts/check-data-freshness.mjs` + `scripts/lib/freshness.mjs`, workflow
+`.github/workflows/data-freshness.yml` (cron `0 9,15,21 * * *` + dispatch):
+
+- Lê apenas `ANALYTICAL_CUTOFF_UTC` de `src/sourceMetadata.ts` (ou `--cutoff=`) e
+  compara com o relógio: sem rede, sem `npm ci`, sem dependência nova.
+- `--max-age-hours` (padrão 24) é o limite; limite **inclusivo** — idade igual ao
+  limite já é defasagem. Sai 0 fresco, 1 defasado, 2 erro de parsing (corte
+  ausente/inválido). Diferente do alarme do Pages, este reprova o run.
+- Em falha, abre/comenta/reabre a issue `[alarme] Pacote de dados defasado`
+  **após 2 falhas consecutivas** (contadas por `gh run list`); se `gh` não
+  listar os runs, abre assim mesmo (lado ruidoso). Quando volta a passar, comenta
+  e fecha a issue.
+- Existe porque o alarme do Pages só roda em push/deploy: quando o updater parou
+  de empurrar, ele nunca executou e a defasagem ficou dias em silêncio.
+
 ## 7. Checklist ao mexer no pipeline
 
 1. `npm test` — suíte completa, incluindo o sentinela de dados.
