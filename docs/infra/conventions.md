@@ -158,22 +158,51 @@ em falha de release — foi assim que o pipeline parou por dias.
   gate de publicação no workflow — teste de UI que dependa do pacote não bloqueia
   a coleta, mas bloqueia o push.
 
-## 6. Alerta de frescor do Pages (não é gate)
+## 6. Sonda de frescor do Pages (não é gate)
 
-`scripts/check-deploy-freshness.mjs`, job `freshness` em `.github/workflows/pages.yml`
-(`needs: pages`, só em push para `main`):
+`scripts/check-deploy-freshness.mjs` compara o bundle publicado
+(`assets/index-*.js`) com o repositório. Duas identidades são aceitas:
 
-- Lê `ANALYTICAL_CUTOFF_UTC`/`_LOCAL` de `src/sourceMetadata.ts` (ou `--expect=`),
-  busca o site publicado, extrai `assets/index-*.js` e procura o corte no bundle.
-- 1 sondagem imediata + até 2 retries (15s/30s, `FRESHNESS_BACKOFF_MS`) para
-  propagação do CDN.
-- Resultado **sempre** em `::notice::` (em dia) ou `::warning::` (defasagem
-  suspeita); rede/CDN indisponível também vira `::notice::`. Sai com código 0,
-  com `continue-on-error` no job e no passo: nunca atrasa, condiciona ou reprova
-  o deploy. Se aparecer warning recorrente, é sinal de build publicado errado, não
-  de pipeline quebrado.
+- `--expect-sha=<sha>` procura o SHA do build (`__BUILD_SHA__`, gravado por
+  `vite.config.ts`; completo ou prefixo ≥7) dentro do bundle. É a checagem mais
+  forte: o SHA só está no arquivo se o build veio daquele commit — que também
+  contém o corte.
+- Sem `--expect-sha`, procura `ANALYTICAL_CUTOFF_UTC`/`_LOCAL` de
+  `src/sourceMetadata.ts` (ou `--expect=<corte>`): o contrato antigo, preservado
+  para uso manual.
 
-## 6.1. Alarme de defasagem do pacote (independe de push)
+`--backoff=0,30000,120000` define as esperas entre sondagens (padrão 15s/30s).
+`--strict` troca o modo advisory pelos códigos de saída 0 (em dia), 1 (bundle
+de outro commit) e 2 (não foi possível verificar: rede/HTTP ou argumento
+inválido). Sem `--strict` o script é o alarme de sempre: sai 0, escreve
+`::notice::`/`::warning::` e nunca derruba o run.
+
+## 6.1. Duas camadas: sonda advisory no deploy + sonda agendada strict
+
+| camada | onde | quando roda | código de saída |
+|---|---|---|---|
+| advisory | job `freshness` de `pages.yml` (`needs: pages`) | só em push para `main`, depois de publicar | sempre 0, `continue-on-error` |
+| strict | job `published` de `data-freshness.yml` | cron `0 9,15,21 * * *` + dispatch, sem `npm ci` | 0 em dia; 1/2 reprovam o run |
+
+- A camada advisory dá contexto no run que publicou, mas não vê o deploy que
+  nunca aconteceu: ela só roda atrás de um push.
+- A camada strict fecha a lacuna. Faz checkout de `main`, compara o bundle com
+  o HEAD (`--expect-sha --strict`) e, antes de concluir falha, consulta
+  `gh run list --workflow=pages.yml --limit 3 --json status`; se houver run
+  `in_progress`/`queued`, emite `::notice::Propagação de deploy em curso` e
+  encerra em 0, porque o commit pode estar a caminho.
+- A issue `[alarme] Site publicado defasado` segue a política do alarme de
+  dados: abre/comenta/reabre na segunda falha consecutiva (contada por
+  `gh run list`), dedupe por título, e fecha quando o bundle volta a bater.
+  Diferente do alarme de dados, o run fica vermelho em toda falha: a contagem
+  lê `conclusion`, e um run verde nunca acumularia a sequência.
+- Janela de propagação: na medição que originou esta sonda, 1 em 3 deploys
+  consecutivos ainda via o bundle anterior na primeira tentativa. Por isso o
+  strict espera 0s/30s/120s antes de acusar — e a guarda de deploy em curso
+  decide antes da issue. A janela real depende do CDN; o padrão advisory
+  continua 15s/30s.
+
+## 6.2. Alarme de defasagem do pacote (independe de push)
 
 `scripts/check-data-freshness.mjs` + `scripts/lib/freshness.mjs`, workflow
 `.github/workflows/data-freshness.yml` (cron `0 9,15,21 * * *` + dispatch):
@@ -182,7 +211,9 @@ em falha de release — foi assim que o pipeline parou por dias.
   compara com o relógio: sem rede, sem `npm ci`, sem dependência nova.
 - `--max-age-hours` (padrão 24) é o limite; limite **inclusivo** — idade igual ao
   limite já é defasagem. Sai 0 fresco, 1 defasado, 2 erro de parsing (corte
-  ausente/inválido). Diferente do alarme do Pages, este reprova o run.
+  ausente/inválido). Diferente do alarme do Pages, este reprova o run: o passo
+  de checagem **não** usa `continue-on-error`, senão todo run conclui `success`
+  e a contagem por `conclusion` nunca sai de zero.
 - Em falha, abre/comenta/reabre a issue `[alarme] Pacote de dados defasado`
   **após 2 falhas consecutivas** (contadas por `gh run list`); se `gh` não
   listar os runs, abre assim mesmo (lado ruidoso). Quando volta a passar, comenta

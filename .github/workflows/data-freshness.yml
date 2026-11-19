@@ -41,14 +41,16 @@ jobs:
       # Sem `npm ci`/`npm install`: o alarme usa só a stdlib do Node e lê
       # `src/sourceMetadata.ts`. Instalar dependências só criaria mais um ponto
       # de falha para um verificador que precisa funcionar quando tudo falha.
+      # Sem `continue-on-error`: a política de issue conta `conclusion` via
+      # `gh run list`, e um passo mascarado deixaria todo run verde — o alarme
+      # existiria e nunca abriria issue. A falha não é engraçada, é o sinal.
       - name: Check data package freshness
         id: check
-        continue-on-error: true
         run: |
           set -o pipefail
           node scripts/check-data-freshness.mjs --max-age-hours=24 | tee freshness.log
       - name: Report staleness
-        if: steps.check.outcome == 'failure'
+        if: failure()
         run: |
           set -euo pipefail
 
@@ -111,7 +113,7 @@ jobs:
 
           gh issue create --title "$ISSUE_TITLE" --body-file issue-body.md
       - name: Close stale alarm
-        if: steps.check.outcome == 'success'
+        if: success()
         # Falha de `gh` aqui não pode marcar o run como falho: a contagem de
         # falhas consecutivas lê `conclusion` e abriria issue por engano.
         continue-on-error: true
@@ -125,6 +127,167 @@ jobs:
           fi
           {
             echo 'O pacote de dados voltou a ficar dentro do limite de idade; fechando o alarme.'
+            echo
+            echo '```'
+            cat freshness.log
+            echo '```'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > close-body.md
+          gh issue comment "$open_issue" --body-file close-body.md
+          gh issue close "$open_issue" --reason completed
+          echo "Issue #$open_issue fechada."
+
+  # Segunda camada da sonda de publicação: o job `freshness` de pages.yml só
+  # roda atrás de um push. Se um deploy falhar em silêncio e ninguém empurrar
+  # nada, ele nunca acorda. Este job compara o bundle servido com o HEAD de
+  # `main` no mesmo horário do alarme de dados, sem `npm ci` (só stdlib do
+  # Node e git).
+  published:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ISSUE_TITLE: '[alarme] Site publicado defasado'
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      # O código de saída é o sinal (0 em dia, 1 defasado, 2 não verificado),
+      # então o passo guarda o status e deixa a guarda decidir. `continue-on-error`
+      # aqui só impede que a falha encerre o job antes da checagem de propagação.
+      - name: Probe published bundle
+        id: probe
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          head_sha=$(git rev-parse HEAD)
+          test -n "$head_sha"
+          status=0
+          node scripts/check-deploy-freshness.mjs --expect-sha="$head_sha" --strict --backoff=0,30000,120000 | tee freshness.log || status=$?
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+          echo "Sonda do site publicado saiu com código $status (HEAD $head_sha)."
+          exit "$status"
+      # Anti-falso-positivo: um run de pages.yml em andamento pode estar
+      # publicando exatamente o commit que a sonda acabou de não encontrar.
+      - name: Ignore failure while a deploy is propagating
+        id: guard
+        if: steps.probe.outcome == 'failure'
+        run: |
+          set -euo pipefail
+
+          propagating=false
+          if runs=$(gh run list --workflow=pages.yml --limit 3 --json status); then
+            if printf '%s' "$runs" \
+              | jq -e 'any(.[]; .status == "in_progress" or .status == "queued")' > /dev/null; then
+              propagating=true
+            fi
+          else
+            # Sem a lista, não dá para descartar propagação — mas mascarar a
+            # falha esconderia exatamente o deploy silencioso que este job caça.
+            echo "::warning::gh run list falhou; a falha da sonda será tratada como real."
+          fi
+
+          echo "propagating=$propagating" >> "$GITHUB_OUTPUT"
+          if [ "$propagating" = true ]; then
+            echo "::notice::Propagação de deploy em curso"
+          fi
+      - name: Report stale publication
+        if: steps.probe.outcome == 'failure' && steps.guard.outputs.propagating != 'true'
+        env:
+          PROBE_STATUS: ${{ steps.probe.outputs.status }}
+          HEAD_SHA: ${{ steps.probe.outputs.head_sha }}
+        run: |
+          set -euo pipefail
+
+          # Mesma política do alarme de dados: issue só na segunda falha
+          # consecutiva, contada por `gh run list`. Diferente daquele job, este
+          # run termina vermelho de propósito: a contagem lê `conclusion`, e um
+          # run verde nunca acumularia a sequência.
+          consecutive=1
+          if runs=$(gh run list --workflow=data-freshness.yml --limit 5 --json databaseId,conclusion); then
+            prior=$(printf '%s' "$runs" | jq -r --arg me "$GITHUB_RUN_ID" '
+              [ .[] | select((.databaseId | tostring) != $me) | .conclusion ]
+              | map(select(. != null and . != ""))
+              | reduce .[] as $c ({ failures: 0, stopped: false };
+                  if .stopped then .
+                  elif ($c == "failure" or $c == "timed_out" or $c == "startup_failure") then .failures += 1
+                  else .stopped = true end)
+              | .failures')
+            consecutive=$((prior + 1))
+            echo "Falhas consecutivas (incluindo esta): $consecutive (${prior} anterior(es))."
+          else
+            echo "::warning::gh run list falhou; assumindo reincidência e abrindo a issue."
+            consecutive=2
+          fi
+
+          if [ "$consecutive" -lt 2 ]; then
+            echo "::notice::Primeira execução com falha; a issue abre se a próxima também falhar — o run fica vermelho para contar a sequência."
+            exit 1
+          fi
+
+          if [ "$PROBE_STATUS" = 2 ]; then
+            motivo='A sonda não conseguiu verificar o site publicado (rede/CDN fora do ar ou HTML sem o asset esperado). Isso não prova defasagem; confira o log.'
+          else
+            motivo='O bundle publicado no Pages não corresponde ao HEAD de `main`: o deploy não publicou este commit (ou publicou um build anterior).'
+          fi
+
+          {
+            echo "$motivo"
+            echo
+            echo "HEAD de \`main\`: \`$HEAD_SHA\`"
+            echo "Código da sonda: **$PROBE_STATUS** (0 em dia, 1 defasado, 2 não verificado)"
+            echo "Falhas consecutivas deste alarme: **$consecutive**"
+            echo
+            echo '```'
+            cat freshness.log
+            echo '```'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > issue-body.md
+
+          # Dedupe por título exato, sem depender da sintaxe de busca do GitHub.
+          open_issue=$(gh issue list --state open --limit 200 --json number,title \
+            | jq -r --arg t "$ISSUE_TITLE" '[ .[] | select(.title == $t) | .number ] | first // empty')
+          if [ -n "$open_issue" ]; then
+            gh issue comment "$open_issue" --body-file issue-body.md
+            echo "Issue #$open_issue já aberta: comentário adicionado."
+            exit 1
+          fi
+
+          closed_issue=$(gh issue list --state closed --limit 200 --json number,title \
+            | jq -r --arg t "$ISSUE_TITLE" '[ .[] | select(.title == $t) | .number ] | first // empty')
+          if [ -n "$closed_issue" ]; then
+            gh issue reopen "$closed_issue"
+            gh issue comment "$closed_issue" --body-file issue-body.md
+            echo "Issue #$closed_issue reaberta e comentada."
+            exit 1
+          fi
+
+          gh issue create --title "$ISSUE_TITLE" --body-file issue-body.md
+          exit 1
+      - name: Close stale publication alarm
+        if: steps.probe.outcome == 'success'
+        # Falha de `gh` aqui não pode marcar o run como falho: a contagem de
+        # falhas consecutivas lê `conclusion` e abriria issue por engano.
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          open_issue=$(gh issue list --state open --limit 200 --json number,title \
+            | jq -r --arg t "$ISSUE_TITLE" '[ .[] | select(.title == $t) | .number ] | first // empty')
+          if [ -z "$open_issue" ]; then
+            echo "Site publicado em dia; nenhuma issue de alarme aberta."
+            exit 0
+          fi
+          {
+            echo 'O site publicado voltou a servir o build de `main`; fechando o alarme.'
             echo
             echo '```'
             cat freshness.log

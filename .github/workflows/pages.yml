@@ -46,9 +46,10 @@ jobs:
       sha: ${{ github.sha }}
 
   # Alarme de defasagem do bundle publicado: confere se o Pages já serve o
-  # corte analítico deste commit. É alerta, não gate — `continue-on-error` no
-  # job e no passo, e o script sempre sai com código 0. Roda depois da
-  # publicação, então não atrasa nem condiciona o deploy.
+  # build deste commit (o `__BUILD_SHA__` gravado no bundle). É alerta, não
+  # gate — `continue-on-error` no job e no passo, e sem `--strict` o script
+  # sempre sai com código 0. Roda depois da publicação, então não atrasa nem
+  # condiciona o deploy.
   freshness:
     needs: pages
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -66,8 +67,8 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-      - name: Compare published cutoff with the repository
+      - name: Compare published bundle with this commit
         continue-on-error: true
         env:
           FRESHNESS_URL: https://ils15.github.io/brasileirao-2026/
-        run: node scripts/check-deploy-freshness.mjs
+        run: node scripts/check-deploy-freshness.mjs --expect-sha=${{ github.sha }}

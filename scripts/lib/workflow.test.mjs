@@ -14,11 +14,13 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const updateDataPath = join(root, '.github/workflows/update-data.yml')
 const pagesPath = join(root, '.github/workflows/pages.yml')
 const reusablePath = join(root, '.github/workflows/_pages-build-deploy.yml')
+const dataFreshnessPath = join(root, '.github/workflows/data-freshness.yml')
 const packagePath = join(root, 'package.json')
 
 const updateData = readFileSync(updateDataPath, 'utf8')
 const pages = readFileSync(pagesPath, 'utf8')
 const reusable = readFileSync(reusablePath, 'utf8')
+const dataFreshness = readFileSync(dataFreshnessPath, 'utf8')
 const pkg = JSON.parse(readFileSync(packagePath, 'utf8'))
 
 /** Bloco do job a partir da chave de topo, sem parser YAML. */
@@ -27,6 +29,15 @@ function jobBlock(source, id) {
   expect(match, `job ausente: ${id}`).not.toBeNull()
   const rest = source.slice(match.index + 1)
   const next = rest.search(/\n {2}[a-zA-Z0-9_-]+:\s*$/m)
+  return next === -1 ? rest : rest.slice(0, next)
+}
+
+/** Bloco de um passo (a partir do `- name:`) dentro do job, sem parser YAML. */
+function stepBlock(job, name) {
+  const start = job.indexOf(`- name: ${name}`)
+  expect(start, `passo ausente: ${name}`).toBeGreaterThan(-1)
+  const rest = job.slice(start)
+  const next = rest.search(/\n {6}- /)
   return next === -1 ? rest : rest.slice(0, next)
 }
 
@@ -134,6 +145,36 @@ describe('publicação do Pages — um reutilizável, dois callers', () => {
     // sem o input, o build do cron leria o commit anterior ao do bot.
     expect(reusable).toContain('ref: ${{ inputs.sha || github.sha }}')
     expect(reusable).toMatch(/workflow_call:[\s\S]*?^ {6}sha:$/m)
+  })
+})
+
+describe('data-freshness.yml — o alarme precisa poder falhar', () => {
+  // A política de issue conta `gh run list --json conclusion`. Se o passo de
+  // checagem engolir a falha, todo run conclui `success`, a sequência fica em
+  // zero e o alarme nunca abre issue: existe, roda e é mudo.
+  const freshness = jobBlock(dataFreshness, 'freshness')
+
+  it('o passo de checagem não mascara a falha', () => {
+    const check = stepBlock(freshness, 'Check data package freshness')
+    expect(check).not.toMatch(/continue-on-error:\s*true/)
+    expect(check).toContain('set -o pipefail')
+    expect(check).not.toMatch(/\|\|\s*true/)
+    expect(check).not.toMatch(/^\s*exit 0\s*$/m)
+    // No job o efeito seria o mesmo: run sempre verde.
+    expect(freshness).not.toMatch(/^ {4}continue-on-error:/m)
+  })
+
+  it('reporta com `if: failure()` e só fecha com `if: success()`', () => {
+    expect(stepBlock(freshness, 'Report staleness')).toMatch(/^ {8}if: failure\(\)$/m)
+    expect(stepBlock(freshness, 'Close stale alarm')).toMatch(/^ {8}if: success\(\)$/m)
+  })
+
+  it('mantém o job `published` falhando de propósito', () => {
+    const published = jobBlock(dataFreshness, 'published')
+    // A sonda é mascarada só para a guarda de propagação rodar...
+    expect(stepBlock(published, 'Probe published bundle')).toMatch(/continue-on-error:\s*true/)
+    // ...e o report vermelho é o que conta a sequência.
+    expect(stepBlock(published, 'Report stale publication')).toMatch(/exit 1/)
   })
 })
 
