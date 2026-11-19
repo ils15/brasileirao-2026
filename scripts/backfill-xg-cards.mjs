@@ -21,6 +21,7 @@ import {
   parseResultsPage,
   parseStatsCards,
   renderAdvancedStatsModule,
+  stampSeasonNum,
   validateAdvancedStats,
 } from './lib/threesixfive.mjs'
 
@@ -102,10 +103,12 @@ export async function fetchAllResults({ log = () => {} } = {}) {
   return { pages, seasonNum: season }
 }
 
-export function readExisting() {
-  if (!existsSync(SNAPSHOT)) return []
-  const snapshot = JSON.parse(readFileSync(SNAPSHOT, 'utf8'))
-  return snapshot.records ?? []
+export function readExisting(path = SNAPSHOT) {
+  if (!existsSync(path)) return []
+  const snapshot = JSON.parse(readFileSync(path, 'utf8'))
+  // Snapshot legado (até 2026-11-07) gravou os registros sem `seasonNum`;
+  // carimba a partir do topo para que o filtro da temporada não os descarte.
+  return stampSeasonNum(snapshot.records ?? [], snapshot.seasonNum)
 }
 
 /** Fluxo principal: lista resultados, detalha o que falta, valida e renderiza. */
@@ -135,7 +138,8 @@ export async function refreshAdvancedStats({ log = console.log } = {}) {
 
   const records = mergeAdvancedStats(existing, incoming)
   // Só mantém registros da temporada corrente (a paginação pode vazar temporadas antigas).
-  const current = records.filter((record) => record.seasonNum === seasonNum).map(({ seasonNum, ...rest }) => rest)
+  // `seasonNum` fica no snapshot (auto-descritivo); o módulo gerado não o serializa.
+  const current = records.filter((record) => record.seasonNum === seasonNum)
   const validation = validateAdvancedStats(current, { expectedMatches: ended.length })
   log(`Validação: ${validation.matches} jogos · xG coberto em ${validation.withXg} · ΣxG ${validation.xg} vs Σgols ${validation.goals} (razão ${validation.xgRatio}) · ${validation.cards} cartões`)
 

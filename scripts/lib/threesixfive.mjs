@@ -194,6 +194,19 @@ export function mergeAdvancedStats(existing, incoming) {
 }
 
 /**
+ * Carimba `seasonNum` nos registros que não declaram temporada, sem
+ * sobrescrever quem já declara. Migração honesta do snapshot legado (gravado
+ * sem `seasonNum` até 2026-11-07): o dado não é reescrito, só rotulado — sem
+ * o rótulo `filterCurrentSeason` descarta todos os registros antigos e a
+ * validação aborta por contagem. Devolve novos objetos, na mesma ordem.
+ */
+export function stampSeasonNum(records, seasonNum) {
+  if (records.length === 0) return []
+  if (seasonNum == null) throw new Error('stampSeasonNum: seasonNum ausente para carimbar registros legados.')
+  return records.map((record) => (record.seasonNum == null ? { ...record, seasonNum } : { ...record }))
+}
+
+/**
  * Sanidade dos agregados: pares únicos, placares coerentes e xG da temporada
  * próximo do total de gols (efeito de recuperação do xG — ΣxG/Σgols ≈ 1).
  * Não-publicação se falhar: dado avançado ruim não vai para o bundle.

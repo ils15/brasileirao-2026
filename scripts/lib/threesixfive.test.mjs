@@ -8,6 +8,7 @@ import {
   parseResultsPage,
   parseStatsCards,
   renderAdvancedStatsModule,
+  stampSeasonNum,
   validateAdvancedStats,
 } from './threesixfive.mjs'
 
@@ -173,6 +174,49 @@ describe('mergeAdvancedStats e validateAdvancedStats', () => {
     expect(() => validateAdvancedStats([{ ...base, yellowHome: -1 }])).toThrow(/Cartão inválido/)
     expect(() => validateAdvancedStats([{ ...base, xgHome: 0, xgAway: 0 }])).toThrow(/ΣxG/)
     expect(() => validateAdvancedStats([], { expectedMatches: 1 })).toThrow(/≠ jogos disputados/)
+  })
+})
+
+// Snapshot legado (até 2026-11-07): registros gravados SEM `seasonNum`, só o
+// topo do snapshot declara a temporada. Fixture sintética, temporada simbólica.
+const SEASON = 76
+const OLD_SEASON = 75
+const legacyRecords = () => [
+  { gameId: 5001, roundNum: 1, home: 'flamengo', away: 'palmeiras', homeScore: 2, awayScore: 0, hasXg: true, xgHome: 1.4, xgAway: 0.7, shotsHome: 8, shotsAway: 5, yellowHome: 2, yellowAway: 1, redHome: 0, redAway: 0 },
+  { gameId: 5002, roundNum: 1, home: 'corinthians', away: 'santos', homeScore: 1, awayScore: 1, hasXg: true, xgHome: 0.9, xgAway: 1.2, shotsHome: 6, shotsAway: 7, yellowHome: 1, yellowAway: 3, redHome: 0, redAway: 1 },
+  { gameId: 5003, roundNum: 2, home: 'gremio', away: 'vasco', homeScore: 0, awayScore: 2, hasXg: true, xgHome: 0.6, xgAway: 1.5, shotsHome: 6, shotsAway: 9, yellowHome: 3, yellowAway: 2, redHome: 1, redAway: 0 },
+]
+
+describe('stampSeasonNum', () => {
+  it('carimba o seasonNum ausente, preserva quem já declara, a ordem, e não muta a entrada', () => {
+    const legacy = legacyRecords()
+    const aliased = { ...legacy[0], gameId: 5009, home: 'bahia', away: 'santos', awayScore: 0, seasonNum: OLD_SEASON }
+    const stamped = stampSeasonNum([aliased, legacy[1], legacy[2]], SEASON)
+
+    expect(stamped.map((record) => record.gameId)).toEqual([5009, 5002, 5003])
+    expect(stamped.map((record) => record.seasonNum)).toEqual([OLD_SEASON, SEASON, SEASON])
+    expect(stamped[1]).toEqual({ ...legacy[1], seasonNum: SEASON })
+    expect(legacy[1].seasonNum).toBeUndefined() // entrada não mutada
+    expect(stamped[0]).not.toBe(aliased)
+  })
+
+  it('destrava o filtro da temporada corrente: sem carimbo, zero registros', () => {
+    const legacy = legacyRecords()
+    // Comportamento anterior ao carimbo: o filtro descarta tudo e a contagem
+    // da validação aborta com "N ≠ jogos disputados".
+    expect(filterCurrentSeason(legacy, SEASON)).toHaveLength(0)
+    expect(() => validateAdvancedStats(filterCurrentSeason(legacy, SEASON), { expectedMatches: legacy.length })).toThrow(/≠ jogos disputados/)
+
+    const stamped = stampSeasonNum(legacy, SEASON)
+    const current = filterCurrentSeason(stamped, SEASON)
+    expect(current).toHaveLength(legacy.length)
+    expect(validateAdvancedStats(current, { expectedMatches: legacy.length }).matches).toBe(legacy.length)
+  })
+
+  it('falha alto quando há registros e o snapshot não declara temporada', () => {
+    expect(() => stampSeasonNum(legacyRecords(), undefined)).toThrow(/seasonNum ausente/)
+    expect(() => stampSeasonNum(legacyRecords(), null)).toThrow(/seasonNum ausente/)
+    expect(stampSeasonNum([], undefined)).toEqual([])
   })
 })
 
