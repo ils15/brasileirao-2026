@@ -33,6 +33,33 @@ for (const assetPath of assetPaths) {
   await readFile(join(outputDirectory, assetPath.slice(basePath.length)))
 }
 
+// O favicon vem de public/ e não entra na varredura de .js/.css acima: um href
+// sem o base path (ou um arquivo não copiado) só apareceria como 404 no
+// navegador, justamente o que este smoke existe para impedir.
+const linkTags = [...html.matchAll(/<link\b[^>]*>/g)].map((match) => match[0])
+const iconTag = linkTags.find((tag) => /\brel="icon"/.test(tag))
+if (!iconTag) {
+  throw new Error('dist/index.html does not declare a favicon link')
+}
+
+const iconHref = iconTag.match(/href="([^"]+)"/)?.[1]
+if (!iconHref) {
+  throw new Error(`Favicon link has no href: ${iconTag}`)
+}
+if (!iconHref.startsWith(basePath)) {
+  throw new Error(`Favicon is not under ${basePath}: ${iconHref}`)
+}
+
+let iconSource
+try {
+  iconSource = await readFile(join(outputDirectory, iconHref.slice(basePath.length)), 'utf8')
+} catch {
+  throw new Error(`Favicon referenced by dist/index.html is missing: ${iconHref}`)
+}
+if (!iconSource.trimStart().startsWith('<svg')) {
+  throw new Error(`Favicon is not an SVG document: ${iconHref}`)
+}
+
 const mainBundlePath = assetPaths.find((assetPath) => assetPath.endsWith('.js'))
 if (!mainBundlePath) {
   throw new Error('No JavaScript entry asset was found in dist/index.html')
@@ -50,4 +77,4 @@ if (!workerPath.startsWith(basePath)) {
 }
 await readFile(join(outputDirectory, workerPath.slice(basePath.length)))
 
-console.log(`GitHub Pages asset smoke test passed: HTML assets and worker resolve under ${basePath}`)
+console.log(`GitHub Pages asset smoke test passed: HTML assets, favicon and worker resolve under ${basePath}`)

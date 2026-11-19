@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Brasileirão 2026">
+  <rect width="32" height="32" rx="7" fill="#101d19"/>
+  <text x="16" y="19" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" font-size="14" font-weight="800" fill="#d6fc53" textLength="18" lengthAdjust="spacingAndGlyphs">BR</text>
+  <rect x="8" y="22.5" width="16" height="3" rx="1.5" fill="#d6fc53"/>
+</svg>
