@@ -7,7 +7,8 @@ import { ProjectionProvider } from './ProjectionContext'
 import { espnLogoUrlByClub, currentClubs } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
-import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, updateClock, cbfArchiveProvenance } from './seasonFacts'
+import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, updateClock, cbfArchiveProvenance, formatUtcIso } from './seasonFacts'
+import { buildInfo } from './buildInfo'
 
 /**
  * Abas pesadas são carregadas sob demanda: Jogos & Confrontos (NextRoundPanel
@@ -483,6 +484,7 @@ function App(): JSX.Element {
         <details className="footer-provenance">
           <summary>Proveniência, corte analítico e critérios das fontes</summary>
           <p>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; {cbfArchiveProvenance}. A página CBF atual não faz parte do pacote. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; {scorersCoverageNote}.</p>
+          <p>Versão {buildInfo.version} · build {buildInfo.sha7} · {buildInfo.time ? formatUtcIso(buildInfo.time) : 'data do commit indisponível'}</p>
         </details>
       </footer>
     </>
