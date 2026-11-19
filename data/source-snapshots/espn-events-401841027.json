@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841027",
+ "fetchedAt": "2026-11-19T13:47:57.016Z",
+ "date": "2026-03-14T21:30Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "atletico-mg",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "minute": "20'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick",
+   "club": "vitoria",
+   "minute": "68'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Caique",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Tomás Pérez",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Ángelo Preciado",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Erick",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

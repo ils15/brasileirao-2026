@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841266",
+ "fetchedAt": "2026-11-19T13:48:14.863Z",
+ "date": "2026-10-11T22:30Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "mirassol",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "38'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Chico",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Walter",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Neto Moura",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

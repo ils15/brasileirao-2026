@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841205",
+ "fetchedAt": "2026-11-19T13:48:09.351Z",
+ "date": "2026-08-22T19:00Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "remo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "31'",
+   "penalty": false
+  },
+  {
+   "athlete": "Hulk",
+   "club": "fluminense",
+   "minute": "66'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Serna",
+   "club": "fluminense",
+   "minute": "83'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Hércules",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "4'"
+  },
+  {
+   "athlete": "Yago Pikachu",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "81'"
+  }
+ ],
+ "unresolved": []
+}

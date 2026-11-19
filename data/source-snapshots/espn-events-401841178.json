@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841178",
+ "fetchedAt": "2026-11-19T13:48:08.389Z",
+ "date": "2026-08-08T21:30Z",
+ "status": "post",
+ "home": "remo",
+ "away": "atletico-mg",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Reiner",
+   "club": "atletico-mg",
+   "minute": "34'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bernard",
+   "club": "atletico-mg",
+   "minute": "38'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Taliari",
+   "club": "remo",
+   "minute": "74'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alan Franco",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "José Welison",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "86'"
+  },
+  {
+   "athlete": "Victor Hugo",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Matheus Piauí",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

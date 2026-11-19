@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841304",
+ "fetchedAt": "2026-11-19T13:48:16.582Z",
+ "date": "2026-11-03T22:30Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "mirassol",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Kauan",
+   "club": "chapecoense",
+   "minute": "12'",
+   "penalty": false
+  },
+  {
+   "athlete": "Reinaldo",
+   "club": "mirassol",
+   "minute": "45'+4'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Anderson Paixão",
+   "club": "mirassol",
+   "minute": "57'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Bruno Pacheco",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "22'"
+  },
+  {
+   "athlete": "Denilson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "45'+8'"
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "82'"
+  }
+ ],
+ "unresolved": []
+}

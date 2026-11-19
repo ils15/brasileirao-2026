@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841040",
+ "fetchedAt": "2026-11-19T13:47:59.319Z",
+ "date": "2026-03-22T00:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "palmeiras",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "minute": "6'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Enzo Díaz",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Andreas Pereira",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Carlos Miguel",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Marlon Freitas",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "50'"
+  },
+  {
+   "athlete": "Emiliano Martínez",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Wendell",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "André Oliveira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

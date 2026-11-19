@@ -351,6 +351,12 @@ fonte) o jogo entra nos cartões mas sai do dataset xG; módulo
 
 ## 19. API Futebol BR: artilharia automática e preenchimento em segundo plano — **Adotado**
 
+> **Substituído em nov/2026.** O trial expirou e o endpoint responde 429
+> permanente. A artilharia passou a ser derivada dos eventos de partida da ESPN
+> (`scripts/refresh-espn-scorers.mjs`, um snapshot por partida); a coleta da API
+> Futebol BR permanece no repositório como registro histórico, sem chamada no
+> updater. Cartões do produto seguem exclusivamente na 365scores (§20).
+
 **Fonte:** API Futebol BR (api.api-futebol.com.br, Bearer key no secret
 `API_FUTEBOL_BR_KEY`). Sondagem em nov/2026 (plano Premium de teste,
 1.000 req/dia até 14/11; plano grátis segue com 100/dia):

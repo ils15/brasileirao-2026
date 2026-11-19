@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841148",
+ "fetchedAt": "2026-11-19T13:48:06.762Z",
+ "date": "2026-07-21T22:30Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "bahia",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ademir",
+   "club": "bahia",
+   "minute": "57'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Guilherme",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "87'"
+  }
+ ],
+ "unresolved": []
+}

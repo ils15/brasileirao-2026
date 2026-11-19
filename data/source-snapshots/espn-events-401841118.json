@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841118",
+ "fetchedAt": "2026-11-19T13:48:04.972Z",
+ "date": "2026-05-17T19:00Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "corinthians",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "minute": "7'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "minute": "70'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Mateo Ponte",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Cristian Medina",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Jesse Lingard",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "45'+6'"
+  },
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Lucas Villalba",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Alex Telles",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

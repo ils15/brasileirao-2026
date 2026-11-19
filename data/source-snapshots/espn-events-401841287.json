@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841287",
+ "fetchedAt": "2026-11-19T13:48:15.482Z",
+ "date": "2026-10-23T23:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "remo",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Fabrício Bruno",
+   "club": "cruzeiro",
+   "minute": "45'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Patrick",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "50'"
+  },
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Marcelinho",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

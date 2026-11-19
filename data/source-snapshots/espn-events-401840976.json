@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840976",
+ "fetchedAt": "2026-11-19T13:47:54.790Z",
+ "date": "2026-01-29T00:30Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "flamengo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Gonzalo Plata",
+   "club": "flamengo",
+   "minute": "54'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "61'",
+   "penalty": false
+  },
+  {
+   "athlete": "Danielzinho",
+   "club": "sao-paulo",
+   "minute": "71'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "type": "red",
+   "minute": "90'+9'"
+  }
+ ],
+ "unresolved": []
+}

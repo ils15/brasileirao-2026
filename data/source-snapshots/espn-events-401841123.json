@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841123",
+ "fetchedAt": "2026-11-19T13:48:04.696Z",
+ "date": "2026-05-17T14:00Z",
+ "status": "post",
+ "home": "santos",
+ "away": "coritiba",
+ "homeGoals": 0,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "6'",
+   "penalty": false
+  },
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "20'",
+   "penalty": false
+  },
+  {
+   "athlete": "Josué Pesqueira",
+   "club": "coritiba",
+   "minute": "39'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Lucas Taverna",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Gonzalo Escobar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "red",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Josué Pesqueira",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+3'"
+  },
+  {
+   "athlete": "João Ananias",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

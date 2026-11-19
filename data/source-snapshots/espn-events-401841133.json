@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841133",
+ "fetchedAt": "2026-11-19T13:48:05.934Z",
+ "date": "2026-05-24T19:00Z",
+ "status": "post",
+ "home": "remo",
+ "away": "athletico-pr",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "45'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "53'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "type": "red",
+   "minute": "45'+8'"
+  },
+  {
+   "athlete": "Bruno Zapelli",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "45'+11'"
+  },
+  {
+   "athlete": "Marcelinho",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "45'+12'"
+  },
+  {
+   "athlete": "Filipinho",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Leozinho",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Diogo Riquelme",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

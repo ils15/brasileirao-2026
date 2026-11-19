@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841096",
+ "fetchedAt": "2026-11-19T13:48:02.618Z",
+ "date": "2026-04-26T23:30Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "flamengo",
+ "homeGoals": 0,
+ "awayGoals": 4,
+ "goals": [
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "8'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gonzalo Plata",
+   "club": "flamengo",
+   "minute": "31'",
+   "penalty": false
+  },
+  {
+   "athlete": "Giorgian de Arrascaeta",
+   "club": "flamengo",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "84'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Guillermo Varela",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Tomás Pérez",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "48'"
+  }
+ ],
+ "unresolved": []
+}

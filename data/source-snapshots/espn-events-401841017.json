@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841017",
+ "fetchedAt": "2026-11-19T13:47:56.615Z",
+ "date": "2026-03-12T00:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "cruzeiro",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "5'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "minute": "90'+8'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Léo Pereira",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Fagner",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Fabrício Bruno",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

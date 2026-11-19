@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841292",
+ "fetchedAt": "2026-11-19T13:48:16.349Z",
+ "date": "2026-10-29T23:00Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 4,
+ "goals": [
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "10'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alan Lescano",
+   "club": "vasco",
+   "minute": "15'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "41'",
+   "penalty": false
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "53'",
+   "penalty": false
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "85'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gonzalo Plata",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

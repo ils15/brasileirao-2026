@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841212",
+ "fetchedAt": "2026-11-19T13:48:10.670Z",
+ "date": "2026-08-30T00:20Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "cruzeiro",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Tchê Tchê",
+   "club": "vasco",
+   "minute": "33'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Freitas",
+   "club": "vasco",
+   "minute": "55'",
+   "penalty": false
+  },
+  {
+   "athlete": "David",
+   "club": "vasco",
+   "minute": "90'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Felipe Morais",
+   "club": "cruzeiro",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Marcelo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Adson",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Lucas Freitas",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

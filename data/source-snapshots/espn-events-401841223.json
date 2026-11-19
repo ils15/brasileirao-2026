@@ -1,0 +1,102 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841223",
+ "fetchedAt": "2026-11-19T13:48:11.290Z",
+ "date": "2026-09-06T19:00Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "santos",
+ "homeGoals": 2,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "8'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "29'",
+   "penalty": true
+  },
+  {
+   "athlete": "Christian Oliva",
+   "club": "santos",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Brian Aguirre",
+   "club": "internacional",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "internacional",
+   "minute": "90'+1'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Benjamín Rollheiser",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "5'"
+  },
+  {
+   "athlete": "Matheus Bahia",
+   "club": "internacional",
+   "type": "red",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Ronaldo",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Paulinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Gonzalo Escobar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Vitinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Brian Aguirre",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "78'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,35 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841291",
+ "fetchedAt": "2026-11-19T13:48:15.867Z",
+ "date": "2026-10-28T22:30Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "chapecoense",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Wallace Yan",
+   "club": "bragantino",
+   "minute": "43'",
+   "penalty": false
+  },
+  {
+   "athlete": "Wallace Yan",
+   "club": "bragantino",
+   "minute": "51'",
+   "penalty": false
+  },
+  {
+   "athlete": "Henry Mosquera",
+   "club": "bragantino",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [],
+ "unresolved": []
+}

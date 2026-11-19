@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840994",
+ "fetchedAt": "2026-11-19T13:47:55.925Z",
+ "date": "2026-02-12T00:30Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "bahia",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "22'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Kanu",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Cristian Olivera",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "José Luis Rodríguez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Cauan Barros",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Caio Alexandre",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Ronaldo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+7'"
+  },
+  {
+   "athlete": "Paulo Henrique",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

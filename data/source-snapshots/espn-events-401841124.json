@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841124",
+ "fetchedAt": "2026-11-19T13:48:05.118Z",
+ "date": "2026-05-17T21:30Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Tiago Volpi",
+   "club": "bragantino",
+   "minute": "41'",
+   "penalty": true
+  },
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "minute": "90'+10'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jamerson",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Henry Mosquera",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Pedro Henrique",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "46'"
+  },
+  {
+   "athlete": "Agustín Sant'Anna",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Zé Vitor",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "72'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841053",
+ "fetchedAt": "2026-11-19T13:48:00.188Z",
+ "date": "2026-04-01T22:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "sao-paulo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "minute": "23'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "minute": "87'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Paulinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Rafael Tolói",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

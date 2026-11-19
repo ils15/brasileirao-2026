@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841241",
+ "fetchedAt": "2026-11-19T13:48:13.221Z",
+ "date": "2026-09-20T21:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Guillermo Varela",
+   "club": "flamengo",
+   "minute": "13'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "71'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Bruno Henrique",
+   "club": "bragantino",
+   "minute": "86'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Fernando",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "6'"
+  },
+  {
+   "athlete": "Alex Sandro",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Guillermo Varela",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "José Herrera",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "90'+6'"
+  },
+  {
+   "athlete": "Agustín Sant'Anna",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

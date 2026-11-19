@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841144",
+ "fetchedAt": "2026-11-19T13:48:06.249Z",
+ "date": "2026-05-30T19:00Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "coritiba",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "60'",
+   "penalty": false
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "70'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "type": "red",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Evertton",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "54'"
+  },
+  {
+   "athlete": "Luiz Araújo",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

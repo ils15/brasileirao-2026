@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841154",
+ "fetchedAt": "2026-11-19T13:48:07.270Z",
+ "date": "2026-07-23T00:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "cruzeiro",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "minute": "64'",
+   "penalty": false
+  },
+  {
+   "athlete": "Johan Carbonero",
+   "club": "internacional",
+   "minute": "83'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gerson",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Fagner",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "18'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Jonathan Jesus",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Victor Gabriel",
+   "club": "internacional",
+   "type": "red",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Matheus Henrique",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Lucas Silva",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

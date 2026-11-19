@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841085",
+ "fetchedAt": "2026-11-19T13:48:02.659Z",
+ "date": "2026-04-19T14:00Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "mirassol",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Lucas Oliveira",
+   "club": "mirassol",
+   "minute": "22'",
+   "penalty": false
+  },
+  {
+   "athlete": "André Luis",
+   "club": "mirassol",
+   "minute": "45'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alan Patrick",
+   "club": "internacional",
+   "minute": "90'+3'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Lucas Oliveira",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Alex Muralha",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "54'"
+  },
+  {
+   "athlete": "José Aldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Walter",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "62'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841033",
+ "fetchedAt": "2026-11-19T13:47:58.082Z",
+ "date": "2026-03-18T23:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "coritiba",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "minute": "64'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Victor Luis",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "José Aldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Josué Pesqueira",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

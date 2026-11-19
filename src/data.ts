@@ -27,7 +27,7 @@ import { SCORERS_SOURCE, scorers2026 } from './scorers2026'
 
 export { SCORERS_SOURCE }
 
-// Artilharia derivada do módulo GERADO (API Futebol BR): a lista literal
+// Artilharia derivada do módulo GERADO (eventos de partida da ESPN): a lista literal
 // manual (fonte ESPN sem metadados) foi substituída pela coleta automática
 // pós-rodada. Posições empatadas compartilham o número do primeiro lugar.
 const scorerClubNames = new Map(currentClubs.map(({ id, club }) => [id, club]))

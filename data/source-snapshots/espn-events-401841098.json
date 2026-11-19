@@ -1,0 +1,114 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841098",
+ "fetchedAt": "2026-11-19T13:48:03.669Z",
+ "date": "2026-05-03T00:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "atletico-mg",
+ "homeGoals": 1,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Alan Minda",
+   "club": "atletico-mg",
+   "minute": "12'",
+   "penalty": false
+  },
+  {
+   "athlete": "Maycon",
+   "club": "atletico-mg",
+   "minute": "32'",
+   "penalty": true
+  },
+  {
+   "athlete": "Mateo Casierra",
+   "club": "atletico-mg",
+   "minute": "72'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "86'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "5'"
+  },
+  {
+   "athlete": "Alan Franco",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Lyanco",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Christian",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "type": "red",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Mateo Casierra",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Reiner",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Kaiki",
+   "club": "cruzeiro",
+   "type": "red",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Lyanco",
+   "club": "atletico-mg",
+   "type": "red",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Júnior Alonso",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

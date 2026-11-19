@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841055",
+ "fetchedAt": "2026-11-19T13:48:00.235Z",
+ "date": "2026-04-01T23:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "vitoria",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Christian",
+   "club": "cruzeiro",
+   "minute": "33'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kauã Moraes Silva",
+   "club": "cruzeiro",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "39'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Cacá",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Gabriel Baralhas",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

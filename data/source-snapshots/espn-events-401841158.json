@@ -1,0 +1,29 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841158",
+ "fetchedAt": "2026-11-19T13:48:07.340Z",
+ "date": "2026-07-25T21:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "internacional",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Leozinho",
+   "club": "athletico-pr",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "60'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [],
+ "unresolved": []
+}

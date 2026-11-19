@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840983",
+ "fetchedAt": "2026-11-19T13:47:55.757Z",
+ "date": "2026-02-05T00:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "vitoria",
+ "homeGoals": 5,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Murilo",
+   "club": "palmeiras",
+   "minute": "24'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Gómez",
+   "club": "palmeiras",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "45'+5'",
+   "penalty": false
+  },
+  {
+   "athlete": "Dudu",
+   "club": "vitoria",
+   "minute": "56'",
+   "penalty": false
+  },
+  {
+   "athlete": "Allan Elias",
+   "club": "palmeiras",
+   "minute": "63'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Nathan",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "25'"
+  },
+  {
+   "athlete": "Allan Elias",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Ze Marcos",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Lawan Kennyd Gabriel Santos",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

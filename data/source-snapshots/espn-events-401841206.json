@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841206",
+ "fetchedAt": "2026-11-19T13:48:09.975Z",
+ "date": "2026-08-22T23:30Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "flamengo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "22'",
+   "penalty": false
+  },
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "minute": "55'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Fabrício Bruno",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "João Marcelo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Wesley Ribeiro",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

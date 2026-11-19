@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841015",
+ "fetchedAt": "2026-11-19T13:47:56.509Z",
+ "date": "2026-03-11T22:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "internacional",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "minute": "2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Vitor Hugo",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'+3'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+6'"
+  },
+  {
+   "athlete": "Victor Gabriel",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

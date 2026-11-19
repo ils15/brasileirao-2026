@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841307",
+ "fetchedAt": "2026-11-19T13:48:17.314Z",
+ "date": "2026-11-04T22:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "gremio",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "20'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Francis Amuzu",
+   "club": "gremio",
+   "minute": "69'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Mathías Villasanti",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

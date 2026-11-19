@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841289",
+ "fetchedAt": "2026-11-19T13:48:16.011Z",
+ "date": "2026-10-28T22:30Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "internacional",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Alan Patrick",
+   "club": "internacional",
+   "minute": "46'",
+   "penalty": false
+  },
+  {
+   "athlete": "Hércules",
+   "club": "fluminense",
+   "minute": "78'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "minute": "90'+7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Ignácio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "René",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Brian Aguirre",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841016",
+ "fetchedAt": "2026-11-19T13:48:00.114Z",
+ "date": "2026-03-29T22:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "botafogo",
+ "homeGoals": 4,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "4'",
+   "penalty": false
+  },
+  {
+   "athlete": "Edenilson",
+   "club": "botafogo",
+   "minute": "43'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "45'+3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Juan Felipe Aguirre",
+   "club": "athletico-pr",
+   "minute": "49'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Esquivel",
+   "club": "athletico-pr",
+   "minute": "81'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Luiz Gustavo",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "17'"
+  },
+  {
+   "athlete": "Cristian Medina",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Júnior Santos",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

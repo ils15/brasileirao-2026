@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841170",
+ "fetchedAt": "2026-11-19T13:48:07.958Z",
+ "date": "2026-07-29T22:30Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "remo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Leonel Picco",
+   "club": "remo",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "João Victor",
+   "club": "mirassol",
+   "minute": "54'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Marllon",
+   "club": "mirassol",
+   "minute": "30'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Igor Marques",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "17'"
+  },
+  {
+   "athlete": "Gabriel",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Matheus Alexandre",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "72'"
+  }
+ ],
+ "unresolved": []
+}

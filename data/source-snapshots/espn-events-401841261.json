@@ -1,0 +1,90 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841261",
+ "fetchedAt": "2026-11-19T13:48:14.344Z",
+ "date": "2026-10-11T20:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "corinthians",
+ "homeGoals": 4,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Alexander Barboza",
+   "club": "palmeiras",
+   "minute": "16'",
+   "penalty": false
+  },
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "minute": "51'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "corinthians",
+   "minute": "90'+1'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Matheus Bidu",
+   "club": "palmeiras",
+   "minute": "46'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "9'"
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Memphis Depay",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Vitinho",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Gustavo Gómez",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "72'"
+  }
+ ],
+ "unresolved": []
+}

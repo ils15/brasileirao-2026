@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841005",
+ "fetchedAt": "2026-11-19T13:47:56.295Z",
+ "date": "2026-02-26T00:30Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "atletico-mg",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Erick Noriega",
+   "club": "gremio",
+   "minute": "51'",
+   "penalty": false
+  },
+  {
+   "athlete": "Victor Hugo",
+   "club": "atletico-mg",
+   "minute": "56'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marlon",
+   "club": "gremio",
+   "minute": "66'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Juan Nardoni",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "7'"
+  },
+  {
+   "athlete": "Natanael",
+   "club": "atletico-mg",
+   "type": "red",
+   "minute": "17'"
+  },
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Gabriel Mec",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841183",
+ "fetchedAt": "2026-11-19T13:48:08.836Z",
+ "date": "2026-08-09T14:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "mirassol",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "João Marcelo",
+   "club": "cruzeiro",
+   "minute": "12'",
+   "penalty": false
+  },
+  {
+   "athlete": "Reinaldo",
+   "club": "mirassol",
+   "minute": "27'",
+   "penalty": true
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "76'",
+   "penalty": false
+  },
+  {
+   "athlete": "Wesley Ribeiro",
+   "club": "cruzeiro",
+   "minute": "84'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gerson",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Kaique Kenji",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Elias",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "Wesley Ribeiro",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Shaylon",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

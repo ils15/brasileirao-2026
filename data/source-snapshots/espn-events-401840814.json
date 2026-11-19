@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840814",
+ "fetchedAt": "2026-11-19T13:47:54.383Z",
+ "date": "2026-01-28T22:00Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "athletico-pr",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "minute": "9'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Juan Portilla",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Paulinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "82'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841138",
+ "fetchedAt": "2026-11-19T13:48:05.869Z",
+ "date": "2026-05-30T19:00Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "mirassol",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "88'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "58'"
+  },
+  {
+   "athlete": "Gastón Benavídez",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Willian Machado",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "85'"
+  }
+ ],
+ "unresolved": []
+}

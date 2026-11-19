@@ -1,0 +1,53 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841045",
+ "fetchedAt": "2026-11-19T13:47:59.525Z",
+ "date": "2026-03-22T19:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "santos",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "6'"
+  },
+  {
+   "athlete": "William",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "12'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "83'"
+  },
+  {
+   "athlete": "Tomás Rincón",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Gabriel Menino",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+9'"
+  }
+ ],
+ "unresolved": []
+}

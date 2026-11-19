@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841046",
+ "fetchedAt": "2026-11-19T13:47:59.959Z",
+ "date": "2026-03-22T23:30Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "minute": "3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Yuri Alberto",
+   "club": "corinthians",
+   "minute": "19'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alex Sandro",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "2'"
+  },
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Evertton",
+   "club": "flamengo",
+   "type": "red",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Vitão",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+9'"
+  }
+ ],
+ "unresolved": []
+}

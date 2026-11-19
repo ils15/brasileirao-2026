@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841134",
+ "fetchedAt": "2026-11-19T13:48:05.359Z",
+ "date": "2026-05-23T22:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "fluminense",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Denilson",
+   "club": "mirassol",
+   "minute": "36'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alesson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "7'"
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Denilson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Nonato",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Reinaldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Juan Freytes",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

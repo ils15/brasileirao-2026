@@ -1,0 +1,90 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841023",
+ "fetchedAt": "2026-11-19T13:47:57.915Z",
+ "date": "2026-03-15T23:30Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "vasco",
+ "homeGoals": 3,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Christian",
+   "club": "cruzeiro",
+   "minute": "8'",
+   "penalty": false
+  },
+  {
+   "athlete": "Cauan Barros",
+   "club": "vasco",
+   "minute": "52'",
+   "penalty": false
+  },
+  {
+   "athlete": "Cauan Barros",
+   "club": "vasco",
+   "minute": "54'",
+   "penalty": false
+  },
+  {
+   "athlete": "Neyser Villareal",
+   "club": "cruzeiro",
+   "minute": "70'",
+   "penalty": false
+  },
+  {
+   "athlete": "Brenner",
+   "club": "vasco",
+   "minute": "86'",
+   "penalty": false
+  },
+  {
+   "athlete": "João Wellington",
+   "club": "cruzeiro",
+   "minute": "90'+4'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "54'"
+  },
+  {
+   "athlete": "Cauan Barros",
+   "club": "vasco",
+   "type": "red",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Johan Rojas",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Brenner",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Gerson",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+12'"
+  }
+ ],
+ "unresolved": []
+}

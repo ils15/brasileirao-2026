@@ -1,0 +1,41 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841180",
+ "fetchedAt": "2026-11-19T13:48:08.964Z",
+ "date": "2026-08-09T19:00Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "internacional",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Murilo",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Paulinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Brian Aguirre",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Matheus Cunha Queiroz",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "72'"
+  }
+ ],
+ "unresolved": []
+}

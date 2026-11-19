@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841225",
+ "fetchedAt": "2026-11-19T13:48:11.445Z",
+ "date": "2026-09-06T19:00Z",
+ "status": "post",
+ "home": "remo",
+ "away": "flamengo",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "65'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Antonio Galeano",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Giorgian de Arrascaeta",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Marcelinho",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Edson Fernando",
+   "club": "remo",
+   "type": "red",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

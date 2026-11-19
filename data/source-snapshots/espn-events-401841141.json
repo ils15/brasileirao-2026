@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841141",
+ "fetchedAt": "2026-11-19T13:48:06.177Z",
+ "date": "2026-05-31T14:00Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "internacional",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Fernando",
+   "club": "bragantino",
+   "minute": "18'",
+   "penalty": false
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "minute": "45'+7'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tiago Volpi",
+   "club": "bragantino",
+   "minute": "52'",
+   "penalty": true
+  },
+  {
+   "athlete": "Brian Aguirre",
+   "club": "internacional",
+   "minute": "79'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gustavo Marques",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Alan Patrick",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Gabriel Mercado",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "45'+8'"
+  },
+  {
+   "athlete": "Rafael Borré",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

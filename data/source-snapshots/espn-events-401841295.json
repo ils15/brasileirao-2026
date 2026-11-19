@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841295",
+ "fetchedAt": "2026-11-19T13:48:16.905Z",
+ "date": "2026-10-30T23:00Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "mirassol",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "minute": "58'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Bruno Santos",
+   "club": "mirassol",
+   "type": "red",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "André Ramalho",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Mateuzinho",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

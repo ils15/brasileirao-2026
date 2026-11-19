@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841239",
+ "fetchedAt": "2026-11-19T13:48:12.787Z",
+ "date": "2026-09-19T19:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "chapecoense",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Túlio Eduardo Silva De Oliveira",
+   "club": "chapecoense",
+   "minute": "44'",
+   "penalty": false
+  },
+  {
+   "athlete": "Mateo Casierra",
+   "club": "atletico-mg",
+   "minute": "69'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Vitor Hugo",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Vitão",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Fernando",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

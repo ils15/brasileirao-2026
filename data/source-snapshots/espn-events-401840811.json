@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840811",
+ "fetchedAt": "2026-11-19T13:47:54.537Z",
+ "date": "2026-01-28T23:00Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "bahia",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Breno Bidon",
+   "club": "corinthians",
+   "minute": "12'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "Willian José",
+   "club": "bahia",
+   "minute": "45'+1'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Erick Pulga",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "54'"
+  },
+  {
+   "athlete": "Breno Bidon",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Michel Araújo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Michel Araújo",
+   "club": "bahia",
+   "type": "red",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Mateuzinho",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

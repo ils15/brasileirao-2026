@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841026",
+ "fetchedAt": "2026-11-19T13:47:57.098Z",
+ "date": "2026-03-14T23:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "flamengo",
+ "homeGoals": 0,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "13'",
+   "penalty": false
+  },
+  {
+   "athlete": "Léo Pereira",
+   "club": "flamengo",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "49'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alexander Barboza",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Alex Telles",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "botafogo",
+   "type": "red",
+   "minute": "45'+9'"
+  },
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "67'"
+  }
+ ],
+ "unresolved": []
+}

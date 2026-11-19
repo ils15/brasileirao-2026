@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841152",
+ "fetchedAt": "2026-11-19T13:48:07.195Z",
+ "date": "2026-07-22T22:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "palmeiras",
+ "homeGoals": 1,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "9'",
+   "penalty": false
+  },
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "minute": "67'",
+   "penalty": false
+  },
+  {
+   "athlete": "Paulo Roberto",
+   "club": "coritiba",
+   "minute": "68'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Thiago Santos",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Khellven",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "79'"
+  }
+ ],
+ "unresolved": []
+}

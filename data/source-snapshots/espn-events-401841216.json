@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841216",
+ "fetchedAt": "2026-11-19T13:48:10.675Z",
+ "date": "2026-08-29T21:30Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Thiago Borbas",
+   "club": "atletico-mg",
+   "minute": "25'",
+   "penalty": false
+  },
+  {
+   "athlete": "Reiner",
+   "club": "atletico-mg",
+   "minute": "63'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick",
+   "club": "vitoria",
+   "minute": "87'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Diego Tarzia",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Ángelo Preciado",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Mamady Cissé",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "59'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841058",
+ "fetchedAt": "2026-11-19T13:48:01.333Z",
+ "date": "2026-04-05T20:30Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "athletico-pr",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Victor Hugo",
+   "club": "atletico-mg",
+   "minute": "6'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Scarpa",
+   "club": "atletico-mg",
+   "minute": "80'",
+   "penalty": false
+  },
+  {
+   "athlete": "Julimar",
+   "club": "athletico-pr",
+   "minute": "88'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Juan Felipe Aguirre",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "19'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841021",
+ "fetchedAt": "2026-11-19T13:47:57.256Z",
+ "date": "2026-03-15T19:00Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "bahia",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Willian José",
+   "club": "bahia",
+   "minute": "23'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Paulinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Ronaldo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Brian Aguirre",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Victor Gabriel",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "62'"
+  }
+ ],
+ "unresolved": []
+}

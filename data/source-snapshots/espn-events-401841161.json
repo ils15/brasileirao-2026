@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841161",
+ "fetchedAt": "2026-11-19T13:48:07.614Z",
+ "date": "2026-07-25T21:30Z",
+ "status": "post",
+ "home": "santos",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marcinho",
+   "club": "chapecoense",
+   "minute": "51'",
+   "penalty": false
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "89'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "João Ananias",
+   "club": "chapecoense",
+   "minute": "62'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "54'"
+  },
+  {
+   "athlete": "Lucas Verissimo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "Matheus",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Bruno",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Bruno Matias",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

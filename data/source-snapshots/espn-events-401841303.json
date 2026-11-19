@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841303",
+ "fetchedAt": "2026-11-19T13:48:17.086Z",
+ "date": "2026-11-06T00:30Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "bahia",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Cristian Olivera",
+   "club": "bahia",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Rodrigues",
+   "club": "cruzeiro",
+   "minute": "69'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "86'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alejo Veliz",
+   "club": "bahia",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Caio Alexandre",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Bruno Rodrigues",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Jonathan Jesus",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Kauã Moraes Silva",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

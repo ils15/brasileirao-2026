@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841181",
+ "fetchedAt": "2026-11-19T13:48:08.258Z",
+ "date": "2026-08-08T19:00Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "sao-paulo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Marcos Antonio",
+   "club": "sao-paulo",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Wallace",
+   "club": "gremio",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "minute": "86'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Mathías Villasanti",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Diego Caito",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Marlon",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+1'"
+  },
+  {
+   "athlete": "André Oliveira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Robert Arboleda",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

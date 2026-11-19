@@ -1,0 +1,30 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841279",
+ "fetchedAt": "2026-11-19T13:48:16.277Z",
+ "date": "2026-10-26T22:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "gremio",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Martin Braithwaite",
+   "club": "gremio",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Tinga",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "40'"
+  }
+ ],
+ "unresolved": []
+}

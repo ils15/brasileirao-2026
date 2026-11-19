@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841208",
+ "fetchedAt": "2026-11-19T13:48:10.344Z",
+ "date": "2026-08-30T14:00Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "fluminense",
+ "homeGoals": 3,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Leozinho",
+   "club": "athletico-pr",
+   "minute": "35'",
+   "penalty": false
+  },
+  {
+   "athlete": "Hulk",
+   "club": "fluminense",
+   "minute": "38'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gastón Benavídez",
+   "club": "athletico-pr",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Agustín Canobbio",
+   "club": "fluminense",
+   "minute": "64'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ignácio",
+   "club": "fluminense",
+   "minute": "78'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "90'+5'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ganso",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Gastón Benavídez",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Nonato",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "80'"
+  }
+ ],
+ "unresolved": []
+}

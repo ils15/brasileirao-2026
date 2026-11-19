@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841140",
+ "fetchedAt": "2026-11-19T13:48:06.276Z",
+ "date": "2026-05-31T19:00Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "chapecoense",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Paulinho",
+   "club": "palmeiras",
+   "minute": "65'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Luis Felipe",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Allan Elias",
+   "club": "palmeiras",
+   "type": "red",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Italo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "77'"
+  }
+ ],
+ "unresolved": []
+}

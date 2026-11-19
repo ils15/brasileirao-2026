@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841076",
+ "fetchedAt": "2026-11-19T13:48:01.836Z",
+ "date": "2026-04-11T21:30Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "bahia",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "65'",
+   "penalty": true
+  },
+  {
+   "athlete": "Mateo Sanabria",
+   "club": "bahia",
+   "minute": "89'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "David Duarte",
+   "club": "mirassol",
+   "minute": "14'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "José Aldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Victor Luis",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Lucas Oliveira",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Negueba",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "type": "red",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

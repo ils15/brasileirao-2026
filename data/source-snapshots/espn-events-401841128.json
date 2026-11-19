@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841128",
+ "fetchedAt": "2026-11-19T13:48:05.628Z",
+ "date": "2026-05-24T21:30Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "atletico-mg",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Zakaria Labyad",
+   "club": "corinthians",
+   "minute": "88'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Yuri Alberto",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "61'"
+  }
+ ],
+ "unresolved": []
+}

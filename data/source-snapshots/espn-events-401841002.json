@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841002",
+ "fetchedAt": "2026-11-19T13:47:56.395Z",
+ "date": "2026-02-26T22:00Z",
+ "status": "post",
+ "home": "santos",
+ "away": "vasco",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "25'",
+   "penalty": false
+  },
+  {
+   "athlete": "Cauan Barros",
+   "club": "vasco",
+   "minute": "43'",
+   "penalty": false
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "61'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Gabriel Brazão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

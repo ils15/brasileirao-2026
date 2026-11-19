@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841050",
+ "fetchedAt": "2026-11-19T13:48:00.452Z",
+ "date": "2026-04-02T22:00Z",
+ "status": "post",
+ "home": "santos",
+ "away": "remo",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Thaciano",
+   "club": "santos",
+   "minute": "40'",
+   "penalty": false
+  },
+  {
+   "athlete": "Moisés",
+   "club": "santos",
+   "minute": "82'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Ricardo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "5'"
+  },
+  {
+   "athlete": "Thaciano",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "José Welison",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "58'"
+  },
+  {
+   "athlete": "Rony",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

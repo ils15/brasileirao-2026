@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841190",
+ "fetchedAt": "2026-11-19T13:48:09.154Z",
+ "date": "2026-08-16T21:30Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 5,
+ "goals": [
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "minute": "22'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luiz Araújo",
+   "club": "flamengo",
+   "minute": "53'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "56'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "66'",
+   "penalty": false
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "74'",
+   "penalty": false
+  },
+  {
+   "athlete": "João Victor",
+   "club": "mirassol",
+   "minute": "77'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Denilson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Gustavo Cazonatti",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Neto Moura",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "85'"
+  }
+ ],
+ "unresolved": []
+}

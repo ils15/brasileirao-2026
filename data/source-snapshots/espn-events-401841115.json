@@ -1,0 +1,96 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841115",
+ "fetchedAt": "2026-11-19T13:48:04.420Z",
+ "date": "2026-05-10T21:30Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "sao-paulo",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "41'",
+   "penalty": false
+  },
+  {
+   "athlete": "Mateuzinho",
+   "club": "corinthians",
+   "minute": "52'",
+   "penalty": false
+  },
+  {
+   "athlete": "Breno Bidon",
+   "club": "corinthians",
+   "minute": "57'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Mateuzinho",
+   "club": "sao-paulo",
+   "minute": "89'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Sabino",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Enzo Díaz",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Luan",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "Zakaria Labyad",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "Pedro Raúl",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841127",
+ "fetchedAt": "2026-11-19T13:48:04.975Z",
+ "date": "2026-05-16T22:00Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "sao-paulo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "John Kennedy",
+   "club": "fluminense",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Agustín Canobbio",
+   "club": "fluminense",
+   "minute": "44'",
+   "penalty": false
+  },
+  {
+   "athlete": "Dória",
+   "club": "sao-paulo",
+   "minute": "79'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "André Oliveira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Artur",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Enzo Díaz",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Facundo Bernal",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "86'"
+  },
+  {
+   "athlete": "Damián Bobadilla",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Dória",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+6'"
+  },
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

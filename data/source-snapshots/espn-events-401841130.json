@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841130",
+ "fetchedAt": "2026-11-19T13:48:05.420Z",
+ "date": "2026-05-23T20:00Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "internacional",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "29'",
+   "penalty": false
+  },
+  {
+   "athlete": "Diego Tarzia",
+   "club": "vitoria",
+   "minute": "90'+7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Caique",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Bruno Gomes",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "red",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Cacá",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841201",
+ "fetchedAt": "2026-11-19T13:48:10.192Z",
+ "date": "2026-08-23T21:30Z",
+ "status": "post",
+ "home": "santos",
+ "away": "mirassol",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "minute": "68'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Schmidt",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Gabriel",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "22'"
+  },
+  {
+   "athlete": "Neto Moura",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Wallison Luiz",
+   "club": "mirassol",
+   "type": "red",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Igor Marques",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

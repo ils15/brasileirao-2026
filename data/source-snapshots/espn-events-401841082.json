@@ -1,0 +1,96 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841082",
+ "fetchedAt": "2026-11-19T13:48:02.019Z",
+ "date": "2026-04-19T19:00Z",
+ "status": "post",
+ "home": "santos",
+ "away": "fluminense",
+ "homeGoals": 2,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "9'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "minute": "24'",
+   "penalty": false
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "minute": "57'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rodrigo Castillo",
+   "club": "fluminense",
+   "minute": "60'",
+   "penalty": false
+  },
+  {
+   "athlete": "John Kennedy",
+   "club": "fluminense",
+   "minute": "86'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Igor",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "25'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Facundo Bernal",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Alisson",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Lucas Verissimo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Luan Peres",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Otávio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

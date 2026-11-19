@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841214",
+ "fetchedAt": "2026-11-19T13:48:10.435Z",
+ "date": "2026-08-30T19:00Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "santos",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Christian Oliva",
+   "club": "santos",
+   "minute": "33'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "10'"
+  },
+  {
+   "athlete": "Willian Arão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Lucas Verissimo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "45'+4'"
+  }
+ ],
+ "unresolved": []
+}

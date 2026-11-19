@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841109",
+ "fetchedAt": "2026-11-19T13:48:04.931Z",
+ "date": "2026-05-10T21:30Z",
+ "status": "post",
+ "home": "santos",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "45'+5'",
+   "penalty": false
+  },
+  {
+   "athlete": "Adonis Frias",
+   "club": "santos",
+   "minute": "76'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "7'"
+  },
+  {
+   "athlete": "Isidro Pitta",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Gabriel",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Alix Vinicius",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "79'"
+  }
+ ],
+ "unresolved": []
+}

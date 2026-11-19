@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841114",
+ "fetchedAt": "2026-11-19T13:48:04.387Z",
+ "date": "2026-05-09T19:00Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "internacional",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rafael Borré",
+   "club": "internacional",
+   "minute": "69'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rodrigo Moledo",
+   "club": "coritiba",
+   "minute": "84'",
+   "penalty": false
+  },
+  {
+   "athlete": "Félix Torres",
+   "club": "internacional",
+   "minute": "90'+6'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Lucas Ronier",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "17'"
+  },
+  {
+   "athlete": "Sergio Rochet",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Félix Torres",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Victor Gabriel",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

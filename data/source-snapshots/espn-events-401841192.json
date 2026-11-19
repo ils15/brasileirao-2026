@@ -1,0 +1,90 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841192",
+ "fetchedAt": "2026-11-19T13:48:09.225Z",
+ "date": "2026-08-15T19:30Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "palmeiras",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Gustavo Gómez",
+   "club": "palmeiras",
+   "minute": "10'",
+   "penalty": false
+  },
+  {
+   "athlete": "Hulk",
+   "club": "fluminense",
+   "minute": "42'",
+   "penalty": false
+  },
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "82'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Serna",
+   "club": "fluminense",
+   "minute": "85'",
+   "penalty": false
+  },
+  {
+   "athlete": "Germán Cano",
+   "club": "fluminense",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Joaquín Piquerez",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Guga",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Agustín Canobbio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Arthur Gabriel",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Martinelli",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "86'"
+  },
+  {
+   "athlete": "Gustavo Gómez",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

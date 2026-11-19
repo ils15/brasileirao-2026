@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841020",
+ "fetchedAt": "2026-11-19T13:47:57.374Z",
+ "date": "2026-03-15T21:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "mirassol",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "26'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Neto Moura",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Reinaldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Carlos Miguel",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Negueba",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

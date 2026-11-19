@@ -1,0 +1,36 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841173",
+ "fetchedAt": "2026-11-19T13:48:08.208Z",
+ "date": "2026-07-31T00:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "cruzeiro",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "minute": "66'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Thiago Santos",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Matheus Henrique",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

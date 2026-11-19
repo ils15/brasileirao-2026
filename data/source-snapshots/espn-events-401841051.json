@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841051",
+ "fetchedAt": "2026-11-19T13:48:00.821Z",
+ "date": "2026-04-03T00:30Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "flamengo",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Isidro Pitta",
+   "club": "bragantino",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel",
+   "club": "bragantino",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "minute": "55'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "José Herrera",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "red",
+   "minute": "50'"
+  },
+  {
+   "athlete": "Matheus Fernandes",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Ignacio Sosa",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Gustavinho",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Everton",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

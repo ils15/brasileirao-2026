@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841218",
+ "fetchedAt": "2026-11-19T13:48:11.689Z",
+ "date": "2026-09-06T19:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "athletico-pr",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "minute": "30'",
+   "penalty": false
+  },
+  {
+   "athlete": "João Cruz",
+   "club": "athletico-pr",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Romero",
+   "club": "cruzeiro",
+   "minute": "71'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "82'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gabriel Rojas",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Juan Felipe Aguirre",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Fabrício Bruno",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Mycael",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "79'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,41 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841262",
+ "fetchedAt": "2026-11-19T13:48:13.928Z",
+ "date": "2026-10-10T21:00Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "remo",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Alan Saldivia",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Jair",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Marcelo Rangel",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

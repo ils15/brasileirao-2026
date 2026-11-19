@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841070",
+ "fetchedAt": "2026-11-19T13:48:02.219Z",
+ "date": "2026-04-12T19:00Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "coritiba",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "33'",
+   "penalty": false
+  },
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "55'",
+   "penalty": false
+  },
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "minute": "77'",
+   "penalty": false
+  },
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "minute": "79'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Wallison Luiz",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Vitinho",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Pedro Rangel",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Thiago Santos",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Jacy Maranhão",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+9'"
+  }
+ ],
+ "unresolved": []
+}

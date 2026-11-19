@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841238",
+ "fetchedAt": "2026-11-19T13:48:13.711Z",
+ "date": "2026-09-20T22:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "bahia",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Lucas Esquivel",
+   "club": "athletico-pr",
+   "minute": "16'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick Pulga",
+   "club": "bahia",
+   "minute": "26'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorge Rivaldo",
+   "club": "athletico-pr",
+   "minute": "69'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Juan Felipe Aguirre",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Kaue Furquim",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Jorge Rivaldo",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

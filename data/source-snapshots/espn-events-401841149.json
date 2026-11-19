@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841149",
+ "fetchedAt": "2026-11-19T13:48:06.487Z",
+ "date": "2026-07-16T22:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "santos",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Lucas Emanuel Jales Do Nascimento",
+   "club": "botafogo",
+   "minute": "41'",
+   "penalty": false
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "minute": "57'",
+   "penalty": false
+  },
+  {
+   "athlete": "José Kadir",
+   "club": "botafogo",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Victor Hugo",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "25'"
+  },
+  {
+   "athlete": "Thaciano",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Matheus Martins",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Nahuel Ferraresi",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "José Kadir",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

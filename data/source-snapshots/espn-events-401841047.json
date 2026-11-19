@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841047",
+ "fetchedAt": "2026-11-19T13:47:59.325Z",
+ "date": "2026-03-21T19:00Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "botafogo",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Alex Telles",
+   "club": "botafogo",
+   "minute": "8'",
+   "penalty": true
+  },
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "minute": "15'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "botafogo",
+   "minute": "71'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Santiago Rodríguez",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Alix Vinicius",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Matheus Martins",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Edenilson",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

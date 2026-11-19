@@ -1,0 +1,36 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841029",
+ "fetchedAt": "2026-11-19T13:47:58.372Z",
+ "date": "2026-03-18T23:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "sao-paulo",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Iván Román",
+   "club": "atletico-mg",
+   "minute": "64'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Iván Román",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Enzo Díaz",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

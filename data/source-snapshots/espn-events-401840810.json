@@ -1,0 +1,90 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840810",
+ "fetchedAt": "2026-11-19T13:47:54.527Z",
+ "date": "2026-01-28T23:00Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "santos",
+ "homeGoals": 4,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Walter Clar",
+   "club": "chapecoense",
+   "minute": "16'",
+   "penalty": true
+  },
+  {
+   "athlete": "Gabriel Menino",
+   "club": "santos",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "minute": "67'",
+   "penalty": false
+  },
+  {
+   "athlete": "Higor Matheus Meritão",
+   "club": "chapecoense",
+   "minute": "73'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jean",
+   "club": "chapecoense",
+   "minute": "80'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rafael Cavalheira",
+   "club": "chapecoense",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alexis Duarte",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "7'"
+  },
+  {
+   "athlete": "Gabriel Brazão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Marcos Vinicius",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Gabriel Menino",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Léo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "85'"
+  }
+ ],
+ "unresolved": []
+}

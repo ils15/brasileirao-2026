@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841038",
+ "fetchedAt": "2026-11-19T13:47:58.895Z",
+ "date": "2026-03-22T19:00Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "coritiba",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Eduardo",
+   "club": "athletico-pr",
+   "minute": "22'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "56'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "45'+6'"
+  },
+  {
+   "athlete": "Wallison Luiz",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Maicon",
+   "club": "coritiba",
+   "type": "red",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

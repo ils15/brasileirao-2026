@@ -1,0 +1,29 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841177",
+ "fetchedAt": "2026-11-19T13:48:08.041Z",
+ "date": "2026-07-30T00:30Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "bahia",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ignácio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "11'"
+  },
+  {
+   "athlete": "Erick Pulga",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "49'"
+  }
+ ],
+ "unresolved": []
+}

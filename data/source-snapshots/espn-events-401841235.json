@@ -1,0 +1,102 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841235",
+ "fetchedAt": "2026-11-19T13:48:12.317Z",
+ "date": "2026-09-13T19:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "12'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Santos",
+   "club": "mirassol",
+   "minute": "68'",
+   "penalty": false
+  },
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Emanuel Britez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "18'"
+  },
+  {
+   "athlete": "Alesson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Caique",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Wallison Luiz",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Willian Machado",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Marinho",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+1'"
+  },
+  {
+   "athlete": "Matheusinho",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Edenilson",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+10'"
+  },
+  {
+   "athlete": "Fernando",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+10'"
+  }
+ ],
+ "unresolved": []
+}

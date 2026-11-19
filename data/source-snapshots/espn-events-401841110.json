@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841110",
+ "fetchedAt": "2026-11-19T13:48:04.153Z",
+ "date": "2026-05-10T19:00Z",
+ "status": "post",
+ "home": "remo",
+ "away": "palmeiras",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Alef Manga",
+   "club": "remo",
+   "minute": "2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "minute": "24'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jefté",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "5'"
+  },
+  {
+   "athlete": "Allan Elias",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Zé Ricardo",
+   "club": "remo",
+   "type": "red",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Marcelo Rangel",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

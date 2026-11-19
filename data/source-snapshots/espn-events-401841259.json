@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841259",
+ "fetchedAt": "2026-11-19T13:48:14.500Z",
+ "date": "2026-10-11T00:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "minute": "20'",
+   "penalty": false
+  },
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "minute": "70'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Cacá",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Gustavo Santana",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Djhordney Ferreira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Sabino",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Iago",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

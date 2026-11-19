@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841054",
+ "fetchedAt": "2026-11-19T13:48:00.226Z",
+ "date": "2026-04-02T00:30Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "corinthians",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "John Kennedy",
+   "club": "fluminense",
+   "minute": "20'",
+   "penalty": false
+  },
+  {
+   "athlete": "Hércules",
+   "club": "fluminense",
+   "minute": "45'+3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rodrigo Castillo",
+   "club": "fluminense",
+   "minute": "83'",
+   "penalty": false
+  },
+  {
+   "athlete": "André",
+   "club": "corinthians",
+   "minute": "89'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "corinthians",
+   "type": "red",
+   "minute": "55'"
+  },
+  {
+   "athlete": "André",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

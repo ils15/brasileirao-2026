@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841315",
+ "fetchedAt": "2026-11-19T13:48:17.240Z",
+ "date": "2026-11-18T22:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "santos",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Thiago Santos",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "14'"
+  },
+  {
+   "athlete": "Nicolás Fonseca",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Sebastián Gómez",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Rodinei",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Jacy Maranhão",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+6'"
+  },
+  {
+   "athlete": "Brian Ocampo",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+9'"
+  }
+ ],
+ "unresolved": []
+}

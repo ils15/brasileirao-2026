@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841231",
+ "fetchedAt": "2026-11-19T13:48:11.871Z",
+ "date": "2026-09-12T19:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "fluminense",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Reiner",
+   "club": "atletico-mg",
+   "minute": "61'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "minute": "63'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitão",
+   "club": "atletico-mg",
+   "minute": "81'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rodrigo Castillo",
+   "club": "fluminense",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alan Franco",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Otávio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Rodrigo Castillo",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "69'"
+  }
+ ],
+ "unresolved": []
+}

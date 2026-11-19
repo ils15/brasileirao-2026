@@ -1,0 +1,90 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841143",
+ "fetchedAt": "2026-11-19T13:48:06.496Z",
+ "date": "2026-05-30T23:00Z",
+ "status": "post",
+ "home": "santos",
+ "away": "vitoria",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Miguel Terceros",
+   "club": "santos",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "minute": "54'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "56'",
+   "penalty": false
+  },
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "74'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Willian Arão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Caique",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "red",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Gabriel Brazão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Luan Cândido",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

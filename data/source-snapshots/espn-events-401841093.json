@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841093",
+ "fetchedAt": "2026-11-19T13:48:02.729Z",
+ "date": "2026-04-25T21:30Z",
+ "status": "post",
+ "home": "remo",
+ "away": "cruzeiro",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "minute": "34'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Zé Ricardo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Matheus Cunha Queiroz",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Kauã Moraes Silva",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "60'"
+  }
+ ],
+ "unresolved": []
+}

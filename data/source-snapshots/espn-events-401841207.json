@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841207",
+ "fetchedAt": "2026-11-19T13:48:10.125Z",
+ "date": "2026-08-23T22:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "corinthians",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "40'",
+   "penalty": false
+  },
+  {
+   "athlete": "Paulo Roberto",
+   "club": "coritiba",
+   "minute": "75'",
+   "penalty": false
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "minute": "90'+3'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Breno Bidon",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Thiago Santos",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Tissi",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "67'"
+  }
+ ],
+ "unresolved": []
+}

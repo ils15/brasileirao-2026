@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841271",
+ "fetchedAt": "2026-11-19T13:48:15.277Z",
+ "date": "2026-10-17T22:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "palmeiras",
+ "homeGoals": 0,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "6'",
+   "penalty": false
+  },
+  {
+   "athlete": "Joaquín Piquerez",
+   "club": "palmeiras",
+   "minute": "10'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gilberto",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "9'"
+  },
+  {
+   "athlete": "Andreas Pereira",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "22'"
+  },
+  {
+   "athlete": "Joaquín Piquerez",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Andreas Pereira",
+   "club": "palmeiras",
+   "type": "red",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Leozinho",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "57'"
+  }
+ ],
+ "unresolved": []
+}

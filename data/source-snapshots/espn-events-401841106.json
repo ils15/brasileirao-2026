@@ -1,0 +1,47 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841106",
+ "fetchedAt": "2026-11-19T13:48:03.601Z",
+ "date": "2026-05-02T23:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "gremio",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Lucas Esquivel",
+   "club": "athletico-pr",
+   "type": "red",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Riquelme Freitas",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Gastón Benavídez",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Riquelme Freitas",
+   "club": "gremio",
+   "type": "red",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

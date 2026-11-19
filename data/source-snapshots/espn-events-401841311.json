@@ -1,0 +1,47 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841311",
+ "fetchedAt": "2026-11-19T13:48:17.199Z",
+ "date": "2026-11-14T21:30Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "atletico-mg",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Neto Moura",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "7'"
+  },
+  {
+   "athlete": "Alesson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "47'"
+  },
+  {
+   "athlete": "José Aldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Natanael",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "type": "red",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

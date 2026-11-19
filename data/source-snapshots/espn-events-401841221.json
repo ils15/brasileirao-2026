@@ -1,0 +1,53 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841221",
+ "fetchedAt": "2026-11-19T13:48:11.474Z",
+ "date": "2026-09-06T21:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "palmeiras",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alexander Barboza",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Fernando Marçal",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Álvaro Montoro",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Marlon Freitas",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "palmeiras",
+   "type": "red",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

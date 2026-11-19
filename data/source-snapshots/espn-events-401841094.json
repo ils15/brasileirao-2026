@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841094",
+ "fetchedAt": "2026-11-19T13:48:02.680Z",
+ "date": "2026-04-25T21:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "internacional",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "54'",
+   "penalty": false
+  },
+  {
+   "athlete": "Johan Carbonero",
+   "club": "internacional",
+   "minute": "59'",
+   "penalty": false
+  },
+  {
+   "athlete": "Cristian Medina",
+   "club": "botafogo",
+   "minute": "65'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "minute": "74'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "13'"
+  },
+  {
+   "athlete": "Félix Torres",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Victor Gabriel",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Joaquín Correa",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Clayton",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

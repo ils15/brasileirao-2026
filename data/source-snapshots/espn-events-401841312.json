@@ -1,0 +1,41 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841312",
+ "fetchedAt": "2026-11-19T13:48:17.492Z",
+ "date": "2026-11-19T00:30Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "bahia",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Kanu",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "João Pedro",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Alejo Veliz",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "José Enamorado",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "67'"
+  }
+ ],
+ "unresolved": []
+}

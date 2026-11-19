@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841200",
+ "fetchedAt": "2026-11-19T13:48:09.918Z",
+ "date": "2026-08-23T19:00Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "bahia",
+ "homeGoals": 0,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Alejo Veliz",
+   "club": "bahia",
+   "minute": "67'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "minute": "90'+7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Rodrigo Nestor",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Erick Pulga",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Cacá",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+7'"
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

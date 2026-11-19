@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841244",
+ "fetchedAt": "2026-11-19T13:48:12.738Z",
+ "date": "2026-09-19T21:30Z",
+ "status": "post",
+ "home": "remo",
+ "away": "santos",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Rony",
+   "club": "santos",
+   "minute": "78'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marllon",
+   "club": "remo",
+   "minute": "83'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "87'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gonzalo Escobar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "José Welison",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "54'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Gabriel Poveda",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Luan Peres",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Gabriel Poveda",
+   "club": "remo",
+   "type": "red",
+   "minute": "90'+3'"
+  },
+  {
+   "athlete": "Gabriel Bontempo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

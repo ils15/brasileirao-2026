@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841284",
+ "fetchedAt": "2026-11-19T13:48:15.645Z",
+ "date": "2026-10-24T19:30Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "sao-paulo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Pedro Lima",
+   "club": "sao-paulo",
+   "minute": "39'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Rafael",
+   "club": "mirassol",
+   "minute": "7'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Djhordney Ferreira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "17'"
+  },
+  {
+   "athlete": "Iago",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Willian Machado",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Wallison Luiz",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

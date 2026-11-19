@@ -80,6 +80,13 @@ export function captureRelation(fetchedAt: string): 'anterior ao corte analític
 export const scorersCaptureRelation = captureRelation(SCORERS_SOURCE.fetchedAt)
 
 /**
+ * Cobertura declarada da artilharia: derivada dos eventos de cada partida,
+ * não de uma lista agregada sem procedência. Σgols fecha com o pacote menos
+ * os gols contra, que não são creditados a atleta.
+ */
+export const scorersCoverageNote = `cobertura declarada de ${SCORERS_SOURCE.matchesCovered} partidas · Σgols de atletas ${SCORERS_SOURCE.goalsAttributed}/${SCORERS_SOURCE.goalsInPackage}; gols contra não entram na artilharia`
+
+/**
  * Relação entre a cópia CBF arquivada e o pacote, derivada do metadata da fonte.
  * O pacote não guarda o total de jogos que a tabela CBF imprime, então a UI
  * descreve a relação (marca exibida + ausência de reconciliação) em vez de

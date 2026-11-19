@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841230",
+ "fetchedAt": "2026-11-19T13:48:12.623Z",
+ "date": "2026-09-14T23:00Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "remo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "minute": "20'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "90'+1'",
+   "penalty": true
+  },
+  {
+   "athlete": "Vitor Bueno",
+   "club": "remo",
+   "minute": "90'+6'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "8'"
+  },
+  {
+   "athlete": "Matheus Piauí",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Cristian Olivera",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

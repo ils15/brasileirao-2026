@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841014",
+ "fetchedAt": "2026-11-19T13:47:56.982Z",
+ "date": "2026-03-11T23:00Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "vitoria",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "minute": "45'+6'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Lucas Arcanjo",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "4'"
+  },
+  {
+   "athlete": "Santiago Ramos",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "35'"
+  }
+ ],
+ "unresolved": []
+}

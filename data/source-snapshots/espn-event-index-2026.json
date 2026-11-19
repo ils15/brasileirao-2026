@@ -1,0 +1,2688 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates=2026",
+ "fetchedAt": "2026-11-19T13:47:54.213Z",
+ "events": [
+  {
+   "eventId": "401840808",
+   "date": "2026-01-28T22:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401840809",
+   "date": "2026-01-30T00:30Z",
+   "homeScore": 4,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401840810",
+   "date": "2026-01-28T23:00Z",
+   "homeScore": 4,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401840811",
+   "date": "2026-01-28T23:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401840812",
+   "date": "2026-01-28T22:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401840813",
+   "date": "2026-01-28T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840814",
+   "date": "2026-01-28T22:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840975",
+   "date": "2026-01-29T23:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840976",
+   "date": "2026-01-29T00:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840977",
+   "date": "2026-01-28T22:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840978",
+   "date": "2026-02-04T22:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840979",
+   "date": "2026-02-06T00:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401840980",
+   "date": "2026-02-05T22:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840981",
+   "date": "2026-02-19T22:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840982",
+   "date": "2026-02-05T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840983",
+   "date": "2026-02-05T00:30Z",
+   "homeScore": 5,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840984",
+   "date": "2026-02-04T22:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401840985",
+   "date": "2026-02-04T23:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401840986",
+   "date": "2026-02-04T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840987",
+   "date": "2026-02-05T00:30Z",
+   "homeScore": 5,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401840988",
+   "date": "2026-02-12T23:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401840989",
+   "date": "2026-02-11T22:00Z",
+   "homeScore": 3,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401840990",
+   "date": "2026-02-11T23:00Z",
+   "homeScore": 3,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401840991",
+   "date": "2026-02-12T22:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840992",
+   "date": "2026-02-12T22:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401840993",
+   "date": "2026-02-11T00:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401840994",
+   "date": "2026-02-12T00:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401840995",
+   "date": "2026-02-12T00:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401840996",
+   "date": "2026-02-11T22:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401840997",
+   "date": "2026-02-13T00:30Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401840998",
+   "date": "2026-02-25T20:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401840999",
+   "date": "2026-02-25T20:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841000",
+   "date": "2026-02-25T22:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841001",
+   "date": "2026-02-25T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841002",
+   "date": "2026-02-26T22:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841003",
+   "date": "2026-02-25T22:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841004",
+   "date": "2026-02-26T00:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841005",
+   "date": "2026-02-26T00:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841006",
+   "date": "2026-02-25T20:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841007",
+   "date": "2026-02-25T22:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841008",
+   "date": "2026-03-12T23:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841009",
+   "date": "2026-03-12T22:00Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841010",
+   "date": "2026-03-11T00:30Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841011",
+   "date": "2026-03-13T00:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841012",
+   "date": "2026-03-12T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841013",
+   "date": "2026-03-12T00:30Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841014",
+   "date": "2026-03-11T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841015",
+   "date": "2026-03-11T22:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841016",
+   "date": "2026-03-29T22:30Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841017",
+   "date": "2026-03-12T00:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841018",
+   "date": "2026-03-15T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841019",
+   "date": "2026-03-15T23:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841020",
+   "date": "2026-03-15T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841021",
+   "date": "2026-03-15T19:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841022",
+   "date": "2026-03-15T19:00Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841023",
+   "date": "2026-03-15T23:30Z",
+   "homeScore": 3,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841024",
+   "date": "2026-03-15T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841025",
+   "date": "2026-03-16T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841026",
+   "date": "2026-03-14T23:30Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841027",
+   "date": "2026-03-14T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841028",
+   "date": "2026-03-18T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841029",
+   "date": "2026-03-18T23:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841030",
+   "date": "2026-03-19T00:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841031",
+   "date": "2026-03-19T00:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841032",
+   "date": "2026-03-18T22:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841033",
+   "date": "2026-03-18T23:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841034",
+   "date": "2026-03-19T22:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841035",
+   "date": "2026-03-19T23:00Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841036",
+   "date": "2026-03-20T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841037",
+   "date": "2026-03-18T22:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841038",
+   "date": "2026-03-22T19:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841039",
+   "date": "2026-03-22T19:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841040",
+   "date": "2026-03-22T00:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841041",
+   "date": "2026-03-22T19:00Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841042",
+   "date": "2026-03-22T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841043",
+   "date": "2026-03-22T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841044",
+   "date": "2026-03-21T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841045",
+   "date": "2026-03-22T19:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841046",
+   "date": "2026-03-22T23:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841047",
+   "date": "2026-03-21T19:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841048",
+   "date": "2026-04-01T23:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841049",
+   "date": "2026-04-02T22:00Z",
+   "homeScore": 0,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841050",
+   "date": "2026-04-02T22:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841051",
+   "date": "2026-04-03T00:30Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841052",
+   "date": "2026-04-03T00:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841053",
+   "date": "2026-04-01T22:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841054",
+   "date": "2026-04-02T00:30Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841055",
+   "date": "2026-04-01T23:00Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841056",
+   "date": "2026-04-01T23:00Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841057",
+   "date": "2026-04-01T22:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841058",
+   "date": "2026-04-05T20:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841059",
+   "date": "2026-04-04T21:30Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841060",
+   "date": "2026-04-05T23:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841061",
+   "date": "2026-04-05T23:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841062",
+   "date": "2026-04-05T00:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841063",
+   "date": "2026-04-04T23:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841064",
+   "date": "2026-04-05T22:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841065",
+   "date": "2026-04-05T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841066",
+   "date": "2026-04-05T22:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841067",
+   "date": "2026-04-05T20:30Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841068",
+   "date": "2026-04-12T21:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841069",
+   "date": "2026-04-12T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841070",
+   "date": "2026-04-12T19:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841071",
+   "date": "2026-04-12T14:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841072",
+   "date": "2026-04-12T21:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841073",
+   "date": "2026-04-11T19:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841074",
+   "date": "2026-04-11T23:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841075",
+   "date": "2026-04-11T19:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841076",
+   "date": "2026-04-11T21:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841077",
+   "date": "2026-04-11T23:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841078",
+   "date": "2026-04-18T21:30Z",
+   "homeScore": 1,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841079",
+   "date": "2026-04-19T19:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841080",
+   "date": "2026-04-18T23:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841081",
+   "date": "2026-04-18T21:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841082",
+   "date": "2026-04-19T19:00Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841083",
+   "date": "2026-04-19T21:30Z",
+   "homeScore": 4,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841084",
+   "date": "2026-04-19T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841085",
+   "date": "2026-04-19T14:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841086",
+   "date": "2026-04-19T22:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841087",
+   "date": "2026-04-18T23:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841088",
+   "date": "2026-04-26T21:30Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841089",
+   "date": "2026-04-26T19:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841090",
+   "date": "2026-04-26T23:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841091",
+   "date": "2026-04-26T19:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841092",
+   "date": "2026-04-26T00:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841093",
+   "date": "2026-04-25T21:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841094",
+   "date": "2026-04-25T21:30Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841095",
+   "date": "2026-04-25T21:30Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841096",
+   "date": "2026-04-26T23:30Z",
+   "homeScore": 0,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841097",
+   "date": "2026-04-26T21:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841098",
+   "date": "2026-05-03T00:00Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841099",
+   "date": "2026-05-03T21:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841100",
+   "date": "2026-05-02T21:30Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841101",
+   "date": "2026-05-03T19:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841102",
+   "date": "2026-05-02T21:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841103",
+   "date": "2026-05-03T23:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841104",
+   "date": "2026-05-03T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841105",
+   "date": "2026-05-03T19:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841106",
+   "date": "2026-05-02T23:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841107",
+   "date": "2026-05-02T19:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841108",
+   "date": "2026-05-10T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841109",
+   "date": "2026-05-10T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841110",
+   "date": "2026-05-10T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841111",
+   "date": "2026-05-10T21:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841112",
+   "date": "2026-05-10T23:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841113",
+   "date": "2026-05-09T21:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841114",
+   "date": "2026-05-09T19:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841115",
+   "date": "2026-05-10T21:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841116",
+   "date": "2026-05-10T00:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841117",
+   "date": "2026-05-10T22:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841118",
+   "date": "2026-05-17T19:00Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841119",
+   "date": "2026-05-17T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841120",
+   "date": "2026-05-16T21:30Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841121",
+   "date": "2026-05-17T22:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841122",
+   "date": "2026-05-17T21:30Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841123",
+   "date": "2026-05-17T14:00Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841124",
+   "date": "2026-05-17T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841125",
+   "date": "2026-05-17T00:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841126",
+   "date": "2026-05-16T21:30Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841127",
+   "date": "2026-05-16T22:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841128",
+   "date": "2026-05-24T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841129",
+   "date": "2026-05-25T23:00Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841130",
+   "date": "2026-05-23T20:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841131",
+   "date": "2026-05-24T23:30Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841132",
+   "date": "2026-05-23T20:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841133",
+   "date": "2026-05-24T19:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841134",
+   "date": "2026-05-23T22:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841135",
+   "date": "2026-05-23T22:00Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841136",
+   "date": "2026-05-24T00:00Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841137",
+   "date": "2026-05-24T19:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841138",
+   "date": "2026-05-30T19:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841139",
+   "date": "2026-05-30T20:30Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841140",
+   "date": "2026-05-31T19:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841141",
+   "date": "2026-05-31T14:00Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841142",
+   "date": "2026-05-31T19:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841143",
+   "date": "2026-05-30T23:00Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841144",
+   "date": "2026-05-30T19:00Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841145",
+   "date": "2026-05-31T23:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841146",
+   "date": "2026-05-30T20:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841147",
+   "date": "2026-05-31T23:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841148",
+   "date": "2026-07-21T22:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841149",
+   "date": "2026-07-16T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841150",
+   "date": "2026-07-23T00:30Z",
+   "homeScore": 0,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841151",
+   "date": "2026-07-23T22:30Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841152",
+   "date": "2026-07-22T22:30Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841153",
+   "date": "2026-07-17T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841154",
+   "date": "2026-07-23T00:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841155",
+   "date": "2026-07-17T23:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841156",
+   "date": "2026-07-23T00:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841157",
+   "date": "2026-07-16T22:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841158",
+   "date": "2026-07-25T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841159",
+   "date": "2026-07-26T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841160",
+   "date": "2026-07-25T23:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841161",
+   "date": "2026-07-25T21:30Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841162",
+   "date": "2026-07-26T22:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841163",
+   "date": "2026-07-26T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841164",
+   "date": "2026-07-26T22:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841165",
+   "date": "2026-07-26T21:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841166",
+   "date": "2026-07-26T21:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841167",
+   "date": "2026-07-26T19:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841168",
+   "date": "2026-10-03T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841169",
+   "date": "2026-10-02T23:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841170",
+   "date": "2026-07-29T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841171",
+   "date": "2026-07-29T22:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841172",
+   "date": "2026-07-30T00:30Z",
+   "homeScore": 0,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841173",
+   "date": "2026-07-31T00:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841174",
+   "date": "2026-07-30T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841175",
+   "date": "2026-11-14T23:30Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841176",
+   "date": "2026-09-16T22:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841177",
+   "date": "2026-07-30T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841178",
+   "date": "2026-08-08T21:30Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841179",
+   "date": "2026-08-09T21:30Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841180",
+   "date": "2026-08-09T19:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841181",
+   "date": "2026-08-08T19:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841182",
+   "date": "2026-08-09T21:30Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841183",
+   "date": "2026-08-09T14:00Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841184",
+   "date": "2026-08-08T23:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841185",
+   "date": "2026-08-09T00:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841186",
+   "date": "2026-08-09T19:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841187",
+   "date": "2026-08-09T22:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841188",
+   "date": "2026-08-16T19:00Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841189",
+   "date": "2026-08-16T00:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841190",
+   "date": "2026-08-16T21:30Z",
+   "homeScore": 1,
+   "awayScore": 5,
+   "completed": true
+  },
+  {
+   "eventId": "401841191",
+   "date": "2026-08-17T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841192",
+   "date": "2026-08-15T19:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841193",
+   "date": "2026-08-16T22:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841194",
+   "date": "2026-08-16T14:00Z",
+   "homeScore": 3,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841195",
+   "date": "2026-08-16T19:00Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841196",
+   "date": "2026-08-15T21:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841197",
+   "date": "2026-08-16T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841198",
+   "date": "2026-08-24T23:00Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841199",
+   "date": "2026-08-23T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841200",
+   "date": "2026-08-23T19:00Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841201",
+   "date": "2026-08-23T21:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841202",
+   "date": "2026-08-23T19:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841203",
+   "date": "2026-08-23T19:00Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841204",
+   "date": "2026-08-22T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841205",
+   "date": "2026-08-22T19:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841206",
+   "date": "2026-08-22T23:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841207",
+   "date": "2026-08-23T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841208",
+   "date": "2026-08-30T14:00Z",
+   "homeScore": 3,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841209",
+   "date": "2026-08-29T23:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841210",
+   "date": "2026-08-31T23:00Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841211",
+   "date": "2026-08-30T21:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841212",
+   "date": "2026-08-30T00:20Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841213",
+   "date": "2026-08-30T19:00Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841214",
+   "date": "2026-08-30T19:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841215",
+   "date": "2026-08-30T22:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841216",
+   "date": "2026-08-29T21:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841217",
+   "date": "2026-08-30T21:30Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841218",
+   "date": "2026-09-06T19:00Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841219",
+   "date": "2026-09-06T14:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841220",
+   "date": "2026-09-06T22:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841221",
+   "date": "2026-09-06T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841222",
+   "date": "2026-09-07T23:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841223",
+   "date": "2026-09-06T19:00Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841224",
+   "date": "2026-09-05T19:00Z",
+   "homeScore": 2,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841225",
+   "date": "2026-09-06T19:00Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841226",
+   "date": "2026-09-05T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841227",
+   "date": "2026-09-06T00:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841228",
+   "date": "2026-09-12T20:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841229",
+   "date": "2026-09-12T23:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841230",
+   "date": "2026-09-14T23:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841231",
+   "date": "2026-09-12T19:00Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841232",
+   "date": "2026-09-12T00:00Z",
+   "homeScore": 3,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841233",
+   "date": "2026-09-13T00:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841234",
+   "date": "2026-09-12T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841235",
+   "date": "2026-09-13T19:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841236",
+   "date": "2026-09-12T19:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841237",
+   "date": "2026-09-13T20:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841238",
+   "date": "2026-09-20T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841239",
+   "date": "2026-09-19T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841240",
+   "date": "2026-09-20T19:00Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841241",
+   "date": "2026-09-20T21:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841242",
+   "date": "2026-09-20T19:00Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841243",
+   "date": "2026-09-20T00:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841244",
+   "date": "2026-09-19T21:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841245",
+   "date": "2026-09-19T20:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841246",
+   "date": "2026-09-20T14:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841247",
+   "date": "2026-09-19T23:30Z",
+   "homeScore": 5,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841248",
+   "date": "2026-10-09T00:30Z",
+   "homeScore": 4,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841249",
+   "date": "2026-10-08T00:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841250",
+   "date": "2026-10-07T23:00Z",
+   "homeScore": 4,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841251",
+   "date": "2026-10-08T22:30Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841252",
+   "date": "2026-10-07T22:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841253",
+   "date": "2026-10-07T22:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841254",
+   "date": "2026-10-09T00:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841255",
+   "date": "2026-10-07T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841256",
+   "date": "2026-10-08T23:00Z",
+   "homeScore": 2,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841257",
+   "date": "2026-10-07T23:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841258",
+   "date": "2026-10-11T19:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841259",
+   "date": "2026-10-11T00:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841260",
+   "date": "2026-10-13T00:00Z",
+   "homeScore": 4,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841261",
+   "date": "2026-10-11T20:30Z",
+   "homeScore": 4,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841262",
+   "date": "2026-10-10T21:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841263",
+   "date": "2026-10-11T20:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841264",
+   "date": "2026-10-12T19:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841265",
+   "date": "2026-10-12T22:30Z",
+   "homeScore": 1,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841266",
+   "date": "2026-10-11T22:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841267",
+   "date": "2026-10-11T20:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841268",
+   "date": "2026-10-17T21:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841269",
+   "date": "2026-10-18T21:30Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841270",
+   "date": "2026-10-17T21:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841271",
+   "date": "2026-10-17T22:30Z",
+   "homeScore": 0,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841272",
+   "date": "2026-10-19T23:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841273",
+   "date": "2026-10-18T00:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841274",
+   "date": "2026-10-18T22:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841275",
+   "date": "2026-10-16T23:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841276",
+   "date": "2026-10-18T19:00Z",
+   "homeScore": 2,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841277",
+   "date": "2026-10-18T19:00Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841278",
+   "date": "2026-10-24T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841279",
+   "date": "2026-10-26T22:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841280",
+   "date": "2026-10-24T19:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841281",
+   "date": "2026-10-24T21:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841282",
+   "date": "2026-10-25T00:00Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841283",
+   "date": "2026-10-24T21:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841284",
+   "date": "2026-10-24T19:30Z",
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841285",
+   "date": "2026-10-24T19:30Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841286",
+   "date": "2026-10-26T23:00Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841287",
+   "date": "2026-10-23T23:00Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841288",
+   "date": "2026-10-29T22:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841289",
+   "date": "2026-10-28T22:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841290",
+   "date": "2026-10-30T00:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841291",
+   "date": "2026-10-28T22:30Z",
+   "homeScore": 3,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841292",
+   "date": "2026-10-29T23:00Z",
+   "homeScore": 1,
+   "awayScore": 4,
+   "completed": true
+  },
+  {
+   "eventId": "401841293",
+   "date": "2026-10-28T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841294",
+   "date": "2026-10-31T19:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841295",
+   "date": "2026-10-30T23:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841296",
+   "date": "2026-10-29T00:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841297",
+   "date": "2026-10-29T00:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841298",
+   "date": "2026-11-05T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841299",
+   "date": "2026-11-02T23:00Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841300",
+   "date": "2026-11-05T22:30Z",
+   "homeScore": 6,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841301",
+   "date": "2026-11-04T00:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841302",
+   "date": "2026-11-06T23:00Z",
+   "homeScore": 0,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841303",
+   "date": "2026-11-06T00:30Z",
+   "homeScore": 3,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841304",
+   "date": "2026-11-03T22:30Z",
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
+  },
+  {
+   "eventId": "401841305",
+   "date": "2026-11-05T00:30Z",
+   "homeScore": 1,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841306",
+   "date": "2026-11-04T22:30Z",
+   "homeScore": 1,
+   "awayScore": 3,
+   "completed": true
+  },
+  {
+   "eventId": "401841307",
+   "date": "2026-11-04T22:30Z",
+   "homeScore": 3,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841308",
+   "date": "2026-11-19T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841309",
+   "date": "2026-11-20T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841310",
+   "date": "2026-11-18T23:00Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841311",
+   "date": "2026-11-14T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841312",
+   "date": "2026-11-19T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841313",
+   "date": "2026-11-18T23:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841314",
+   "date": "2026-11-18T23:30Z",
+   "homeScore": 2,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841315",
+   "date": "2026-11-18T22:30Z",
+   "homeScore": 0,
+   "awayScore": 1,
+   "completed": true
+  },
+  {
+   "eventId": "401841316",
+   "date": "2026-11-19T00:30Z",
+   "homeScore": 4,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401841317",
+   "date": "2026-11-19T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841318",
+   "date": "2026-11-22T19:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841319",
+   "date": "2026-11-25T23:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841320",
+   "date": "2026-11-24T00:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841321",
+   "date": "2026-11-22T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841322",
+   "date": "2026-11-21T19:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841323",
+   "date": "2026-11-23T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841324",
+   "date": "2026-11-22T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841325",
+   "date": "2026-11-22T00:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841326",
+   "date": "2026-11-23T23:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841327",
+   "date": "2026-11-21T20:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841328",
+   "date": "2026-11-29T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841329",
+   "date": "2026-11-26T23:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841330",
+   "date": "2026-11-29T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841331",
+   "date": "2026-11-29T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841332",
+   "date": "2026-11-29T19:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841333",
+   "date": "2026-11-29T19:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841334",
+   "date": "2026-11-29T21:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841335",
+   "date": "2026-11-24T21:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841336",
+   "date": "2026-11-29T00:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841337",
+   "date": "2026-11-27T23:00Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841338",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841339",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841340",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841341",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841342",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841343",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841344",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841345",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841346",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401841347",
+   "date": "2026-12-03T00:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": false
+  },
+  {
+   "eventId": "401879458",
+   "date": "2026-07-23T22:30Z",
+   "homeScore": 0,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401879459",
+   "date": "2026-07-17T22:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  },
+  {
+   "eventId": "401913077",
+   "date": "2026-09-02T22:30Z",
+   "homeScore": 2,
+   "awayScore": 0,
+   "completed": true
+  }
+ ]
+}

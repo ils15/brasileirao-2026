@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841248",
+ "fetchedAt": "2026-11-19T13:48:14.341Z",
+ "date": "2026-10-09T00:30Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "coritiba",
+ "homeGoals": 4,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "minute": "30'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "minute": "49'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "minute": "65'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "minute": "90'+3'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Bruno Melo",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

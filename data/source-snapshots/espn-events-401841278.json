@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841278",
+ "fetchedAt": "2026-11-19T13:48:15.745Z",
+ "date": "2026-10-24T22:30Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "fluminense",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Yannick Bolasie",
+   "club": "chapecoense",
+   "minute": "9'",
+   "penalty": false
+  },
+  {
+   "athlete": "Guga",
+   "club": "fluminense",
+   "minute": "30'",
+   "penalty": false
+  },
+  {
+   "athlete": "Giovanni Augusto",
+   "club": "chapecoense",
+   "minute": "56'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Yago Felipe",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Guilherme Arana",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

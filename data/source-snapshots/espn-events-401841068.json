@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841068",
+ "fetchedAt": "2026-11-19T13:48:02.479Z",
+ "date": "2026-04-12T21:30Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "José Hurtado",
+   "club": "bragantino",
+   "minute": "6'",
+   "penalty": false
+  },
+  {
+   "athlete": "Neyser Villareal",
+   "club": "cruzeiro",
+   "minute": "18'",
+   "penalty": false
+  },
+  {
+   "athlete": "Christian",
+   "club": "cruzeiro",
+   "minute": "49'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ignacio Sosa",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Gustavo Marques",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "82'"
+  }
+ ],
+ "unresolved": []
+}

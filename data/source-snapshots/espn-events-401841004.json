@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841004",
+ "fetchedAt": "2026-11-19T13:47:56.335Z",
+ "date": "2026-02-26T00:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "fluminense",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Vitor Roque",
+   "club": "palmeiras",
+   "minute": "9'",
+   "penalty": true
+  },
+  {
+   "athlete": "Allan Elias",
+   "club": "palmeiras",
+   "minute": "13'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "minute": "40'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Fábio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "8'"
+  },
+  {
+   "athlete": "Juan Freytes",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Martinelli",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Khellven",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Ignácio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Marlon Freitas",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

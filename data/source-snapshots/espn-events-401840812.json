@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840812",
+ "fetchedAt": "2026-11-19T13:47:54.369Z",
+ "date": "2026-01-28T22:00Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "remo",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "minute": "58'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Baralhas",
+   "club": "vitoria",
+   "minute": "77'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Ricardo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Gabriel Baralhas",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Patrick de Paula",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Dodô",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Léo Andrade",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

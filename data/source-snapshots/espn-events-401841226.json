@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841226",
+ "fetchedAt": "2026-11-19T13:48:11.315Z",
+ "date": "2026-09-05T21:30Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "atletico-mg",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "67'",
+   "penalty": false
+  },
+  {
+   "athlete": "Iago",
+   "club": "sao-paulo",
+   "minute": "69'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Djhordney Ferreira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+1'"
+  },
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

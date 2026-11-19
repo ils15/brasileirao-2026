@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841037",
+ "fetchedAt": "2026-11-19T13:47:58.184Z",
+ "date": "2026-03-18T22:00Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "minute": "40'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Rodriguinho",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Rodrigo Nestor",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

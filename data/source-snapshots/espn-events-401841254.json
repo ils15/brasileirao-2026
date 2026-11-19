@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841254",
+ "fetchedAt": "2026-11-19T13:48:13.900Z",
+ "date": "2026-10-09T00:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "bahia",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Khellven",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "87'"
+  }
+ ],
+ "unresolved": []
+}

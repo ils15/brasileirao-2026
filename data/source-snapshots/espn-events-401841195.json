@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841195",
+ "fetchedAt": "2026-11-19T13:48:09.193Z",
+ "date": "2026-08-16T19:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "gremio",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Vitor Hugo",
+   "club": "atletico-mg",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "minute": "62'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "minute": "66'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Ángelo Preciado",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Mamady Cissé",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Renan Lodi",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Pedro Gabriel",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "69'"
+  }
+ ],
+ "unresolved": []
+}

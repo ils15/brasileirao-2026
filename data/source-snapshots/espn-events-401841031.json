@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841031",
+ "fetchedAt": "2026-11-19T13:47:58.592Z",
+ "date": "2026-03-19T00:30Z",
+ "status": "post",
+ "home": "santos",
+ "away": "internacional",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "56'",
+   "penalty": true
+  },
+  {
+   "athlete": "Johan Carbonero",
+   "club": "internacional",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "internacional",
+   "minute": "46'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Gonzalo Escobar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "13'"
+  },
+  {
+   "athlete": "Félix Torres",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Vitinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Igor",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+3'"
+  },
+  {
+   "athlete": "Johan Carbonero",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

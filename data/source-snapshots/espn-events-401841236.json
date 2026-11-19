@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841236",
+ "fetchedAt": "2026-11-19T13:48:11.861Z",
+ "date": "2026-09-12T19:00Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "vasco",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Mathías Villasanti",
+   "club": "gremio",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "minute": "76'",
+   "penalty": false
+  },
+  {
+   "athlete": "Facundo Colidio",
+   "club": "vasco",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Pedro Gabriel",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "7'"
+  },
+  {
+   "athlete": "Tchê Tchê",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Wallace",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Cuiabano",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Robert",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Diego Caito",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "58'"
+  }
+ ],
+ "unresolved": []
+}

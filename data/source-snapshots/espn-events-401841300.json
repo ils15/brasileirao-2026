@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841300",
+ "fetchedAt": "2026-11-19T13:48:16.944Z",
+ "date": "2026-11-05T22:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "remo",
+ "homeGoals": 6,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "minute": "4'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "21'",
+   "penalty": false
+  },
+  {
+   "athlete": "José Welison",
+   "club": "remo",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "55'",
+   "penalty": false
+  },
+  {
+   "athlete": "Felipe Anderson",
+   "club": "palmeiras",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Marcelinho",
+   "club": "palmeiras",
+   "minute": "36'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Marllon",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Marcelinho",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Edson Fernando",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "85'"
+  }
+ ],
+ "unresolved": []
+}

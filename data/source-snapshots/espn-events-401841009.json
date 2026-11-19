@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841009",
+ "fetchedAt": "2026-11-19T13:47:56.832Z",
+ "date": "2026-03-12T22:00Z",
+ "status": "post",
+ "home": "remo",
+ "away": "fluminense",
+ "homeGoals": 0,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "John Kennedy",
+   "club": "fluminense",
+   "minute": "16'",
+   "penalty": false
+  },
+  {
+   "athlete": "Agustín Canobbio",
+   "club": "fluminense",
+   "minute": "63'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Pedro",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Hércules",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Patrick de Paula",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "76'"
+  }
+ ],
+ "unresolved": []
+}

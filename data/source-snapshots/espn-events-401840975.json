@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840975",
+ "fetchedAt": "2026-11-19T13:47:54.833Z",
+ "date": "2026-01-29T23:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "vasco",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Philippe Coutinho",
+   "club": "vasco",
+   "minute": "21'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "minute": "54'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Carlos Cuesta",
+   "club": "mirassol",
+   "minute": "32'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Nuno Moreira",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "47'"
+  },
+  {
+   "athlete": "Willian Machado",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Nathan Fogaça",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "82'"
+  }
+ ],
+ "unresolved": []
+}

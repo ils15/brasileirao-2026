@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840990",
+ "fetchedAt": "2026-11-19T13:47:55.786Z",
+ "date": "2026-02-11T23:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "remo",
+ "homeGoals": 3,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Hulk",
+   "club": "atletico-mg",
+   "minute": "22'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitor Bueno",
+   "club": "remo",
+   "minute": "42'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "minute": "70'",
+   "penalty": false
+  },
+  {
+   "athlete": "Yago Pikachu",
+   "club": "remo",
+   "minute": "87'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alef Manga",
+   "club": "remo",
+   "minute": "90'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Dudu",
+   "club": "atletico-mg",
+   "minute": "90'+9'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Pedro",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Kayky",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "69'"
+  }
+ ],
+ "unresolved": []
+}

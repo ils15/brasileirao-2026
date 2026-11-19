@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841199",
+ "fetchedAt": "2026-11-19T13:48:10.287Z",
+ "date": "2026-08-23T21:30Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "sao-paulo",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Bruno Pacheco",
+   "club": "chapecoense",
+   "minute": "26'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Marcinho",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Yago Felipe",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

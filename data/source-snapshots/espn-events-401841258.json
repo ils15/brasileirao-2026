@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841258",
+ "fetchedAt": "2026-11-19T13:48:14.592Z",
+ "date": "2026-10-11T19:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "santos",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "88'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitor Hugo",
+   "club": "atletico-mg",
+   "minute": "90'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Thiago Borbas",
+   "club": "atletico-mg",
+   "minute": "90'+7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alan Franco",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Lucas Verissimo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Thiago Borbas",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Luan Peres",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Igor Gomes",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "João Schmidt",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Willian Arão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

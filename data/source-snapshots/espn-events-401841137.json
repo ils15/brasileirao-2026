@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841137",
+ "fetchedAt": "2026-11-19T13:48:05.792Z",
+ "date": "2026-05-24T19:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "27'",
+   "penalty": true
+  },
+  {
+   "athlete": "Luis Sinisterra",
+   "club": "cruzeiro",
+   "minute": "73'",
+   "penalty": false
+  },
+  {
+   "athlete": "João Paulo",
+   "club": "chapecoense",
+   "minute": "79'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Rafael Cavalheira",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Kaique Kenji",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Vinicius Eduardo De Almeida Gomes Da Silva",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'+11'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841150",
+ "fetchedAt": "2026-11-19T13:48:06.759Z",
+ "date": "2026-07-23T00:30Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "flamengo",
+ "homeGoals": 0,
+ "awayGoals": 4,
+ "goals": [
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "26'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lorran",
+   "club": "flamengo",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "86'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Rafael Thyere",
+   "club": "flamengo",
+   "minute": "38'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Bruno Pacheco",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "53'"
+  }
+ ],
+ "unresolved": []
+}

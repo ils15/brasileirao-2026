@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840993",
+ "fetchedAt": "2026-11-19T13:47:55.431Z",
+ "date": "2026-02-11T00:30Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "minute": "15'",
+   "penalty": false
+  },
+  {
+   "athlete": "Everton",
+   "club": "flamengo",
+   "minute": "45'+4'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "minute": "51'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Everton",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Léo Pereira",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "50'"
+  },
+  {
+   "athlete": "Evertton",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Alex Sandro",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

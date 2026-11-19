@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841233",
+ "fetchedAt": "2026-11-19T13:48:12.503Z",
+ "date": "2026-09-13T00:00Z",
+ "status": "post",
+ "home": "santos",
+ "away": "cruzeiro",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Benjamín Rollheiser",
+   "club": "santos",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Fabrício Bruno",
+   "club": "santos",
+   "minute": "32'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Everton",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "João Marcelo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Gabriel Brazão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Fabrício Bruno",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

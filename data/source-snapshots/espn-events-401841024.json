@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841024",
+ "fetchedAt": "2026-11-19T13:47:57.230Z",
+ "date": "2026-03-15T21:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "remo",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "24'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Sebastián Gómez",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Marllon",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Lucas Ronier",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

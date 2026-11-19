@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841041",
+ "fetchedAt": "2026-11-19T13:47:59.165Z",
+ "date": "2026-03-22T19:00Z",
+ "status": "post",
+ "home": "remo",
+ "away": "bahia",
+ "homeGoals": 4,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Everaldo",
+   "club": "bahia",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitor Bueno",
+   "club": "remo",
+   "minute": "45'+9'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Taliari",
+   "club": "remo",
+   "minute": "49'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Taliari",
+   "club": "remo",
+   "minute": "58'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "83'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Ricardo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "13'"
+  },
+  {
+   "athlete": "Marllon",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Marcelo Rangel",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Rodrigo Nestor",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

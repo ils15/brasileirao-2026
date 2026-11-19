@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841000",
+ "fetchedAt": "2026-11-19T13:47:56.241Z",
+ "date": "2026-02-25T22:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "sao-paulo",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Cauly",
+   "club": "sao-paulo",
+   "minute": "57'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Wallison Luiz",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Djhordney Ferreira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Pedro Luccas",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Alan Franco",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Rafael Tolói",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+6'"
+  },
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+9'"
+  }
+ ],
+ "unresolved": []
+}

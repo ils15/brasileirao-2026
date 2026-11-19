@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841113",
+ "fetchedAt": "2026-11-19T13:48:04.284Z",
+ "date": "2026-05-09T21:00Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "John Kennedy",
+   "club": "fluminense",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "minute": "63'",
+   "penalty": true
+  },
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "67'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Serna",
+   "club": "fluminense",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Alisson",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Samuel Xavier",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Riquelme",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "René",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

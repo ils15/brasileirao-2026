@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841314",
+ "fetchedAt": "2026-11-19T13:48:17.962Z",
+ "date": "2026-11-18T23:30Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "palmeiras",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "minute": "46'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "minute": "74'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Khellven",
+   "club": "cruzeiro",
+   "minute": "77'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Alexander Barboza",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Vitor Roque",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Gerson",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Matheus Henrique",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Bruno Fuchs",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

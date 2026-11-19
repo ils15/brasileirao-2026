@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841281",
+ "fetchedAt": "2026-11-19T13:48:15.716Z",
+ "date": "2026-10-24T21:30Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "corinthians",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "José Luis Rodríguez",
+   "club": "vasco",
+   "minute": "35'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "corinthians",
+   "minute": "50'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "minute": "57'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marino Hinestroza",
+   "club": "vasco",
+   "minute": "88'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marino Hinestroza",
+   "club": "vasco",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Fabrizio Angileri",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Marino Hinestroza",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Jesse Lingard",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

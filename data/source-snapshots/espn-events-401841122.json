@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841122",
+ "fetchedAt": "2026-11-19T13:48:05.243Z",
+ "date": "2026-05-17T21:30Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "remo",
+ "homeGoals": 2,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Yago Pikachu",
+   "club": "remo",
+   "minute": "16'",
+   "penalty": false
+  },
+  {
+   "athlete": "Neto",
+   "club": "chapecoense",
+   "minute": "24'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rafael Cavalheira",
+   "club": "chapecoense",
+   "minute": "47'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "50'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Bruno Leonardo",
+   "club": "remo",
+   "minute": "87'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Marcelinho",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "João Paulo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

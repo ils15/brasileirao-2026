@@ -1,0 +1,36 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841196",
+ "fetchedAt": "2026-11-19T13:48:09.115Z",
+ "date": "2026-08-15T21:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "bragantino",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Pedro Henrique",
+   "club": "bragantino",
+   "minute": "67'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kerwin Vargas",
+   "club": "athletico-pr",
+   "minute": "75'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Eduardo Sasha",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "78'"
+  }
+ ],
+ "unresolved": []
+}

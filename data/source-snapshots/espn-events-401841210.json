@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841210",
+ "fetchedAt": "2026-11-19T13:48:10.780Z",
+ "date": "2026-08-31T23:00Z",
+ "status": "post",
+ "home": "remo",
+ "away": "coritiba",
+ "homeGoals": 2,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Zé Ricardo",
+   "club": "remo",
+   "minute": "61'",
+   "penalty": false
+  },
+  {
+   "athlete": "Yago Pikachu",
+   "club": "remo",
+   "minute": "64'",
+   "penalty": false
+  },
+  {
+   "athlete": "Fabinho",
+   "club": "coritiba",
+   "minute": "76'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "90'+3'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "José Welison",
+   "club": "coritiba",
+   "minute": "47'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Tiago",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Gabriel Taliari",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "José Welison",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Marllon",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

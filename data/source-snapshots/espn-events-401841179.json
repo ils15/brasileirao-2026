@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841179",
+ "fetchedAt": "2026-11-19T13:48:08.654Z",
+ "date": "2026-08-09T21:30Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "corinthians",
+ "homeGoals": 0,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "minute": "59'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro Raúl",
+   "club": "corinthians",
+   "minute": "87'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "10'"
+  },
+  {
+   "athlete": "Ramires",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "17'"
+  },
+  {
+   "athlete": "André Carrillo",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "80'"
+  }
+ ],
+ "unresolved": []
+}

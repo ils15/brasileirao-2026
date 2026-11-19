@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841297",
+ "fetchedAt": "2026-11-19T13:48:16.075Z",
+ "date": "2026-10-29T00:30Z",
+ "status": "post",
+ "home": "remo",
+ "away": "botafogo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "8'",
+   "penalty": false
+  },
+  {
+   "athlete": "Leonel Picco",
+   "club": "remo",
+   "minute": "54'",
+   "penalty": false
+  },
+  {
+   "athlete": "Edenilson",
+   "club": "botafogo",
+   "minute": "83'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Domingos",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "56'"
+  }
+ ],
+ "unresolved": []
+}

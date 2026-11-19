@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841155",
+ "fetchedAt": "2026-11-19T13:48:06.638Z",
+ "date": "2026-07-17T23:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "gremio",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Bruno Santos",
+   "club": "mirassol",
+   "minute": "16'",
+   "penalty": false
+  },
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "minute": "40'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "77'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Denilson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Gustavo Martins",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Leonel Pérez",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "79'"
+  }
+ ],
+ "unresolved": []
+}

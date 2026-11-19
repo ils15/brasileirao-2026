@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841184",
+ "fetchedAt": "2026-11-19T13:48:08.415Z",
+ "date": "2026-08-08T23:30Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Tiago",
+   "club": "coritiba",
+   "minute": "31'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "82'",
+   "penalty": false
+  },
+  {
+   "athlete": "Túlio Eduardo Silva De Oliveira",
+   "club": "chapecoense",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Bruno Melo",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Rubens Tadeu Hartmann Ricoldi",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "56'"
+  }
+ ],
+ "unresolved": []
+}

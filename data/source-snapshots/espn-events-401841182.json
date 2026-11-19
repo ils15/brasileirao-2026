@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841182",
+ "fetchedAt": "2026-11-19T13:48:08.583Z",
+ "date": "2026-08-09T21:30Z",
+ "status": "post",
+ "home": "santos",
+ "away": "athletico-pr",
+ "homeGoals": 0,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "26'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Adonis Frias",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "34'"
+  }
+ ],
+ "unresolved": []
+}

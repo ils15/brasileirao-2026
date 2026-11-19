@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841306",
+ "fetchedAt": "2026-11-19T13:48:17.050Z",
+ "date": "2026-11-04T22:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "vasco",
+ "homeGoals": 1,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "minute": "22'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Duarte",
+   "club": "vasco",
+   "minute": "63'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Pereira",
+   "club": "vasco",
+   "minute": "67'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Juan Felipe Aguirre",
+   "club": "vasco",
+   "minute": "61'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Jádson",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "1'"
+  },
+  {
+   "athlete": "Alan Lescano",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "type": "red",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Dantas",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

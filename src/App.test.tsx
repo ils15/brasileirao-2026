@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import App from './App'
 import { currentClubs } from './projectionData'
-import { cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, cbfArchiveProvenance } from './seasonFacts'
+import { cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, cbfArchiveProvenance } from './seasonFacts'
 import { scorers, SCORERS_SOURCE } from './data'
 import { scorers2026 } from './scorers2026'
 import { CURRENT_SEASON_SOURCE, currentSeasonResults } from './currentSeasonResults'
@@ -227,7 +227,7 @@ describe('painel do Brasileirão 2026', () => {
 
     const sourceSummary = screen.getByRole('region', { name: 'Fonte e horário dos dados' })
     expect(within(sourceSummary).getByText(cutoffSummaryLine)).toBeInTheDocument()
-    expect(screen.getByText(new RegExp(`captura ${scorersCaptureLabel} · ${scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada`))).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`captura ${scorersCaptureLabel} · ${scorersCaptureRelation}; ${scorersCoverageNote}`))).toBeInTheDocument()
   })
 
   it('pesquisa a classificação pelo nome do clube', async () => {
@@ -282,8 +282,8 @@ describe('painel do Brasileirão 2026', () => {
       expect(within(topScorers).getAllByText(tiedPosition)).toHaveLength(tiedCount)
     }
     const scorersPanel = screen.getByRole('region', { name: 'Artilharia' })
-    expect(within(scorersPanel).getByText(new RegExp(SCORERS_SOURCE.name))).toBeInTheDocument()
-    expect(within(scorersPanel).getByText(/sem timestamp por partida, cobertura temporal não verificada/)).toBeInTheDocument()
+    expect(within(scorersPanel).getByText(new RegExp(escapeRegExp(SCORERS_SOURCE.name)))).toBeInTheDocument()
+    expect(within(scorersPanel).getByText(new RegExp(scorersCoverageNote))).toBeInTheDocument()
   })
 
   it('separa classificação derivada, artilharia pós-corte e data programada do registro do evento', async () => {

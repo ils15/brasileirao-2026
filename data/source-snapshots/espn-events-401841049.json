@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841049",
+ "fetchedAt": "2026-11-19T13:48:00.752Z",
+ "date": "2026-04-02T22:00Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "atletico-mg",
+ "homeGoals": 0,
+ "awayGoals": 4,
+ "goals": [
+  {
+   "athlete": "Bernard",
+   "club": "atletico-mg",
+   "minute": "23'",
+   "penalty": false
+  },
+  {
+   "athlete": "Reiner",
+   "club": "atletico-mg",
+   "minute": "30'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "minute": "35'",
+   "penalty": false
+  },
+  {
+   "athlete": "Dudu",
+   "club": "atletico-mg",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Victor Caetano",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "42'"
+  }
+ ],
+ "unresolved": []
+}

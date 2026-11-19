@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841316",
+ "fetchedAt": "2026-11-19T13:48:17.580Z",
+ "date": "2026-11-19T00:30Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "botafogo",
+ "homeGoals": 4,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Memphis Depay",
+   "club": "corinthians",
+   "minute": "34'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "minute": "60'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "minute": "67'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alex Telles",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "André Carrillo",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "49'"
+  },
+  {
+   "athlete": "Victor Hugo",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

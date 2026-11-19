@@ -1,0 +1,77 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841246",
+ "fetchedAt": "2026-11-19T13:48:12.940Z",
+ "date": "2026-09-20T14:00Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "palmeiras",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Erick Noriega",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "João Pedro",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Gustavo Martins",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Alexander Barboza",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Joaquín Piquerez",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Lucas Evangelista",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Pedro Gabriel",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

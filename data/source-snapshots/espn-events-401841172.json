@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841172",
+ "fetchedAt": "2026-11-19T13:48:08.120Z",
+ "date": "2026-07-30T00:30Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "palmeiras",
+ "homeGoals": 0,
+ "awayGoals": 4,
+ "goals": [
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "minute": "70'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramón Sosa",
+   "club": "palmeiras",
+   "minute": "84'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Fabiano",
+   "club": "palmeiras",
+   "minute": "45'+6'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Marlon Freitas",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "14'"
+  },
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Cacá",
+   "club": "vitoria",
+   "type": "red",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Luan Cândido",
+   "club": "vitoria",
+   "type": "red",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Fabiano",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Emanuel Britez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "66'"
+  }
+ ],
+ "unresolved": []
+}

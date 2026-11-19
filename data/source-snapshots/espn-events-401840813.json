@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840813",
+ "fetchedAt": "2026-11-19T13:47:54.861Z",
+ "date": "2026-01-28T22:30Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "gremio",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Nonato",
+   "club": "fluminense",
+   "minute": "46'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "minute": "59'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "75'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Nonato",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Dodi",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "André Henrique",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

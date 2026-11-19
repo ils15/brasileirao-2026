@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841073",
+ "fetchedAt": "2026-11-19T13:48:01.433Z",
+ "date": "2026-04-11T19:30Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "sao-paulo",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Cacá",
+   "club": "vitoria",
+   "minute": "35'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "minute": "83'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Marcos Antonio",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Lucas Ramon",
+   "club": "sao-paulo",
+   "type": "red",
+   "minute": "54'"
+  },
+  {
+   "athlete": "Diego Tarzia",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Tetê",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Gabriel Baralhas",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Rafael Tolói",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

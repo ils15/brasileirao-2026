@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841305",
+ "fetchedAt": "2026-11-19T13:48:16.735Z",
+ "date": "2026-11-05T00:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "atletico-mg",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Edenilson",
+   "club": "botafogo",
+   "minute": "19'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Cristian Medina",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "14'"
+  },
+  {
+   "athlete": "Tomás Pérez",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "47'"
+  },
+  {
+   "athlete": "Fernando Marçal",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Kauã Pascini",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "77'"
+  }
+ ],
+ "unresolved": []
+}

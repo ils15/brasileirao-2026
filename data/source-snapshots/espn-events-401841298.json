@@ -1,0 +1,77 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841298",
+ "fetchedAt": "2026-11-19T13:48:17.003Z",
+ "date": "2026-11-05T00:30Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "corinthians",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Djhordney Ferreira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "corinthians",
+   "type": "red",
+   "minute": "31'"
+  },
+  {
+   "athlete": "André Ramalho",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Pedro Milans",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Pedro Lima",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Newton",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Memphis Depay",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Yuri Alberto",
+   "club": "corinthians",
+   "type": "red",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Ferreira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

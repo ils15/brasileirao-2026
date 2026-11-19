@@ -1,0 +1,108 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841251",
+ "fetchedAt": "2026-11-19T13:48:13.842Z",
+ "date": "2026-10-08T22:30Z",
+ "status": "post",
+ "home": "santos",
+ "away": "flamengo",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Danilo",
+   "club": "flamengo",
+   "minute": "43'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "minute": "45'+4'",
+   "penalty": false
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "82'",
+   "penalty": true
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "minute": "88'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gonzalo Escobar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "12'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Neymar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Christian Oliva",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Rodinei",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "type": "red",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Emerson Royal",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

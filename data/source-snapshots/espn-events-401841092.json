@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841092",
+ "fetchedAt": "2026-11-19T13:48:02.298Z",
+ "date": "2026-04-26T00:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "mirassol",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "76'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Danielzinho",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "José Aldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Nathan Fogaça",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "45'+5'"
+  }
+ ],
+ "unresolved": []
+}

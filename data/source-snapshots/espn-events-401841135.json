@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841135",
+ "fetchedAt": "2026-11-19T13:48:05.302Z",
+ "date": "2026-05-23T22:00Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "santos",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "40'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "55'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "59'",
+   "penalty": false
+  },
+  {
+   "athlete": "Mateus Tetê",
+   "club": "gremio",
+   "minute": "63'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Igor",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "9'"
+  },
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "santos",
+   "type": "red",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

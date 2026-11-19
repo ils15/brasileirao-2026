@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841125",
+ "fetchedAt": "2026-11-19T13:48:05.039Z",
+ "date": "2026-05-17T00:00Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "cruzeiro",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Felipe Anderson",
+   "club": "palmeiras",
+   "minute": "20'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "12'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Otávio Costa",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Murilo",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Lucas Silva",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

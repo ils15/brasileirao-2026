@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841056",
+ "fetchedAt": "2026-11-19T13:48:00.057Z",
+ "date": "2026-04-01T23:00Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "athletico-pr",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Everaldo",
+   "club": "bahia",
+   "minute": "3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Everaldo",
+   "club": "bahia",
+   "minute": "35'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "90'+3'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "David Duarte",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Jádson",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Everaldo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Gastón Benavídez",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

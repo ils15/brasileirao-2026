@@ -1,0 +1,36 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841008",
+ "fetchedAt": "2026-11-19T13:47:56.895Z",
+ "date": "2026-03-12T23:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "47'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "minute": "60'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Rafael Cavalheira",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "26'"
+  }
+ ],
+ "unresolved": []
+}

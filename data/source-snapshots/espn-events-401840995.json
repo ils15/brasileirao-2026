@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840995",
+ "fetchedAt": "2026-11-19T13:47:55.816Z",
+ "date": "2026-02-12T00:30Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "gremio",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Lucas Moura",
+   "club": "sao-paulo",
+   "minute": "24'",
+   "penalty": true
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "minute": "59'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Weverton",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "22'"
+  },
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Pablo Maia",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Wagner Leonardo",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Wagner Leonardo",
+   "club": "gremio",
+   "type": "red",
+   "minute": "47'"
+  },
+  {
+   "athlete": "Ferreira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "André Henrique",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

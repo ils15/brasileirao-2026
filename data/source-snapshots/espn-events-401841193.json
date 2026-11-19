@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841193",
+ "fetchedAt": "2026-11-19T13:48:09.304Z",
+ "date": "2026-08-16T22:30Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "cruzeiro",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Bruno Rodrigues",
+   "club": "cruzeiro",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "corinthians",
+   "minute": "58'",
+   "penalty": false
+  },
+  {
+   "athlete": "Wanderson",
+   "club": "cruzeiro",
+   "minute": "82'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Felipe Morais",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Jonathan Jesus",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Lucas Villalba",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Luciano Rodríguez",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

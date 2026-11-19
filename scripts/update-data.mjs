@@ -19,7 +19,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
-import { refreshApiFutebolBr } from './refresh-apifutebolbr.mjs'
+import { refreshEspnScorers } from './refresh-espn-scorers.mjs'
 import { parseUpdateArgs } from './lib/updateArgs.mjs'
 import {
   parseEspnStandings,
@@ -132,7 +132,7 @@ async function main() {
   }
   // Mesmo dia do corte: re-coleta só as fontes primárias. Um jogo que termina
   // depois do corte no mesmo dia UTC não pode esperar ~24h; as fontes
-  // secundárias (365scores/API Futebol BR) têm orçamento próprio e só rodam
+  // secundárias (365scores/eventos ESPN) têm orçamento próprio e só rodam
   // quando há dia novo.
   const plan = planCollectionRun({ today, lastCutoffDate })
   console.log(plan.refreshSecondary
@@ -225,13 +225,15 @@ async function main() {
       console.warn(`  Dados avançados indisponíveis nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
     }
     try {
-      // Artilharia + preenchimento paced de partidas (API Futebol BR).
-      await refreshApiFutebolBr({
+      // Artilharia derivada dos eventos de partida da ESPN: um snapshot por
+      // partida, agregado no módulo. Falha por partida fica isolada (warning).
+      await refreshEspnScorers({
+        results: merged,
         log: (line) => console.log(`  ${line}`),
-        ourStandings: standings,
+        write: !dryRun,
       })
     } catch (error) {
-      console.warn(`  API Futebol BR indisponível nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
+      console.warn(`  Artilharia ESPN indisponível nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
     }
   }
 

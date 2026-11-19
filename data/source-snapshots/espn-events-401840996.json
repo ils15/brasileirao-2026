@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840996",
+ "fetchedAt": "2026-11-19T13:47:55.625Z",
+ "date": "2026-02-11T22:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "cruzeiro",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Wanderson",
+   "club": "cruzeiro",
+   "minute": "23'",
+   "penalty": false
+  },
+  {
+   "athlete": "Nathan Fogaça",
+   "club": "mirassol",
+   "minute": "38'",
+   "penalty": false
+  },
+  {
+   "athlete": "Negueba",
+   "club": "mirassol",
+   "minute": "53'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "85'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "8'"
+  },
+  {
+   "athlete": "Neto Moura",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "25'"
+  },
+  {
+   "athlete": "Reinaldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "José Aldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Gerson",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Yuri",
+   "club": "mirassol",
+   "type": "red",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

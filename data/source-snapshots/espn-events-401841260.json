@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841260",
+ "fetchedAt": "2026-11-19T13:48:14.654Z",
+ "date": "2026-10-13T00:00Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "cruzeiro",
+ "homeGoals": 4,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "minute": "13'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramires",
+   "club": "bragantino",
+   "minute": "30'",
+   "penalty": false
+  },
+  {
+   "athlete": "Zé Lucas",
+   "club": "cruzeiro",
+   "minute": "43'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Henrique",
+   "club": "cruzeiro",
+   "minute": "89'",
+   "penalty": false
+  },
+  {
+   "athlete": "José Herrera",
+   "club": "bragantino",
+   "minute": "90'+1'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Kaio Jorge",
+   "club": "bragantino",
+   "minute": "20'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Guzmán Rodríguez",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "10'"
+  },
+  {
+   "athlete": "William",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "18'"
+  },
+  {
+   "athlete": "Ryan Augusto",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Felipe Morais",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "77'"
+  }
+ ],
+ "unresolved": []
+}

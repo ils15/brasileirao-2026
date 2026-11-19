@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841286",
+ "fetchedAt": "2026-11-19T13:48:15.915Z",
+ "date": "2026-10-26T23:00Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "atletico-mg",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Bernard",
+   "club": "atletico-mg",
+   "minute": "7'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gonzalo Plata",
+   "club": "flamengo",
+   "minute": "34'",
+   "penalty": false
+  },
+  {
+   "athlete": "Giorgian de Arrascaeta",
+   "club": "flamengo",
+   "minute": "41'",
+   "penalty": false
+  },
+  {
+   "athlete": "Renan Lodi",
+   "club": "atletico-mg",
+   "minute": "59'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "minute": "90'+9'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Léo Pereira",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Vitor Hugo",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

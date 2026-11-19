@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841121",
+ "fetchedAt": "2026-11-19T13:48:05.147Z",
+ "date": "2026-05-17T22:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "84'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "25'"
+  },
+  {
+   "athlete": "Filipinho",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Jádson",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Danilo",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "70'"
+  },
+  {
+   "athlete": "Danilo",
+   "club": "flamengo",
+   "type": "red",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

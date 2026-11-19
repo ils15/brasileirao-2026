@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401913077",
+ "fetchedAt": "2026-11-19T13:48:11.418Z",
+ "date": "2026-09-02T22:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "mirassol",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "minute": "43'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Victor",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Denilson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "81'"
+  }
+ ],
+ "unresolved": []
+}

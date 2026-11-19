@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841224",
+ "fetchedAt": "2026-11-19T13:48:10.950Z",
+ "date": "2026-09-05T19:00Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "bahia",
+ "homeGoals": 2,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "34'",
+   "penalty": true
+  },
+  {
+   "athlete": "Alejo Veliz",
+   "club": "bahia",
+   "minute": "38'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "minute": "50'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Santiago Ramos",
+   "club": "bragantino",
+   "minute": "45'+1'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Fernando",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Alix Vinicius",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "90'+12'"
+  }
+ ],
+ "unresolved": []
+}

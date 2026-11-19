@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { getZoneLabel, matchesClubFilter, scorers, standings, SCORERS_SOURCE, type ClubFilter, type Standing } from './data'
+import { ScorersPanel } from './ScorersPanel'
 import { ProjectionSection } from './ProjectionSection'
 import { InfoIcon } from './icons'
 import { ZoneLegend } from './ZoneLegend'
@@ -15,11 +16,10 @@ import { HeadToHeadPanel } from './HeadToHeadPanel'
 import { espnLogoUrlByClub, currentClubs } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
-import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, updateClock, cbfArchiveProvenance } from './seasonFacts'
+import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, updateClock, cbfArchiveProvenance } from './seasonFacts'
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const ESPN_URL = 'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols'
-const SCORERS_PER_PAGE = 20
 type ThemeMode = 'system' | 'light' | 'dark'
 
 const TABS = [
@@ -146,16 +146,10 @@ function App(): JSX.Element {
   const [clubFilter, setClubFilter] = useState<ClubFilter>('all')
   const [theme, setTheme] = useState<ThemeMode>(getSavedTheme)
   const [activeTab, setActiveTab] = useState<TabId>('visao-geral')
-  const [scorerPage, setScorerPage] = useState(0)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const leader = standings[0]!
   const leaderClub = currentClubs[0]!
   const normalizedQuery = normalizeText(query.trim())
-  const scorerPageCount = Math.max(1, Math.ceil(scorers.length / SCORERS_PER_PAGE))
-  const scorerPageStart = scorerPage * SCORERS_PER_PAGE
-  const visibleScorers = scorers.slice(scorerPageStart, scorerPageStart + SCORERS_PER_PAGE)
-  const scorerRangeStart = scorers.length === 0 ? 0 : scorerPageStart + 1
-  const scorerRangeEnd = Math.min(scorerPageStart + SCORERS_PER_PAGE, scorers.length)
 
   const filteredStandings = useMemo(
     () => standings.filter((team) => normalizeText(team.club).includes(normalizedQuery)),
@@ -396,51 +390,7 @@ function App(): JSX.Element {
                 </details>
               </div>
 
-              <section className="scorers-panel panel" id="artilharia" aria-labelledby="scorers-title">
-                <div className="section-heading">
-                  <div><p className="eyebrow eyebrow-dark">QUEM FAZ A DIFERENÇA</p><h2 id="scorers-title">Artilharia</h2></div>
-                  <span className="section-index">02 <span>/ GOLS</span></span>
-                </div>
-                <ol className="scorer-list" id="scorer-list" aria-label="Artilharia">
-                  {visibleScorers.map((scorer, index) => (
-                    <li className="scorer-item" key={`${scorer.name}-${scorer.club}`}>
-                      <span className="scorer-rank">{scorer.position}</span>
-                      <span className={`scorer-avatar scorer-avatar--${scorerPageStart + index + 1}`} aria-hidden="true">{scorer.name.split(' ').map((part) => part[0]).slice(0, 2).join('')}</span>
-                      <span className="scorer-info"><strong>{scorer.name}</strong><small>{scorer.club}</small></span>
-                      <span className="goal-count"><strong>{scorer.goals}</strong><small>gols</small></span>
-                    </li>
-                  ))}
-                </ol>
-                <nav className="scorer-pagination" aria-label="Paginação da artilharia">
-                  <button
-                    className="filter-button"
-                    type="button"
-                    aria-label="Página anterior da artilharia"
-                    aria-controls="scorer-list"
-                    disabled={scorerPage === 0}
-                    onClick={() => setScorerPage((page) => Math.max(0, page - 1))}
-                  >Anterior</button>
-                  <button
-                    className="filter-button"
-                    type="button"
-                    aria-label="Próxima página da artilharia"
-                    aria-controls="scorer-list"
-                    disabled={scorerPage >= scorerPageCount - 1}
-                    onClick={() => setScorerPage((page) => Math.min(scorerPageCount - 1, page + 1))}
-                  >Próxima</button>
-                  <span className="scorer-pagination-status" aria-live="polite" aria-atomic="true">
-                    <span>{scorerRangeStart}–{scorerRangeEnd} de {scorers.length}</span>
-                    <span aria-current="page">Página {scorerPage + 1} de {scorerPageCount}</span>
-                  </span>
-                </nav>
-                <details className="clean-disclosure">
-                  <summary><InfoIcon className="inline-icon" /> Fontes e critérios da artilharia</summary>
-                  <p className="scorers-caption">Lista informativa da temporada; captura declarada, não representa a artilharia no corte.</p>
-                  <p className="scorers-source-note">Fonte: {SCORERS_SOURCE.name} · captura {scorersCaptureLabel} · {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada. Σgols de atletas ≈ gols da tabela menos gols contra.</p>
-                  <div className="tie-note"><span aria-hidden="true">↗</span> Posições empatadas exibidas sem exclusões.</div>
-                </details>
-                <a className="text-link" href={ESPN_URL} target="_blank" rel="noreferrer">Ver estatísticas na ESPN <span aria-hidden="true">↗</span></a>
-              </section>
+              <ScorersPanel scorers={scorers} source={SCORERS_SOURCE} />
             </section>
 
             <section className="clubs-section" id="clubes" aria-labelledby="clubs-title">
@@ -505,7 +455,7 @@ function App(): JSX.Element {
         <div className="footer-sources"><a href={CBF_URL} target="_blank" rel="noreferrer"><img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} /> CBF · Página atual de classificação ↗</a><a href={ESPN_URL} target="_blank" rel="noreferrer">ESPN · Consulta externa ↗</a></div>
         <details className="footer-provenance">
           <summary>Proveniência, corte analítico e critérios das fontes</summary>
-          <p>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; {cbfArchiveProvenance}. A página CBF atual não faz parte do pacote. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.</p>
+          <p>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; {cbfArchiveProvenance}. A página CBF atual não faz parte do pacote. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; {scorersCoverageNote}.</p>
         </details>
       </footer>
     </>

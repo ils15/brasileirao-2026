@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840981",
+ "fetchedAt": "2026-11-19T13:47:56.125Z",
+ "date": "2026-02-19T22:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "corinthians",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "minute": "20'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "14'"
+  },
+  {
+   "athlete": "Mateuzinho",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Santos",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "45'+6'"
+  },
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "João Cruz",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "83'"
+  },
+  {
+   "athlete": "Hugo Souza",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+12'"
+  }
+ ],
+ "unresolved": []
+}

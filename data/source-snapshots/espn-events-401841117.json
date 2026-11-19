@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841117",
+ "fetchedAt": "2026-11-19T13:48:04.446Z",
+ "date": "2026-05-10T22:30Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "flamengo",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "minute": "68'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Evertton",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "73'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841209",
+ "fetchedAt": "2026-11-19T13:48:10.283Z",
+ "date": "2026-08-29T23:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "14'",
+   "penalty": true
+  },
+  {
+   "athlete": "Gustavo Santana",
+   "club": "sao-paulo",
+   "minute": "45'+4'",
+   "penalty": false
+  },
+  {
+   "athlete": "Fernando",
+   "club": "bragantino",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Agustín Sant'Anna",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Pedro Henrique",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "83'"
+  },
+  {
+   "athlete": "André Oliveira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Henry Mosquera",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "86'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841237",
+ "fetchedAt": "2026-11-19T13:48:12.973Z",
+ "date": "2026-09-13T20:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "corinthians",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gui Negão",
+   "club": "corinthians",
+   "minute": "78'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "flamengo",
+   "minute": "89'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Charles",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "50'"
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Breno Bidon",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

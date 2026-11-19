@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841151",
+ "fetchedAt": "2026-11-19T13:48:07.168Z",
+ "date": "2026-07-23T22:30Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "remo",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Yuri Alberto",
+   "club": "corinthians",
+   "minute": "26'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "minute": "40'",
+   "penalty": false
+  },
+  {
+   "athlete": "Yuri Alberto",
+   "club": "corinthians",
+   "minute": "45'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "86'"
+  },
+  {
+   "athlete": "Marllon",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

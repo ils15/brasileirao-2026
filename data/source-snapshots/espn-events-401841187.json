@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841187",
+ "fetchedAt": "2026-11-19T13:48:08.577Z",
+ "date": "2026-08-09T22:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "flamengo",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Vitor",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Gonzalo Plata",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "79'"
+  }
+ ],
+ "unresolved": []
+}

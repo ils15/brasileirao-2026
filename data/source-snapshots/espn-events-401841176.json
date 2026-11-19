@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841176",
+ "fetchedAt": "2026-11-19T13:48:12.584Z",
+ "date": "2026-09-16T22:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "gremio",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "30'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jovane Cabral",
+   "club": "gremio",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Álvaro Montoro",
+   "club": "botafogo",
+   "minute": "52'",
+   "penalty": false
+  },
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "79'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Martins",
+   "club": "gremio",
+   "minute": "88'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Mathías Villasanti",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

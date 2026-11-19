@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841283",
+ "fetchedAt": "2026-11-19T13:48:15.639Z",
+ "date": "2026-10-24T21:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "45'+11'",
+   "penalty": true
+  },
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "minute": "77'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Tiago Volpi",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "José Herrera",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Gustavo Gómez",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Alix Vinicius",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Gabriel",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "81'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,102 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841088",
+ "fetchedAt": "2026-11-19T13:48:02.975Z",
+ "date": "2026-04-26T21:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "vitoria",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "22'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "34'",
+   "penalty": true
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "90'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luiz Gustavo",
+   "club": "athletico-pr",
+   "minute": "90'+8'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Luiz Gustavo",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "8'"
+  },
+  {
+   "athlete": "Edenilson",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "12'"
+  },
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Gastón Benavídez",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "Zé Vitor",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Santos",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Lucas",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Bruno Zapelli",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Mycael",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'+9'"
+  }
+ ],
+ "unresolved": []
+}

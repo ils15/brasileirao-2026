@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841089",
+ "fetchedAt": "2026-11-19T13:48:02.453Z",
+ "date": "2026-04-26T19:00Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "vasco",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "minute": "38'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Tchê Tchê",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "André Carrillo",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Cauan Barros",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "André",
+   "club": "corinthians",
+   "type": "red",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Johan Rojas",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Kauê Camargo",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

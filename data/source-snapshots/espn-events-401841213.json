@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841213",
+ "fetchedAt": "2026-11-19T13:48:10.466Z",
+ "date": "2026-08-30T19:00Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "botafogo",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "13'",
+   "penalty": false
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "86'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Fernando Marçal",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "83'"
+  },
+  {
+   "athlete": "Gabriel Justino",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

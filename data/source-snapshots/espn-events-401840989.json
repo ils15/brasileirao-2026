@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840989",
+ "fetchedAt": "2026-11-19T13:47:56.059Z",
+ "date": "2026-02-11T22:00Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "coritiba",
+ "homeGoals": 3,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "41'",
+   "penalty": false
+  },
+  {
+   "athlete": "Walter Clar",
+   "club": "chapecoense",
+   "minute": "45'",
+   "penalty": false
+  },
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "57'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "59'",
+   "penalty": false
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "minute": "71'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rubens Tadeu Hartmann Ricoldi",
+   "club": "chapecoense",
+   "minute": "90'+1'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Everton",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Tiago",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Higor Matheus Meritão",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

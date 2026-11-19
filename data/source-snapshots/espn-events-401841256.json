@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841256",
+ "fetchedAt": "2026-11-19T13:48:13.901Z",
+ "date": "2026-10-08T23:00Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "atletico-mg",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Kerwin Vargas",
+   "club": "athletico-pr",
+   "minute": "8'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bernard",
+   "club": "atletico-mg",
+   "minute": "27'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "90'+3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lyanco",
+   "club": "atletico-mg",
+   "minute": "90'+7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Tomás Pérez",
+   "club": "atletico-mg",
+   "type": "red",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Kevin Castaño",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "74'"
+  }
+ ],
+ "unresolved": []
+}

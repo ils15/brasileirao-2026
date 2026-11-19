@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841081",
+ "fetchedAt": "2026-11-19T13:48:02.381Z",
+ "date": "2026-04-18T21:30Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "sao-paulo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "10'",
+   "penalty": false
+  },
+  {
+   "athlete": "José Luis Rodríguez",
+   "club": "vasco",
+   "minute": "72'",
+   "penalty": true
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "minute": "88'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Cédric",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "58'"
+  },
+  {
+   "athlete": "Alan Franco",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Léo Jardim",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

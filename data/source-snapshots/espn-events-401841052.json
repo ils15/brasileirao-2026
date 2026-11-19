@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841052",
+ "fetchedAt": "2026-11-19T13:48:00.857Z",
+ "date": "2026-04-03T00:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "gremio",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Marlon Freitas",
+   "club": "palmeiras",
+   "minute": "44'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "54'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marlon Freitas",
+   "club": "palmeiras",
+   "minute": "72'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Pedro Gabriel",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Gustavo Martins",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Dodi",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

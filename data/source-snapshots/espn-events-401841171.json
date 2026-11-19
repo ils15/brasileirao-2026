@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841171",
+ "fetchedAt": "2026-11-19T13:48:07.806Z",
+ "date": "2026-07-29T22:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Vitinho",
+   "club": "internacional",
+   "minute": "27'",
+   "penalty": false
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "79'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Vitão",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "Gabriel Mercado",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Nicolás de la Cruz",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

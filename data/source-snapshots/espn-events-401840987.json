@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840987",
+ "fetchedAt": "2026-11-19T13:47:55.161Z",
+ "date": "2026-02-05T00:30Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "botafogo",
+ "homeGoals": 5,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "26'",
+   "penalty": false
+  },
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "50'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "57'",
+   "penalty": true
+  },
+  {
+   "athlete": "Mateus Tetê",
+   "club": "gremio",
+   "minute": "60'",
+   "penalty": false
+  },
+  {
+   "athlete": "Edenilson",
+   "club": "gremio",
+   "minute": "79'",
+   "penalty": false
+  },
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "86'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alexander Barboza",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "7'"
+  },
+  {
+   "athlete": "Mateo Ponte",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "70'"
+  }
+ ],
+ "unresolved": []
+}

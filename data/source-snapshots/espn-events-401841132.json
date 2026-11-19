@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841132",
+ "fetchedAt": "2026-11-19T13:48:05.197Z",
+ "date": "2026-05-23T20:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "botafogo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "minute": "4'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jordan Barrera",
+   "club": "botafogo",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Luciano",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Gabriel Justino",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Álvaro Montoro",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Wendell",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Joaquín Correa",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Rafael",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Gonzalo Tapia",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Chris Ramos",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

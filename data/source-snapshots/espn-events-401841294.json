@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841294",
+ "fetchedAt": "2026-11-19T13:48:16.515Z",
+ "date": "2026-10-31T19:00Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "58'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tinga",
+   "club": "coritiba",
+   "minute": "69'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Emanuel Britez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Tissi",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

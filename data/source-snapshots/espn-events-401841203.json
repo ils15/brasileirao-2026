@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841203",
+ "fetchedAt": "2026-11-19T13:48:10.046Z",
+ "date": "2026-08-23T19:00Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "vasco",
+ "homeGoals": 4,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "47'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitor Roque",
+   "club": "palmeiras",
+   "minute": "51'",
+   "penalty": true
+  },
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "minute": "56'",
+   "penalty": false
+  },
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "89'",
+   "penalty": false
+  },
+  {
+   "athlete": "Facundo Colidio",
+   "club": "vasco",
+   "minute": "90'+4'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Marlon Freitas",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "9'"
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "50'"
+  },
+  {
+   "athlete": "Robert",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

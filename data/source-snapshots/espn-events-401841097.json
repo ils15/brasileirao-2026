@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841097",
+ "fetchedAt": "2026-11-19T13:48:03.095Z",
+ "date": "2026-04-26T21:30Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "palmeiras",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "21'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Felipe Anderson",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "78'"
+  }
+ ],
+ "unresolved": []
+}

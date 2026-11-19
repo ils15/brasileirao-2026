@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841119",
+ "fetchedAt": "2026-11-19T13:48:05.274Z",
+ "date": "2026-05-17T19:00Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "gremio",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Viery",
+   "club": "gremio",
+   "minute": "62'",
+   "penalty": false
+  },
+  {
+   "athlete": "Mateo Sanabria",
+   "club": "bahia",
+   "minute": "72'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "José Enamorado",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Kanu",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Pedro Gabriel",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Vitor Ramon",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "André Henrique",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Gabriel Mec",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Rodrigo Nestor",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

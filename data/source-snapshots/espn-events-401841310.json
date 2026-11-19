@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841310",
+ "fetchedAt": "2026-11-19T13:48:17.446Z",
+ "date": "2026-11-18T23:00Z",
+ "status": "post",
+ "home": "remo",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Patrick",
+   "club": "remo",
+   "minute": "20'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Giovanni Augusto",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Leonel Picco",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "David",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "47'"
+  },
+  {
+   "athlete": "Antonio Galeano",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "Gabriel Taliari",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

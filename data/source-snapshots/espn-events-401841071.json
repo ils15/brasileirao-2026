@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841071",
+ "fetchedAt": "2026-11-19T13:48:01.590Z",
+ "date": "2026-04-12T14:00Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "minute": "57'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "81'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Yannick Bolasie",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Julimar",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Neto",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Bruno Leonardo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "Bruno Zapelli",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Jean",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

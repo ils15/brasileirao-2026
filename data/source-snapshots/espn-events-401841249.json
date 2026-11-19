@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841249",
+ "fetchedAt": "2026-11-19T13:48:13.741Z",
+ "date": "2026-10-08T00:30Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "sao-paulo",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "44'",
+   "penalty": false
+  },
+  {
+   "athlete": "Zé Lucas",
+   "club": "cruzeiro",
+   "minute": "57'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Wendell",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Gabriel Rojas",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "72'"
+  }
+ ],
+ "unresolved": []
+}

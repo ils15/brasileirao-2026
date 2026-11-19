@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841100",
+ "fetchedAt": "2026-11-19T13:48:03.046Z",
+ "date": "2026-05-02T21:30Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "coritiba",
+ "homeGoals": 4,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "15'",
+   "penalty": false
+  },
+  {
+   "athlete": "Zé Vitor",
+   "club": "vitoria",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "45'+3'",
+   "penalty": false
+  },
+  {
+   "athlete": "Diego Tarzia",
+   "club": "vitoria",
+   "minute": "55'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick",
+   "club": "vitoria",
+   "minute": "61'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Thiago Santos",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Tiago",
+   "club": "coritiba",
+   "type": "red",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Zé Vitor",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "46'"
+  },
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

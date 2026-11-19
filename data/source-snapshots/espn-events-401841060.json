@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841060",
+ "fetchedAt": "2026-11-19T13:48:01.263Z",
+ "date": "2026-04-05T23:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "bragantino",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Isidro Pitta",
+   "club": "bragantino",
+   "minute": "51'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Victor",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Isidro Pitta",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "José Herrera",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "78'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841057",
+ "fetchedAt": "2026-11-19T13:47:59.791Z",
+ "date": "2026-04-01T22:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "mirassol",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Shaylon",
+   "club": "mirassol",
+   "minute": "21'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alex Telles",
+   "club": "botafogo",
+   "minute": "43'",
+   "penalty": true
+  },
+  {
+   "athlete": "Júnior Santos",
+   "club": "botafogo",
+   "minute": "66'",
+   "penalty": false
+  },
+  {
+   "athlete": "Igor Marques",
+   "club": "mirassol",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "André Luis",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Negueba",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Cristian Medina",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "46'"
+  },
+  {
+   "athlete": "Vitinho",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Tiquinho Soares",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Bastos",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

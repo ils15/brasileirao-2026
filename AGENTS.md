@@ -62,7 +62,7 @@ Os testes ficam ao lado do código: `src/<modulo>.test.ts` / `.test.tsx` e `scri
 |---|---|
 | `src/historicalSeasons.ts` | `npm run pack:history` |
 | `src/currentSeasonResults.ts`, `src/projectionData.ts`, `src/sourceMetadata.ts`, `docs/atualizacoes.md`, `data/source-snapshots/` | `npm run update:data` |
-| `src/advancedStats2026.ts`, `src/scorers2026.ts` | `scripts/backfill-xg-cards.mjs` e `scripts/refresh-apifutebolbr.mjs` (chamados pelo updater) |
+| `src/advancedStats2026.ts`, `src/scorers2026.ts` | `scripts/backfill-xg-cards.mjs` e `scripts/refresh-espn-scorers.mjs` (chamados pelo updater) |
 | `reports/crosscheck-2003-2011.md`, `reports/conflicts.json` | `npm run crosscheck` |
 
 ## Build de Pages

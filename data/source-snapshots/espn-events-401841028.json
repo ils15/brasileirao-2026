@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841028",
+ "fetchedAt": "2026-11-19T13:47:57.947Z",
+ "date": "2026-03-18T22:30Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "cruzeiro",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "minute": "1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "10'",
+   "penalty": true
+  },
+  {
+   "athlete": "Neyser Villareal",
+   "club": "cruzeiro",
+   "minute": "58'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheus Henrique",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Julimar",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Lucas Silva",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "85'"
+  }
+ ],
+ "unresolved": []
+}

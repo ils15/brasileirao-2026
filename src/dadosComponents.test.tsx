@@ -7,7 +7,8 @@ import { CURRENT_SEASON_PACK_GENERATED_AT, CURRENT_SEASON_SOURCE, currentSeasonR
 import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
-import { cutoffLabel, scorersCaptureLabel, scorersCaptureRelation } from './seasonFacts'
+import { cutoffLabel, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote } from './seasonFacts'
+import { SCORERS_SOURCE } from './data'
 
 const playedCount = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).length
 
@@ -138,7 +139,7 @@ describe('painel de dados & auditoria', () => {
     expect(block).toHaveTextContent(new RegExp(`Correspondência de placares 365scores.*${matchingAdvancedScores}/${advancedMatches.length}`))
     expect(within(block).getByText(/não comprova cobertura temporal por partida/)).toBeInTheDocument()
     expect(within(block).getByText(/a cobertura de xG e cartões no pacote não é garantida/)).toBeInTheDocument()
-    expect(screen.getByText(new RegExp(`Artilharia: API Futebol BR, captura ${scorersCaptureLabel}, ${scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada`))).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`Artilharia: ${SCORERS_SOURCE.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}, captura ${scorersCaptureLabel}, ${scorersCaptureRelation}; ${scorersCoverageNote}`))).toBeInTheDocument()
   })
 
   it('mantém cada cartão de proveniência como subtítulo das fontes', () => {

@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841034",
+ "fetchedAt": "2026-11-19T13:47:58.722Z",
+ "date": "2026-03-19T22:00Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Francis Amuzu",
+   "club": "gremio",
+   "minute": "54'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Camutanga",
+   "club": "gremio",
+   "minute": "27'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "58'"
+  },
+  {
+   "athlete": "Nathan",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Gabriel Mec",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Aitor Cantalapiedra",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

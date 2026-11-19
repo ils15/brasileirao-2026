@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841276",
+ "fetchedAt": "2026-11-19T13:48:15.374Z",
+ "date": "2026-10-18T19:00Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "cruzeiro",
+ "homeGoals": 2,
+ "awayGoals": 4,
+ "goals": [
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "17'",
+   "penalty": true
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "23'",
+   "penalty": false
+  },
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "minute": "41'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "61'",
+   "penalty": false
+  },
+  {
+   "athlete": "João Marcelo",
+   "club": "cruzeiro",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Marcelo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Matheus Pereira",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "type": "red",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "76'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841120",
+ "fetchedAt": "2026-11-19T13:48:04.544Z",
+ "date": "2026-05-16T21:30Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "mirassol",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Alan Minda",
+   "club": "atletico-mg",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Willian Machado",
+   "club": "mirassol",
+   "minute": "40'",
+   "penalty": false
+  },
+  {
+   "athlete": "Maycon",
+   "club": "atletico-mg",
+   "minute": "61'",
+   "penalty": true
+  },
+  {
+   "athlete": "Mamady Cissé",
+   "club": "atletico-mg",
+   "minute": "82'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Reinaldo",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "86'"
+  }
+ ],
+ "unresolved": []
+}

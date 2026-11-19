@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841079",
+ "fetchedAt": "2026-11-19T13:48:02.634Z",
+ "date": "2026-04-19T19:00Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "atletico-mg",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "7'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "minute": "58'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Sebastián Gómez",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Lyanco",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Thiago Santos",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Renato Marques",
+   "club": "coritiba",
+   "type": "red",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Renan Lodi",
+   "club": "atletico-mg",
+   "type": "red",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

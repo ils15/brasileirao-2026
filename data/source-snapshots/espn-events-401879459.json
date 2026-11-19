@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401879459",
+ "fetchedAt": "2026-11-19T13:48:07.109Z",
+ "date": "2026-07-17T22:30Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Rodrigo Nestor",
+   "club": "bahia",
+   "minute": "12'",
+   "penalty": true
+  },
+  {
+   "athlete": "Román Gómez",
+   "club": "bahia",
+   "minute": "34'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Guilherme",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

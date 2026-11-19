@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841164",
+ "fetchedAt": "2026-11-19T13:48:08.178Z",
+ "date": "2026-07-26T22:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "atletico-mg",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Victor Hugo",
+   "club": "atletico-mg",
+   "minute": "54'",
+   "penalty": false
+  },
+  {
+   "athlete": "Felipe Anderson",
+   "club": "palmeiras",
+   "minute": "75'",
+   "penalty": false
+  },
+  {
+   "athlete": "Igor Gomes",
+   "club": "atletico-mg",
+   "minute": "77'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ángelo Preciado",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Renan Lodi",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

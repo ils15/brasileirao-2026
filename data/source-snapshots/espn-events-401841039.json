@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841039",
+ "fetchedAt": "2026-11-19T13:47:59.551Z",
+ "date": "2026-03-22T19:00Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "gremio",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "minute": "7'",
+   "penalty": false
+  },
+  {
+   "athlete": "David",
+   "club": "vasco",
+   "minute": "34'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "minute": "38'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Cuiabano",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "22'"
+  },
+  {
+   "athlete": "Viery",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "José Luis Rodríguez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

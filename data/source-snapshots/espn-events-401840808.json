@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840808",
+ "fetchedAt": "2026-11-19T13:47:54.487Z",
+ "date": "2026-01-28T22:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "palmeiras",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "27'",
+   "penalty": false
+  },
+  {
+   "athlete": "Victor Hugo",
+   "club": "atletico-mg",
+   "minute": "44'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitor Roque",
+   "club": "palmeiras",
+   "minute": "84'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Khellven",
+   "club": "atletico-mg",
+   "minute": "74'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Alan Franco",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "46'"
+  },
+  {
+   "athlete": "Maurício",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Vitor Roque",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Alexsander",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Renan Lodi",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'+7'"
+  },
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

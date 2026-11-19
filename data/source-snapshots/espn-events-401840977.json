@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840977",
+ "fetchedAt": "2026-11-19T13:47:54.865Z",
+ "date": "2026-01-28T22:00Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "bragantino",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "minute": "90'+3'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alix Vinicius",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "25'"
+  },
+  {
+   "athlete": "Josué Pesqueira",
+   "club": "coritiba",
+   "type": "red",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Bruno Melo",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Gabriel",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "José Hurtado",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Pedro Henrique",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Matheus Fernandes",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Ignacio Sosa",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "77'"
+  }
+ ],
+ "unresolved": []
+}

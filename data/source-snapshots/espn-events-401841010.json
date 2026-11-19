@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841010",
+ "fetchedAt": "2026-11-19T13:47:56.461Z",
+ "date": "2026-03-11T00:30Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "santos",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Igor Marques",
+   "club": "mirassol",
+   "minute": "21'",
+   "penalty": false
+  },
+  {
+   "athlete": "Negueba",
+   "club": "mirassol",
+   "minute": "71'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "80'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "88'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "João Schmidt",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Willian Machado",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Alesson",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

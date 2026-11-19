@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841022",
+ "fetchedAt": "2026-11-19T13:47:57.050Z",
+ "date": "2026-03-15T19:00Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "athletico-pr",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "minute": "5'",
+   "penalty": false
+  },
+  {
+   "athlete": "Hércules",
+   "club": "fluminense",
+   "minute": "9'",
+   "penalty": false
+  },
+  {
+   "athlete": "Agustín Canobbio",
+   "club": "fluminense",
+   "minute": "37'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luiz Gustavo",
+   "club": "athletico-pr",
+   "minute": "75'",
+   "penalty": false
+  },
+  {
+   "athlete": "Guilherme Arana",
+   "club": "fluminense",
+   "minute": "90'+4'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Bruno Zapelli",
+   "club": "athletico-pr",
+   "type": "red",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Guilherme Arana",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Luiz Gustavo",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Jádson",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

@@ -21,8 +21,14 @@ CBF calendário (380 jogos)  ─┘        │                     src/sourceMet
 - `scripts/update-data.mjs` coleta, concilia, valida, regenera os módulos TS, roda a
   suíte e **commita** o pacote. Ele não faz push nem deploy: isso é do workflow.
 - Fontes secundárias (`scripts/backfill-xg-cards.mjs` → 365scores,
-  `scripts/refresh-apifutebolbr.mjs` → API Futebol BR) rodam só quando o plano de
-  coleta pede, e falham de forma branda (mantêm snapshot anterior).
+  `scripts/refresh-espn-scorers.mjs` → eventos de partida da ESPN para a artilharia)
+  rodam só quando o plano de coleta pede, e falham de forma branda (mantêm snapshot
+  anterior). `scripts/refresh-apifutebolbr.mjs` está **descontinuado** (trial encerrado,
+  HTTP 429 permanente) e não é mais chamado pelo updater.
+- Artilharia: um snapshot normalizado por partida em
+  `data/source-snapshots/espn-events-<eventId>.json`; o módulo `src/scorers2026.ts` é
+  agregado desses snapshots (nunca da rede direto) e declara cobertura. Cartões do ESPN
+  servem só de corroboração em log — a fonte de xG/cartões do produto continua a 365scores.
 - Classificação, projeções Monte Carlo e análises são derivadas **no cliente**, em
   runtime, a partir dos módulos versionados. Nada de número pré-calculado em build.
 - Sem rede (`--dry-run` ou ausência de `FETCH`), o updater lê os snapshots locais:
@@ -58,11 +64,11 @@ decide o escopo por comparação de dias UTC:
 |---|---|---|
 | `today < lastCutoffDate` | `{ collect: false }` | no-op: corte no futuro, nada a fazer |
 | `today == lastCutoffDate` | `{ collect: true, refreshSecondary: false }` | re-coleta **primária** (ESPN + Football-Data); secundárias preservadas |
-| `today > lastCutoffDate` | `{ collect: true, refreshSecondary: true }` | coleta completa, com xG/cartões e API Futebol BR |
+| `today > lastCutoffDate` | `{ collect: true, refreshSecondary: true }` | coleta completa, com xG/cartões (365scores) e eventos ESPN da artilharia |
 
 Mesmo dia existe porque um jogo que termina depois do corte não pode esperar ~24h.
-Fontes secundárias têm orçamento próprio por ciclo: `API_FUTEBOL_BR_PER_RUN`
-(definido no workflow, não no código) e pausa `THREE_SIX_FIVE_PAUSE_MS`.
+Fontes secundárias têm orçamento próprio por ciclo: `ESPN_SCORERS_CONCURRENCY`
+(opcional, padrão 6) e pausa `THREE_SIX_FIVE_PAUSE_MS`.
 
 ## 4. Invariantes (falha = não publica)
 

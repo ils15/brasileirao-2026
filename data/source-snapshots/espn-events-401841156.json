@@ -1,0 +1,42 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841156",
+ "fetchedAt": "2026-11-19T13:48:07.045Z",
+ "date": "2026-07-23T00:30Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "athletico-pr",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Artur",
+   "club": "sao-paulo",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Leozinho",
+   "club": "athletico-pr",
+   "minute": "46'",
+   "penalty": false
+  },
+  {
+   "athlete": "Leozinho",
+   "club": "athletico-pr",
+   "minute": "51'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "18'"
+  }
+ ],
+ "unresolved": []
+}

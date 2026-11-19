@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841313",
+ "fetchedAt": "2026-11-19T13:48:17.869Z",
+ "date": "2026-11-18T23:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "athletico-pr",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Kerwin Vargas",
+   "club": "athletico-pr",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "minute": "27'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gastón Benavídez",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Léo Pereira",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Jorge Rivaldo",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

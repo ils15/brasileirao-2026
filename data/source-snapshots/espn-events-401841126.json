@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841126",
+ "fetchedAt": "2026-11-19T13:48:04.573Z",
+ "date": "2026-05-16T21:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "vasco",
+ "homeGoals": 4,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Johan Carbonero",
+   "club": "internacional",
+   "minute": "21'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "minute": "24'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "minute": "62'",
+   "penalty": false
+  },
+  {
+   "athlete": "Johan Carbonero",
+   "club": "internacional",
+   "minute": "71'",
+   "penalty": false
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "minute": "85'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Johan Carbonero",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "22'"
+  },
+  {
+   "athlete": "Nuno Moreira",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Matheus Bahia",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Carlos Cuesta",
+   "club": "vasco",
+   "type": "red",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

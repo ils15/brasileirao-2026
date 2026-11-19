@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840809",
+ "fetchedAt": "2026-11-19T13:47:54.787Z",
+ "date": "2026-01-30T00:30Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "cruzeiro",
+ "homeGoals": 4,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Martins",
+   "club": "botafogo",
+   "minute": "76'",
+   "penalty": false
+  },
+  {
+   "athlete": "Danilo Santos",
+   "club": "botafogo",
+   "minute": "85'",
+   "penalty": false
+  },
+  {
+   "athlete": "Artur",
+   "club": "botafogo",
+   "minute": "90'+1'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Lucas Silva",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "17'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Kaique Kenji",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

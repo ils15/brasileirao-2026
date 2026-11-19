@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841101",
+ "fetchedAt": "2026-11-19T13:48:03.464Z",
+ "date": "2026-05-03T19:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "bahia",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Artur",
+   "club": "sao-paulo",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "62'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ferreira",
+   "club": "sao-paulo",
+   "minute": "73'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "minute": "90'+7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Damián Bobadilla",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Enzo Díaz",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Mateo Sanabria",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+6'"
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+8'"
+  },
+  {
+   "athlete": "André Oliveira",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "90'+10'"
+  }
+ ],
+ "unresolved": []
+}

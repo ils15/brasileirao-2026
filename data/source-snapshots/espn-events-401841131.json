@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841131",
+ "fetchedAt": "2026-11-19T13:48:05.550Z",
+ "date": "2026-05-24T23:30Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "bragantino",
+ "homeGoals": 0,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Rodriguinho",
+   "club": "bragantino",
+   "minute": "45'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Isidro Pitta",
+   "club": "bragantino",
+   "minute": "60'",
+   "penalty": false
+  },
+  {
+   "athlete": "Fernando",
+   "club": "bragantino",
+   "minute": "77'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Rodriguinho",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "Henry Mosquera",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Vanderlan",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "90'+1'"
+  }
+ ],
+ "unresolved": []
+}

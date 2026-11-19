@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841129",
+ "fetchedAt": "2026-11-19T13:48:05.691Z",
+ "date": "2026-05-25T23:00Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "bahia",
+ "homeGoals": 3,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Bruno Melo",
+   "club": "coritiba",
+   "minute": "56'",
+   "penalty": false
+  },
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "minute": "65'",
+   "penalty": false
+  },
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "68'",
+   "penalty": false
+  },
+  {
+   "athlete": "Everaldo",
+   "club": "bahia",
+   "minute": "90'+1'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Tiago",
+   "club": "bahia",
+   "minute": "26'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Ademir",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Román Gómez",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

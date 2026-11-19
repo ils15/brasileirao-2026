@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841227",
+ "fetchedAt": "2026-11-19T13:48:11.059Z",
+ "date": "2026-09-06T00:00Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "vasco",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "minute": "61'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "9'"
+  },
+  {
+   "athlete": "Juan Freytes",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Daniel Fuzato",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Paulo Henrique",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Ignácio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Hulk",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "45'+6'"
+  },
+  {
+   "athlete": "Yeferson Soteldo",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "45'+6'"
+  },
+  {
+   "athlete": "Facundo Colidio",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "54'"
+  }
+ ],
+ "unresolved": []
+}

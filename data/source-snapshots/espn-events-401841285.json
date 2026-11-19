@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841285",
+ "fetchedAt": "2026-11-19T13:48:15.552Z",
+ "date": "2026-10-24T19:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "botafogo",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Matheus Bahia",
+   "club": "internacional",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "Juninho",
+   "club": "internacional",
+   "minute": "42'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "minute": "66'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Álvaro Montoro",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Nahuel Ferraresi",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

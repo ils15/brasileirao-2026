@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841252",
+ "fetchedAt": "2026-11-19T13:48:13.554Z",
+ "date": "2026-10-07T22:30Z",
+ "status": "post",
+ "home": "remo",
+ "away": "gremio",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "minute": "45'+3'",
+   "penalty": false
+  },
+  {
+   "athlete": "David Francisco",
+   "club": "remo",
+   "minute": "88'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Vitor Bueno",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "10'"
+  },
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Dodi",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Gabriel Taliari",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Antonio Galeano",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "José Enamorado",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "João Pedro",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "82'"
+  }
+ ],
+ "unresolved": []
+}

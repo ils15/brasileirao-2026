@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841194",
+ "fetchedAt": "2026-11-19T13:48:08.994Z",
+ "date": "2026-08-16T14:00Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "bahia",
+ "homeGoals": 3,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Alejo Veliz",
+   "club": "bahia",
+   "minute": "13'",
+   "penalty": true
+  },
+  {
+   "athlete": "Giovanni Augusto",
+   "club": "chapecoense",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marcinho",
+   "club": "chapecoense",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "minute": "65'",
+   "penalty": false
+  },
+  {
+   "athlete": "Túlio Eduardo Silva De Oliveira",
+   "club": "chapecoense",
+   "minute": "71'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Kauan",
+   "club": "bahia",
+   "minute": "42'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Mateo Sanabria",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Erick Pulga",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,36 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841142",
+ "fetchedAt": "2026-11-19T13:48:06.333Z",
+ "date": "2026-05-31T19:00Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "atletico-mg",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Vitor Hugo",
+   "club": "atletico-mg",
+   "minute": "32'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Cauan Barros",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Iván Román",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

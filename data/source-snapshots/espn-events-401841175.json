@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841175",
+ "fetchedAt": "2026-11-19T13:48:17.324Z",
+ "date": "2026-11-14T23:30Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "vasco",
+ "homeGoals": 0,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Bruno Duarte",
+   "club": "vasco",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Duarte",
+   "club": "vasco",
+   "minute": "81'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Robert",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "24'"
+  },
+  {
+   "athlete": "Dylan Borrero",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Bruno Pacheco",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

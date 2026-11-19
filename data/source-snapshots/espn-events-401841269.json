@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841269",
+ "fetchedAt": "2026-11-19T13:48:15.635Z",
+ "date": "2026-10-18T21:30Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "flamengo",
+ "homeGoals": 0,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "minute": "64'",
+   "penalty": true
+  },
+  {
+   "athlete": "Gonzalo Plata",
+   "club": "flamengo",
+   "minute": "73'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "minute": "78'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Erick Pulgar",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "3'"
+  },
+  {
+   "athlete": "Cristian Olivera",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Léo Pereira",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "48'"
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Marco Moreno",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "86'"
+  },
+  {
+   "athlete": "Román Gómez",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "89'"
+  }
+ ],
+ "unresolved": []
+}

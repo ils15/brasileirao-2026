@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841104",
+ "fetchedAt": "2026-11-19T13:48:03.734Z",
+ "date": "2026-05-03T21:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "fluminense",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "minute": "49'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Victor Gabriel",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "14'"
+  },
+  {
+   "athlete": "Allex",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "18'"
+  },
+  {
+   "athlete": "Jemmes",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Bruno Gomes",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Alisson",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Kevin Serna",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "56'"
+  }
+ ],
+ "unresolved": []
+}

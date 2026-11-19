@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840997",
+ "fetchedAt": "2026-11-19T13:47:56.117Z",
+ "date": "2026-02-13T00:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "palmeiras",
+ "homeGoals": 1,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Gustavo Gómez",
+   "club": "palmeiras",
+   "minute": "23'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ronaldo",
+   "club": "internacional",
+   "minute": "36'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitor Roque",
+   "club": "palmeiras",
+   "minute": "52'",
+   "penalty": false
+  },
+  {
+   "athlete": "Andreas Pereira",
+   "club": "palmeiras",
+   "minute": "82'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Paulinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Andreas Pereira",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "58'"
+  }
+ ],
+ "unresolved": []
+}

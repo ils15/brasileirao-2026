@@ -1,0 +1,90 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841255",
+ "fetchedAt": "2026-11-19T13:48:13.754Z",
+ "date": "2026-10-07T22:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "corinthians",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Vitinho",
+   "club": "internacional",
+   "minute": "1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alan Patrick",
+   "club": "internacional",
+   "minute": "77'",
+   "penalty": false
+  },
+  {
+   "athlete": "André",
+   "club": "corinthians",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Breno Bidon",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Alexander Bernabei",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Rodrigo Villagra",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "47'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "58'"
+  },
+  {
+   "athlete": "Paulinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "58'"
+  },
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Gabriel Mercado",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Gui Negão",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

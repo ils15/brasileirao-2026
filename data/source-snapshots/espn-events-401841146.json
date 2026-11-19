@@ -1,0 +1,96 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841146",
+ "fetchedAt": "2026-11-19T13:48:05.983Z",
+ "date": "2026-05-30T20:30Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "botafogo",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Victor Hugo",
+   "club": "botafogo",
+   "minute": "7'",
+   "penalty": false
+  },
+  {
+   "athlete": "David Duarte",
+   "club": "bahia",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Nahuel Ferraresi",
+   "club": "bahia",
+   "minute": "57'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Álvaro Montoro",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Nahuel Ferraresi",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Ademir",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Cristian Medina",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Erick",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Neto",
+   "club": "botafogo",
+   "type": "red",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Victor Hugo",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "45'+10'"
+  },
+  {
+   "athlete": "Newton",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "83'"
+  },
+  {
+   "athlete": "David Duarte",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+3'"
+  },
+  {
+   "athlete": "Gabriel Xavier",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

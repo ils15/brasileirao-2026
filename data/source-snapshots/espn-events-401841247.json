@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841247",
+ "fetchedAt": "2026-11-19T13:48:12.820Z",
+ "date": "2026-09-19T23:30Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "coritiba",
+ "homeGoals": 5,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Facundo Colidio",
+   "club": "vasco",
+   "minute": "24'",
+   "penalty": false
+  },
+  {
+   "athlete": "Bruno Duarte",
+   "club": "vasco",
+   "minute": "44'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alan Lescano",
+   "club": "vasco",
+   "minute": "56'",
+   "penalty": true
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "minute": "63'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramon Rique",
+   "club": "vasco",
+   "minute": "73'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Paulo Roberto",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Nicolás Fonseca",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "75'"
+  }
+ ],
+ "unresolved": []
+}

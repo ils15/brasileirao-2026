@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841062",
+ "fetchedAt": "2026-11-19T13:48:01.231Z",
+ "date": "2026-04-05T00:00Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "botafogo",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "David",
+   "club": "vasco",
+   "minute": "61'",
+   "penalty": false
+  },
+  {
+   "athlete": "Lucas Villalba",
+   "club": "botafogo",
+   "minute": "66'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Martins",
+   "club": "botafogo",
+   "minute": "79'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alan Saldivia",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Júnior Santos",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "52'"
+  },
+  {
+   "athlete": "Nahuel Ferraresi",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "José Luis Rodríguez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Gabriel Justino",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Raul",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

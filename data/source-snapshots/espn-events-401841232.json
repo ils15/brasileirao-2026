@@ -1,0 +1,108 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841232",
+ "fetchedAt": "2026-11-19T13:48:11.745Z",
+ "date": "2026-09-12T00:00Z",
+ "status": "post",
+ "home": "coritiba",
+ "away": "athletico-pr",
+ "homeGoals": 3,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Luiz Gustavo",
+   "club": "athletico-pr",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Arthur Dias",
+   "club": "athletico-pr",
+   "minute": "30'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tiago",
+   "club": "coritiba",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "63'",
+   "penalty": true
+  },
+  {
+   "athlete": "Rodrigo Moledo",
+   "club": "coritiba",
+   "minute": "90'+1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rodrigo Moledo",
+   "club": "coritiba",
+   "minute": "90'+7'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Jacy Maranhão",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "João Cruz",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "type": "red",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Dantas",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "João Pedro Chermont",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "45'+9'"
+  },
+  {
+   "athlete": "Pedro Rocha",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "45'+12'"
+  },
+  {
+   "athlete": "Luiz Gustavo",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

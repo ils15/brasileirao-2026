@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841301",
+ "fetchedAt": "2026-11-19T13:48:16.790Z",
+ "date": "2026-11-04T00:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "coritiba",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "minute": "90'+5'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Vitinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "18'"
+  },
+  {
+   "athlete": "Tiago",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "30'"
+  },
+  {
+   "athlete": "Nicolás Fonseca",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "57'"
+  },
+  {
+   "athlete": "Thiago Maia",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "75'"
+  },
+  {
+   "athlete": "João Bezerra",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Rodrigo Moledo",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+3'"
+  },
+  {
+   "athlete": "Guillermo Maripán",
+   "club": "internacional",
+   "type": "red",
+   "minute": "90'+6'"
+  },
+  {
+   "athlete": "Bruno Melo",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841072",
+ "fetchedAt": "2026-11-19T13:48:02.289Z",
+ "date": "2026-04-12T21:00Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "7'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "51'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "minute": "76'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Martinelli",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Agustín Canobbio",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Rodrigo Castillo",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Luiz Araújo",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+1'"
+  },
+  {
+   "athlete": "Evertton",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+1'"
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "type": "red",
+   "minute": "90'+5'"
+  }
+ ],
+ "unresolved": []
+}

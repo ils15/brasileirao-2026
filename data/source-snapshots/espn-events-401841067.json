@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841067",
+ "fetchedAt": "2026-11-19T13:48:01.367Z",
+ "date": "2026-04-05T20:30Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "santos",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Lautaro Díaz",
+   "club": "santos",
+   "minute": "48'",
+   "penalty": false
+  },
+  {
+   "athlete": "Pedro",
+   "club": "flamengo",
+   "minute": "64'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorginho",
+   "club": "flamengo",
+   "minute": "71'",
+   "penalty": true
+  },
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "minute": "89'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gabriel Bontempo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "67'"
+  }
+ ],
+ "unresolved": []
+}

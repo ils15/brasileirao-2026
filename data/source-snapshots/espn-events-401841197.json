@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841197",
+ "fetchedAt": "2026-11-19T13:48:09.404Z",
+ "date": "2026-08-16T21:30Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "botafogo",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "minute": "27'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Victor Hugo",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "2'"
+  },
+  {
+   "athlete": "Álvaro Montoro",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Lucas Monzón",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Arthur Cabral",
+   "club": "botafogo",
+   "type": "red",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

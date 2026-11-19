@@ -1,0 +1,36 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841245",
+ "fetchedAt": "2026-11-19T13:48:13.034Z",
+ "date": "2026-09-19T20:00Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "botafogo",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "minute": "16'",
+   "penalty": false
+  },
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "minute": "45'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Victor Hugo",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "35'"
+  }
+ ],
+ "unresolved": []
+}

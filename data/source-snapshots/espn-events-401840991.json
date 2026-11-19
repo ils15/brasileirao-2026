@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840991",
+ "fetchedAt": "2026-11-19T13:47:55.965Z",
+ "date": "2026-02-12T22:00Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "santos",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Julimar",
+   "club": "athletico-pr",
+   "minute": "6'",
+   "penalty": true
+  },
+  {
+   "athlete": "Thaciano",
+   "club": "santos",
+   "minute": "17'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "90'+1'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gabriel Bontempo",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "27'"
+  },
+  {
+   "athlete": "Igor",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Chiqueti",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Vinicius Lira",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+3'"
+  }
+ ],
+ "unresolved": []
+}

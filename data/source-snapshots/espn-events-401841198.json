@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841198",
+ "fetchedAt": "2026-11-19T13:48:10.151Z",
+ "date": "2026-08-24T23:00Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "athletico-pr",
+ "homeGoals": 2,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "João Cruz",
+   "club": "athletico-pr",
+   "minute": "11'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "13'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kevin Viveros",
+   "club": "athletico-pr",
+   "minute": "78'",
+   "penalty": false
+  },
+  {
+   "athlete": "Santiago Rodríguez",
+   "club": "botafogo",
+   "minute": "85'",
+   "penalty": false
+  },
+  {
+   "athlete": "Santiago Rodríguez",
+   "club": "botafogo",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Kauan Toledo",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Edenilson",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "Dantas",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "77'"
+  }
+ ],
+ "unresolved": []
+}

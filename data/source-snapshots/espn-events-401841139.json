@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841139",
+ "fetchedAt": "2026-11-19T13:48:06.433Z",
+ "date": "2026-05-30T20:30Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "corinthians",
+ "homeGoals": 1,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Gabriel Mec",
+   "club": "gremio",
+   "minute": "7'",
+   "penalty": false
+  },
+  {
+   "athlete": "André",
+   "club": "corinthians",
+   "minute": "45'+2'",
+   "penalty": false
+  },
+  {
+   "athlete": "André",
+   "club": "corinthians",
+   "minute": "65'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "minute": "67'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Wagner Leonardo",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "68'"
+  },
+  {
+   "athlete": "José Enamorado",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Thiago Stallbaum",
+   "club": "gremio",
+   "type": "red",
+   "minute": "75'"
+  },
+  {
+   "athlete": "Viery",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

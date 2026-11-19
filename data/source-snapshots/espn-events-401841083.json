@@ -1,0 +1,65 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841083",
+ "fetchedAt": "2026-11-19T13:48:02.329Z",
+ "date": "2026-04-19T21:30Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "remo",
+ "homeGoals": 4,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Isidro Pitta",
+   "club": "bragantino",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Taliari",
+   "club": "remo",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Isidro Pitta",
+   "club": "bragantino",
+   "minute": "37'",
+   "penalty": false
+  },
+  {
+   "athlete": "Marcelinho",
+   "club": "remo",
+   "minute": "39'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Duplexe Tchamba",
+   "club": "bragantino",
+   "minute": "47'"
+  },
+  {
+   "athlete": "Duplexe Tchamba",
+   "club": "bragantino",
+   "minute": "51'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "Alix Vinicius",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "42'"
+  },
+  {
+   "athlete": "Alef Manga",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841162",
+ "fetchedAt": "2026-11-19T13:48:07.883Z",
+ "date": "2026-07-26T22:30Z",
+ "status": "post",
+ "home": "remo",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alef Manga",
+   "club": "remo",
+   "minute": "54'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "4'"
+  },
+  {
+   "athlete": "Cacá",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Matheus Piauí",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Yago Pikachu",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "53'"
+  }
+ ],
+ "unresolved": []
+}

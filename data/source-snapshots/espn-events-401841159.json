@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841159",
+ "fetchedAt": "2026-11-19T13:48:07.380Z",
+ "date": "2026-07-26T19:00Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "corinthians",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Fabrizio Angileri",
+   "club": "corinthians",
+   "minute": "8'",
+   "penalty": false
+  },
+  {
+   "athlete": "David Duarte",
+   "club": "bahia",
+   "minute": "45'+4'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Fabrizio Angileri",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "16'"
+  },
+  {
+   "athlete": "David Duarte",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "19'"
+  },
+  {
+   "athlete": "Zé Guilherme",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Breno Bidon",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "67'"
+  },
+  {
+   "athlete": "Kauê Camargo",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

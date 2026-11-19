@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841095",
+ "fetchedAt": "2026-11-19T13:48:02.289Z",
+ "date": "2026-04-25T21:30Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "santos",
+ "homeGoals": 2,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Benjamín Rollheiser",
+   "club": "santos",
+   "minute": "22'",
+   "penalty": true
+  },
+  {
+   "athlete": "Benjamín Rollheiser",
+   "club": "santos",
+   "minute": "45'+4'",
+   "penalty": true
+  },
+  {
+   "athlete": "Luciano Juba",
+   "club": "bahia",
+   "minute": "76'",
+   "penalty": false
+  },
+  {
+   "athlete": "Willian José",
+   "club": "bahia",
+   "minute": "83'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Erick Pulga",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Diogenes",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Santiago Ramos",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Miguel Terceros",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Mayke",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Gonzalo Escobar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Éverton Ribeiro",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

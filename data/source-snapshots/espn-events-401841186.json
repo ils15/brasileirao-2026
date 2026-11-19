@@ -1,0 +1,35 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841186",
+ "fetchedAt": "2026-11-19T13:48:08.419Z",
+ "date": "2026-08-09T19:00Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "vasco",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Cuiabano",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Ademir",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "76'"
+  }
+ ],
+ "unresolved": []
+}

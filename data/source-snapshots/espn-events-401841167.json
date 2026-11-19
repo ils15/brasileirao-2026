@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841167",
+ "fetchedAt": "2026-11-19T13:48:08.095Z",
+ "date": "2026-07-26T19:00Z",
+ "status": "post",
+ "home": "cruzeiro",
+ "away": "botafogo",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Gabriel Justino",
+   "club": "botafogo",
+   "minute": "41'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Warleson",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Victor Hugo",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Fagner",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Nahuel Ferraresi",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Jonathan Jesus",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Alex Telles",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "José Kadir",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "Keny Arroyo",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+7'"
+  },
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "90'+8'"
+  }
+ ],
+ "unresolved": []
+}

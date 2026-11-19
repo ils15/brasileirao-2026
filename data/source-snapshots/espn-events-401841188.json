@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841188",
+ "fetchedAt": "2026-11-19T13:48:09.116Z",
+ "date": "2026-08-16T19:00Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "santos",
+ "homeGoals": 0,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Gabriel Barbosa",
+   "club": "santos",
+   "minute": "68'",
+   "penalty": false
+  },
+  {
+   "athlete": "Willian Arão",
+   "club": "santos",
+   "minute": "77'",
+   "penalty": false
+  },
+  {
+   "athlete": "Luan Peres",
+   "club": "santos",
+   "minute": "81'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Robert",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Paulo Henrique",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "84'"
+  }
+ ],
+ "unresolved": []
+}

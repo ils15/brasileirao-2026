@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841250",
+ "fetchedAt": "2026-11-19T13:48:13.566Z",
+ "date": "2026-10-07T23:00Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "chapecoense",
+ "homeGoals": 4,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Erick",
+   "club": "vitoria",
+   "minute": "18'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "minute": "53'",
+   "penalty": false
+  },
+  {
+   "athlete": "Erick",
+   "club": "vitoria",
+   "minute": "61'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus",
+   "club": "vitoria",
+   "minute": "74'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Kauan",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "22'"
+  },
+  {
+   "athlete": "Luan Cândido",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Diego Tarzia",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "62'"
+  },
+  {
+   "athlete": "Fernando",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

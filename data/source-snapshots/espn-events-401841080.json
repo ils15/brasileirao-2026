@@ -1,0 +1,35 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841080",
+ "fetchedAt": "2026-11-19T13:48:02.057Z",
+ "date": "2026-04-18T23:00Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "corinthians",
+ "homeGoals": 0,
+ "awayGoals": 0,
+ "goals": [],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Rodrigo Garro",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "45'+5'"
+  },
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Nathan",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}

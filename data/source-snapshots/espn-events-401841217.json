@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841217",
+ "fetchedAt": "2026-11-19T13:48:10.513Z",
+ "date": "2026-08-30T21:30Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "chapecoense",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Maurício Garcez",
+   "club": "chapecoense",
+   "minute": "15'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Martins",
+   "club": "gremio",
+   "minute": "18'",
+   "penalty": false
+  },
+  {
+   "athlete": "Cristian Pavón",
+   "club": "gremio",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gustavo Martins",
+   "club": "gremio",
+   "minute": "56'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Marlon",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Wálter Kannemann",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "55'"
+  },
+  {
+   "athlete": "Bruno Pacheco",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Mateus Tetê",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,48 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841302",
+ "fetchedAt": "2026-11-19T13:48:17.228Z",
+ "date": "2026-11-06T23:00Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "fluminense",
+ "homeGoals": 0,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "minute": "15'",
+   "penalty": false
+  },
+  {
+   "athlete": "Agustín Canobbio",
+   "club": "fluminense",
+   "minute": "42'",
+   "penalty": false
+  },
+  {
+   "athlete": "Rodrigo Castillo",
+   "club": "fluminense",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheusinho",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "44'"
+  },
+  {
+   "athlete": "Lucas",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "88'"
+  }
+ ],
+ "unresolved": []
+}

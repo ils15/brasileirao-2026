@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841290",
+ "fetchedAt": "2026-11-19T13:48:16.407Z",
+ "date": "2026-10-30T00:30Z",
+ "status": "post",
+ "home": "gremio",
+ "away": "athletico-pr",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Marlon",
+   "club": "gremio",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Fabián Balbuena",
+   "club": "gremio",
+   "minute": "52'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Juan Portilla",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "José Enamorado",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Leonardo Derik",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "37'"
+  },
+  {
+   "athlete": "Carlos Vinícius",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Erick Noriega",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "69'"
+  },
+  {
+   "athlete": "Bruno Zapelli",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "88'"
+  },
+  {
+   "athlete": "Weverton",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+2'"
+  }
+ ],
+ "unresolved": []
+}

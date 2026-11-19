@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841103",
+ "fetchedAt": "2026-11-19T13:48:03.891Z",
+ "date": "2026-05-03T23:30Z",
+ "status": "post",
+ "home": "mirassol",
+ "away": "corinthians",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Carlos Eduardo",
+   "club": "mirassol",
+   "minute": "23'",
+   "penalty": true
+  },
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "minute": "33'",
+   "penalty": false
+  },
+  {
+   "athlete": "Dieguinho",
+   "club": "corinthians",
+   "minute": "80'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Edson Carioca",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "38'"
+  },
+  {
+   "athlete": "Antonio Galeano",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Neto Moura",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Walter",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "André Luis",
+   "club": "mirassol",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

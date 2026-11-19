@@ -1,0 +1,114 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841136",
+ "fetchedAt": "2026-11-19T13:48:05.394Z",
+ "date": "2026-05-24T00:00Z",
+ "status": "post",
+ "home": "flamengo",
+ "away": "palmeiras",
+ "homeGoals": 0,
+ "awayGoals": 3,
+ "goals": [
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "minute": "38'",
+   "penalty": false
+  },
+  {
+   "athlete": "Allan Elias",
+   "club": "palmeiras",
+   "minute": "57'",
+   "penalty": false
+  },
+  {
+   "athlete": "Paulinho",
+   "club": "palmeiras",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jorge Carrascal",
+   "club": "flamengo",
+   "type": "red",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Lucas Paquetá",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "29'"
+  },
+  {
+   "athlete": "Andreas Pereira",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "32'"
+  },
+  {
+   "athlete": "José Manuel López",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Bruno Henrique",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Carlos Miguel",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Agustín Giay",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Nicolás de la Cruz",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Paulinho",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "90'+8'"
+  },
+  {
+   "athlete": "Wallace Yan",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+10'"
+  },
+  {
+   "athlete": "Guillermo Varela",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+10'"
+  },
+  {
+   "athlete": "Léo Pereira",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "90'+10'"
+  }
+ ],
+ "unresolved": []
+}

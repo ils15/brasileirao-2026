@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841299",
+ "fetchedAt": "2026-11-19T13:48:16.565Z",
+ "date": "2026-11-02T23:00Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "santos",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Philippe Coutinho",
+   "club": "santos",
+   "minute": "37'",
+   "penalty": false
+  },
+  {
+   "athlete": "Wallace Yan",
+   "club": "bragantino",
+   "minute": "41'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [
+  {
+   "athlete": "Rodinei",
+   "club": "bragantino",
+   "minute": "4'"
+  }
+ ],
+ "cards": [
+  {
+   "athlete": "João Alencar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "20'"
+  },
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'"
+  },
+  {
+   "athlete": "Álvaro Barreal",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Luan Peres",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "79'"
+  }
+ ],
+ "unresolved": []
+}

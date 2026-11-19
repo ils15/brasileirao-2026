@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841090",
+ "fetchedAt": "2026-11-19T13:48:02.777Z",
+ "date": "2026-04-26T23:30Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "chapecoense",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jefferson Savarino",
+   "club": "fluminense",
+   "minute": "56'",
+   "penalty": true
+  },
+  {
+   "athlete": "Ênio",
+   "club": "chapecoense",
+   "minute": "78'",
+   "penalty": false
+  },
+  {
+   "athlete": "John Kennedy",
+   "club": "fluminense",
+   "minute": "86'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Jean",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "71'"
+  },
+  {
+   "athlete": "Ênio",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "João Vitor",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'+3'"
+  },
+  {
+   "athlete": "Eduardo Doma",
+   "club": "chapecoense",
+   "type": "red",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "Ganso",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

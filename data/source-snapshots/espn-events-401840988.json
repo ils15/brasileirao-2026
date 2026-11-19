@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401840988",
+ "fetchedAt": "2026-11-19T13:47:56.089Z",
+ "date": "2026-02-12T23:00Z",
+ "status": "post",
+ "home": "corinthians",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Gabriel Paulista",
+   "club": "corinthians",
+   "minute": "47'",
+   "penalty": false
+  },
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "minute": "74'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Matheus Bidu",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Lucas Barbosa",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "28'"
+  },
+  {
+   "athlete": "Gustavo Henrique",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "41'"
+  },
+  {
+   "athlete": "Gabriel",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'+3'"
+  },
+  {
+   "athlete": "Cleiton",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'+4'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "86'"
+  },
+  {
+   "athlete": "Raniele",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "87'"
+  },
+  {
+   "athlete": "Allan",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "87'"
+  }
+ ],
+ "unresolved": []
+}
