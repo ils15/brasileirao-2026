@@ -1,0 +1,17 @@
+{
+  "fixture": "gate-repro",
+  "kind": "synthetic",
+  "warning": "DADOS SINTÉTICOS — não é coleta real; ver README.md desta pasta",
+  "targetDate": "2026-11-16",
+  "added": 6,
+  "payloads": [
+    {
+      "path": "espn-scoreboard-2026-11-16.json",
+      "sha256": "7fdc4739b022e34ac97c5e52d69cdda964c29161f82dbd3ed34fb4adf4e3cc3e"
+    }
+  ],
+  "expected": {
+    "path": "expected.json",
+    "sha256": "b3c8ded9de11ca51defeacb9141227e128604f4084f026373db90179b915a604"
+  }
+}

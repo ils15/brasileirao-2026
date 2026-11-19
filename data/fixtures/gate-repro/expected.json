@@ -1,0 +1,54 @@
+{
+  "targetDate": "2026-11-16",
+  "added": 6,
+  "newResults": [
+    {
+      "ref": "341",
+      "round": 35,
+      "home": "flamengo",
+      "away": "athletico-pr",
+      "homeGoals": 0,
+      "awayGoals": 1
+    },
+    {
+      "ref": "342",
+      "round": 35,
+      "home": "vasco",
+      "away": "internacional",
+      "homeGoals": 1,
+      "awayGoals": 0
+    },
+    {
+      "ref": "343",
+      "round": 35,
+      "home": "sao-paulo",
+      "away": "fluminense",
+      "homeGoals": 2,
+      "awayGoals": 1
+    },
+    {
+      "ref": "344",
+      "round": 35,
+      "home": "corinthians",
+      "away": "botafogo",
+      "homeGoals": 0,
+      "awayGoals": 0
+    },
+    {
+      "ref": "346",
+      "round": 35,
+      "home": "cruzeiro",
+      "away": "palmeiras",
+      "homeGoals": 1,
+      "awayGoals": 1
+    },
+    {
+      "ref": "347",
+      "round": 35,
+      "home": "gremio",
+      "away": "bahia",
+      "homeGoals": 2,
+      "awayGoals": 0
+    }
+  ]
+}

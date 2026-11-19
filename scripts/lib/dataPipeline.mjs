@@ -73,7 +73,9 @@ export function parseCbfSchedule(source) {
 }
 
 // Display names da ESPN (API scoreboard/standings) — distintos dos nomes do CSV Football-Data.
-const ESPN_NAME_SLUGS = {
+// Exportado para que a fixture sintética (`scripts/lib/gateFixture.mjs`) use exatamente
+// os mesmos nomes que o parser reconhece: um displayName fora daqui derruba a coleta.
+export const ESPN_NAME_SLUGS = {
   'Flamengo': 'flamengo',
   'Palmeiras': 'palmeiras',
   'Cruzeiro': 'cruzeiro',

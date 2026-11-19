@@ -1,0 +1,220 @@
+{
+  "_fixture": {
+    "id": "gate-repro",
+    "kind": "synthetic",
+    "warning": "DADOS SINTÉTICOS — não é coleta da ESPN"
+  },
+  "schemaVersion": 1,
+  "events": [
+    {
+      "id": "gate-341",
+      "date": "2026-11-16T18:00:00Z",
+      "name": "Flamengo at Athletico Paranaense",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Flamengo"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": true,
+              "score": "1",
+              "team": {
+                "displayName": "Athletico Paranaense"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gate-342",
+      "date": "2026-11-16T19:00:00Z",
+      "name": "Vasco da Gama at Internacional",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": true,
+              "score": "1",
+              "team": {
+                "displayName": "Vasco da Gama"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Internacional"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gate-343",
+      "date": "2026-11-16T20:00:00Z",
+      "name": "São Paulo at Fluminense",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": true,
+              "score": "2",
+              "team": {
+                "displayName": "São Paulo"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": false,
+              "score": "1",
+              "team": {
+                "displayName": "Fluminense"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gate-344",
+      "date": "2026-11-16T21:00:00Z",
+      "name": "Corinthians at Botafogo",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Corinthians"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Botafogo"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gate-346",
+      "date": "2026-11-16T22:00:00Z",
+      "name": "Cruzeiro at Palmeiras",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": false,
+              "score": "1",
+              "team": {
+                "displayName": "Cruzeiro"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": false,
+              "score": "1",
+              "team": {
+                "displayName": "Palmeiras"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gate-347",
+      "date": "2026-11-16T23:00:00Z",
+      "name": "Grêmio at Bahia",
+      "status": {
+        "type": {
+          "state": "post",
+          "completed": true,
+          "detail": "FT",
+          "shortDetail": "FT"
+        }
+      },
+      "competitions": [
+        {
+          "competitors": [
+            {
+              "homeAway": "home",
+              "winner": true,
+              "score": "2",
+              "team": {
+                "displayName": "Grêmio"
+              }
+            },
+            {
+              "homeAway": "away",
+              "winner": false,
+              "score": "0",
+              "team": {
+                "displayName": "Bahia"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

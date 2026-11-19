@@ -13,7 +13,9 @@
     "smoke:pages": "node scripts/check-pages-build.mjs",
     "pack:history": "node scripts/pack-history.mjs",
     "crosscheck": "node scripts/crosscheck-wikipedia.mjs",
-    "update:data": "node scripts/update-data.mjs"
+    "update:data": "node scripts/update-data.mjs",
+    "fixture:gate": "node scripts/make-gate-fixture.mjs",
+    "repro:gate": "node scripts/repro-update-gate.mjs"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",

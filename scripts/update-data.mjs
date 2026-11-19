@@ -6,8 +6,11 @@
  * Uso:
  *   node scripts/update-data.mjs --dry-run   # coleta/mostra diff sem escrever
  *   node scripts/update-data.mjs             # escreve, roda testes e commita
+ *   node scripts/update-data.mjs --offline --no-commit --today=2026-11-16 \
+ *     --test="npx vitest run src/a.test.tsx"  # reprodução determinística sem rede
  *
- * Sem rede (CI local/dry), usa fixtures locais de data/source-snapshots/.
+ * Sem rede (CI local/dry/--offline), usa fixtures locais de data/source-snapshots/.
+ * O contrato das flags mora em scripts/lib/updateArgs.mjs.
  */
 
 import { execFileSync } from 'node:child_process'
@@ -17,6 +20,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
 import { refreshApiFutebolBr } from './refresh-apifutebolbr.mjs'
+import { parseUpdateArgs } from './lib/updateArgs.mjs'
 import {
   parseEspnStandings,
   parseValorfinalClubes,
@@ -40,7 +44,9 @@ import {
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const srcDir = join(root, 'src')
 const snapshotsDir = join(root, 'data/source-snapshots')
-const dryRun = process.argv.includes('--dry-run')
+const options = parseUpdateArgs(process.argv.slice(2))
+const dryRun = options.dryRun
+const offline = options.offline
 const BR_CSV_URL = 'https://www.football-data.co.uk/new/BR.csv'
 const ESPN_URL_TEMPLATE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates='
 const DISPLAY_NAMES = {
@@ -90,6 +96,19 @@ function run(command, args, options = {}) {
   execFileSync(command, args, { cwd: root, stdio: 'inherit', ...options })
 }
 
+/** Executa o comando do gate como shell (aceita `--test="cmd arg arg"`). */
+function runShell(command) {
+  execFileSync('sh', ['-c', command], { cwd: root, stdio: 'inherit' })
+}
+
+/** Lê um snapshot local; com `--offline`, ausência é erro (nunca cai para a rede). */
+function readLocalSnapshotOrFail(path) {
+  if (!existsSync(path)) {
+    throw new Error(`--offline exige snapshot local ausente: ${path.replace(`${root}/`, '')}`)
+  }
+  return readFileSync(path, 'utf8')
+}
+
 async function main() {
   const schedule = loadCbfSchedule(srcDir)
   const currentMetadataSource = readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8')
@@ -104,7 +123,7 @@ async function main() {
     })
   const cutoffUtc = readCurrentCutoff(readFileSync(join(srcDir, 'sourceMetadata.ts'), 'utf8'))
   const lastCutoffDate = utcDateOf(cutoffUtc)
-  const today = new Date().toISOString().slice(0, 10)
+  const today = options.today ?? new Date().toISOString().slice(0, 10)
   console.log(`Corte empacotado: ${cutoffUtc} · hoje (UTC): ${today}`)
 
   if (today < lastCutoffDate) {
@@ -122,9 +141,12 @@ async function main() {
 
   // 1. Coleta: CSV Football-Data + scoreboards ESPN de cada dia desde o corte.
   const localCsv = join(snapshotsDir, 'football-data-BR.csv')
-  const csvText = existsSync(localCsv) && (dryRun || !process.env.FETCH)
+  const useLocalCsv = existsSync(localCsv) && (dryRun || !process.env.FETCH)
+  const csvText = useLocalCsv
     ? readFileSync(localCsv, 'utf8')
-    : await fetchText(BR_CSV_URL)
+    : offline
+      ? readLocalSnapshotOrFail(localCsv)
+      : await fetchText(BR_CSV_URL)
   const espnMatches = []
   const espnSnapshots = new Map()
   // Coleta a partir do próprio dia do corte: jogos da noite do corte (após o
@@ -132,8 +154,11 @@ async function main() {
   for (let date = lastCutoffDate; date <= today; date = addDays(date, 1)) {
     const localJson = join(snapshotsDir, `espn-scoreboard-${date}.json`)
     let jsonText
-    if (existsSync(localJson) && (dryRun || !process.env.FETCH)) {
+    const useLocalJson = existsSync(localJson) && (dryRun || !process.env.FETCH)
+    if (useLocalJson) {
       jsonText = readFileSync(localJson, 'utf8')
+    } else if (offline) {
+      jsonText = readLocalSnapshotOrFail(localJson)
     } else {
       jsonText = await fetchText(`${ESPN_URL_TEMPLATE}${date.replaceAll('-', '')}`)
       espnSnapshots.set(date, jsonText)
@@ -165,27 +190,32 @@ async function main() {
 
   // Conciliação independente: ESPN standings + valorfinal dados abertos.
   // Se ambas divergirem da nossa tabela, provavelmente perdemos resultados
-  // — abortar sem publicar.
-  try {
-    const espnStandingsText = await fetchText('https://site.api.espn.com/apis/v2/sports/soccer/bra.1/standings?season=2026')
-    const espnRows = parseEspnStandings(espnStandingsText)
-    const vfText = await fetchText('https://valorfinal.com.br/brasileirao/dados.json')
-    const vfRows = parseValorfinalClubes(vfText)
-    const reconciliation = reconcileStandings({ standings, espn: espnRows, valorfinal: vfRows })
-    console.log(`Conciliação: ${espnRows.length} clubes ESPN, ${vfRows.length} valorfinal · divergências ESPN ${reconciliation.espnDiverge}, valorfinal ${reconciliation.vfDiverge}`)
-    for (const line of reconciliation.report) console.warn('  ' + line)
-    if (reconciliation.espnDiverge > 2) {
-      throw new Error(`Conciliação ESPN divergiu em ${reconciliation.espnDiverge} clubes — resultados podem ter sido perdidos.\n${reconciliation.report.join('\n')}`)
+  // — abortar sem publicar. `--offline` pula a etapa porque não há rede.
+  if (offline) {
+    console.log('  Conciliação externa ignorada (--offline).')
+  } else {
+    try {
+      const espnStandingsText = await fetchText('https://site.api.espn.com/apis/v2/sports/soccer/bra.1/standings?season=2026')
+      const espnRows = parseEspnStandings(espnStandingsText)
+      const vfText = await fetchText('https://valorfinal.com.br/brasileirao/dados.json')
+      const vfRows = parseValorfinalClubes(vfText)
+      const reconciliation = reconcileStandings({ standings, espn: espnRows, valorfinal: vfRows })
+      console.log(`Conciliação: ${espnRows.length} clubes ESPN, ${vfRows.length} valorfinal · divergências ESPN ${reconciliation.espnDiverge}, valorfinal ${reconciliation.vfDiverge}`)
+      for (const line of reconciliation.report) console.warn('  ' + line)
+      if (reconciliation.espnDiverge > 2) {
+        throw new Error(`Conciliação ESPN divergiu em ${reconciliation.espnDiverge} clubes — resultados podem ter sido perdidos.\n${reconciliation.report.join('\n')}`)
+      }
+    } catch (error) {
+      if (error.message.includes('Conciliação')) throw error
+      console.warn(`  Conciliação externa indisponível (${error.message.split('\n')[0]}); seguindo só com a integridade interna.`)
     }
-  } catch (error) {
-    if (error.message.includes('Conciliação')) throw error
-    console.warn(`  Conciliação externa indisponível (${error.message.split('\n')[0]}); seguindo só com a integridade interna.`)
   }
 
   // 4b. Dados avançados 2026 (xG por jogo + cartões) para os jogos novos.
   //     Segue o mesmo padrão de rede das outras fontes: em dry-run local sem
-  //     FETCH, usa o snapshot existente e não coleta nada.
-  const networkAvailable = !dryRun || Boolean(process.env.FETCH)
+  //     FETCH, usa o snapshot existente e não coleta nada; `--offline` desliga
+  //     todas as fontes secundárias.
+  const networkAvailable = !offline && (!dryRun || Boolean(process.env.FETCH))
   if (networkAvailable && plan.refreshSecondary) {
     try {
       await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`) })
@@ -276,7 +306,12 @@ async function main() {
   }
 
   console.log('Executando suíte de testes...')
-  run('npm', ['test'])
+  runShell(options.testCommand)
+
+  if (options.noCommit) {
+    console.log(`--no-commit: gate aprovado, git add/commit não executados (${options.testCommand}).`)
+    return
+  }
 
   run('git', ['add', 'src/currentSeasonResults.ts', 'src/projectionData.ts', 'src/sourceMetadata.ts', 'src/advancedStats2026.ts', 'src/scorers2026.ts', 'data/source-snapshots', 'docs/atualizacoes.md'])
   run('git', ['commit', '-m', `data: atualização pós-rodada ${processingUtcDate} (+${added.length} resultados)`])
