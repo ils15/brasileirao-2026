@@ -14,6 +14,12 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+/**
+ * Conteúdo de aba lazy: o primeiro painel de Jogos paga o cold start do
+ * backtest walk-forward (o mesmo motivo do testTimeout de 30s no vite.config).
+ */
+const LAZY_TIMEOUT = 10_000
+
 describe('painel do Brasileirão 2026', () => {
   beforeEach(() => {
     window.localStorage.clear()
@@ -72,7 +78,7 @@ describe('painel do Brasileirão 2026', () => {
     await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
     expect(screen.getByRole('tabpanel', { name: 'Jogos & Confrontos' })).toBeVisible()
     expect(document.getElementById('painel-visao-geral')!.hidden).toBe(true)
-    expect(screen.getByRole('heading', { name: 'Próxima rodada' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Próxima rodada' }, { timeout: LAZY_TIMEOUT })).toBeVisible()
 
     // Teclado: setas movem a seleção com foco gerenciado (roving tabindex).
     const projecoesTab = screen.getByRole('tab', { name: 'Projeções & Simulador' })
@@ -138,16 +144,16 @@ describe('painel do Brasileirão 2026', () => {
     render(<App />)
 
     await user.click(screen.getByRole('tab', { name: 'Classificações & Análises' }))
-    expect(screen.getByRole('heading', { name: 'Classificações' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Classificações' }, { timeout: LAZY_TIMEOUT })).toBeVisible()
     expect(screen.getByRole('tablist', { name: 'Vistas da classificação' })).toBeInTheDocument()
-    expect(screen.getAllByText(/Libertadores · 1º–6º\*/).length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Sul-Americana · 7º–12º').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Meio de tabela · 13º–16º').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Rebaixamento · 17º–20º').length).toBeGreaterThan(0)
+    expect((await screen.findAllByText(/Libertadores · 1º–6º\*/, undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText('Sul-Americana · 7º–12º', undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText('Meio de tabela · 13º–16º', undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText('Rebaixamento · 17º–20º', undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
 
     await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
-    expect(screen.getByRole('heading', { name: 'Próxima rodada' })).toBeVisible()
-    expect(screen.getByRole('heading', { name: /Confronto direto|Flamengo × Palmeiras/ })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Próxima rodada' }, { timeout: LAZY_TIMEOUT })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: /Confronto direto|Flamengo × Palmeiras/ }, { timeout: LAZY_TIMEOUT })).toBeVisible()
   })
 
   it('mostra KPIs executivos da temporada na visão geral', () => {
@@ -295,9 +301,9 @@ describe('painel do Brasileirão 2026', () => {
     expect(screen.getByText(/não representa a artilharia no corte/)).toBeInTheDocument()
 
     await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
-    expect(screen.getByRole('columnheader', { name: 'Data/hora na fonte' })).toBeInTheDocument()
+    expect(await screen.findByRole('columnheader', { name: 'Data/hora na fonte' }, { timeout: LAZY_TIMEOUT })).toBeInTheDocument()
     // A nota visível mantém só o que o painel mostra; o detalhe fica no disclosure.
-    expect(screen.getByText(/Todos os .* resultados até o corte analítico/)).toBeVisible()
+    expect(await screen.findByText(/Todos os .* resultados até o corte analítico/, undefined, { timeout: LAZY_TIMEOUT })).toBeVisible()
     const eventDateDetails = screen.getByText('Fuso, programação CBF e referência de cada linha').closest('details')!
     expect(eventDateDetails).not.toHaveAttribute('open')
     // Ref, rodada e kickoff da nota vêm do pacote: nada de data fixa.
@@ -312,8 +318,8 @@ describe('painel do Brasileirão 2026', () => {
     expect(tiebreakNote.textContent).toContain('nem aplicação integral do Art. 15')
 
     await user.click(screen.getByRole('tab', { name: 'Metodologia & Auditoria' }))
-    expect(screen.getByRole('heading', { name: 'CBF (HTML de classificação arquivado)' })).toBeInTheDocument()
-    expect(screen.getByText(new RegExp(`Exibe ${escapeRegExp(CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp)} \\(fuso e significado não declarados\\)`))).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'CBF (HTML de classificação arquivado)' }, { timeout: LAZY_TIMEOUT })).toBeInTheDocument()
+    expect(await screen.findByText(new RegExp(`Exibe ${escapeRegExp(CURRENT_SEASON_SOURCE.cbfStandings.displayedTimestamp)} \\(fuso e significado não declarados\\)`), undefined, { timeout: LAZY_TIMEOUT })).toBeInTheDocument()
   })
 
   it('pagina todos os atletas sem alterar ordem, posições ou perder/duplicar atletas', async () => {

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { StandingsViews } from './StandingsViews'
 import { standingsFromResults } from './rounds'
 import { currentClubs } from './projectionData'
-import { advancedStatsCaptureRelation } from './seasonFacts'
+import { advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
 describe('aba classificações', () => {

@@ -2,7 +2,7 @@ import { useMemo, useState, type JSX } from 'react'
 import { HomeIcon, AwayIcon, BallIcon } from './icons'
 import { ScoreLine } from './ScoreLine'
 import { currentClubs, remainingFixtures } from './projectionData'
-import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './seasonFacts'
+import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type VenueStats } from './seasonStats'
 import { matchProbabilities } from './matchProbabilities'
 

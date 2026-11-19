@@ -5,7 +5,7 @@ import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
 import { getZoneLabel } from './data'
 import { ZoneLegend } from './ZoneLegend'
-import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './seasonFacts'
+import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
 /**

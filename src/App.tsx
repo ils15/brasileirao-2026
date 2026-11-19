@@ -1,22 +1,28 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { getZoneLabel, matchesClubFilter, scorers, standings, SCORERS_SOURCE, type ClubFilter, type Standing } from './data'
 import { ScorersPanel } from './ScorersPanel'
-import { ProjectionSection } from './ProjectionSection'
 import { InfoIcon } from './icons'
 import { ZoneLegend } from './ZoneLegend'
-import { MethodologyPanel } from './MethodologyPanel'
-import { ProjectionProvider, useProjection } from './ProjectionContext'
-import { FixtureCalendar } from './FixtureCalendar'
-import { ResultsTable } from './ResultsTable'
-import { AuditPanel } from './AuditPanel'
-import { StandingsViews } from './StandingsViews'
-import { NextRoundPanel } from './NextRoundPanel'
-import { TeamAnalysisPanel } from './TeamAnalysisPanel'
-import { HeadToHeadPanel } from './HeadToHeadPanel'
+import { ProjectionProvider } from './ProjectionContext'
 import { espnLogoUrlByClub, currentClubs } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
 import { ZONES } from './projectionConfig'
 import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, updateClock, cbfArchiveProvenance } from './seasonFacts'
+
+/**
+ * Abas pesadas são carregadas sob demanda: Jogos & Confrontos (NextRoundPanel
+ * dispara o backtest walk-forward no render), Projeções (section inteira),
+ * Metodologia (backtest + auditoria) e Classificações (tabelas derivadas).
+ * A Visão Geral permanece síncrona para o primeiro paint não pagar Suspense.
+ */
+const ClassificacoesTab = lazy(() => import('./ClassificacoesTab').then((module) => ({ default: module.ClassificacoesTab })))
+const JogosTab = lazy(() => import('./JogosTab').then((module) => ({ default: module.JogosTab })))
+const ProjecoesTab = lazy(() => import('./ProjecoesTab').then((module) => ({ default: module.ProjecoesTab })))
+const MetodologiaTab = lazy(() => import('./MetodologiaTab').then((module) => ({ default: module.MetodologiaTab })))
+
+function TabLoading({ label }: { label: string }): JSX.Element {
+  return <p className="projection-status" role="status">Carregando {label}…</p>
+}
 
 const CBF_URL = 'https://www.cbf.com.br/futebol-brasileiro/tabelas/campeonato-brasileiro/serie-a/2026'
 const ESPN_URL = 'https://www.espn.com.br/futebol/estatisticas/_/liga/BRA.1/vista/gols'
@@ -146,6 +152,7 @@ function App(): JSX.Element {
   const [clubFilter, setClubFilter] = useState<ClubFilter>('all')
   const [theme, setTheme] = useState<ThemeMode>(getSavedTheme)
   const [activeTab, setActiveTab] = useState<TabId>('visao-geral')
+  const [visitedTabs, setVisitedTabs] = useState<ReadonlySet<TabId>>(() => new Set<TabId>(['visao-geral']))
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const leader = standings[0]!
   const leaderClub = currentClubs[0]!
@@ -190,6 +197,15 @@ function App(): JSX.Element {
     return () => window.removeEventListener('hashchange', onHashChange)
   }, [applyHash])
 
+  // Aba visitada continua montada (estado local preservado ao trocar de aba),
+  // mas nunca é montada antes da primeira visita — é o que mantém o boot leve.
+  useEffect(() => {
+    setVisitedTabs((current) => (current.has(activeTab) ? current : new Set(current).add(activeTab)))
+  }, [activeTab])
+
+  const isTabMounted = (tab: TabId): boolean => tab === activeTab || visitedTabs.has(tab)
+  const projectionTabsActive = activeTab === 'projecoes' || activeTab === 'metodologia'
+
   function selectTab(tab: TabId): void {
     setActiveTab(tab)
     // replaceState não dispara hashchange nem rola a página; apenas registra a aba na URL.
@@ -227,7 +243,7 @@ function App(): JSX.Element {
       </header>
 
       <main id="conteudo">
-        <ProjectionProvider>
+        <ProjectionProvider enabled={projectionTabsActive}>
         <section className="hero" id="inicio" aria-labelledby="hero-title">
           <div className="hero-pattern" aria-hidden="true" />
           <div className="hero-inner">
@@ -424,25 +440,36 @@ function App(): JSX.Element {
           </section>
 
           <section id="painel-classificacoes" role="tabpanel" aria-labelledby="aba-classificacoes" hidden={activeTab !== 'classificacoes'}>
-            <StandingsViews />
+            {isTabMounted('classificacoes') && (
+              <Suspense fallback={<TabLoading label="classificações" />}>
+                <ClassificacoesTab />
+              </Suspense>
+            )}
           </section>
 
           <section id="painel-jogos" role="tabpanel" aria-labelledby="aba-jogos" hidden={activeTab !== 'jogos'}>
-            <NextRoundPanel />
-            <ResultsTable />
-            <FixtureCalendar />
-            <TeamAnalysisPanel />
-            <HeadToHeadPanel />
+            {isTabMounted('jogos') && (
+              <Suspense fallback={<TabLoading label="jogos e confrontos" />}>
+                <JogosTab />
+              </Suspense>
+            )}
             <div id="painel-confrontos" hidden={activeTab !== 'jogos'} />
           </section>
 
           <section id="painel-projecoes" role="tabpanel" aria-labelledby="aba-projecoes" hidden={activeTab !== 'projecoes'}>
-            <ProjectionSection />
+            {isTabMounted('projecoes') && (
+              <Suspense fallback={<TabLoading label="projeções" />}>
+                <ProjecoesTab />
+              </Suspense>
+            )}
           </section>
 
           <section id="painel-metodologia" role="tabpanel" aria-labelledby="aba-metodologia" hidden={activeTab !== 'metodologia'}>
-            <MethodologyConsumer />
-            <AuditPanel />
+            {isTabMounted('metodologia') && (
+              <Suspense fallback={<TabLoading label="metodologia e auditoria" />}>
+                <MetodologiaTab />
+              </Suspense>
+            )}
             <div id="painel-dados" hidden={activeTab !== 'metodologia'} />
           </section>
         </div>
@@ -460,12 +487,6 @@ function App(): JSX.Element {
       </footer>
     </>
   )
-}
-
-/** Consome o worker compartilhado (um run para Projeções e Metodologia). */
-function MethodologyConsumer(): JSX.Element {
-  const { result, status, retry } = useProjection()
-  return <MethodologyPanel result={result} status={status} onRetry={retry} />
 }
 
 export default App

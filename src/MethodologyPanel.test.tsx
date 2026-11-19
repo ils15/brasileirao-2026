@@ -6,7 +6,8 @@ import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { expectedGoalsBreakdown } from './matchModel'
 import { productionTrainingMatches } from './modelBacktest'
-import { advancedStatsCaptureLabel, advancedStatsCaptureRelation, cutoffLabel } from './seasonFacts'
+import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
+import { cutoffLabel } from './seasonFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
 /** Escapa um literal derivado dos módulos para uso em RegExp. */

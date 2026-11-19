@@ -14,13 +14,21 @@ const ProjectionContext = createContext<ProjectionContextValue | null>(null)
 /**
  * Um único Web Worker de projeção compartilhado pelas abas Projeções e
  * Metodologia & Validação — as 20.000 simulações rodam uma vez, não duas.
+ * `enabled` adia a criação do worker até a primeira aba que consome a projeção
+ * abrir; depois disso o worker permanece (o resultado é compartilhado).
  */
-export function ProjectionProvider({ children }: { children: ReactNode }): JSX.Element {
+export function ProjectionProvider({ children, enabled = true }: { children: ReactNode; enabled?: boolean }): JSX.Element {
   const [result, setResult] = useState<ProjectionResult | null>(null)
   const [status, setStatus] = useState<ProjectionStatus>('loading')
   const [retryCount, setRetryCount] = useState(0)
+  const [started, setStarted] = useState(enabled)
 
   useEffect(() => {
+    if (enabled && !started) setStarted(true)
+  }, [enabled, started])
+
+  useEffect(() => {
+    if (!started) return
     if (typeof Worker === 'undefined') {
       setStatus('error')
       return
@@ -44,7 +52,7 @@ export function ProjectionProvider({ children }: { children: ReactNode }): JSX.E
     }
     worker.postMessage({ type: 'run' })
     return () => worker.terminate()
-  }, [retryCount])
+  }, [started, retryCount])
 
   const value: ProjectionContextValue = { result, status, retry: () => setRetryCount((count) => count + 1) }
   return <ProjectionContext.Provider value={value}>{children}</ProjectionContext.Provider>
