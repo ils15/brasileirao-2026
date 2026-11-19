@@ -4,3 +4,6 @@ dist/
 .pantheon/
 .zcode/
 .playwright-mcp/
+.agents/
+.opencode/
+skills-lock.json
