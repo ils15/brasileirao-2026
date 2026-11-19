@@ -32,6 +32,7 @@ const schedule = [
 ]
 
 const existing = [{ home: 'flamengo', away: 'palmeiras' }]
+const baseCutoffUtc = '2026-11-15T18:30:00Z'
 const targetDate = '2026-11-16'
 
 describe('pickSyntheticPairs', () => {
@@ -107,22 +108,24 @@ describe('payload ESPN sintético', () => {
 })
 
 describe('buildFixtureBundle', () => {
-  const bundle = buildFixtureBundle({ schedule, existing, count: 3, targetDate })
+  const bundle = buildFixtureBundle({ schedule, existing, count: 3, baseCutoffUtc, targetDate })
   const manifest = JSON.parse(bundle.files.find((file) => file.path === 'manifest.json').content)
   const payloadFile = bundle.files.find((file) => file.path.startsWith('espn-scoreboard-'))
   const expected = JSON.parse(bundle.files.find((file) => file.path === 'expected.json').content)
 
   it('produz payload, expected e manifest determinísticos', () => {
-    const again = buildFixtureBundle({ schedule, existing, count: 3, targetDate })
+    const again = buildFixtureBundle({ schedule, existing, count: 3, baseCutoffUtc, targetDate })
     expect(again.files).toEqual(bundle.files)
     expect(serializeJson(payloadFile.content)).toBe(serializeJson(bundle.files[0].content))
   })
 
-  it('manifest carrega sha256 de cada payload e do expected', () => {
+  it('manifest carrega sha256 de cada payload, o corte de origem e o alvo', () => {
     expect(manifest.added).toBe(3)
     expect(manifest.payloads).toEqual([{ path: payloadFile.path, sha256: sha256(payloadFile.content) }])
     expect(manifest.expected.sha256).toBe(sha256(bundle.files.find((file) => file.path === 'expected.json').content))
+    expect(manifest.baseCutoffUtc).toBe(baseCutoffUtc)
     expect(manifest.targetDate).toBe(targetDate)
+    expect(manifest.targetDate).toBe(addUtcDays(manifest.baseCutoffUtc.slice(0, 10), 1))
   })
 
   it('expected lista os resultados novos com ref e placar', () => {
@@ -134,7 +137,7 @@ describe('buildFixtureBundle', () => {
 
 describe('readFixtureBundle', () => {
   function writeBundle(directory) {
-    const bundle = buildFixtureBundle({ schedule, existing, count: 3, targetDate })
+    const bundle = buildFixtureBundle({ schedule, existing, count: 3, baseCutoffUtc, targetDate })
     for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
     return bundle
   }
@@ -144,6 +147,7 @@ describe('readFixtureBundle', () => {
     try {
       const bundle = writeBundle(directory)
       const read = readFixtureBundle(directory)
+      expect(read.baseCutoffUtc).toBe(baseCutoffUtc)
       expect(read.targetDate).toBe(targetDate)
       expect(read.added).toBe(3)
       expect(read.payloads).toEqual([{ path: bundle.files[0].path, content: bundle.files[0].content }])
@@ -158,6 +162,48 @@ describe('readFixtureBundle', () => {
       writeBundle(directory)
       writeFileSync(join(directory, 'espn-scoreboard-2026-11-16.json'), '{"events":[]}\n')
       expect(() => readFixtureBundle(directory)).toThrow(/sha256 divergente/)
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('falha alto sem baseCutoffUtc — fixture antiga não pode cair no comportamento antigo', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
+    try {
+      writeBundle(directory)
+      const manifestPath = join(directory, 'manifest.json')
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+      delete manifest.baseCutoffUtc
+      writeFileSync(manifestPath, serializeJson(manifest))
+      expect(() => readFixtureBundle(directory)).toThrow(/rode `npm run fixture:gate`/)
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('recusa targetDate que não é o dia seguinte ao baseCutoffUtc', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
+    try {
+      writeBundle(directory)
+      const manifestPath = join(directory, 'manifest.json')
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+      manifest.targetDate = '2026-11-17'
+      writeFileSync(manifestPath, serializeJson(manifest))
+      expect(() => readFixtureBundle(directory)).toThrow(/dia seguinte ao baseCutoffUtc/)
+    } finally {
+      rmSync(directory, { recursive: true, force: true })
+    }
+  })
+
+  it('recusa baseCutoffUtc fora do formato de instante UTC', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
+    try {
+      writeBundle(directory)
+      const manifestPath = join(directory, 'manifest.json')
+      const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+      manifest.baseCutoffUtc = '2026-11-15'
+      writeFileSync(manifestPath, serializeJson(manifest))
+      expect(() => readFixtureBundle(directory)).toThrow(/baseCutoffUtc válido/)
     } finally {
       rmSync(directory, { recursive: true, force: true })
     }
@@ -250,7 +296,7 @@ describe('manifest com registro da busca', () => {
   }
 
   it('grava expectedFailures e o registro da busca', () => {
-    const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length, search })
+    const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length, search })
     const manifest = JSON.parse(bundle.files.find((file) => file.path === 'manifest.json').content)
     expect(manifest.expectedFailures).toEqual([...GATE_TEST_FILES])
     expect(manifest.search).toEqual(search)
@@ -259,7 +305,7 @@ describe('manifest com registro da busca', () => {
   it('a leitura devolve expectedFailures e o registro da busca', () => {
     const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
     try {
-      const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length, search })
+      const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length, search })
       for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
       const read = readFixtureBundle(directory)
       expect(read.expectedFailures).toEqual([...GATE_TEST_FILES])
@@ -272,7 +318,7 @@ describe('manifest com registro da busca', () => {
   it('sem registro da busca, expectedFailures cai no gate estreito padrão', () => {
     const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
     try {
-      const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length })
+      const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length })
       for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
       const manifestPath = join(directory, 'manifest.json')
       const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
@@ -289,7 +335,7 @@ describe('manifest com registro da busca', () => {
   it('recusa expectedFailures fora de src/**', () => {
     const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
     try {
-      const bundle = buildFixtureBundle({ targetDate, pairs, count: pairs.length })
+      const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length })
       for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
       const manifestPath = join(directory, 'manifest.json')
       const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
@@ -302,7 +348,7 @@ describe('manifest com registro da busca', () => {
   })
 
   it('recusa contagem de pares diferente da esperada', () => {
-    expect(() => buildFixtureBundle({ targetDate, pairs: pairs.slice(0, 1) })).toThrow(/exige 6 pares/)
+    expect(() => buildFixtureBundle({ baseCutoffUtc, targetDate, pairs: pairs.slice(0, 1) })).toThrow(/exige 6 pares/)
   })
 })
 
@@ -355,5 +401,28 @@ describe('isolamento da fixture', () => {
     for (const file of files) {
       expect(statSync(join(directory, file)).size).toBeLessThan(200_000)
     }
+  })
+})
+
+describe('independência do corte vivo', () => {
+  const reproSource = readFileSync('scripts/repro-update-gate.mjs', 'utf8')
+
+  it('o harness não lê o corte de src/sourceMetadata.ts', () => {
+    expect(reproSource).not.toMatch(/readCurrentCutoff/)
+    expect(reproSource).not.toMatch(/readFileSync/)
+  })
+
+  it('o harness passa corte e alvo gravados no manifest da fixture', () => {
+    expect(reproSource).toContain('--cutoff=${fixture.baseCutoffUtc}')
+    expect(reproSource).toContain('--today=${fixture.targetDate}')
+  })
+
+  it('a fixture versionada é autoconsistente mesmo quando o pacote avança', () => {
+    const manifest = JSON.parse(readFileSync('data/fixtures/gate-repro/manifest.json', 'utf8'))
+    expect(manifest.baseCutoffUtc).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/)
+    expect(manifest.targetDate).toBe(addUtcDays(manifest.baseCutoffUtc.slice(0, 10), 1))
+    const read = readFixtureBundle('data/fixtures/gate-repro')
+    expect(read.baseCutoffUtc).toBe(manifest.baseCutoffUtc)
+    expect(read.targetDate).toBe(manifest.targetDate)
   })
 })

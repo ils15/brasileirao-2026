@@ -17,6 +17,7 @@ import { createHash } from 'node:crypto'
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { ESPN_NAME_SLUGS } from './dataPipeline.mjs'
+import { isIsoInstant } from './updateArgs.mjs'
 
 export const FIXTURE_ID = 'gate-repro'
 export const FIXTURE_KIND = 'synthetic'
@@ -252,20 +253,31 @@ export function parsePackedResults(source) {
 /**
  * Conteúdo completo da fixture (payload + expected + manifest com sha256).
  * Devolve `files` em ordem estável para escrita determinística no disco.
+ *
+ * `baseCutoffUtc` é o corte do pacote a partir do qual a fixture foi gerada.
+ * `targetDate` é sempre o dia seguinte ao corte: é a data que o harness passa
+ * como `--today` junto de `--cutoff=baseCutoffUtc`, sem consultar o pacote vivo.
  */
-export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_COUNT, targetDate, pairs, search }) {
-  if (!ISO_DATE.test(targetDate)) throw new Error(`targetDate inválido: ${targetDate}`)
+export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_COUNT, baseCutoffUtc, targetDate, pairs, search }) {
+  if (!isIsoInstant(baseCutoffUtc)) {
+    throw new Error(`baseCutoffUtc inválido: ${baseCutoffUtc} (esperado AAAA-MM-DDTHH:MM:SSZ)`)
+  }
+  const derivedTargetDate = addUtcDays(baseCutoffUtc.slice(0, 10), 1)
+  const resolvedTargetDate = targetDate ?? derivedTargetDate
+  if (resolvedTargetDate !== derivedTargetDate) {
+    throw new Error(`targetDate ${resolvedTargetDate} difere de baseCutoffUtc + 1 dia (${derivedTargetDate})`)
+  }
   const resolvedPairs = pairs ?? pickSyntheticPairs({ schedule, existing, count })
   if (!Array.isArray(resolvedPairs) || resolvedPairs.length !== count) {
     throw new Error(`A fixture exige ${count} pares; recebeu ${Array.isArray(resolvedPairs) ? resolvedPairs.length : 'nada'}.`)
   }
-  const payloadName = `espn-scoreboard-${targetDate}.json`
+  const payloadName = `espn-scoreboard-${resolvedTargetDate}.json`
 
-  const payload = buildScoreboardPayload({ targetDate, pairs: resolvedPairs })
+  const payload = buildScoreboardPayload({ targetDate: resolvedTargetDate, pairs: resolvedPairs })
   const payloadContent = serializeJson(payload)
 
   const expectedContent = serializeJson({
-    targetDate,
+    targetDate: resolvedTargetDate,
     added: resolvedPairs.length,
     newResults: resolvedPairs.map((pair) => ({
       ref: pair.ref,
@@ -281,7 +293,8 @@ export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_CO
     fixture: FIXTURE_ID,
     kind: FIXTURE_KIND,
     warning: 'DADOS SINTÉTICOS — não é coleta real; ver README.md desta pasta',
-    targetDate,
+    baseCutoffUtc,
+    targetDate: resolvedTargetDate,
     added: resolvedPairs.length,
     payloads: [{ path: payloadName, sha256: sha256(payloadContent) }],
     expected: { path: 'expected.json', sha256: sha256(expectedContent) },
@@ -290,7 +303,8 @@ export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_CO
   })
 
   return {
-    targetDate,
+    targetDate: resolvedTargetDate,
+    baseCutoffUtc,
     pairs: resolvedPairs,
     files: [
       { path: payloadName, content: payloadContent },
@@ -313,6 +327,13 @@ export function readFixtureBundle(directory) {
   }
   if (!ISO_DATE.test(manifest.targetDate ?? '')) {
     throw new Error(`targetDate inválido no manifest: ${manifest.targetDate}`)
+  }
+  if (!isIsoInstant(manifest.baseCutoffUtc)) {
+    throw new Error(`manifest sem baseCutoffUtc válido (${JSON.stringify(manifest.baseCutoffUtc)}); rode \`npm run fixture:gate\` para regenerar a fixture`)
+  }
+  const expectedTargetDate = addUtcDays(manifest.baseCutoffUtc.slice(0, 10), 1)
+  if (manifest.targetDate !== expectedTargetDate) {
+    throw new Error(`targetDate ${manifest.targetDate} não é o dia seguinte ao baseCutoffUtc ${manifest.baseCutoffUtc} (${expectedTargetDate}); rode \`npm run fixture:gate\``)
   }
   if (!Number.isInteger(manifest.added) || manifest.added < 1) {
     throw new Error(`added inválido no manifest: ${manifest.added}`)
@@ -351,7 +372,15 @@ export function readFixtureBundle(directory) {
     }
   }
 
-  return { targetDate: manifest.targetDate, added: manifest.added, payloads, expected, expectedFailures, search: manifest.search ?? null }
+  return {
+    baseCutoffUtc: manifest.baseCutoffUtc,
+    targetDate: manifest.targetDate,
+    added: manifest.added,
+    payloads,
+    expected,
+    expectedFailures,
+    search: manifest.search ?? null,
+  }
 }
 
 /** Payloads de scoreboard presentes numa pasta (ordem estável). */

@@ -11,6 +11,9 @@
  *                   secundárias e a conciliação externa. Diferente de
  *                   `--dry-run`, escreve o pacote.
  * - `--today=AAAA-MM-DD`  substitui o dia UTC corrente (reprodução determinística).
+ * - `--cutoff=AAAA-MM-DDTHH:MM:SSZ`  substitui o corte empacotado lido de
+ *                   `src/sourceMetadata.ts` (reprodução independente do estado vivo).
+ *                   Default: o corte do pacote, sem mudança de comportamento.
  * - `--test=<cmd>`  comando do gate executado antes do commit.
  * - `--no-commit`   escreve módulos/snapshots/log e roda o gate, sem `git add/commit`.
  */
@@ -18,6 +21,7 @@
 export const DEFAULT_TEST_COMMAND = 'npm test'
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
+const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/
 
 /** `AAAA-MM-DD` válido no calendário (rejeita 2026-02-30, 2026-13-01, …). */
 export function isIsoDate(value) {
@@ -27,15 +31,37 @@ export function isIsoDate(value) {
   return parsed.toISOString().slice(0, 10) === value
 }
 
+/** Instante UTC no formato exato que `readCurrentCutoff` devolve. */
+export function isIsoInstant(value) {
+  if (typeof value !== 'string' || !ISO_INSTANT.test(value)) return false
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return false
+  return `${parsed.toISOString().slice(0, 19)}Z` === value
+}
+
+/**
+ * O corte é o instante do último pacote; `today` é o dia UTC da coleta.
+ * `--cutoff` posterior ao dia de `--today` é incoerência de configuração:
+ * falha alto em vez de "descobrir" que não há nada a coletar.
+ */
+export function assertCutoffNotAfterToday({ cutoffUtc, today }) {
+  if (!isIsoInstant(cutoffUtc)) throw new Error(`Corte inválido: "${cutoffUtc}"`)
+  if (!isIsoDate(today)) throw new Error(`Dia inválido: "${today}"`)
+  if (cutoffUtc.slice(0, 10) > today) {
+    throw new Error(`--cutoff posterior a --today: ${cutoffUtc} > ${today}`)
+  }
+}
+
 /**
  * @param {string[]} argv argumentos após o nome do script
- * @returns {{dryRun: boolean, offline: boolean, today: string | null, testCommand: string, noCommit: boolean}}
+ * @returns {{dryRun: boolean, offline: boolean, today: string | null, cutoff: string | null, testCommand: string, noCommit: boolean}}
  */
 export function parseUpdateArgs(argv = []) {
   const options = {
     dryRun: false,
     offline: false,
     today: null,
+    cutoff: null,
     testCommand: DEFAULT_TEST_COMMAND,
     noCommit: false,
   }
@@ -69,6 +95,15 @@ export function parseUpdateArgs(argv = []) {
       continue
     }
 
+    if (arg.startsWith('--cutoff=')) {
+      const value = arg.slice('--cutoff='.length)
+      if (!isIsoInstant(value)) {
+        throw new Error(`--cutoff inválido: "${value}" (esperado AAAA-MM-DDTHH:MM:SSZ)`)
+      }
+      options.cutoff = value
+      continue
+    }
+
     if (arg.startsWith('--test=')) {
       const value = arg.slice('--test='.length).trim()
       if (value === '') {
@@ -83,6 +118,10 @@ export function parseUpdateArgs(argv = []) {
 
   if (options.dryRun && options.noCommit) {
     throw new Error('--dry-run e --no-commit são incompatíveis: --dry-run não escreve nem commita')
+  }
+
+  if (options.cutoff !== null && options.today !== null) {
+    assertCutoffNotAfterToday({ cutoffUtc: options.cutoff, today: options.today })
   }
 
   return options

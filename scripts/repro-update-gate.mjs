@@ -5,7 +5,9 @@
  *    já estiver sujo (alterações não relacionadas no repo — AGENTS.md, .gitignore —
  *    são ignoradas de propósito).
  * 2. Copia os payloads da fixture para `data/source-snapshots/`.
- * 3. Roda o updater com `--offline --no-commit --today=<corte+1>` e o gate estreito.
+ * 3. Roda o updater com `--offline --no-commit --cutoff=<manifest> --today=<manifest>`
+ *    e o gate estreito. O corte e o alvo vêm do manifest da fixture, nunca do
+ *    pacote vivo: o harness não quebra quando o corte avança.
  * 4. Exige que o pacote tenha se movido (`Novos efetivos: <added>`), senão sai 3.
  * 5. Com o gate vermelho, exige que **todos** os `expectedFailures` do manifest
  *    apareçam na saída — uma fixture que só quebra um dos testes não protege a
@@ -19,11 +21,10 @@
  */
 
 import { spawnSync } from 'node:child_process'
-import { copyFileSync, existsSync, readFileSync, rmSync } from 'node:fs'
+import { copyFileSync, existsSync, rmSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { readCurrentCutoff } from './lib/dataPipeline.mjs'
-import { addUtcDays, failedGateTests, listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
+import { failedGateTests, listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const fixtureDir = join(root, 'data/fixtures/gate-repro')
@@ -70,15 +71,7 @@ function main() {
     return 2
   }
 
-  const cutoffUtc = readCurrentCutoff(readFileSync(join(root, 'src/sourceMetadata.ts'), 'utf8'))
-  const expectedDate = addUtcDays(cutoffUtc.slice(0, 10), 1)
   const fixture = readFixtureBundle(fixtureDir)
-
-  if (fixture.targetDate !== expectedDate) {
-    console.error(`repro:gate abortado: fixture aponta para ${fixture.targetDate}, mas o corte ${cutoffUtc} exige ${expectedDate}.`)
-    console.error('Rode `npm run fixture:gate` para regenerar a fixture.')
-    return 2
-  }
 
   const payloadNames = listScoreboardPayloads(fixtureDir)
   if (payloadNames.length !== fixture.payloads.length) {
@@ -102,13 +95,14 @@ function main() {
       console.log(`Copiado: ${payload.path} → data/source-snapshots/`)
     }
 
-    console.log(`Rodando updater offline: --today=${fixture.targetDate} · gate "${GATE_TESTS}"`)
+    console.log(`Rodando updater offline: --cutoff=${fixture.baseCutoffUtc} --today=${fixture.targetDate} · gate "${GATE_TESTS}"`)
     const run = spawnSync(
       process.execPath,
       [
         join(root, 'scripts/update-data.mjs'),
         '--offline',
         '--no-commit',
+        `--cutoff=${fixture.baseCutoffUtc}`,
         `--today=${fixture.targetDate}`,
         `--test=${GATE_TESTS}`,
       ],

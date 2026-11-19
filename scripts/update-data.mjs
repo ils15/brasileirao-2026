@@ -20,7 +20,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
 import { refreshEspnScorers } from './refresh-espn-scorers.mjs'
-import { parseUpdateArgs } from './lib/updateArgs.mjs'
+import { assertCutoffNotAfterToday, parseUpdateArgs } from './lib/updateArgs.mjs'
 import {
   classifyMergeOutcome,
   parseEspnStandings,
@@ -124,10 +124,15 @@ async function main() {
       if (!match) throw new Error(`Linha de resultado não parseável no empacotamento atual: ${line}`)
       return { home: match[1], away: match[2], homeGoals: Number(match[3]), awayGoals: Number(match[4]), kickoff: match[5], source: match[6], sourceRef: match[7] }
     })
-  const cutoffUtc = readCurrentCutoff(readFileSync(join(srcDir, 'sourceMetadata.ts'), 'utf8'))
+  const cutoffUtc = options.cutoff ?? readCurrentCutoff(readFileSync(join(srcDir, 'sourceMetadata.ts'), 'utf8'))
   const lastCutoffDate = utcDateOf(cutoffUtc)
   const today = options.today ?? new Date().toISOString().slice(0, 10)
-  console.log(`Corte empacotado: ${cutoffUtc} · hoje (UTC): ${today}`)
+  if (options.cutoff !== null) {
+    // `--cutoff` explícito é contrato de reprodução: coerência vale mesmo quando
+    // `--today` cai no relógio, em vez de seguir para o "nada a atualizar".
+    assertCutoffNotAfterToday({ cutoffUtc, today })
+  }
+  console.log(`${options.cutoff !== null ? 'Corte (--cutoff)' : 'Corte empacotado'}: ${cutoffUtc} · hoje (UTC): ${today}`)
 
   if (today < lastCutoffDate) {
     console.log('Corte empacotado é posterior ao dia atual; nada a atualizar.')

@@ -16,18 +16,20 @@ espaço e a paleta de placares. Nenhum campo alega origem real.
 
 O updater escreve o pacote e só depois roda os testes; enquanto dois testes de UI
 dependeram do conteúdo do pacote, uma rodada real deixava a suíte vermelha e nada
-era commitado. Esta fixture move o pacote para exatamente esse estado, **offline e
-determinístico**, para que a regressão seja reproduzível:
+era commitado. Esta fixture move o pacote, **offline e determinístico**, e o
+`manifest.json` fixa `baseCutoffUtc` e `targetDate`: `repro:gate` não depende
+do corte vivo do pacote.
 
 ```bash
-npm run fixture:gate   # busca o candidato que deixa os 2 testes vermelhos
+npm run fixture:gate   # regenera a fixture a partir do pacote atual
 npm run repro:gate     # copia os payloads, roda o updater e restaura a árvore
 ```
 
-`fixture:gate` reconfere o vencedor já registrado com uma única execução do
-gate; só faz a busca completa quando não há vencedor registrado ou quando ele
-deixou de reproduzir. Se o gate estiver verde (deadlock destravado), a pasta fica
-intacta.
+`fixture:gate` reconfere o vencedor registrado com uma única execução do gate;
+se o calendário avançou e o conjunto não existe mais, reconfere o candidato de
+mesmo índice no espaço atual. Prefere uma fixture que deixe os 2 testes
+vermelhos; se o gate estiver verde com o pacote movido, grava o estado
+destravado. Com a fixture já no corte atual e o gate verde, a pasta fica intacta.
 
 `repro:gate` restaura os caminhos de dados no `finally`, então os payloads daqui
 nunca ficam em `data/source-snapshots/`. Nenhum arquivo de `src/**` pode importar
@@ -37,7 +39,8 @@ deste diretório (há teste vigiando).
 
 - `espn-scoreboard-<data>.json` — payload sintético; `<data>` é o dia do corte + 1.
 - `expected.json` — os pares que o updater deve incorporar (`added`, `newResults`).
-- `manifest.json` — sha256 de cada payload e do expected, `expectedFailures` e
-  o registro da busca; o harness recusa hash divergente.
+- `manifest.json` — sha256 de cada payload e do expected, `baseCutoffUtc` (corte
+  a partir do qual a fixture foi gerada), `targetDate` (= corte + 1 dia),
+  `expectedFailures` e o registro da busca; o harness recusa hash divergente.
 
 Não edite à mão: a única forma aceita de mudar a fixture é `npm run fixture:gate`.

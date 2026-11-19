@@ -2,17 +2,18 @@
   "fixture": "gate-repro",
   "kind": "synthetic",
   "warning": "DADOS SINTÉTICOS — não é coleta real; ver README.md desta pasta",
-  "targetDate": "2026-11-16",
+  "baseCutoffUtc": "2026-11-19T13:05:52Z",
+  "targetDate": "2026-11-20",
   "added": 6,
   "payloads": [
     {
-      "path": "espn-scoreboard-2026-11-16.json",
-      "sha256": "b15d9cd6ae96033dbf2d29e5572c7c561a8d00f6c80ec163241bde0aa53dcd8d"
+      "path": "espn-scoreboard-2026-11-20.json",
+      "sha256": "f12ea7e0123b5b83ab9560b59c0f9aeb6c53891b6af5e00650d9b06f7ba7c3c4"
     }
   ],
   "expected": {
     "path": "expected.json",
-    "sha256": "93d73a00b7487b65062922286f7259c7aad0afba749852abc9c5cef58e4677a5"
+    "sha256": "81d3d071ab6d23c4ab7816bd441ac2b649611d26af4b17c2c688b9870f18a6ed"
   },
   "expectedFailures": [
     "src/ProjectionSection.test.tsx",
@@ -23,12 +24,12 @@
     "version": 1,
     "winningIndex": 10,
     "winningPairRefs": [
-      "341",
-      "343",
-      "346",
-      "348",
+      "342",
       "349",
-      "350"
+      "352",
+      "354",
+      "355",
+      "356"
     ],
     "winningScoreVector": "A",
     "attempts": 11,

@@ -1,22 +1,27 @@
 /**
  * Gera/regera a fixture `data/fixtures/gate-repro/` (npm run fixture:gate).
  *
- * A fixture só serve se deixar os DOIS testes do gate vermelhos. Como o efeito
- * depende do estado da tabela que os 6 resultados produzem, a escolha dos pares
- * e dos placares não é um literal copiado à mão: é uma **busca determinística e
- * limitada** (ver `enumerateGateCandidates`) que roda o gate de 2 arquivos para
- * cada candidato e para no primeiro que produz as duas falhas.
+ * A fixture move o pacote com 6 resultados sintéticos. Se o gate de 2 arquivos
+ * ficar vermelho nos DOIS arquivos, ela reproduz o deadlock; se ficar verde com
+ * o pacote movido, ela documenta o estado destravado. Como o efeito depende do
+ * estado da tabela que os 6 resultados produzem, a escolha dos pares e dos
+ * placares não é um literal copiado à mão: é uma **busca determinística e
+ * limitada** (ver `enumerateGateCandidates`) que executa o gate para cada
+ * candidato e prefere o primeiro que produz as duas falhas; sem nenhum, usa o
+ * primeiro que move o pacote e deixa o gate verde.
  *
  * NENHUM placar tem origem real — a paleta é inventada e fixa. O manifest
  * registra método, índice vencedor e número de tentativas; não alega coleta.
  *
  * Determinismo: mesma árvore → mesmos bytes em `data/fixtures/gate-repro/`.
  * Quando o manifest já registra um vencedor, ele é reconferido com uma única
- * execução do gate (e o metadata anterior é reaproveitado byte a byte).
+ * execução do gate (e o metadata anterior é reaproveitado byte a byte). Se o
+ * calendário avançou e o conjunto não existe mais, o índice registrado é
+ * reconferido no espaço atual.
  */
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { loadCbfSchedule, readCurrentCutoff } from './lib/dataPipeline.mjs'
@@ -72,18 +77,20 @@ espaço e a paleta de placares. Nenhum campo alega origem real.
 
 O updater escreve o pacote e só depois roda os testes; enquanto dois testes de UI
 dependeram do conteúdo do pacote, uma rodada real deixava a suíte vermelha e nada
-era commitado. Esta fixture move o pacote para exatamente esse estado, **offline e
-determinístico**, para que a regressão seja reproduzível:
+era commitado. Esta fixture move o pacote, **offline e determinístico**, e o
+\`manifest.json\` fixa \`baseCutoffUtc\` e \`targetDate\`: \`repro:gate\` não depende
+do corte vivo do pacote.
 
 \`\`\`bash
-npm run fixture:gate   # busca o candidato que deixa os 2 testes vermelhos
+npm run fixture:gate   # regenera a fixture a partir do pacote atual
 npm run repro:gate     # copia os payloads, roda o updater e restaura a árvore
 \`\`\`
 
-\`fixture:gate\` reconfere o vencedor já registrado com uma única execução do
-gate; só faz a busca completa quando não há vencedor registrado ou quando ele
-deixou de reproduzir. Se o gate estiver verde (deadlock destravado), a pasta fica
-intacta.
+\`fixture:gate\` reconfere o vencedor registrado com uma única execução do gate;
+se o calendário avançou e o conjunto não existe mais, reconfere o candidato de
+mesmo índice no espaço atual. Prefere uma fixture que deixe os 2 testes
+vermelhos; se o gate estiver verde com o pacote movido, grava o estado
+destravado. Com a fixture já no corte atual e o gate verde, a pasta fica intacta.
 
 \`repro:gate\` restaura os caminhos de dados no \`finally\`, então os payloads daqui
 nunca ficam em \`data/source-snapshots/\`. Nenhum arquivo de \`src/**\` pode importar
@@ -93,8 +100,9 @@ deste diretório (há teste vigiando).
 
 - \`espn-scoreboard-<data>.json\` — payload sintético; \`<data>\` é o dia do corte + 1.
 - \`expected.json\` — os pares que o updater deve incorporar (\`added\`, \`newResults\`).
-- \`manifest.json\` — sha256 de cada payload e do expected, \`expectedFailures\` e
-  o registro da busca; o harness recusa hash divergente.
+- \`manifest.json\` — sha256 de cada payload e do expected, \`baseCutoffUtc\` (corte
+  a partir do qual a fixture foi gerada), \`targetDate\` (= corte + 1 dia),
+  \`expectedFailures\` e o registro da busca; o harness recusa hash divergente.
 
 Não edite à mão: a única forma aceita de mudar a fixture é \`npm run fixture:gate\`.
 `
@@ -123,7 +131,7 @@ function failedTestFiles(output) {
 }
 
 /** Um candidato = uma execução real do updater + gate de 2 arquivos. */
-function runCandidate({ targetDate, pairs, expectedAdded }) {
+function runCandidate({ baseCutoffUtc, targetDate, pairs, expectedAdded }) {
   const payloadName = `espn-scoreboard-${targetDate}.json`
   const destination = join(snapshotsDir, payloadName)
   if (existsSync(destination)) throw new Error(`${payloadName} já existe em data/source-snapshots/ (caminho sujo).`)
@@ -139,6 +147,7 @@ function runCandidate({ targetDate, pairs, expectedAdded }) {
         join(root, 'scripts/update-data.mjs'),
         '--offline',
         '--no-commit',
+        `--cutoff=${baseCutoffUtc}`,
         `--today=${targetDate}`,
         `--test=${GATE_TEST_COMMAND}`,
       ],
@@ -164,6 +173,23 @@ function recordedWinner(search) {
   return { pairRefs: search.winningPairRefs, scoreVector: search.winningScoreVector }
 }
 
+/**
+ * Candidato para reconferência sem busca completa.
+ *
+ * Primeiro o vencedor registrado (pares + vetor), que é imune a mudança de
+ * índice. Se o calendário avançou e o conjunto não existe mais, cai para o
+ * candidato de mesmo índice no espaço atual: a ordem da busca é determinística
+ * e a execução do candidato decide se ele ainda serve (vermelho ou verde).
+ */
+function reconfirmationCandidate({ candidates, recorded, previousSearch }) {
+  if (!recorded) return undefined
+  const byIdentity = candidates.find((candidate) =>
+    candidate.pairRefs.join(',') === recorded.pairRefs.join(',') && candidate.scoreVector === recorded.scoreVector)
+  if (byIdentity) return byIdentity
+  const index = previousSearch?.winningIndex
+  return Number.isInteger(index) ? candidates[index] : undefined
+}
+
 function buildSearchMetadata({ candidate, attempts, spaceSize }) {
   return {
     method: 'deterministic-bounded',
@@ -183,9 +209,17 @@ function buildSearchMetadata({ candidate, attempts, spaceSize }) {
   }
 }
 
-function writeFixture({ targetDate, candidate, search }) {
-  const bundle = buildFixtureBundle({ targetDate, pairs: candidate.pairs, search })
+function writeFixture({ baseCutoffUtc, targetDate, candidate, search }) {
+  const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs: candidate.pairs, search })
   mkdirSync(fixtureDir, { recursive: true })
+  // Um corte novo muda a data do payload: payload antigo no diretório faria o
+  // harness recusar a contagem. Remove só os que a nova fixture não referencia.
+  const keep = new Set(bundle.files.map((file) => file.path))
+  for (const file of readdirSync(fixtureDir)) {
+    if (/^espn-scoreboard-\d{4}-\d{2}-\d{2}\.json$/.test(file) && !keep.has(file)) {
+      rmSync(join(fixtureDir, file))
+    }
+  }
   writeFileSync(join(fixtureDir, 'README.md'), README)
   for (const file of bundle.files) writeFileSync(join(fixtureDir, file.path), file.content)
   return bundle
@@ -212,8 +246,8 @@ function main() {
 
   const schedule = loadCbfSchedule(srcDir)
   const existing = parsePackedResults(readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8'))
-  const cutoffUtc = readCurrentCutoff(readFileSync(join(srcDir, 'sourceMetadata.ts'), 'utf8'))
-  const targetDate = addUtcDays(cutoffUtc.slice(0, 10), 1)
+  const baseCutoffUtc = readCurrentCutoff(readFileSync(join(srcDir, 'sourceMetadata.ts'), 'utf8'))
+  const targetDate = addUtcDays(baseCutoffUtc.slice(0, 10), 1)
 
   const candidates = enumerateGateCandidates({ schedule, existing })
   const spaceSize = gateCandidateSpaceSize({ schedule, existing })
@@ -221,7 +255,15 @@ function main() {
     try {
       return readFixtureBundle(fixtureDir)
     } catch {
-      return null
+      // Fixture gerada antes de `baseCutoffUtc`: não é válida para o harness,
+      // mas o registro da busca ainda permite reconferir o vencedor sem repetir
+      // a busca inteira. A fixture nova substitui o manifest.
+      try {
+        const manifest = JSON.parse(readFileSync(join(fixtureDir, 'manifest.json'), 'utf8'))
+        return { search: manifest.search ?? null, baseCutoffUtc: null }
+      } catch {
+        return null
+      }
     }
   })()
 
@@ -234,29 +276,39 @@ function main() {
 
   // 1. Reconferência do vencedor registrado: uma execução, não a busca inteira.
   const recorded = recordedWinner(previous?.search)
-  const recordedCandidate = recorded
-    ? candidates.find((candidate) => candidate.pairRefs.join(',') === recorded.pairRefs.join(',') && candidate.scoreVector === recorded.scoreVector)
-    : undefined
+  const recordedCandidate = reconfirmationCandidate({ candidates, recorded, previousSearch: previous?.search })
 
   if (recordedCandidate) {
-    const result = runCandidate({ targetDate, pairs: recordedCandidate.pairs, expectedAdded: recordedCandidate.pairs.length })
+    const result = runCandidate({ baseCutoffUtc, targetDate, pairs: recordedCandidate.pairs, expectedAdded: recordedCandidate.pairs.length })
     record(recordedCandidate, result)
     if (reproducesDeadlock(result)) {
       // Reaproveita a contagem de tentativas original: regenerar não pode mudar bytes.
       const search = buildSearchMetadata({ candidate: recordedCandidate, attempts: previous.search.attempts ?? attempts.length, spaceSize })
-      writeFixture({ targetDate, candidate: recordedCandidate, search })
-      console.log(`Fixture reconferida: ${targetDate} · vencedor #${recordedCandidate.index} ainda deixa as duas falhas.`)
+      writeFixture({ baseCutoffUtc, targetDate, candidate: recordedCandidate, search })
+      console.log(`Fixture reconferida: ${targetDate} (corte ${baseCutoffUtc}) · vencedor #${recordedCandidate.index} ainda deixa as duas falhas.`)
       return 0
     }
     if (result.moved && result.failures.size === 0) {
-      console.log('Gate verde com a fixture registrada — deadlock destravado; nada a regenerar.')
+      if (previous.baseCutoffUtc !== baseCutoffUtc) {
+        // Fixture de um corte anterior e gate já verde: atualiza o manifest para
+        // que o harness reproduza sem consultar o pacote vivo.
+        const search = buildSearchMetadata({ candidate: recordedCandidate, attempts: previous.search.attempts ?? attempts.length, spaceSize })
+        writeFixture({ baseCutoffUtc, targetDate, candidate: recordedCandidate, search })
+        console.log(`Gate verde — fixture atualizada para o corte ${baseCutoffUtc} (${targetDate}).`)
+      } else {
+        console.log('Gate verde com a fixture registrada — deadlock destravado; nada a regenerar.')
+      }
       return 0
     }
   }
 
   // 2. Busca completa, limitada por tentativas e por tempo total.
+  //    Preferência: candidato que reproduz as duas falhas (fixture de regressão).
+  //    Se o gate está verde com o pacote movido, guarda o primeiro como fixture
+  //    do estado destravado — o harness precisa que o pacote se mova.
   const deadline = Date.now() + GATE_SEARCH_LIMITS.deadlineMinutes * 60_000
   let winner = null
+  let greenFallback = null
   for (const candidate of candidates) {
     if (recordedCandidate && candidate.index === recordedCandidate.index) continue
     if (attempts.length >= GATE_SEARCH_LIMITS.maxAttempts) {
@@ -267,24 +319,28 @@ function main() {
       console.error(`\nBusca interrompida: limite de ${GATE_SEARCH_LIMITS.deadlineMinutes} min atingido.`)
       break
     }
-    const result = runCandidate({ targetDate, pairs: candidate.pairs, expectedAdded: candidate.pairs.length })
+    const result = runCandidate({ baseCutoffUtc, targetDate, pairs: candidate.pairs, expectedAdded: candidate.pairs.length })
     record(candidate, result)
     if (reproducesDeadlock(result)) {
       winner = candidate
       break
     }
+    if (!greenFallback && result.moved && result.failures.size === 0) {
+      greenFallback = candidate
+    }
   }
 
+  if (!winner) winner = greenFallback
   if (!winner) {
-    console.error(`fixture:gate abortado: nenhum candidato deixou os ${GATE_TEST_FILES.length} testes do gate vermelhos.`)
+    console.error(`fixture:gate abortado: nenhum candidato moveu o pacote e deixou os ${GATE_TEST_FILES.length} testes do gate vermelhos ou verdes.`)
     printMatrix(attempts)
     console.error('Não relaxe o critério nem edite a fixture à mão.')
     return 1
   }
 
   const search = buildSearchMetadata({ candidate: winner, attempts: attempts.length, spaceSize })
-  const bundle = writeFixture({ targetDate, candidate: winner, search })
-  console.log(`\nFixture ${targetDate} (corte ${cutoffUtc}) · ${bundle.pairs.length} pares sintéticos · vencedor #${winner.index} em ${attempts.length} tentativa(s)`)
+  const bundle = writeFixture({ baseCutoffUtc, targetDate, candidate: winner, search })
+  console.log(`\nFixture ${targetDate} (corte ${baseCutoffUtc}) · ${bundle.pairs.length} pares sintéticos · vencedor #${winner.index} em ${attempts.length} tentativa(s)`)
   for (const pair of bundle.pairs) {
     console.log(`  ${pair.ref} (rodada ${pair.round}) ${pair.home} ${pair.homeGoals}–${pair.awayGoals} ${pair.away}`)
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_TEST_COMMAND, isIsoDate, parseUpdateArgs } from './updateArgs.mjs'
+import { DEFAULT_TEST_COMMAND, isIsoDate, isIsoInstant, parseUpdateArgs } from './updateArgs.mjs'
 
 describe('parseUpdateArgs — default preserva o comportamento atual', () => {
   it('sem argumentos: escreve, roda `npm test` e commita', () => {
@@ -7,6 +7,7 @@ describe('parseUpdateArgs — default preserva o comportamento atual', () => {
       dryRun: false,
       offline: false,
       today: null,
+      cutoff: null,
       testCommand: DEFAULT_TEST_COMMAND,
       noCommit: false,
     })
@@ -28,6 +29,37 @@ describe('parseUpdateArgs — --today', () => {
   it('rejeita data sintaticamente válida mas fora do calendário', () => {
     expect(() => parseUpdateArgs(['--today=2026-02-30'])).toThrow(/--today inválido/)
     expect(() => parseUpdateArgs(['--today=2026-13-01'])).toThrow(/--today inválido/)
+  })
+})
+
+describe('parseUpdateArgs — --cutoff', () => {
+  it('aceita um instante UTC no formato do pacote e devolve exatamente a string recebida', () => {
+    const cutoff = '2026-11-19T13:05:52Z'
+    expect(parseUpdateArgs([`--cutoff=${cutoff}`]).cutoff).toBe(cutoff)
+  })
+
+  it('rejeita formato malformado com mensagem que cita a flag', () => {
+    const malformed = ['2026-11-19', '19/11/2026', '2026-11-19T13:05:52', '2026-11-19T13:05Z', '2026-11-19 13:05:52Z', '']
+    for (const value of malformed) {
+      expect(() => parseUpdateArgs([`--cutoff=${value}`])).toThrow(/--cutoff inválido/)
+    }
+  })
+
+  it('rejeita data de calendário inválida ou hora fora do dia', () => {
+    const impossible = ['2026-02-30T00:00:00Z', '2026-11-19T24:00:00Z', '2026-11-19T23:60:00Z']
+    for (const value of impossible) {
+      expect(() => parseUpdateArgs([`--cutoff=${value}`])).toThrow(/--cutoff inválido/)
+    }
+  })
+
+  it('rejeita corte posterior ao dia de --today e aceita o mesmo dia', () => {
+    const today = '2026-11-19'
+    const afterToday = '2026-11-20T00:00:00Z'
+    const sameDay = '2026-11-19T23:59:59Z'
+    const nextDay = '2026-11-20'
+    expect(() => parseUpdateArgs([`--cutoff=${afterToday}`, `--today=${today}`])).toThrow(/posterior a --today/)
+    expect(parseUpdateArgs([`--cutoff=${sameDay}`, `--today=${today}`]).cutoff).toBe(sameDay)
+    expect(parseUpdateArgs([`--cutoff=${sameDay}`, `--today=${nextDay}`]).today).toBe(nextDay)
   })
 })
 
@@ -69,5 +101,22 @@ describe('isIsoDate', () => {
     expect(isIsoDate('2024-02-29')).toBe(true)
     expect(isIsoDate(instantWithTime)).toBe(false)
     expect(isIsoDate(undefined)).toBe(false)
+  })
+})
+
+describe('isIsoInstant', () => {
+  it('aceita somente o instante UTC exato do pacote', () => {
+    const valid = '2026-11-19T13:05:52Z'
+    const invalid = [
+      `${valid}\n`,
+      '2026-11-19T13:05:52.000Z',
+      '2026-11-19T13:05:52+00:00',
+      '2026-02-30T13:05:52Z',
+      undefined,
+    ]
+    expect(isIsoInstant(valid)).toBe(true)
+    for (const value of invalid) {
+      expect(isIsoInstant(value)).toBe(false)
+    }
   })
 })
