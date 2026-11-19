@@ -1221,3 +1221,12 @@ details.how-to-read > summary { color: var(--ink); cursor: pointer; font-weight:
   .sim-round-select { width: 100%; justify-content: space-between; }
   .sim-round-select select { flex: 1; max-width: 200px; }
 }
+
+/* Fallback do AppErrorBoundary: a app não renderizou, então nada de chrome. */
+.app-error { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 100vh; padding: 32px 20px; text-align: center; }
+.app-error h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); line-height: 1.2; color: var(--ink); }
+.app-error p { max-width: 52ch; margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
+.app-error__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 8px; }
+.app-error__action { display: inline-flex; min-height: 44px; align-items: center; padding: 0 18px; border: 1px solid var(--border-strong); border-radius: var(--radius-control); font: 600 14px var(--display); text-decoration: none; cursor: pointer; }
+.app-error__action--primary { border-color: var(--deep); background: var(--deep); color: #fff; }
+.app-error__action--secondary { background: var(--surface); color: var(--ink); }

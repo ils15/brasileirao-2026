@@ -3,7 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#101d19" />
+    <!-- Tema antes de qualquer CSS/módulo: o valor salvo vale no primeiro paint, sem flash claro. -->
+    <script>
+      try {
+        var saved = localStorage.getItem('br2026-theme')
+        document.documentElement.dataset.theme = saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system'
+      } catch (error) {
+        document.documentElement.dataset.theme = 'system'
+      }
+    </script>
+    <style>
+      html { background: #f4f5f1; }
+      :root[data-theme='dark'] { background: #0a1220; }
+      .boot-status { max-width: 22rem; margin: 96px auto; padding: 16px 20px; border-radius: 10px; background: #f4f5f1; color: #17241f; font: 600 15px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif; text-align: center; }
+      :root[data-theme='dark'] .boot-status { background: #16253c; color: #eef3fb; }
+    </style>
+    <meta name="theme-color" content="#f4f5f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1220" media="(prefers-color-scheme: dark)" />
     <meta name="description" content="Painel do Brasileirão Série A 2026: classificação oficial, projeções Monte Carlo, calendário e auditoria de dados em snapshot estático." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -11,7 +27,7 @@
     <title>Brasileirão 2026 — Painel da Série A</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><p class="boot-status" role="status">Carregando painel…</p></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
