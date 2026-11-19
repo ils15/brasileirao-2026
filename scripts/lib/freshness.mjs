@@ -13,9 +13,19 @@
  *   para quebrar. O limite é inclusivo: idade >= `maxAgeHours` já é defasagem.
  * - Idade negativa (agora antes do corte) não é defasagem; devolve o valor
  *   negativo, que o chamador pode reportar como relógio/fuso suspeito.
+ * - `expectedResultPending` responde à pergunta que a idade crua não responde:
+ *   o corte parou porque **não houve jogo**, ou porque um resultado que já
+ *   existia não foi publicado? Ela só afirma pendência com um kickoff no
+ *   intervalo — sem evidência, devolve `false`.
  */
 
 const MS_PER_HOUR = 3_600_000
+
+/**
+ * Intervalo entre o apito final e a fonte publicar o resultado. O alarme não
+ * pode acusar atraso antes disso: o placar ainda não existia para ser coletado.
+ */
+export const DEFAULT_GRACE_HOURS = 6
 
 /** Converte string ISO, `Date` ou epoch-ms em epoch-ms; `null` se inválido. */
 function toEpochMs(value) {
@@ -66,4 +76,75 @@ export function isStale({ cutoffUtc, now = new Date(), maxAgeHours = 24 } = {}) 
     throw new Error(`maxAgeHours inválido: ${JSON.stringify(maxAgeHours)}`)
   }
   return hours >= maxAgeHours
+}
+
+/**
+ * Kickoffs de partidas que o scoreboard já dá por **encerradas**.
+ *
+ * Só evento `post` conta: um `pre` que virou passado pode ser jogo adiado,
+ * cancelado ou simplesmente o último snapshot antes da rodada — evidência fraca
+ * demais para transformar o alarme em ruído. Aceita o payload bruto da ESPN
+ * (`events[].status.type.state` + `events[].date`), sem I/O.
+ *
+ * @param {unknown} payload
+ * @returns {string[]} kickoffs ISO/UTC, sem repetição e em ordem crescente.
+ */
+export function completedKickoffsFromScoreboard(payload) {
+  const events = payload?.events
+  if (!Array.isArray(events)) return []
+  const kickoffs = new Set()
+  for (const event of events) {
+    if (event?.status?.type?.state !== 'post') continue
+    const kickoff = event.competitions?.[0]?.date ?? event.date
+    if (typeof kickoff !== 'string' || kickoff.trim() === '') continue
+    if (!Number.isFinite(Date.parse(kickoff))) continue
+    kickoffs.add(kickoff)
+  }
+  return [...kickoffs].sort((a, b) => Date.parse(a) - Date.parse(b))
+}
+
+/**
+ * Existe resultado que já deveria ter sido publicado?
+ *
+ * `true` somente quando algum kickoff cai em `(cutoffUtc, now - graceHours]`:
+ * o jogo começou **depois** do corte (logo, não está incorporado) e já passou
+ * da carência de publicação. Kickoff futuro ou dentro da carência não é atraso.
+ *
+ * @param {{
+ *   cutoffUtc: string | number | Date,
+ *   now?: string | number | Date,
+ *   kickoffs?: Array<string | number | Date> | null,
+ *   graceHours?: number,
+ * }} input
+ * @returns {boolean} `false` sem kickoffs (não afirma pendência sem evidência).
+ * @throws {Error} corte/agora inválidos ou `graceHours` fora de finito >= 0 —
+ *   mesma regra de `isStale`: entrada ilegível nunca vira "sem pendência".
+ */
+export function expectedResultPending({
+  cutoffUtc,
+  now = new Date(),
+  kickoffs = [],
+  graceHours = DEFAULT_GRACE_HOURS,
+} = {}) {
+  const cutoffMs = toEpochMs(cutoffUtc)
+  const nowMs = toEpochMs(now)
+  if (cutoffMs == null || nowMs == null) {
+    throw new Error(
+      `corte analítico inválido: cutoffUtc=${JSON.stringify(cutoffUtc)} now=${JSON.stringify(now)}`,
+    )
+  }
+  if (typeof graceHours !== 'number' || !Number.isFinite(graceHours) || graceHours < 0) {
+    throw new Error(`graceHours inválido: ${JSON.stringify(graceHours)}`)
+  }
+  if (kickoffs == null) return false
+  if (!Array.isArray(kickoffs)) {
+    throw new TypeError(`kickoffs deve ser uma lista de kickoffs; recebido ${typeof kickoffs}`)
+  }
+  if (kickoffs.length === 0) return false
+
+  const publishByMs = nowMs - graceHours * MS_PER_HOUR
+  return kickoffs.some((kickoff) => {
+    const kickoffMs = toEpochMs(kickoff)
+    return kickoffMs != null && kickoffMs > cutoffMs && kickoffMs <= publishByMs
+  })
 }

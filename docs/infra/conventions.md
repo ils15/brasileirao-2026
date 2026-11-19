@@ -207,13 +207,27 @@ inválido). Sem `--strict` o script é o alarme de sempre: sai 0, escreve
 `scripts/check-data-freshness.mjs` + `scripts/lib/freshness.mjs`, workflow
 `.github/workflows/data-freshness.yml` (cron `0 9,15,21 * * *` + dispatch):
 
-- Lê apenas `ANALYTICAL_CUTOFF_UTC` de `src/sourceMetadata.ts` (ou `--cutoff=`) e
+- Lê `ANALYTICAL_CUTOFF_UTC` de `src/sourceMetadata.ts` (ou `--cutoff=`) e
   compara com o relógio: sem rede, sem `npm ci`, sem dependência nova.
 - `--max-age-hours` (padrão 24) é o limite; limite **inclusivo** — idade igual ao
-  limite já é defasagem. Sai 0 fresco, 1 defasado, 2 erro de parsing (corte
-  ausente/inválido). Diferente do alarme do Pages, este reprova o run: o passo
-  de checagem **não** usa `continue-on-error`, senão todo run conclui `success`
-  e a contagem por `conclusion` nunca sai de zero.
+  limite já é defasagem. Sai 0 fresco (ou sem resultado a publicar), 1 defasado,
+  2 erro de parsing (corte ausente/inválido). Diferente do alarme do Pages, este
+  reprova o run: o passo de checagem **não** usa `continue-on-error`, senão todo
+  run conclui `success` e a contagem por `conclusion` nunca sai de zero.
+- Idade sozinha não distingue entressafra de resultado perdido. Acima do limite,
+  o alarme lê os snapshots `espn-scoreboard-*.json` e só reprova se houver
+  partida **encerrada** (`events[].status.type.state == 'post'`) com kickoff em
+  `(corte, agora - 6h]`; a carência cobre o tempo entre o apito final e a
+  publicação da fonte. Sem esse jogo, o corte parou porque não havia resultado a
+  incorporar: o run termina 0 com `::notice::` de entressafra/parada, o que
+  também fecha a issue. Evento `pre` que virou passado não conta — pode ser
+  adiamento, cancelamento ou o snapshot tirado antes da rodada.
+- `--ignore-calendar` desliga a consulta e restaura a decisão só por idade. Sem
+  snapshot legível (diretório ausente, nenhum `espn-scoreboard-*.json`, JSON
+  quebrado), o alarme também volta ao modo ruidoso e explica com `::warning::`
+  "decisão por idade crua": falha de leitura nunca vira "sem jogo".
+  `--snapshots-dir=` aponta outro diretório (testes/inspeção); o padrão é
+  `data/source-snapshots`.
 - Em falha, abre/comenta/reabre a issue `[alarme] Pacote de dados defasado`
   **após 2 falhas consecutivas** (contadas por `gh run list`); se `gh` não
   listar os runs, abre assim mesmo (lado ruidoso). Quando volta a passar, comenta
