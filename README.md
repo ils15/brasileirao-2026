@@ -25,7 +25,9 @@ Detalhes do modelo em [docs/metodologia.md](docs/metodologia.md). Demais documen
 
 https://ils15.github.io/brasileirao-2026/
 
-Publicado pelo workflow `.github/workflows/pages.yml` a cada push em `main`.
+Publicado pelo workflow `.github/workflows/pages.yml` a cada push em `main`; o
+commit do atualizador automático é publicado por `update-data.yml`. Ambos usam o
+mesmo build/deploy reutilizável, `.github/workflows/_pages-build-deploy.yml`.
 
 ## Instalação
 

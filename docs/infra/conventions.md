@@ -45,7 +45,8 @@ node scripts/update-data.mjs
 after=$(git rev-parse HEAD)
 ```
 
-- `before != after` → houve commit de dados: suíte completa, push, build, upload e deploy.
+- `before != after` → houve commit de dados: suíte completa, push e publicação pelo
+  workflow reutilizável (`_pages-build-deploy.yml`, §2.2).
 - Falha do updater → step vermelho com `::error::` listando `git status --porcelain`
   nos caminhos de dados. **Não existe fallback** que commite árvore suja: o que o
   updater não validou não é publicado, nem fica como alteração solta no runner.
@@ -72,6 +73,39 @@ Push do commit de dados: até 3 tentativas com `git fetch origin main` +
 Caminhos que contam como dado: `src/currentSeasonResults.ts`, `src/projectionData.ts`,
 `src/sourceMetadata.ts`, `src/advancedStats2026.ts`, `src/scorers2026.ts`,
 `data/source-snapshots`, `docs/atualizacoes.md`.
+
+### 2.2. Publicação — um único workflow reutilizável
+
+`.github/workflows/_pages-build-deploy.yml` (`workflow_call` + `workflow_dispatch`)
+é o **único** lugar que builda com `GITHUB_PAGES=true`, roda `smoke:pages`, sobe o
+artefato (`upload-pages-artifact`) e faz `deploy-pages`. Os dois publicadores
+chamam o mesmo arquivo:
+
+| caller | job | quando publica |
+|---|---|---|
+| `pages.yml` | `pages`, `needs: test` | push em `main` |
+| `update-data.yml` | `pages`, `needs: update` | `changed == 'true'` |
+
+- Push feito com `GITHUB_TOKEN` **não** dispara outros workflows: o commit do bot
+  só chega ao Pages porque o próprio `update-data.yml` chama o reutilizável.
+  Remover esse deploy pararia a publicação de dados.
+- Os gatilhos são disjuntos (push humano → `pages.yml`; push do bot →
+  `update-data.yml`), então não há corrida entre callers. Ainda assim o
+  reutilizável declara `concurrency: { group: pages, cancel-in-progress: false }`
+  para serializar qualquer publicação e o ambiente `github-pages`.
+- O job que chama precisa declarar `contents: read`, `pages: write` e
+  `id-token: write` em `jobs.<id>.permissions`: o token entregue ao reutilizável
+  só pode ser reduzido, nunca elevado, e sem `permissions` no job o chamado
+  recebe os defaults do repositório em vez das permissões de Pages.
+- `npm test` fica nos callers (job `test` de `pages.yml`; step `Full test suite
+  gate` do updater). O reutilizável não repete a suíte.
+- O checkout do reutilizável usa `inputs.sha || github.sha`, e os dois callers
+  passam `with: sha`. Sem o input, um workflow chamado faz checkout do SHA do
+  **evento do caller** — no cron, o commit anterior ao commit do bot — e o Pages
+  publicaria dado velho. `pages.yml` passa `github.sha` (o commit que os testes
+  acabaram de validar); `update-data.yml` passa o HEAD que o step `push`
+  empurrou (o `after` do gate pode mudar se o push precisar de rebase).
+- `freshness` em `pages.yml` usa `needs: pages` e continua sendo alerta, não gate.
 
 ## 3. Coleta same-day
 
@@ -127,7 +161,7 @@ em falha de release — foi assim que o pipeline parou por dias.
 ## 6. Alerta de frescor do Pages (não é gate)
 
 `scripts/check-deploy-freshness.mjs`, job `freshness` em `.github/workflows/pages.yml`
-(`needs: deploy`, só em push para `main`):
+(`needs: pages`, só em push para `main`):
 
 - Lê `ANALYTICAL_CUTOFF_UTC`/`_LOCAL` de `src/sourceMetadata.ts` (ou `--expect=`),
   busca o site publicado, extrai `assets/index-*.js` e procura o corte no bundle.

@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.update.outputs.changed }}
+      sha: ${{ steps.push.outputs.sha }}
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -68,11 +69,15 @@ jobs:
         if: steps.update.outputs.changed == 'true'
         run: npm test
       - name: Push data commit
+        id: push
         if: steps.update.outputs.changed == 'true'
         run: |
           set -euo pipefail
           for attempt in 1 2 3; do
-            if git push origin HEAD:main; then exit 0; fi
+            if git push origin HEAD:main; then
+              echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
             git fetch origin main
             if ! git rebase origin/main; then
               git rebase --abort || true
@@ -83,29 +88,18 @@ jobs:
           done
           echo "::error::push falhou após 3 tentativas."
           exit 1
-      - name: Build for the project site
-        if: steps.update.outputs.changed == 'true'
-        run: |
-          npm run build
-          npm run smoke:pages
-        env:
-          GITHUB_PAGES: 'true'
-      - name: Upload Pages artifact
-        if: steps.update.outputs.changed == 'true'
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
-        with:
-          path: dist
 
-  deploy:
-    if: needs.update.outputs.changed == 'true'
+  # Build + publicação vêm do workflow reutilizável, o mesmo que `pages.yml`
+  # chama. Push feito com `GITHUB_TOKEN` não dispara outros workflows, então o
+  # commit do bot só é publicado se este arquivo publicar; centralizar
+  # build/upload/deploy evita duas cópias divergirem.
+  pages:
     needs: update
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Configure Pages
-        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
-      - name: Deploy Pages artifact
-        id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+    if: needs.update.outputs.changed == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/_pages-build-deploy.yml
+    with:
+      sha: ${{ needs.update.outputs.sha }}

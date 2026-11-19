@@ -17,7 +17,7 @@ data/source-snapshots/  # snapshots brutos (Football-Data, ESPN diário, CBF, Op
 data/corroboration/     # sidecar Wikipédia (CC BY-SA 4.0) para o crosscheck
 docs/                   # metodologia, auditoria, dicionário, atualizações e convenções
 reports/                # saída gerada do crosscheck
-.github/workflows/      # pages.yml (CI/deploy) e update-data.yml (cron pós-rodada)
+.github/workflows/      # pages.yml (CI/deploy), update-data.yml (cron pós-rodada) e _pages-build-deploy.yml (build+deploy reutilizável)
 .githooks/              # pre-commit e commit-msg
 ```
 
