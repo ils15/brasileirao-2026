@@ -752,7 +752,30 @@ th.numeric .sort-button { justify-content: flex-end; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/*
+ * `forced-colors` (alto contraste do sistema/navegador) descarta as cores do
+ * tema. Sem cor, a faixa de zona, o chip e o badge passam a depender só do
+ * texto — por isso cada um recebe contorno do sistema. `forced-color-adjust:
+ * auto` documenta que não tentamos preservar as cores originais.
+ */
+@media (forced-colors: active) {
+  .zone-bar,
+  .zone-bar-segment,
+  .zone-bar-swatch,
+  .zone-chip,
+  .form-dot,
+  .delta-badge,
+  .sim-delta-badge,
+  .source-badge,
+  .validation-badge,
+  .official-pos-badge { border: 1px solid CanvasText; forced-color-adjust: auto; }
+
+  details,
+  summary { border: 1px solid CanvasText; forced-color-adjust: auto; }
 }
 
 /*
@@ -805,6 +828,12 @@ th.numeric .sort-button { justify-content: flex-end; }
   --callout-bg: #142238;
   --leader-bg: #132441;
   --leader-line: #24344f;
+  /* Cores de marca dos pontos de forma: iguais nos dois temas por decisão de
+     identidade visual — declaradas aqui para o gate de contraste resolver o
+     escuro sem herdar token do claro. */
+  --success-badge: #356d37;
+  --neutral-badge: #53635a;
+  --danger-badge: #974433;
 }
 
 :root[data-theme='dark'] .point-distribution-bar { fill: #7fb0ff; }
@@ -875,6 +904,10 @@ th.numeric .sort-button { justify-content: flex-end; }
     --callout-bg: #142238;
     --leader-bg: #132441;
     --leader-line: #24344f;
+    /* Mesmas cores de marca dos pontos de forma do tema escuro. */
+    --success-badge: #356d37;
+    --neutral-badge: #53635a;
+    --danger-badge: #974433;
   }
   :root[data-theme='system'] .point-distribution-bar { fill: #7fb0ff; }
   :root[data-theme='system'] .outcome-tab[aria-selected='true'], :root[data-theme='system'] .subtab.is-selected { color: #fff; background: var(--selected-surface); }
