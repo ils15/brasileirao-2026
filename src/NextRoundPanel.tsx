@@ -110,10 +110,13 @@ export function NextRoundPanel(): JSX.Element {
           )
         })}
       </div>
-      <p className="table-note">
-        λ vem das taxas de ataque/defesa por mando regularizadas (k=20, base 2021–2026 até o corte); as barras são os
-        marginais H/E/F de duas Poisson independentes. Detalhes e exemplo passo a passo na aba Metodologia &amp; Validação.
-      </p>
+      <details className="clean-disclosure">
+        <summary>Como λ e as barras H/E/F são calculados</summary>
+        <p className="table-note">
+          λ vem das taxas de ataque/defesa por mando regularizadas (k=20, base 2021–2026 até o corte); as barras são os
+          marginais H/E/F de duas Poisson independentes. Detalhes e exemplo passo a passo na aba Metodologia &amp; Validação.
+        </p>
+      </details>
     </section>
   )
 }

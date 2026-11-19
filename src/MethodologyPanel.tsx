@@ -86,13 +86,19 @@ function XgBlendBlock(): JSX.Element | null {
       <p className="projection-table-note">
         Gols são eventos raros; o xG soma a qualidade de todas as chances. Recalculamos as taxas de ataque/defesa da
         temporada em xG ({ablation.coveredMatches} jogos com cobertura, {coveredClubs} clubes) e misturamos com o
-        modelo de gols da base longa: λ final = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub>. O teste treina até a rodada
-        t−1 (o xG da própria rodada nunca entra) e mede o Brier de resultado H/empate/F na rodada t, acumulado sobre
-        {' '}{ablation.rounds.length} rodadas. Pesos 0 e 1 delimitam os modelos puros. A fonte é o snapshot 365scores
-        capturado em {advancedStatsCaptureLabel}, {advancedStatsCaptureRelation}, sem timestamp temporal por partida. Assim,
-        t−1 descreve apenas a separação das rodadas neste cálculo walk-forward: não comprova que o xG de cada partida
-        estivesse disponível até aquela rodada ou no corte.
+        modelo de gols da base longa: λ final = (1−w)·λ<sub>gols</sub> + w·λ<sub>xG</sub>.
       </p>
+      <details className="clean-disclosure">
+        <summary>Protocolo walk-forward, pesos e limite de cobertura do snapshot</summary>
+        <p className="projection-table-note">
+          O teste treina até a rodada
+          t−1 (o xG da própria rodada nunca entra) e mede o Brier de resultado H/empate/F na rodada t, acumulado sobre
+          {' '}{ablation.rounds.length} rodadas. Pesos 0 e 1 delimitam os modelos puros. A fonte é o snapshot 365scores
+          capturado em {advancedStatsCaptureLabel}, {advancedStatsCaptureRelation}, sem timestamp temporal por partida. Assim,
+          t−1 descreve apenas a separação das rodadas neste cálculo walk-forward: não comprova que o xG de cada partida
+          estivesse disponível até aquela rodada ou no corte.
+        </p>
+      </details>
       <div className="table-scroll projection-table-scroll" role="region" aria-label="Brier do blend xG por peso" tabIndex={0}>
         <table className="projection-table backtest-table ablation-table">
           <thead><tr><th scope="col">PESO DO xG (w)</th><th scope="col" className="numeric">BRIER ACUMULADO</th><th scope="col" className="numeric">DIFERENÇA VS SÓ GOLS</th></tr></thead>
@@ -195,8 +201,14 @@ export function MethodologyPanel({ result, status, onRetry }: MethodologyPanelPr
               <span>Resultado de jogo H/empate/F · menor Brier é melhor</span>
             </div>
             <p className="backtest-summary">
-              Em {integer.format(result.backtest.matches)} jogos futuros não usados no ajuste, o Brier de resultado H/empate/F foi <strong>{decimal.format(result.backtest.modelBrier)}</strong> contra <strong>{decimal.format(result.backtest.baselineBrier)}</strong> da referência de frequências históricas ({percent.format(result.backtest.relativeImprovement)} menor). O Brier dos grupos finais por posição foi <strong>{decimal.format(result.backtest.tableBrier)}</strong> contra <strong>{decimal.format(result.backtest.tableBaselineBrier)}</strong> da classificação observada no corte ({percent.format(result.backtest.tableRelativeImprovement)} menor; {integer.format(result.backtest.tableSimulationsPerSeason)} simulações por temporada). Em cada ano, o corte fica próximo do 300º jogo e kickoffs empatados não são separados; somente temporadas anteriores e jogos até o corte alimentam a previsão. Esses Brier medem a política walk-forward do modelo baseline: o k de cada ano foi escolhido apenas com anos anteriores (2021 usa k=12 pré-fixado). Separadamente, k={result.featureBacktest.productionShrinkageMatches} usado na projeção 2026 segue a mesma política: é o k selecionado para a temporada 2025 usando apenas os anos anteriores, entre {SHRINKAGE_CANDIDATES.length} candidatos pelo Brier da variante casa/fora. Não há validação externa independente desse k de produção.
+              Em {integer.format(result.backtest.matches)} jogos futuros não usados no ajuste, o Brier de resultado H/empate/F foi <strong>{decimal.format(result.backtest.modelBrier)}</strong> contra <strong>{decimal.format(result.backtest.baselineBrier)}</strong> da referência de frequências históricas ({percent.format(result.backtest.relativeImprovement)} menor). O Brier dos grupos finais por posição foi <strong>{decimal.format(result.backtest.tableBrier)}</strong> contra <strong>{decimal.format(result.backtest.tableBaselineBrier)}</strong> da classificação observada no corte ({percent.format(result.backtest.tableRelativeImprovement)} menor; {integer.format(result.backtest.tableSimulationsPerSeason)} simulações por temporada). Em cada ano, o corte fica próximo do 300º jogo e kickoffs empatados não são separados; somente temporadas anteriores e jogos até o corte alimentam a previsão.
             </p>
+            <details className="clean-disclosure">
+              <summary>Política de k e validação externa</summary>
+              <p className="backtest-summary">
+                Esses Brier medem a política walk-forward do modelo baseline: o k de cada ano foi escolhido apenas com anos anteriores (2021 usa k=12 pré-fixado). Separadamente, k={result.featureBacktest.productionShrinkageMatches} usado na projeção 2026 segue a mesma política: é o k selecionado para a temporada 2025 usando apenas os anos anteriores, entre {SHRINKAGE_CANDIDATES.length} candidatos pelo Brier da variante casa/fora. Não há validação externa independente desse k de produção.
+              </p>
+            </details>
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Resultados anuais do backtest temporal" tabIndex={0}>
               <table className="projection-table backtest-table">
                 <thead><tr><th scope="col">ANO TESTADO</th><th scope="col" className="numeric">JOGOS FORA DA AMOSTRA</th><th scope="col" className="numeric">k HISTÓRICO</th><th scope="col" className="numeric">BRIER H/X/F · MODELO</th><th scope="col" className="numeric">BRIER H/X/F · REFERÊNCIA</th><th scope="col" className="numeric">BRIER ZONAS · MODELO</th><th scope="col" className="numeric">BRIER ZONAS · TABELA NO CORTE</th></tr></thead>
@@ -223,7 +235,7 @@ export function MethodologyPanel({ result, status, onRetry }: MethodologyPanelPr
           <StrengthTable result={result} />
           <NumericExample result={result} />
 
-          <details className="projection-method" open>
+          <details className="projection-method">
             <summary>Fórmula, regras, dados e limitações</summary>
             <div className="method-copy">
               <h3>Método de gols esperados</h3>

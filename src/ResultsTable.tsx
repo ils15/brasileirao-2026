@@ -98,10 +98,15 @@ export function ResultsTable({ matches = currentSeasonResults }: { matches?: rea
       </div>
       <p className="table-note">
         Todos os {cutoffMatches.length} resultados até o corte analítico ({cutoffLabel}), com fonte de cada placar.
-        Data/hora na fonte não é programação CBF: ESPN usa UTC; Football-Data não declara fuso. A Tabela Básica prevê datas sujeitas a mudança.
-        {kickoffDivergenceNote && <> {kickoffDivergenceNote}</>}
-        Cada linha mantém sua referência original (linha do CSV ou evento ESPN).
       </p>
+      <details className="clean-disclosure">
+        <summary>Fuso, programação CBF e referência de cada linha</summary>
+        <p className="table-note">
+          Data/hora na fonte não é programação CBF: ESPN usa UTC; Football-Data não declara fuso. A Tabela Básica prevê datas sujeitas a mudança.
+          {kickoffDivergenceNote && <> {kickoffDivergenceNote}</>}
+          Cada linha mantém sua referência original (linha do CSV ou evento ESPN).
+        </p>
+      </details>
 
       <div className="results-filters" role="group" aria-label="Filtros dos resultados">
         <label>

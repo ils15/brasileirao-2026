@@ -274,13 +274,16 @@ export function AuditPanel(): JSX.Element {
               timestamp={ADVANCED_STATS_SOURCE.fetchedAt} timestampLabel="Obtido em" hash={ADVANCED_STATS_SOURCE.sha256}
               hashLabel="SHA-256 do JSON canônico" />
           </div>
-          <p className="audit-note">
-            RSSSF valida uma partida amostral por temporada, não tabelas finais de 2003–2011. 2004: RSSSF lista Figueirense com 45 jogos na tabela, mas a lista de resultados e OpenFootball somam 46; a dedução de 24 pontos do São Caetano não é apresentada como tabela oficial no app. 2005: Brasiliense–Vasco em 24/04 é 2–2 no placar jogado OpenFootball; RSSSF registra 0–1 administrativo, sem substituir o placar da fonte. Os 11 pares de replay de 2005 permanecem como partidas distintas.
-          </p>
-          <p className="audit-note">
-            A cópia CBF arquivada não valida este pacote; placares individuais não foram conferidos jogo a jogo
-            contra a fonte oficial. Correspondência de placares 365scores ↔ pacote: {matchingAdvancedScoreCount}/{advancedMatches.length}; isso não comprova cobertura temporal por partida. O snapshot 365scores foi obtido em {ADVANCED_STATS_SOURCE.fetchedAt} ({advancedStatsCaptureRelation}; anterior à geração do pacote); sem timestamps por partida, a cobertura de xG e cartões no pacote não é garantida. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.
-          </p>
+          <details className="clean-disclosure">
+            <summary>Ressalvas de validação, correspondência e cobertura temporal</summary>
+            <p className="audit-note">
+              RSSSF valida uma partida amostral por temporada, não tabelas finais de 2003–2011. 2004: RSSSF lista Figueirense com 45 jogos na tabela, mas a lista de resultados e OpenFootball somam 46; a dedução de 24 pontos do São Caetano não é apresentada como tabela oficial no app. 2005: Brasiliense–Vasco em 24/04 é 2–2 no placar jogado OpenFootball; RSSSF registra 0–1 administrativo, sem substituir o placar da fonte. Os 11 pares de replay de 2005 permanecem como partidas distintas.
+            </p>
+            <p className="audit-note">
+              A cópia CBF arquivada não valida este pacote; placares individuais não foram conferidos jogo a jogo
+              contra a fonte oficial. Correspondência de placares 365scores ↔ pacote: {matchingAdvancedScoreCount}/{advancedMatches.length}; isso não comprova cobertura temporal por partida. O snapshot 365scores foi obtido em {ADVANCED_STATS_SOURCE.fetchedAt} ({advancedStatsCaptureRelation}; anterior à geração do pacote); sem timestamps por partida, a cobertura de xG e cartões no pacote não é garantida. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.
+            </p>
+          </details>
         </section>
 
         <section className="panel audit-block" aria-labelledby="validations-title">

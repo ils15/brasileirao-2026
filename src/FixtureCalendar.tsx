@@ -48,7 +48,11 @@ export function FixtureCalendar(): JSX.Element {
         <div>
           <p className="eyebrow eyebrow-dark">MANDO E ADVERSÁRIO</p>
           <h2 id="fixture-calendar-title">Calendário restante por clube</h2>
-          <p>Os confrontos abaixo são os mesmos 48 usados, um a um, na simulação. A rodada e a referência seguem a tabela básica CBF; datas e horários detalhados não são inferidos.</p>
+          <p>Os confrontos abaixo são os mesmos 48 usados, um a um, na simulação.</p>
+          <details className="clean-disclosure">
+            <summary>Como a rodada e a referência são lidas</summary>
+            <p>A rodada e a referência seguem a tabela básica CBF; datas e horários detalhados não são inferidos.</p>
+          </details>
         </div>
         <label className="fixture-club-select">
           <span>Clube</span>
@@ -147,7 +151,10 @@ export function FixtureCalendar(): JSX.Element {
           )
         })}
       </ol>
-      <p className="fixture-calendar-note">Sem índice de dificuldade: adversários, mando e forças casa/fora são explícitos. Probabilidades de V/E/D são do modelo, não odds. O desempate simulado (não é classificação oficial) usa pontos → vitórias → saldo → gols pró; confronto direto entre dois clubes; disciplina estimada em grupos de três ou mais e sorteio residual. O snapshot 365scores de {advancedStatsCaptureLabel} é {advancedStatsCaptureRelation} e não tem timestamp por partida; não comprova cartões no corte nem aplicação integral do Art. 15.</p>
+      <details className="clean-disclosure">
+        <summary>Critérios do calendário, das probabilidades e do desempate simulado</summary>
+        <p className="fixture-calendar-note">Sem índice de dificuldade: adversários, mando e forças casa/fora são explícitos. Probabilidades de V/E/D são do modelo, não odds. O desempate simulado (não é classificação oficial) usa pontos → vitórias → saldo → gols pró; confronto direto entre dois clubes; disciplina estimada em grupos de três ou mais e sorteio residual. O snapshot 365scores de {advancedStatsCaptureLabel} é {advancedStatsCaptureRelation} e não tem timestamp por partida; não comprova cartões no corte nem aplicação integral do Art. 15.</p>
+      </details>
     </section>
   )
 }

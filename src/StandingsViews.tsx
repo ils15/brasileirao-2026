@@ -295,9 +295,14 @@ export function StandingsViews(): JSX.Element {
         <div><p className="eyebrow eyebrow-dark">ANÁLISES DA TABELA</p><h2 id="standings-views-title">Classificações</h2></div>
         <span className="section-index">02 <span>/ TABELAS</span></span>
       </div>
-      <p role="note" aria-label="Limitação do desempate pelo Art. 15 da CBF" className="tiebreaker-note">
-        <strong>Art. 15 — norma oficial:</strong> pontos → vitórias → saldo de gols → gols pró → confronto direto → menos cartões vermelhos → menos cartões amarelos → sorteio. No H2H entre dois clubes, somam-se os pontos dos jogos de ida e volta e depois se compara o saldo; para três ou mais, H2H não se aplica. <strong>Nesta tabela:</strong> a ordem analítica é pontos → vitórias → saldo → gols pró → nome do clube; não aplica integralmente o Art. 15 nem representa uma classificação oficial da CBF. <strong>Limite temporal:</strong> o snapshot 365scores ({advancedStatsCaptureLabel}) é {advancedStatsCaptureRelation} {ANALYTICAL_CUTOFF_UTC} e não tem cobertura temporal por partida suficiente para confirmar o estado dos cartões naquele corte.
-      </p>
+      <div role="note" aria-label="Limitação do desempate pelo Art. 15 da CBF" className="tiebreaker-note">
+        <p><strong>Nesta tabela:</strong> a ordem analítica é pontos → vitórias → saldo → gols pró → nome do clube; não aplica integralmente o Art. 15 nem representa uma classificação oficial da CBF.</p>
+        <details className="clean-disclosure clean-disclosure--callout">
+          <summary>Art. 15 — norma oficial e limite temporal do snapshot</summary>
+          <p><strong>Art. 15 — norma oficial:</strong> pontos → vitórias → saldo de gols → gols pró → confronto direto → menos cartões vermelhos → menos cartões amarelos → sorteio. No H2H entre dois clubes, somam-se os pontos dos jogos de ida e volta e depois se compara o saldo; para três ou mais, H2H não se aplica.</p>
+          <p><strong>Limite temporal:</strong> o snapshot 365scores ({advancedStatsCaptureLabel}) é {advancedStatsCaptureRelation} {ANALYTICAL_CUTOFF_UTC} e não tem cobertura temporal por partida suficiente para confirmar o estado dos cartões naquele corte.</p>
+        </details>
+      </div>
       <div className="subtabs" role="tablist" aria-label="Vistas da classificação">
         {VIEWS.map((view, index) => (
           <button

@@ -521,8 +521,11 @@ describe('painel de projeções', () => {
     expect(within(table).queryByRole('row', { name: /50–52/ })).not.toBeInTheDocument()
     expect(screen.getByText(/Faixas agrupam pontos com o mesmo valor exibido/)).toBeVisible()
     expect(screen.getByText(/o percentual aparece uma vez por faixa/)).toBeVisible()
-    expect(screen.getByText(/nas faixas de um ponto, o IC só é omitido quando repete o último IC exibido/)).toBeVisible()
-    expect(screen.getByText(/IC 95% é omitido em faixas com mais de um ponto/)).toBeVisible()
+    // As regras detalhadas de IC e de faixa sem observação vivem no disclosure, recolhido por padrão.
+    const groupingRules = screen.getByText(/Por que o IC some em algumas faixas/).closest('details')!
+    expect(groupingRules).not.toHaveAttribute('open')
+    expect(groupingRules).toHaveTextContent(/nas faixas de um ponto, o IC só é omitido quando repete o último IC exibido/)
+    expect(groupingRules).toHaveTextContent(/IC 95% é omitido em faixas com mais de um ponto/)
   })
 
   it('mostra 21–37 como uma única faixa de 100,00% e começa a tabela no primeiro 100%', async () => {

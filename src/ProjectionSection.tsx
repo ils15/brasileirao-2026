@@ -343,8 +343,13 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       <h4 className="points-table-title" id="magic-points-title">A pontuação mágica: quantos pontos bastam?</h4>
       <p className="projection-table-note">
         Escolha o destino e veja somente a estatística dele dado um total de pontos exato, entre as mesmas {integer.format(result.simulations)} simulações.
-        IC 95% cluster-robusto por simulação; faixas contíguas de pontuações com o mesmo valor exibido aparecem como um intervalo (ex.: 21–37), com um único percentual e sem IC, porque o intervalo varia por pontuação. Pontuações contíguas sem nenhuma observação do destino também formam uma única faixa, mesmo com N diferente, e atravessam totais de pontos sem simulações (que não geram linha); um ponto com observação intercalado quebra o bloco.
       </p>
+      <details className="clean-disclosure">
+        <summary>Regras de faixa, IC e ausência de observação</summary>
+        <p className="projection-table-note">
+          IC 95% cluster-robusto por simulação; faixas contíguas de pontuações com o mesmo valor exibido aparecem como um intervalo (ex.: 21–37), com um único percentual e sem IC, porque o intervalo varia por pontuação. Pontuações contíguas sem nenhuma observação do destino também formam uma única faixa, mesmo com N diferente, e atravessam totais de pontos sem simulações (que não geram linha); um ponto com observação intercalado quebra o bloco.
+        </p>
+      </details>
       <div className="magic-destiny-picker" role="group" aria-label="Destino para a pontuação mágica">
         {MAGIC_DESTINIES.map((entry) => (
           <button
@@ -479,11 +484,16 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
       </div>
       <p className="projection-table-note">
         Faixas agrupam pontos com o mesmo valor exibido; o percentual aparece uma vez por faixa.
-        O IC 95% é omitido em faixas com mais de um ponto, porque o intervalo varia entre os pontos e um envelope não representaria nenhum deles; nas faixas de um ponto, o IC só é omitido quando repete o último IC exibido.
-        Valores apenas parecidos não são agrupados: o critério é o texto formatado idêntico, nunca a igualdade estatística.
-        Faixas sem nenhuma observação do destino mostram “nenhum rebaixamento” (ou “nenhum título”, “nenhuma vaga na Libertadores”, “nenhuma na Sul-Americana”), com barra vazia e sem IC; elas agrupam pontos consecutivos independentemente do N e atravessam totais de pontos sem simulações, e o total de simulações é anunciado como intervalo quando varia. Pontuações com 0,00% arredondado, mas com ao menos um sucesso observado, continuam como linha própria com percentual e IC.
         {truncatedBelowFull && ' A tabela começa na primeira pontuação com 100,00% de rebaixamento; valores menores não são exibidos.'}
       </p>
+      <details className="clean-disclosure">
+        <summary>Por que o IC some em algumas faixas e o que significa uma faixa sem observação</summary>
+        <p className="projection-table-note">
+          O IC 95% é omitido em faixas com mais de um ponto, porque o intervalo varia entre os pontos e um envelope não representaria nenhum deles; nas faixas de um ponto, o IC só é omitido quando repete o último IC exibido.
+          Valores apenas parecidos não são agrupados: o critério é o texto formatado idêntico, nunca a igualdade estatística.
+          Faixas sem nenhuma observação do destino mostram “nenhum rebaixamento” (ou “nenhum título”, “nenhuma vaga na Libertadores”, “nenhuma na Sul-Americana”), com barra vazia e sem IC; elas agrupam pontos consecutivos independentemente do N e atravessam totais de pontos sem simulações, e o total de simulações é anunciado como intervalo quando varia. Pontuações com 0,00% arredondado, mas com ao menos um sucesso observado, continuam como linha própria com percentual e IC.
+        </p>
+      </details>
     </section>
   )
 }
@@ -672,10 +682,14 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
       </div>
 
       <p className="projection-disclaimer">
-        Não são odds nem recomendação de apostas. A dispersão de Monte Carlo mede apenas a variação da simulação com este modelo; não representa toda a incerteza dos dados ou da metodologia.
+        Não são odds nem recomendação de apostas.
       </p>
-      <p className="projection-table-note"><strong>G-6*:</strong> cenário adotado neste painel; a vaga ao 6º não é conclusão automática apenas porque o Palmeiras chegou à final da Copa do Brasil.</p>
-      <p className="projection-table-note"><strong>Regulamento:</strong> o <a href="https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf" target="_blank" rel="noreferrer">REC CBF 2026 (Art. 7)</a> aloca à Sul-Americana os seis clubes seguintes que não estejam na Libertadores (7º–12º neste cenário). A redistribuição depende das regras aplicáveis e da sobreposição de classificados; títulos e vagas de copas não são simulados.</p>
+      <details className="clean-disclosure clean-disclosure--callout">
+        <summary>Ressalvas do método, cenário G-6* e regulamento</summary>
+        <p className="projection-table-note">A dispersão de Monte Carlo mede apenas a variação da simulação com este modelo; não representa toda a incerteza dos dados ou da metodologia.</p>
+        <p className="projection-table-note"><strong>G-6*:</strong> cenário adotado neste painel; a vaga ao 6º não é conclusão automática apenas porque o Palmeiras chegou à final da Copa do Brasil.</p>
+        <p className="projection-table-note"><strong>Regulamento:</strong> o <a href="https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf" target="_blank" rel="noreferrer">REC CBF 2026 (Art. 7)</a> aloca à Sul-Americana os seis clubes seguintes que não estejam na Libertadores (7º–12º neste cenário). A redistribuição depende das regras aplicáveis e da sobreposição de classificados; títulos e vagas de copas não são simulados.</p>
+      </details>
 
       {status === 'loading' && <p className="projection-status" role="status">Calculando cenários em segundo plano…</p>}
       {status === 'ready' && <p className="sr-only" role="status">Projeção concluída: probabilidades e distribuições para {integer.format(result?.simulations ?? SIMULATION_COUNT)} simulações disponíveis.</p>}
@@ -737,14 +751,14 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
               <div><p className="eyebrow eyebrow-dark">PROJEÇÕES POR CLUBE</p><h3 id="club-probabilities-title">Vagas, permanência e pontos finais</h3></div>
               <span>n = {integer.format(result.simulations)} simulações · IC 95% Wilson</span>
             </div>
-            <div className="how-to-read">
-              <strong>Como ler:</strong>
+            <details className="how-to-read">
+              <summary>Como ler: zonas, pontos finais e intervalo de confiança</summary>
               <ul>
                 <li><strong>Em que zona o clube pode terminar?</strong> — a barra colorida mostra as cinco zonas possíveis em cada simulação; os percentuais dão a chance de cada uma.</li>
                 <li><strong>Quantos pontos o clube deve fazer?</strong> — a mediana é o valor central das simulações; a faixa típica reúne metade central (P25–P75) e o P90 um cenário alto.</li>
                 <li>Cada chance vem com o intervalo de confiança de 95% (IC) — a incerteza da própria estimativa com n = {integer.format(result.simulations)}.</li>
               </ul>
-            </div>
+            </details>
 
             <div className="table-header-flex">
               <h4 className="points-table-title" id="zones-table-title">Em que zona cada clube pode terminar?</h4>

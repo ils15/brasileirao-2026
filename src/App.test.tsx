@@ -296,14 +296,17 @@ describe('painel do Brasileirão 2026', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Jogos & Confrontos' }))
     expect(screen.getByRole('columnheader', { name: 'Data/hora na fonte' })).toBeInTheDocument()
-    const eventDateNote = screen.getByText(/Todos os .* resultados até o corte analítico/)
+    // A nota visível mantém só o que o painel mostra; o detalhe fica no disclosure.
+    expect(screen.getByText(/Todos os .* resultados até o corte analítico/)).toBeVisible()
+    const eventDateDetails = screen.getByText('Fuso, programação CBF e referência de cada linha').closest('details')!
+    expect(eventDateDetails).not.toHaveAttribute('open')
     // Ref, rodada e kickoff da nota vêm do pacote: nada de data fixa.
     const cbfFixture = cbfOfficialSchedule.find(([, , home, away]) => home === 'chapecoense' && away === 'mirassol')!
     const espnRecord = currentSeasonResults.find((match) => match.home === 'chapecoense' && match.away === 'mirassol')!
-    expect(eventDateNote.textContent).toContain(`REF ${cbfFixture[0]}`)
-    expect(eventDateNote.textContent).toContain(`rodada ${cbfFixture[1]}`)
-    expect(eventDateNote.textContent).toContain(espnRecord.kickoff)
-    expect(eventDateNote.textContent).toContain('não confirma o kickoff oficial')
+    expect(eventDateDetails.textContent).toContain(`REF ${cbfFixture[0]}`)
+    expect(eventDateDetails.textContent).toContain(`rodada ${cbfFixture[1]}`)
+    expect(eventDateDetails.textContent).toContain(espnRecord.kickoff)
+    expect(eventDateDetails.textContent).toContain('não confirma o kickoff oficial')
 
     const tiebreakNote = screen.getByText(/O desempate simulado \(não é classificação oficial\)/)
     expect(tiebreakNote.textContent).toContain('nem aplicação integral do Art. 15')

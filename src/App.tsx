@@ -503,7 +503,10 @@ function App(): JSX.Element {
         <div className="footer-brand"><BrandMark /><strong>BRASILEIRÃO <span>2026</span></strong></div>
         <p>Snapshot estático · Simulações em segundo plano · Sem dados ao vivo.</p>
         <div className="footer-sources"><a href={CBF_URL} target="_blank" rel="noreferrer"><img className="cbf-logo" src="https://www.cbf.com.br/logo/logo-verde.svg" alt="" aria-hidden="true" loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} /> CBF · Página atual de classificação ↗</a><a href={ESPN_URL} target="_blank" rel="noreferrer">ESPN · Consulta externa ↗</a></div>
-        <small>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; {cbfArchiveProvenance}. A página CBF atual não faz parte do pacote. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.</small>
+        <details className="footer-provenance">
+          <summary>Proveniência, corte analítico e critérios das fontes</summary>
+          <p>Corte analítico dos resultados: {cutoffLabel}. A classificação local é derivada do pacote, não uma classificação CBF oficial; {cbfArchiveProvenance}. A página CBF atual não faz parte do pacote. Artilharia: {SCORERS_SOURCE.name}, captura {scorersCaptureLabel}, {scorersCaptureRelation}; sem timestamp por partida, cobertura temporal não verificada.</p>
+        </details>
       </footer>
     </>
   )
