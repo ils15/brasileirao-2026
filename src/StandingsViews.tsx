@@ -224,7 +224,7 @@ function StreaksAndExtremesView(): JSX.Element {
           </tbody>
         </table>
       </div>
-      <p className="table-note">Sequências vigentes consideram todos os resultados até o corte em ordem cronológica; “—” indica sequência não ativa.</p>
+      <p className="table-note">Sequências vigentes em ordem cronológica; “—” indica sequência não ativa.</p>
     </div>
   )
 }

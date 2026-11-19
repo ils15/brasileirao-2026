@@ -9,7 +9,8 @@ describe('painel de confronto direto', () => {
 
     expect(screen.getByLabelText('Ano inicial do período')).toHaveValue('2012')
     expect(screen.getByLabelText('Ano inicial do período')).toHaveTextContent('2003')
-    expect(screen.getByText(/OpenFootball CC0 em 2003–2011, Football-Data em 2012–2025/)).toBeInTheDocument()
+    expect(screen.getByText(/Retrospecto 2003–2026: histórico, não previsão/)).toBeInTheDocument()
+    expect(screen.getByText(/Procedência e recorte: aba Metodologia & Auditoria/)).toBeInTheDocument()
     expect(screen.getByText(/Período 2012–2026/)).toBeInTheDocument()
 
     fireEvent.change(screen.getByLabelText('Ano inicial do período'), { target: { value: '2003' } })

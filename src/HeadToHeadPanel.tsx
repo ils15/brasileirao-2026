@@ -141,7 +141,7 @@ export function HeadToHeadPanel(): JSX.Element {
         <div><p className="eyebrow eyebrow-dark">Confronto direto</p><h2 id="head-to-head-title" className="h2h-title"><Crest clubId={clubA.id} size="large" /> {clubA.club} × {clubB.club} <Crest clubId={clubB.id} size="large" /></h2></div>
         <span className="section-index">02 <span>/ RETROSPECTO</span></span>
       </div>
-      <p className="table-note">Retrospecto disponível de 2003–2026 até o corte: OpenFootball CC0 em 2003–2011, Football-Data em 2012–2025 e fontes da temporada 2026. Histórico, não previsão; nunca altera as probabilidades.</p>
+      <p className="table-note">Retrospecto 2003–2026: histórico, não previsão; não altera as probabilidades. Procedência e recorte: aba Metodologia & Auditoria.</p>
 
       <div className="h2h-selects">
         <label className="fixture-club-select">
