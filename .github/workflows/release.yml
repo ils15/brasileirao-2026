@@ -1,0 +1,121 @@
+# Publica a GitHub Release de uma tag `v*` já empurrada. É um ato de
+# **verificação**, não de publicação: quem builda e sobe o site continua sendo
+# `_pages-build-deploy.yml`, chamado por `pages.yml` e por `update-data.yml`.
+# Aqui a tag precisa casar com `package.json.version`, a suíte e o build de
+# Pages precisam passar, e as notas saem da seção correspondente do
+# `CHANGELOG.md`. Reexecutar para a mesma tag edita a release em vez de falhar.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag a publicar (ex.: v1.1.0)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Validar sem criar release'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+# Duas execuções sobre a mesma tag disputariam a mesma release. Serializa sem
+# cancelar: a primeira cria, a segunda edita as notas (idempotente).
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Em `push` de tag o ref já é a tag. Em dispatch o ref seria a branch;
+          # a tag vem do input e precisa existir no remoto para resolver aqui.
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - name: Validate tag against package version
+        id: version
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag '$TAG' não segue o formato vX.Y.Z."
+            exit 1
+          fi
+          VERSION="$(node -p "require('./package.json').version")"
+          if [[ "${TAG#v}" != "$VERSION" ]]; then
+            echo "::error::Tag '$TAG' não corresponde a package.json.version '$VERSION': atualize a versão, o CHANGELOG e a tag juntos."
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Tag $TAG == package.json $VERSION."
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run full test suite
+        run: npm test
+      - name: Build for the project site
+        run: npm run build
+        env:
+          GITHUB_PAGES: 'true'
+      - name: Verify project-site asset paths
+        run: npm run smoke:pages
+      - name: Extract release notes from CHANGELOG
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          awk -v ver="$VERSION" '
+            index($0, "## [" ver "]") == 1 { inside = 1; next }
+            inside && /^## \[/ { exit }
+            inside { print }
+          ' CHANGELOG.md > /tmp/notes.md
+          # Descarta as linhas em branco do topo; o corpo começa no primeiro
+          # conteúdo da seção.
+          sed -i '/./,$!d' /tmp/notes.md
+          if ! grep -q '[^[:space:]]' /tmp/notes.md; then
+            echo "::error::Seção [${VERSION}] ausente ou vazia em CHANGELOG.md."
+            exit 1
+          fi
+          echo "Notas extraídas da seção [$VERSION]:"
+          cat /tmp/notes.md
+      - name: Print release notes (dry run)
+        if: inputs.dry_run == true
+        run: |
+          set -euo pipefail
+          echo "::notice::dry_run=true — nenhuma release foi criada."
+          {
+            echo '### Notas que seriam publicadas'
+            echo
+            cat /tmp/notes.md
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Create or update GitHub release
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --notes-file /tmp/notes.md
+            echo "::notice::Release $TAG já existia; notas atualizadas."
+          else
+            # `--verify-tag` impede o gh de criar a tag no HEAD da branch
+            # padrão quando ela não existir no remoto.
+            gh release create "$TAG" --verify-tag --title "$TAG" --notes-file /tmp/notes.md
+          fi
