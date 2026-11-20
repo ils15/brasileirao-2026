@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { disciplineTable, disciplineTiebreak } from './discipline'
-import type { AdvancedMatchRecord } from './advancedStats2026'
+import { ADVANCED_STATS_SOURCE, advancedMatches, type AdvancedMatchRecord } from './advancedStats2026'
+import { currentClubs } from './projectionData'
 
 const clubIds = ['a', 'b', 'c', 'd']
 const remaining = [
@@ -57,6 +58,21 @@ describe('disciplineTable', () => {
     expect(a.projectedYellows).toBe(0)
     expect(a.projectedReds).toBe(0)
     expect(Number.isFinite(a.yellowRate)).toBe(true)
+  })
+
+  it('usa como denominador os registros do clube no pacote, não o total esperado', () => {
+    expect(advancedMatches.length).toBe(ADVANCED_STATS_SOURCE.coverage.matches)
+    const table = disciplineTable()
+    let coveredSlots = 0
+    for (const { id } of currentClubs) {
+      const clubRecords = advancedMatches.filter((record) => record.home === id || record.away === id).length
+      const row = table.get(id)!
+      expect(row.matchesCovered).toBe(clubRecords)
+      expect(row.matchesCovered).toBeLessThanOrEqual(ADVANCED_STATS_SOURCE.coverage.expected)
+      coveredSlots += row.matchesCovered
+    }
+    // Cada registro cobre dois clubes: a soma dos denominadores é 2 × partidas cobertas.
+    expect(coveredSlots).toBe(advancedMatches.length * 2)
   })
 })
 

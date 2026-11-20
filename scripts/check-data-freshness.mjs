@@ -15,6 +15,8 @@
  *   node scripts/check-data-freshness.mjs --cutoff=2026-11-19T13:05:52Z
  *   node scripts/check-data-freshness.mjs --now=2026-11-29T13:05:52Z
  *   node scripts/check-data-freshness.mjs --ignore-calendar
+ *   node scripts/check-data-freshness.mjs --secondary-max-age-hours=168
+ *   node scripts/check-data-freshness.mjs --ignore-secondary
  *   node scripts/check-data-freshness.mjs --snapshots-dir=/tmp/fixture
  *
  * Idade sozinha não distingue "não houve jogo" de "o resultado se perdeu". Em
@@ -25,6 +27,12 @@
  * `::notice::` (o que também fecha a issue). `--ignore-calendar` desliga a
  * consulta e restaura a decisão só por idade; sem snapshot legível o alarme
  * também volta ao modo ruidoso e avisa com `::warning::`.
+ *
+ * Fontes secundárias: com jogo encerrado no pacote (`src/currentSeasonResults.ts`),
+ * `ADVANCED_STATS_SOURCE.fetchedAt` acima de `--secondary-max-age-hours` (padrão
+ * 168h) reprova com `::error::SECONDARY_STALE`; sem jogo, a regra não se aplica.
+ * `--ignore-secondary` desliga a regra na entressafra e explica com `::notice::`.
+ * Nenhuma das checagens faz requisição de rede: só lê os módulos gerados.
  *
  * Saída: `::notice::` quando fresco, `::error::` quando defasado. Códigos:
  * 0 = fresco, 1 = defasado, 2 = erro de parsing (corte ausente/inválido, flag
@@ -37,13 +45,17 @@ import { fileURLToPath } from 'node:url'
 import {
   completedKickoffsFromScoreboard,
   DEFAULT_GRACE_HOURS,
+  DEFAULT_SECONDARY_MAX_AGE_HOURS,
   expectedResultPending,
+  isSecondaryStale,
   isStale,
   stalenessHours,
 } from './lib/freshness.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const METADATA_PATH = join(ROOT, 'src/sourceMetadata.ts')
+const ADVANCED_STATS_PATH = join(ROOT, 'src/advancedStats2026.ts')
+const RESULTS_PATH = join(ROOT, 'src/currentSeasonResults.ts')
 const SNAPSHOTS_DIR = join(ROOT, 'data/source-snapshots')
 const SCOREBOARD_FILE_RE = /^espn-scoreboard-\d{4}-\d{2}-\d{2}\.json$/
 const DEFAULT_MAX_AGE_HOURS = 24
@@ -91,11 +103,52 @@ function resolveCutoff() {
   return { cutoffUtc, source: 'src/sourceMetadata.ts' }
 }
 
+/**
+ * Captura declarada de xG/cartões, lida do módulo gerado — sem rede.
+ * O payload (≈62 KB) não é importado: só o campo `fetchedAt`.
+ */
+function resolveSecondaryCapture() {
+  let source
+  try {
+    source = readFileSync(ADVANCED_STATS_PATH, 'utf8')
+  } catch (error) {
+    throw new Error(`não foi possível ler src/advancedStats2026.ts: ${error.message}`)
+  }
+  const match = source.match(/fetchedAt:\s*['"]([^'"]+)['"]/)
+  if (!match) throw new Error('fetchedAt não encontrado em src/advancedStats2026.ts')
+  const fetchedAt = match[1]
+  if (!isIsoInstant(fetchedAt)) {
+    throw new Error(`fetchedAt inválido em src/advancedStats2026.ts: ${JSON.stringify(fetchedAt)}`)
+  }
+  return { fetchedAt }
+}
+
+/** Jogos encerrados no pacote: cada registro de resultado é uma partida disputada. */
+function resolveFinishedMatches() {
+  let source
+  try {
+    source = readFileSync(RESULTS_PATH, 'utf8')
+  } catch (error) {
+    throw new Error(`não foi possível ler src/currentSeasonResults.ts: ${error.message}`)
+  }
+  return source.match(/kickoff:\s*['"]/g)?.length ?? 0
+}
+
 function resolveMaxAgeHours() {
   const raw = argValue('max-age-hours')
   if (raw == null || raw === '') return DEFAULT_MAX_AGE_HOURS
   const parsed = Number(raw)
   if (!Number.isFinite(parsed) || parsed < 0) throw new Error(`--max-age-hours inválido: ${JSON.stringify(raw)}`)
+  return parsed
+}
+
+function resolveSecondaryMaxAgeHours() {
+  const raw = argValue('secondary-max-age-hours')
+  if (raw == null || raw === '') return DEFAULT_SECONDARY_MAX_AGE_HOURS
+  const parsed = Number(raw)
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    throw new Error(`--secondary-max-age-hours inválido: ${JSON.stringify(raw)}`)
+  }
   return parsed
 }
 
@@ -153,16 +206,64 @@ function resolveCalendar(snapshotsDir) {
 
 const formatHours = (hours) => (hours >= 0 ? `${hours.toFixed(1)}h` : `${hours.toFixed(1)}h (corte no futuro)`)
 
+/**
+ * Checagem das fontes secundárias, independente do frescor do pacote primário.
+ * Emite `::error::SECONDARY_STALE` (e devolve `stale: true`) ou um `::notice::`
+ * explicando por que a regra não se aplicou. Nunca faz rede.
+ */
+function evaluateSecondary({ now, maxAgeHours }) {
+  if (hasFlag('ignore-secondary')) {
+    annotate(
+      'notice',
+      'Checagem de fontes secundárias ignorada por --ignore-secondary (entressafra): xG/cartões e artilharia não bloqueiam este alarme.',
+    )
+    return { stale: false }
+  }
+
+  const capture = resolveSecondaryCapture()
+  const finishedMatches = resolveFinishedMatches()
+  if (finishedMatches === 0) {
+    annotate(
+      'notice',
+      `Sem jogo encerrado no pacote: frescor das fontes secundárias não se aplica (entressafra). Captura de xG/cartões: ${capture.fetchedAt}.`,
+    )
+    return { stale: false }
+  }
+
+  const hours = stalenessHours({ cutoffUtc: capture.fetchedAt, now })
+  if (hours == null) {
+    throw new Error(`captura de xG/cartões inválida em src/advancedStats2026.ts: ${JSON.stringify(capture.fetchedAt)}`)
+  }
+
+  if (isSecondaryStale({ fetchedAt: capture.fetchedAt, now, maxAgeHours, finishedMatches })) {
+    annotate(
+      'error',
+      `SECONDARY_STALE: xG/cartões capturados em ${capture.fetchedAt} (${formatHours(hours)}, limite ${maxAgeHours}h) com ${finishedMatches} jogo(s) encerrado(s) no pacote. Rode npm run update:data com rede para renovar a fonte secundária.`,
+    )
+    return { stale: true }
+  }
+
+  annotate(
+    'notice',
+    `Fontes secundárias em dia: xG/cartões capturados em ${capture.fetchedAt} (${formatHours(hours)} <= ${maxAgeHours}h) com ${finishedMatches} jogo(s) encerrado(s) no pacote.`,
+  )
+  return { stale: false }
+}
+
 function main() {
   let cutoff
   let maxAgeHours
+  let secondaryMaxAgeHours
   let now
   let snapshotsDir
+  let secondary
   try {
     cutoff = resolveCutoff()
     maxAgeHours = resolveMaxAgeHours()
+    secondaryMaxAgeHours = resolveSecondaryMaxAgeHours()
     now = resolveNow()
     snapshotsDir = resolveSnapshotsDir()
+    secondary = evaluateSecondary({ now: now.instant, maxAgeHours: secondaryMaxAgeHours })
   } catch (error) {
     annotate('error', `Alarme de frescor não pôde avaliar o pacote: ${error.message}`)
     return EXIT_PARSE_ERROR
@@ -179,6 +280,7 @@ function main() {
   const stale = isStale({ cutoffUtc: cutoff.cutoffUtc, now: now.instant, maxAgeHours })
 
   if (!stale) {
+    if (secondary.stale) return EXIT_STALE
     annotate('notice', `Pacote de dados em dia: ${context}.`)
     return EXIT_FRESH
   }
@@ -214,7 +316,7 @@ function main() {
     'notice',
     `Pacote sem resultado novo para publicar: ${context}. Nenhuma partida encerrada com kickoff entre o corte e ${publishByIso} (carência ${DEFAULT_GRACE_HOURS}h) em ${calendar.files} snapshot(s): entressafra/parada, não resultado perdido.`,
   )
-  return EXIT_FRESH
+  return secondary.stale ? EXIT_STALE : EXIT_FRESH
 }
 
 process.exitCode = main()

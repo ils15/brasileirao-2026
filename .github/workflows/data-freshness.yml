@@ -2,7 +2,9 @@ name: Alarme de frescor dos dados
 
 # Alarme que se sustenta sozinho: não depende de push, deploy ou do updater.
 # `update-data.yml` pode parar de commitar — este workflow continua acordando e
-# gritando quando o corte analítico envelhece além do limite.
+# gritando quando o corte analítico envelhece além do limite. A mesma checagem
+# reprova fontes secundárias (xG/cartões) mais velhas que sete dias quando o
+# pacote já tem jogo encerrado.
 on:
   schedule:
     # Três vezes por dia (06h/12h/18h em Brasília). O updater roda a cada 2h;
@@ -39,8 +41,9 @@ jobs:
         with:
           node-version: 24
       # Sem `npm ci`/`npm install`: o alarme usa só a stdlib do Node e lê
-      # `src/sourceMetadata.ts`. Instalar dependências só criaria mais um ponto
-      # de falha para um verificador que precisa funcionar quando tudo falha.
+      # `src/sourceMetadata.ts`, `src/advancedStats2026.ts` e
+      # `src/currentSeasonResults.ts`. Instalar dependências só criaria mais um
+      # ponto de falha para um verificador que precisa funcionar quando tudo falha.
       # Sem `continue-on-error`: a política de issue conta `conclusion` via
       # `gh run list`, e um passo mascarado deixaria todo run verde — o alarme
       # existiria e nunca abriria issue. A falha não é engraçada, é o sinal.
@@ -48,7 +51,7 @@ jobs:
         id: check
         run: |
           set -o pipefail
-          node scripts/check-data-freshness.mjs --max-age-hours=24 | tee freshness.log
+          node scripts/check-data-freshness.mjs --max-age-hours=24 --secondary-max-age-hours=168 | tee freshness.log
       - name: Report staleness
         if: failure()
         run: |

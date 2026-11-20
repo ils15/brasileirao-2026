@@ -27,6 +27,13 @@ const MS_PER_HOUR = 3_600_000
  */
 export const DEFAULT_GRACE_HOURS = 6
 
+/**
+ * Limite de defasagem das fontes secundárias (xG/cartões). Sete dias cobrem
+ * pelo menos uma rodada inteira: o updater roda a cada 2h quando há rede, então
+ * uma captura mais antiga que isso já perdeu jogos que o pacote publica.
+ */
+export const DEFAULT_SECONDARY_MAX_AGE_HOURS = 168
+
 /** Converte string ISO, `Date` ou epoch-ms em epoch-ms; `null` se inválido. */
 function toEpochMs(value) {
   if (value instanceof Date) {
@@ -76,6 +83,36 @@ export function isStale({ cutoffUtc, now = new Date(), maxAgeHours = 24 } = {}) 
     throw new Error(`maxAgeHours inválido: ${JSON.stringify(maxAgeHours)}`)
   }
   return hours >= maxAgeHours
+}
+
+/**
+ * A captura secundária está defasada para um pacote que já tem jogo encerrado?
+ *
+ * A idade sozinha não decide: sem jogo no pacote (entressafra/antes da estreia)
+ * não existe partida para o xG/cartões cobrirem, então a resposta é `false`
+ * mesmo com captura antiga. Com jogo encerrado, vale o mesmo limite inclusivo
+ * de `isStale`; captura ilegível **lança**, porque tratá-la como fresca é o
+ * silêncio que o alarme existe para quebrar.
+ *
+ * @param {{
+ *   fetchedAt: string | number | Date,
+ *   now?: string | number | Date,
+ *   maxAgeHours?: number,
+ *   finishedMatches?: number,
+ * }} input
+ * @returns {boolean}
+ */
+export function isSecondaryStale({
+  fetchedAt,
+  now = new Date(),
+  maxAgeHours = DEFAULT_SECONDARY_MAX_AGE_HOURS,
+  finishedMatches = 0,
+} = {}) {
+  if (!Number.isInteger(finishedMatches) || finishedMatches < 0) {
+    throw new Error(`finishedMatches inválido: ${JSON.stringify(finishedMatches)}`)
+  }
+  if (finishedMatches === 0) return false
+  return isStale({ cutoffUtc: fetchedAt, now, maxAgeHours })
 }
 
 /**

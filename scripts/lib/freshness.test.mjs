@@ -1,12 +1,14 @@
 import { spawnSync } from 'node:child_process'
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { afterAll, describe, expect, it } from 'vitest'
 import {
   completedKickoffsFromScoreboard,
+  DEFAULT_SECONDARY_MAX_AGE_HOURS,
   expectedResultPending,
+  isSecondaryStale,
   isStale,
   stalenessHours,
 } from './freshness.mjs'
@@ -21,6 +23,10 @@ const at = (offsetHours) => new Date(CUTOFF_MS + offsetHours * HOUR_MS).toISOStr
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const CLI_PATH = join(ROOT, 'scripts/check-data-freshness.mjs')
+const ADVANCED_SOURCE_PATH = join(ROOT, 'src/advancedStats2026.ts')
+const advancedFetchedAt = readFileSync(ADVANCED_SOURCE_PATH, 'utf8').match(/fetchedAt:\s*['"]([^'"]+)['"]/)?.[1]
+
+if (!advancedFetchedAt) throw new Error('fixture: fetchedAt ausente em src/advancedStats2026.ts')
 
 const tempDirs = []
 afterAll(() => {
@@ -48,10 +54,10 @@ function fixtureDir(files) {
   return dir
 }
 
-function runCli({ nowHours, dir, extra = [] }) {
+function runCli({ nowHours, dir, maxAgeHours = 24, extra = [] }) {
   return spawnSync(
     process.execPath,
-    [CLI_PATH, `--cutoff=${CUTOFF}`, `--now=${at(nowHours)}`, '--max-age-hours=24', `--snapshots-dir=${dir}`, ...extra],
+    [CLI_PATH, `--cutoff=${CUTOFF}`, `--now=${at(nowHours)}`, `--max-age-hours=${maxAgeHours}`, `--snapshots-dir=${dir}`, ...extra],
     { encoding: 'utf8' },
   )
 }
@@ -122,6 +128,34 @@ describe('isStale', () => {
   it('maxAgeHours inválido lança', () => {
     for (const maxAgeHours of [-1, Number.NaN, Number.POSITIVE_INFINITY, '24']) {
       expect(() => isStale({ cutoffUtc: CUTOFF, now: at(1), maxAgeHours })).toThrow(/maxAgeHours inválido/)
+    }
+  })
+})
+
+describe('isSecondaryStale', () => {
+  it('padrão é 168h (sete dias)', () => {
+    expect(DEFAULT_SECONDARY_MAX_AGE_HOURS).toBe(168)
+  })
+
+  it('sem jogo encerrado no pacote a regra não se aplica (entressafra)', () => {
+    expect(isSecondaryStale({ fetchedAt: at(-240), now: at(1), finishedMatches: 0 })).toBe(false)
+  })
+
+  it('com jogo encerrado, captura no limite ou acima é defasada (limite inclusivo)', () => {
+    expect(isSecondaryStale({ fetchedAt: at(0), now: at(167.9), finishedMatches: 1 })).toBe(false)
+    expect(isSecondaryStale({ fetchedAt: at(0), now: at(168), finishedMatches: 1 })).toBe(true)
+    expect(isSecondaryStale({ fetchedAt: at(0), now: at(720), finishedMatches: 1 })).toBe(true)
+  })
+
+  it('captura inválida lança — nunca vira "fresca"', () => {
+    expect(() => isSecondaryStale({ fetchedAt: 'ontem', now: at(1), finishedMatches: 1 }))
+      .toThrow(/corte analítico inválido/)
+  })
+
+  it('finishedMatches inválido lança', () => {
+    for (const finishedMatches of [-1, 1.5, Number.NaN, '1']) {
+      expect(() => isSecondaryStale({ fetchedAt: at(0), now: at(1), finishedMatches }))
+        .toThrow(/finishedMatches inválido/)
     }
   })
 })
@@ -237,6 +271,36 @@ describe('check-data-freshness (CLI)', () => {
     expect(result.status).toBe(0)
     expect(result.stdout).toContain('em dia')
     expect(result.stdout).not.toContain('::warning::')
+  })
+
+  it('secundária defasada com jogo encerrado sai 1 com ::error::SECONDARY_STALE', () => {
+    // Agora derivado da captura do módulo; o limite primário é alargado para
+    // isolar a regra das secundárias do frescor do pacote de resultados.
+    const nowHours = (Date.parse(advancedFetchedAt) - CUTOFF_MS) / HOUR_MS + 169
+    const result = runCli({ nowHours, dir: join(tmpdir(), 'br2026-freshness-inexistente'), maxAgeHours: 1_000_000 })
+    expect(result.status).toBe(1)
+    expect(result.stdout).toContain('::error::SECONDARY_STALE')
+    expect(result.stdout).toContain('Rode npm run update:data com rede')
+  })
+
+  it('secundária dentro do limite não bloqueia o pacote', () => {
+    const nowHours = (Date.parse(advancedFetchedAt) - CUTOFF_MS) / HOUR_MS + 1
+    const result = runCli({ nowHours, dir: join(tmpdir(), 'br2026-freshness-inexistente'), maxAgeHours: 1_000_000 })
+    expect(result.status).toBe(0)
+    expect(result.stdout).toContain('Fontes secundárias em dia')
+  })
+
+  it('--ignore-secondary desliga a regra e explica com notice', () => {
+    const nowHours = (Date.parse(advancedFetchedAt) - CUTOFF_MS) / HOUR_MS + 169
+    const result = runCli({
+      nowHours,
+      dir: join(tmpdir(), 'br2026-freshness-inexistente'),
+      maxAgeHours: 1_000_000,
+      extra: ['--ignore-secondary'],
+    })
+    expect(result.status).toBe(0)
+    expect(result.stdout).toContain('::notice::')
+    expect(result.stdout).toContain('--ignore-secondary')
   })
 
   it('erro de parsing continua saindo 2', () => {

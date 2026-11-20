@@ -7,7 +7,7 @@ import { validateHistoricalSeason } from './projection'
 import { validateCurrentSeason } from './seasonStats'
 import { filterAtOrBeforeAnalyticalCutoff, ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 import { cutoffLabel, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, cbfArchiveProvenance } from './seasonFacts'
-import { advancedStatsCaptureRelation } from './advancedStatsFacts'
+import { advancedCoverage, advancedCoverageSummary, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { SCORERS_SOURCE } from './data'
 import { buildXlsx, downloadFile, toCSV, toJson, type ExportSheet } from './exporters'
 
@@ -228,6 +228,11 @@ function SourceCard({
 export function AuditPanel(): JSX.Element {
   const validations = useValidations()
   const [lastExport, setLastExport] = useState('')
+  const coverage = advancedCoverage()
+  const clubName = new Map(currentClubs.map(({ id, club }) => [id, club]))
+  const missingCoveragePairs = coverage.status === 'partial'
+    ? coverage.missing.map((pair) => pair.split('|').map((id) => clubName.get(id) ?? id).join(' × '))
+    : []
   const currentScoreKeys = new Set(currentSeasonResults.map((match) => `${match.home}|${match.away}|${match.homeGoals}-${match.awayGoals}`))
   const matchingAdvancedScoreCount = advancedMatches.filter((match) =>
     currentScoreKeys.has(`${match.home}|${match.away}|${match.homeScore}-${match.awayScore}`),
@@ -275,6 +280,15 @@ export function AuditPanel(): JSX.Element {
               timestamp={ADVANCED_STATS_SOURCE.fetchedAt} timestampLabel="Obtido em" hash={ADVANCED_STATS_SOURCE.sha256}
               hashLabel="SHA-256 do JSON canônico" />
           </div>
+          <p className="audit-note">{advancedCoverageSummary()}.</p>
+          {missingCoveragePairs.length > 0 ? (
+            <details className="clean-disclosure">
+              <summary>Pares sem registro de xG/cartões ({missingCoveragePairs.length})</summary>
+              <ul className="source-snapshot-list">
+                {missingCoveragePairs.map((pair) => <li key={pair}>{pair}</li>)}
+              </ul>
+            </details>
+          ) : null}
           <details className="clean-disclosure">
             <summary>Ressalvas de validação, correspondência e cobertura temporal</summary>
             <p className="audit-note">

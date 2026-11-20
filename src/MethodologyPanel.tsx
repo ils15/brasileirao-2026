@@ -9,7 +9,7 @@ import { expectedGoalsBreakdown, expectedGoalsFromXg, teamStrengthTable, histori
 import { currentClubs, remainingFixtures } from './projectionData'
 import { seasonFacts, cutoffLabel } from './seasonFacts'
 import { historicalFacts } from './historicalFacts'
-import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
+import { advancedCaptureLabel, advancedCoverage, advancedCoverageSummary, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
 import type { ProjectionStatus } from './ProjectionContext'
 import { AsyncStatus, SIMULATIONS_LOADING, SIMULATIONS_UNAVAILABLE } from './AsyncStatus'
@@ -97,7 +97,7 @@ function XgBlendBlock(): JSX.Element | null {
           O teste treina até a rodada
           t−1 (o xG da própria rodada nunca entra) e mede o Brier de resultado H/empate/F na rodada t, acumulado sobre
           {' '}{ablation.rounds.length} rodadas. Pesos 0 e 1 delimitam os modelos puros. A fonte é o snapshot 365scores
-          capturado em {advancedStatsCaptureLabel}, {advancedStatsCaptureRelation}, sem timestamp temporal por partida. Assim,
+          capturado em {advancedCaptureLabel()}, {advancedStatsCaptureRelation}, sem timestamp temporal por partida. Assim,
           t−1 descreve apenas a separação das rodadas neste cálculo walk-forward: não comprova que o xG de cada partida
           estivesse disponível até aquela rodada ou no corte.
         </p>
@@ -177,6 +177,12 @@ function NumericExample({ result }: { result: ProjectionResult }): JSX.Element {
  * dar rastreabilidade completa aos números publicados.
  */
 export function MethodologyPanel({ result, status, onRetry }: MethodologyPanelProps): JSX.Element {
+  const coverage = advancedCoverage()
+  const clubName = new Map(currentClubs.map(({ id, club }) => [id, club]))
+  const missingCoveragePairs = coverage.status === 'partial'
+    ? coverage.missing.map((pair) => pair.split('|').map((id) => clubName.get(id) ?? id).join(' × '))
+    : []
+
   return (
     <section className="projection-section methodology-section" id="estatisticas" aria-labelledby="methodology-title">
       <div className="projection-heading">
@@ -247,7 +253,15 @@ export function MethodologyPanel({ result, status, onRetry }: MethodologyPanelPr
               <p>Foram simulados {integer.format(result.simulations)} campeonatos com semente fixa {SIMULATION_SEED}; cada um incorpora os {seasonFacts.remainingCount} confrontos informados (incluindo os adiados) e os pontos, vitórias e gols do snapshot.</p>
               <p><strong>Norma oficial:</strong> o Art. 15 do REC 2026 prevê pontos, vitórias, saldo de gols, gols pró, confronto direto, menos cartões vermelhos, menos cartões amarelos e sorteio, nessa ordem. No confronto direto entre dois clubes, somam-se os pontos dos jogos de ida e volta e, depois, compara-se o saldo; para três ou mais clubes, o confronto direto não se aplica.</p>
               <p><strong>Comparador analítico implementado:</strong> após pontos, vitórias, saldo e gols pró, o empate entre dois clubes é comparado pelo H2H disponível em pontos, saldo e gols pró (jogos reais e simulados); se persistir, há sorteio antes dos cartões. Para três ou mais clubes, usa disciplina estimada — cartões reais disponíveis no snapshot 365scores e cartões projetados pela taxa por jogo, não simulados partida a partida. Portanto, o comparador não reproduz integralmente o Art. 15 nem certifica uma classificação oficial. Placares individuais não foram conferidos contra a CBF.</p>
-              <p><strong>Limite temporal:</strong> o snapshot 365scores que contém os cartões foi capturado em {advancedStatsCaptureLabel}, {advancedStatsCaptureRelation} ({ANALYTICAL_CUTOFF_UTC}), e não tem cobertura temporal por partida suficiente para confirmar o estado dos cartões naquele corte. Esses valores não certificam o desempate oficial no corte.</p>
+              <p><strong>Limite temporal:</strong> o snapshot 365scores que contém os cartões foi capturado em {advancedCaptureLabel()}, {advancedStatsCaptureRelation} ({ANALYTICAL_CUTOFF_UTC}), e não tem cobertura temporal por partida suficiente para confirmar o estado dos cartões naquele corte. Esses valores não certificam o desempate oficial no corte. {advancedCoverageSummary()}.</p>
+              {missingCoveragePairs.length > 0 ? (
+                <details className="clean-disclosure">
+                  <summary>Pares sem registro de xG/cartões ({missingCoveragePairs.length})</summary>
+                  <ul className="source-snapshot-list">
+                    {missingCoveragePairs.map((pair) => <li key={pair}>{pair}</li>)}
+                  </ul>
+                </details>
+              ) : null}
               <p>O backtest usa o limite dos primeiros 300 jogos em ordem cronológica como corte e as partidas seguintes como teste; kickoffs idênticos não são separados, portanto o tamanho do conjunto de teste pode variar. Médias, forças e frequências são estimadas sem jogos posteriores ao corte; a política anual de k usa somente os anos anteriores (2021 usa k=12 pré-fixado). Para 2026, k = {result.featureBacktest.productionShrinkageMatches} foi herdado da seleção walk-forward da temporada 2025 (escolhido apenas com os anos anteriores, entre {SHRINKAGE_CANDIDATES.join(', ')}); não há validação independente adicional. As ablações de casa/fora e H2H estão expostas acima; H2H não entra na previsão de 2026 porque não melhorou de modo consistente.</p>
               <p>A distribuição P(pontuação exata | resultado) conta clubes×simulação em cada total inteiro observado dentro de categorias finais exclusivas; cada valor exibe K/N, em que N é o total de clubes-simulações da categoria, e pontos com K=0 são omitidos. A curva separada P(resultado | pontuação exata) usa Libertadores 1º–6º* e Sul-Americana 7º–12º. Nela, cada simulação é um cluster no IC de 95%, para não tratar os 20 clubes da mesma tabela como independentes; para Libertadores inclusiva, os sucessos de 1º e 2º–6º são agregados por simulação antes do cálculo do intervalo. “Amostra baixa” significa intervalo com largura de ao menos {percent.format(POINT_CURVE_LOW_SAMPLE_WIDTH)}; resultados com K=0 não são estimados.</p>
               <p>Por que nossos números podem diferir de outros sites: (1) o núcleo do modelo é Poisson com forças casa/fora de 2012–2026 <strong>em gols</strong> — quando o blend de xG está ativo (bloco acima), ele corrige a leitura da temporada sem substituir a base longa, mas sites com xG de outras provedoras ou odds de mercado ainda podem divergir; (2) cartões no desempate são <strong>projetados pela taxa média do clube</strong> (não simulados jogo a jogo), então empates de três ou mais clubes que os cartões não resolvem caem no sorteio reprodutível; (3) com 500.000 simulações, o ruído de Monte Carlo é de ±0,14 p.p. em probabilidades próximas de 50%. A leitura é sempre por corte: cada coluna é recalculada dos pontos, vitórias e gols registrados até {cutoffLabel} e dos confrontos ainda pendentes, então um resultado que deixa de ser simulado e passa a placar real pode deslocar bastante o rebaixamento de um clube da parte de baixo da tabela em um único corte. Ilustração de leitura — aproximada, de um corte anterior, não derivada deste pacote e não referente a nenhum clube deste corte: um time que vinha com ~7% de risco de rebaixamento pode aparecer com ~2,5% depois de incorporar uma única vitória. O exemplo serve para comparar cortes e ler a coluna, não para afirmar tendência do modelo.</p>

@@ -6,7 +6,7 @@ import { HISTORICAL_SOURCE } from './historicalSeasons'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { expectedGoalsBreakdown } from './matchModel'
 import { productionTrainingMatches } from './modelBacktest'
-import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
+import { advancedCoverage, advancedCoverageSummary, advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { cutoffLabel } from './seasonFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
@@ -42,6 +42,9 @@ describe('aba metodologia & validação', () => {
     expect(implementedComparator).toHaveTextContent(/não reproduz integralmente o Art\. 15 nem certifica uma classificação oficial/i)
     const temporalLimit = screen.getByText('Limite temporal:').closest('p')!
     expect(temporalLimit).toHaveTextContent(new RegExp(`snapshot 365scores.*${advancedStatsCaptureLabel}.*${advancedStatsCaptureRelation}.*${ANALYTICAL_CUTOFF_UTC}.*não tem cobertura temporal por partida suficiente.*não certificam o desempate oficial no corte`, 'i'))
+    expect(temporalLimit).toHaveTextContent(advancedCoverageSummary())
+    const coverage = advancedCoverage()
+    expect(temporalLimit).toHaveTextContent(coverage.status === 'partial' ? 'cobertura parcial' : coverage.status === 'complete' ? 'cobertura completa' : 'sem registros na fonte')
     // O exemplo de simulação é ilustrativo do corte: o rótulo vem do módulo de
     // dados (nenhuma data cravada) e nada ali afirma resultado atual de clube.
     const illustrative = screen.getByText(/Ilustração de leitura/).closest('p')!

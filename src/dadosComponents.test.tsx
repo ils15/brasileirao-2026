@@ -8,6 +8,7 @@ import { ADVANCED_STATS_SOURCE, advancedMatches } from './advancedStats2026'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import { cutoffLabel, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote } from './seasonFacts'
+import { advancedCoverage, advancedCoverageSummary } from './advancedStatsFacts'
 import { SCORERS_SOURCE } from './data'
 
 const playedCount = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).length
@@ -139,6 +140,12 @@ describe('painel de dados & auditoria', () => {
     expect(block).toHaveTextContent(new RegExp(`Correspondência de placares 365scores.*${matchingAdvancedScores}/${advancedMatches.length}`))
     expect(within(block).getByText(/não comprova cobertura temporal por partida/)).toBeInTheDocument()
     expect(within(block).getByText(/a cobertura de xG e cartões no pacote não é garantida/)).toBeInTheDocument()
+    const coverage = advancedCoverage()
+    expect(block).toHaveTextContent(advancedCoverageSummary())
+    expect(block).toHaveTextContent(coverage.status === 'partial' ? 'cobertura parcial' : coverage.status === 'complete' ? 'cobertura completa' : 'sem registros na fonte')
+    if (coverage.status === 'partial' && coverage.missing.length > 0) {
+      expect(within(block).getByText(`Pares sem registro de xG/cartões (${coverage.missing.length})`)).toBeInTheDocument()
+    }
     expect(screen.getByText(new RegExp(`Artilharia: ${SCORERS_SOURCE.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}, captura ${scorersCaptureLabel}, ${scorersCaptureRelation}; ${scorersCoverageNote}`))).toBeInTheDocument()
   })
 
