@@ -1,9 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import { currentClubs, remainingFixtures } from './projectionData'
-import { currentSeasonResults, CURRENT_SEASON_SOURCE } from './currentSeasonResults'
+import { currentSeasonResults, CURRENT_SEASON_SOURCE, type CurrentSeasonMatch } from './currentSeasonResults'
 import { ANALYTICAL_CUTOFF_LOCAL, ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff, isAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
-import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, validateCurrentSeason } from './seasonStats'
+import {
+  __h2hIndexBuilds,
+  __resetH2hIndexForTests,
+  getCurrentVenueStats,
+  getHeadToHeadSummary,
+  getHistoricalVenueStats,
+  validateCurrentSeason,
+  type HeadToHeadMatch,
+  type HeadToHeadSummary,
+  type SplitStats,
+  type VenueStats,
+} from './seasonStats'
 import { cbfOfficialSchedule } from './cbfOfficialSchedule'
+import { historicalSeasons } from './historicalSeasons'
+import { normalizeTeamId } from './clubIds'
 
 describe('dados do snapshot 2026 e estatísticas por mando', () => {
   it('reconcilia resultados, 20 clubes, 380 jogos e pendentes sem ultrapassar o corte', () => {
@@ -139,5 +152,145 @@ describe('dados do snapshot 2026 e estatísticas por mando', () => {
     // Pares únicos
     const pairs = espnMatches.map((match) => `${match.home}:${match.away}`)
     expect(new Set(pairs).size).toBe(pairs.length)
+  })
+})
+
+// Cópia literal do algoritmo anterior a T06. A equivalência golden compara as
+// funções indexadas contra esta testemunha independente, não contra números cravados.
+type LegacyScoreMatch = Pick<CurrentSeasonMatch, 'home' | 'away' | 'homeGoals' | 'awayGoals'>
+
+const legacyEmptyVenueStats = (): VenueStats => ({
+  matches: 0,
+  wins: 0,
+  draws: 0,
+  losses: 0,
+  points: 0,
+  goalsFor: 0,
+  goalsAgainst: 0,
+  goalDifference: 0,
+  pointsPerMatch: null,
+})
+
+function legacyAddResult(stats: VenueStats, goalsFor: number, goalsAgainst: number): void {
+  stats.matches += 1
+  stats.goalsFor += goalsFor
+  stats.goalsAgainst += goalsAgainst
+  if (goalsFor > goalsAgainst) {
+    stats.wins += 1
+    stats.points += 3
+  } else if (goalsFor === goalsAgainst) {
+    stats.draws += 1
+    stats.points += 1
+  } else {
+    stats.losses += 1
+  }
+}
+
+function legacyFinishStats(stats: VenueStats): VenueStats {
+  stats.goalDifference = stats.goalsFor - stats.goalsAgainst
+  stats.pointsPerMatch = stats.matches === 0 ? null : stats.points / stats.matches
+  return stats
+}
+
+function legacySummarizeMatches(matches: readonly LegacyScoreMatch[], clubId: string): SplitStats {
+  const home = legacyEmptyVenueStats()
+  const away = legacyEmptyVenueStats()
+  for (const match of matches) {
+    if (match.home === clubId) legacyAddResult(home, match.homeGoals, match.awayGoals)
+    if (match.away === clubId) legacyAddResult(away, match.awayGoals, match.homeGoals)
+  }
+  return { home: legacyFinishStats(home), away: legacyFinishStats(away) }
+}
+
+function legacyHistoricalMatchesFor(clubId: string): LegacyScoreMatch[] {
+  const result: LegacyScoreMatch[] = []
+  for (const season of historicalSeasons) {
+    const ids = season.teamIds.map(normalizeTeamId)
+    season.matches.forEach(([home, away, homeGoals, awayGoals]) => {
+      const homeId = ids[home]!
+      const awayId = ids[away]!
+      if (homeId !== clubId && awayId !== clubId) return
+      result.push({ home: homeId, away: awayId, homeGoals, awayGoals })
+    })
+  }
+  return result
+}
+
+function legacySummarizeHeadToHead(matches: readonly HeadToHeadMatch[], clubId: string): SplitStats {
+  const home = legacyEmptyVenueStats()
+  const away = legacyEmptyVenueStats()
+  for (const match of matches) {
+    if (match.home === clubId) legacyAddResult(home, match.homeGoals, match.awayGoals)
+    if (match.away === clubId) legacyAddResult(away, match.awayGoals, match.homeGoals)
+  }
+  return { home: legacyFinishStats(home), away: legacyFinishStats(away) }
+}
+
+function legacyGetHeadToHeadSummary(homeId: string, awayId: string): HeadToHeadSummary {
+  const current = filterAtOrBeforeAnalyticalCutoff(currentSeasonResults)
+    .filter((match) => (match.home === homeId && match.away === awayId)
+      || (match.home === awayId && match.away === homeId))
+    .map((match): HeadToHeadMatch => ({ ...match, seasonYear: 2026 }))
+  const historical: HeadToHeadMatch[] = []
+  for (const season of historicalSeasons) {
+    const ids = season.teamIds.map(normalizeTeamId)
+    season.matches.forEach(([home, away, homeGoals, awayGoals, kickoff]) => {
+      const homeTeam = ids[home]!
+      const awayTeam = ids[away]!
+      if (!((homeTeam === homeId && awayTeam === awayId) || (homeTeam === awayId && awayTeam === homeId))) return
+      historical.push({
+        seasonYear: season.year,
+        kickoff,
+        home: homeTeam,
+        away: awayTeam,
+        homeGoals,
+        awayGoals,
+        source: season.provenance ? 'openfootball' : 'football-data',
+        sourceRef: season.provenance?.rawUrl,
+      })
+    })
+  }
+  const matches = [...current, ...historical]
+    .sort((left, right) => right.seasonYear - left.seasonYear || right.kickoff.localeCompare(left.kickoff))
+  return {
+    historical: legacySummarizeHeadToHead(matches.filter(({ seasonYear }) => seasonYear <= 2025), homeId),
+    current: legacySummarizeHeadToHead(matches.filter(({ seasonYear }) => seasonYear === 2026), homeId),
+    matches,
+  }
+}
+
+describe('índice H2H e memoização das estatísticas', () => {
+  it('equivale à varredura anterior para os 20 clubes e todos os pares pendentes', () => {
+    __resetH2hIndexForTests()
+
+    for (const club of currentClubs) {
+      expect(getCurrentVenueStats(club.id)).toEqual(
+        legacySummarizeMatches(filterAtOrBeforeAnalyticalCutoff(currentSeasonResults), club.id),
+      )
+      expect(getHistoricalVenueStats(club.id)).toEqual(
+        legacySummarizeMatches(legacyHistoricalMatchesFor(club.id), club.id),
+      )
+    }
+
+    // O retrospecto é o mesmo com o mando invertido; comparar as duas ordens
+    // garante que a chave não ordenada do índice não colapsou confrontos distintos.
+    for (const { home, away } of remainingFixtures) {
+      expect(getHeadToHeadSummary(home, away)).toEqual(legacyGetHeadToHeadSummary(home, away))
+      expect(getHeadToHeadSummary(away, home)).toEqual(legacyGetHeadToHeadSummary(away, home))
+    }
+  })
+
+  it('constrói o índice H2H uma única vez para N chamadas', () => {
+    __resetH2hIndexForTests()
+    expect(__h2hIndexBuilds()).toBe(0)
+
+    for (const club of currentClubs) {
+      getHistoricalVenueStats(club.id)
+      for (const { home, away } of remainingFixtures) {
+        getHeadToHeadSummary(home, away)
+      }
+    }
+
+    expect(__h2hIndexBuilds()).toBe(1)
   })
 })

@@ -5,7 +5,13 @@ import { FixtureCalendar } from './FixtureCalendar'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { historicalSeasons } from './historicalSeasons'
 import { normalizeTeamId } from './clubIds'
-import { getHeadToHeadSummary, getHistoricalVenueStats } from './seasonStats'
+import {
+  __h2hIndexBuilds,
+  __resetH2hIndexForTests,
+  getCurrentVenueStats,
+  getHeadToHeadSummary,
+  getHistoricalVenueStats,
+} from './seasonStats'
 
 describe('calendário e retrospecto por mando', () => {
   it('lista para o clube selecionado exatamente os fixtures usados na simulação', () => {
@@ -82,5 +88,43 @@ describe('calendário e retrospecto por mando', () => {
       `${nameOf(firstMeeting.home)} ${firstMeeting.homeGoals}–${firstMeeting.awayGoals} ${nameOf(firstMeeting.away)}`,
     )
     expect(firstScore.querySelector('.meeting-badge')).not.toBeNull()
+  })
+
+  it('atualiza os números por mando ao trocar de clube sem reconstruir o índice', async () => {
+    const user = userEvent.setup()
+    __resetH2hIndexForTests()
+    render(<FixtureCalendar />)
+    const calendar = screen.getByRole('region', { name: 'Calendário restante por clube' })
+    expect(__h2hIndexBuilds()).toBe(1)
+
+    const flamengo = getCurrentVenueStats('flamengo')
+    expect(within(calendar).getByText(/2026 · em casa/).closest('article')!.textContent)
+      .toContain(`${flamengo.home.matches} · ${flamengo.home.wins}-${flamengo.home.draws}-${flamengo.home.losses}`)
+
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Clube para consultar calendário' }), 'palmeiras')
+
+    const palmeiras = getCurrentVenueStats('palmeiras')
+    expect(within(calendar).getByText(/2026 · em casa/).closest('article')!.textContent)
+      .toContain(`${palmeiras.home.matches} · ${palmeiras.home.wins}-${palmeiras.home.draws}-${palmeiras.home.losses}`)
+    expect(__h2hIndexBuilds()).toBe(1)
+  })
+
+  it('não altera os números nem reconstrói o índice ao abrir e fechar o retrospecto', async () => {
+    const user = userEvent.setup()
+    __resetH2hIndexForTests()
+    render(<FixtureCalendar />)
+    const calendar = screen.getByRole('region', { name: 'Calendário restante por clube' })
+    const statsSnapshot = (): (string | null)[] =>
+      Array.from(calendar.querySelectorAll('.venue-stats-card'), (card) => card.textContent)
+    const before = statsSnapshot()
+    expect(__h2hIndexBuilds()).toBe(1)
+
+    const fixture = calendar.querySelector<HTMLElement>('.remaining-fixture')!
+    const summary = within(fixture).getByText(/Placares do retrospecto/)
+    await user.click(summary)
+    await user.click(summary)
+
+    expect(statsSnapshot()).toEqual(before)
+    expect(__h2hIndexBuilds()).toBe(1)
   })
 })

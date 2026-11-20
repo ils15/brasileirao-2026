@@ -1,6 +1,6 @@
 import { currentClubs, remainingFixtures } from './projectionData'
 import { currentSeasonResults, type CurrentSeasonMatch } from './currentSeasonResults'
-import { historicalSeasons } from './historicalSeasons'
+import { historicalSeasons, type HistoricalSeason } from './historicalSeasons'
 import { normalizeTeamId } from './clubIds'
 import { filterAtOrBeforeAnalyticalCutoff, isAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 
@@ -77,8 +77,19 @@ function summarizeMatches(matches: readonly ScoreMatch[], clubId: string): Split
   return { home: finishStats(home), away: finishStats(away) }
 }
 
+const currentVenueStatsCache = new Map<string, SplitStats>()
+
+/**
+ * Estatísticas do pacote 2026 por mando. O cache só vale para o array empacotado:
+ * uma base injetada (teste, cenário futuro) continua sendo calculada na hora.
+ */
 export function getCurrentVenueStats(clubId: string, matches = currentSeasonResults): SplitStats {
-  return summarizeMatches(filterAtOrBeforeAnalyticalCutoff(matches), clubId)
+  const isPackagedResults = matches === currentSeasonResults
+  const cached = isPackagedResults ? currentVenueStatsCache.get(clubId) : undefined
+  if (cached) return cached
+  const stats = summarizeMatches(filterAtOrBeforeAnalyticalCutoff(matches), clubId)
+  if (isPackagedResults) currentVenueStatsCache.set(clubId, stats)
+  return stats
 }
 
 function historicalMatchesFor(clubId: string): ScoreMatch[] {
@@ -95,8 +106,82 @@ function historicalMatchesFor(clubId: string): ScoreMatch[] {
   return result
 }
 
+const historicalVenueStatsCache = new Map<string, SplitStats>()
+
+/** Agregado 2003–2025 por mando; `historicalSeasons` é estático por build. */
 export function getHistoricalVenueStats(clubId: string): SplitStats {
-  return summarizeMatches(historicalMatchesFor(clubId), clubId)
+  const cached = historicalVenueStatsCache.get(clubId)
+  if (cached) return cached
+  const stats = summarizeMatches(historicalMatchesFor(clubId), clubId)
+  historicalVenueStatsCache.set(clubId, stats)
+  return stats
+}
+
+export type HeadToHeadIndex = Map<string, HeadToHeadMatch[]>
+
+/** Chave do par não ordenado: o retrospecto é o mesmo com mando invertido. */
+function headToHeadPairKey(left: string, right: string): string {
+  return left <= right ? `${left}|${right}` : `${right}|${left}`
+}
+
+/**
+ * Indexa todas as temporadas empacotadas pelo par de clubes. Cada lista sai na
+ * ordem exibida pelo painel (temporada e kickoff decrescentes), então consultar
+ * um confronto não revarre as 9.176 partidas.
+ */
+export function buildHeadToHeadIndex(
+  seasons: readonly HistoricalSeason[] = historicalSeasons,
+): HeadToHeadIndex {
+  const index: HeadToHeadIndex = new Map()
+  for (const season of seasons) {
+    const ids = season.teamIds.map(normalizeTeamId)
+    const source = season.provenance ? 'openfootball' : 'football-data'
+    const sourceRef = season.provenance?.rawUrl
+    for (const [home, away, homeGoals, awayGoals, kickoff] of season.matches) {
+      const homeTeam = ids[home]!
+      const awayTeam = ids[away]!
+      const match: HeadToHeadMatch = {
+        seasonYear: season.year,
+        kickoff,
+        home: homeTeam,
+        away: awayTeam,
+        homeGoals,
+        awayGoals,
+        source,
+        sourceRef,
+      }
+      const key = headToHeadPairKey(homeTeam, awayTeam)
+      const matches = index.get(key)
+      if (matches) matches.push(match)
+      else index.set(key, [match])
+    }
+  }
+  for (const matches of index.values()) {
+    matches.sort((left, right) => right.seasonYear - left.seasonYear || right.kickoff.localeCompare(left.kickoff))
+  }
+  return index
+}
+
+let headToHeadIndex: HeadToHeadIndex | null = null
+let headToHeadIndexBuilds = 0
+
+function historicalHeadToHeadIndex(): HeadToHeadIndex {
+  if (headToHeadIndex === null) {
+    headToHeadIndex = buildHeadToHeadIndex(historicalSeasons)
+    headToHeadIndexBuilds += 1
+  }
+  return headToHeadIndex
+}
+
+/** Quantas vezes o índice H2H foi construído; existe apenas para teste. */
+export function __h2hIndexBuilds(): number {
+  return headToHeadIndexBuilds
+}
+
+/** Descarta o índice H2H para isolar um teste; não use em produção. */
+export function __resetH2hIndexForTests(): void {
+  headToHeadIndex = null
+  headToHeadIndexBuilds = 0
 }
 
 function pairMatches(homeId: string, awayId: string, currentResults: readonly CurrentSeasonMatch[]): HeadToHeadMatch[] {
@@ -104,27 +189,9 @@ function pairMatches(homeId: string, awayId: string, currentResults: readonly Cu
     .filter((match) => (match.home === homeId && match.away === awayId)
       || (match.home === awayId && match.away === homeId))
     .map((match): HeadToHeadMatch => ({ ...match, seasonYear: 2026 }))
-  const historical: HeadToHeadMatch[] = []
+  const historical = historicalHeadToHeadIndex().get(headToHeadPairKey(homeId, awayId)) ?? []
 
-  for (const season of historicalSeasons) {
-    const ids = season.teamIds.map(normalizeTeamId)
-    season.matches.forEach(([home, away, homeGoals, awayGoals, kickoff]) => {
-      const homeTeam = ids[home]!
-      const awayTeam = ids[away]!
-      if (!((homeTeam === homeId && awayTeam === awayId) || (homeTeam === awayId && awayTeam === homeId))) return
-      historical.push({
-        seasonYear: season.year,
-        kickoff,
-        home: homeTeam,
-        away: awayTeam,
-        homeGoals,
-        awayGoals,
-        source: season.provenance ? 'openfootball' : 'football-data',
-        sourceRef: season.provenance?.rawUrl,
-      })
-    })
-  }
-
+  // Mesma ordenação da varredura anterior: a ordem do pacote decide empates.
   return [...current, ...historical]
     .sort((left, right) => right.seasonYear - left.seasonYear || right.kickoff.localeCompare(left.kickoff))
 }

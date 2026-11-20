@@ -3,7 +3,7 @@ import { HomeIcon, AwayIcon, BallIcon } from './icons'
 import { ScoreLine } from './ScoreLine'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
-import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type VenueStats } from './seasonStats'
+import { getCurrentVenueStats, getHeadToHeadSummary, getHistoricalVenueStats, type HeadToHeadSummary, type VenueStats } from './seasonStats'
 import { matchProbabilities } from './matchProbabilities'
 import { EmptyState } from './EmptyState'
 
@@ -38,10 +38,22 @@ export function VenueStatsCard({ title, stats, venue = 'ball' }: VenueStatsCardP
 export function FixtureCalendar(): JSX.Element {
   const [selectedClubId, setSelectedClubId] = useState('flamengo')
   const selectedClub = currentClubs.find((club) => club.id === selectedClubId) ?? currentClubs[0]!
-  const currentStats = getCurrentVenueStats(selectedClub.id)
-  const historicalStats = getHistoricalVenueStats(selectedClub.id)
+  const { currentStats, historicalStats } = useMemo(() => ({
+    currentStats: getCurrentVenueStats(selectedClub.id),
+    historicalStats: getHistoricalVenueStats(selectedClub.id),
+  }), [selectedClub.id])
   const clubNames = useMemo(() => new Map(currentClubs.map(({ id, club }) => [id, club])), [])
-  const fixtures = remainingFixtures.filter((fixture) => fixture.home === selectedClub.id || fixture.away === selectedClub.id)
+  const fixtures = useMemo(
+    () => remainingFixtures.filter((fixture) => fixture.home === selectedClub.id || fixture.away === selectedClub.id),
+    [selectedClub.id],
+  )
+  const h2hByRef = useMemo(() => {
+    const summaries = new Map<string, HeadToHeadSummary>()
+    for (const fixture of fixtures) {
+      summaries.set(fixture.cbfRef, getHeadToHeadSummary(fixture.home, fixture.away))
+    }
+    return summaries
+  }, [fixtures])
 
   return (
     <section className="fixture-calendar panel" id="calendario" aria-labelledby="fixture-calendar-title">
@@ -91,7 +103,7 @@ export function FixtureCalendar(): JSX.Element {
           const isHome = fixture.home === selectedClub.id
           const opponentId = isHome ? fixture.away : fixture.home
           const opponent = clubNames.get(opponentId) ?? opponentId
-          const headToHead = getHeadToHeadSummary(fixture.home, fixture.away)
+          const headToHead = h2hByRef.get(fixture.cbfRef)!
 
           return (
             <li className="remaining-fixture" key={fixture.cbfRef}>
