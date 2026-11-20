@@ -27,6 +27,40 @@ export const FIXTURE_KIND = 'synthetic'
 export const DEFAULT_PAIR_COUNT = 6
 
 /**
+ * Código de saída exclusivo do harness para fixture que não move mais o pacote.
+ * Fica fora de 0–5 (`repro-update-gate.mjs`) para que o diagnóstico não se
+ * confunda com falha de contrato (5) nem com fixture inválida (3).
+ */
+export const FIXTURE_STALE_EXIT_CODE = 6
+
+/**
+ * Classifica o movimento do pacote medido no stdout do updater contra o
+ * `added` declarado pela fixture.
+ *
+ * A fixture é gerada sobre partidas pendentes; quando o pacote avança, parte
+ * dos pares pode ser deduplicada pelo updater. Por isso a igualdade exata não
+ * é contrato — o contrato é: o pacote avança (`measured >= 1`) e nunca mais
+ * que o previsto (`measured <= expected`).
+ *
+ * - `ok`: `1 <= measured <= expected`;
+ * - `stale`: `measured === 0` — a fixture precisa ser regenerada;
+ * - `overshoot`: `measured > expected` — o manifest subestima os pares;
+ * - `unreported`: o updater não imprimiu `Novos efetivos:` — nada foi provado.
+ */
+export function classifyFixtureMovement({ measured, expected }) {
+  if (!Number.isInteger(expected) || expected < 1) {
+    throw new Error(`expected inválido: ${expected} (a fixture precisa declarar ao menos 1 par)`)
+  }
+  if (measured == null) return { status: 'unreported', measured: null, expected }
+  if (!Number.isInteger(measured) || measured < 0) {
+    throw new Error(`measured inválido: ${measured}`)
+  }
+  if (measured === 0) return { status: 'stale', measured, expected }
+  if (measured > expected) return { status: 'overshoot', measured, expected }
+  return { status: 'ok', measured, expected }
+}
+
+/**
  * Cenários do gate, injetados por `--test`.
  *
  * O gate deixou de depender de arquivos de teste de UI (que envelheciam junto

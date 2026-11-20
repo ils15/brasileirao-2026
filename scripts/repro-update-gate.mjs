@@ -19,9 +19,14 @@
  * legítima. Nenhum arquivo fora de `DATA_PATHS` é removido ou sobrescrito.
  *
  * Códigos: 0 os dois cenários bateram e a árvore voltou ao baseline · 2 a
- * restauração divergiu do baseline (bytes ou `git status`) · 3 fixture inválida
- * ou não moveu o pacote · 4 restauração falhou de forma inesperada · 5 cenário
- * não reproduz o contrato.
+ * restauração divergiu do baseline (bytes ou `git status`) · 3 fixture inválida,
+ * movimento acima do previsto ou não reportado · 4 restauração falhou de forma
+ * inesperada · 5 cenário não reproduz o contrato · 6 fixture que não move mais
+ * o pacote (`FIXTURE_STALE`) — regenerar com `npm run fixture:gate`.
+ *
+ * O contrato de movimento não é igualdade exata: a fixture nasce sobre partidas
+ * pendentes e o updater deduplica pares que entraram no pacote depois. Exige-se
+ * `1 <= added medido <= added previsto`.
  */
 
 import { spawnSync } from 'node:child_process'
@@ -36,7 +41,7 @@ import {
   snapshotDataPaths,
   verifyBaseline,
 } from './lib/dataBaseline.mjs'
-import { listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
+import { FIXTURE_STALE_EXIT_CODE, classifyFixtureMovement, listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
 import { parsePorcelainPath } from './lib/updateFailure.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -151,11 +156,17 @@ function runScenario(scenario, fixture, baseline) {
     if (run.stderr) process.stderr.write(run.stderr)
 
     const stdout = run.stdout ?? ''
+    const reported = stdout.split('\n').find((line) => line.startsWith('Novos efetivos:'))
+    const measured = reported?.match(/^Novos efetivos:\s*(\d+)/)?.[1]
+    const movement = classifyFixtureMovement({ measured: measured == null ? null : Number(measured), expected: fixture.added })
+    console.log(
+      `Fixture: added medido ${movement.measured ?? 'não reportado'} · added previsto ${movement.expected} · ${movement.status}`,
+    )
     const changed = changedDataPaths(baseline.files, snapshotDataPaths(root, DATA_PATHS))
     result = {
       exitCode: run.status ?? 1,
       signal: run.signal ?? null,
-      moved: stdout.split('\n').some((line) => line.startsWith(`Novos efetivos: ${fixture.added}`)),
+      movement,
       changed,
       written: changed.some(isWrittenPath),
       head: headSha(),
@@ -170,11 +181,17 @@ function runScenario(scenario, fixture, baseline) {
 }
 
 /** Lista do que não bateu no cenário; vazio = contrato cumprido. */
-function evaluateScenario(scenario, fixture, result) {
+function evaluateScenario(scenario, result) {
   const problems = []
   const expectedExit = scenario.expect === 'fail' ? 1 : 0
 
-  if (!result.moved) problems.push(`fixture não moveu o pacote — esperava "Novos efetivos: ${fixture.added}"`)
+  if (result.movement.status === 'unreported') {
+    problems.push('updater não reportou "Novos efetivos:" — a fixture não provou movimento do pacote')
+  } else if (result.movement.status === 'overshoot') {
+    problems.push(
+      `fixture moveu ${result.movement.measured} resultados, acima do previsto ${result.movement.expected} — manifest e expected.json não descrevem mais a fixture`,
+    )
+  }
   if (result.exitCode !== expectedExit) problems.push(`exit ${result.exitCode}, esperado ${expectedExit}`)
   if (result.signal != null) problems.push(`updater encerrado por sinal ${result.signal}`)
   if (!result.written) problems.push('nenhum módulo/log de dados foi escrito antes do gate')
@@ -229,13 +246,22 @@ function runAll(baseline) {
   }
 
   const failures = []
-  let fixtureMoved = true
+  let fixtureUsable = true
+  let staleFixture = false
 
   for (const scenario of fixture.scenarios) {
     console.log(`\n=== Cenário "${scenario.id}" (expect ${scenario.expect}) ===`)
     const result = runScenario(scenario, fixture, baseline)
-    const problems = evaluateScenario(scenario, fixture, result)
-    if (!result.moved) fixtureMoved = false
+    if (result.movement.status === 'stale') {
+      // Fixture não move mais nada: rodar o segundo cenário não provaria nada.
+      console.error(
+        `::error::FIXTURE_STALE added=0 previsto=${fixture.added}; rode \`npm run fixture:gate\` para regenerar a fixture`,
+      )
+      staleFixture = true
+      break
+    }
+    if (result.movement.status !== 'ok') fixtureUsable = false
+    const problems = evaluateScenario(scenario, result)
 
     if (problems.length === 0) {
       console.log(`repro:gate: cenário "${scenario.id}" ok — exit ${result.exitCode}, escrita presente, sem commit${scenario.expect === 'fail' ? ', recibo nomeando o comando' : ', sem recibo'}.`)
@@ -261,8 +287,10 @@ function runAll(baseline) {
     return 2
   }
 
+  if (staleFixture) return FIXTURE_STALE_EXIT_CODE
+
   if (failures.length > 0) {
-    return fixtureMoved ? 5 : 3
+    return fixtureUsable ? 5 : 3
   }
 
   const dirtyLines = statusBefore === '' ? 0 : statusBefore.split('\n').length

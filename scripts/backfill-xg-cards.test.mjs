@@ -11,7 +11,8 @@ import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { collectGameDetails, publishAdvancedStats, readExisting, renderModuleFromSnapshot } from './backfill-xg-cards.mjs'
+import { ADVANCED_STATS_SOURCE, advancedMatches } from '../src/advancedStats2026.ts'
+import { collectGameDetails, publishAdvancedStats, readExisting, readPackagedPairs, renderModuleFromSnapshot } from './backfill-xg-cards.mjs'
 import { filterCurrentSeason, mergeAdvancedStats, renderAdvancedStatsModule, validateAdvancedStats } from './lib/threesixfive.mjs'
 
 // Fixture sintética: mesma forma dos registros legados (sem `seasonNum`).
@@ -196,6 +197,21 @@ describe('publishAdvancedStats', () => {
     } finally {
       rmSync(dir, { recursive: true, force: true })
     }
+  })
+})
+
+describe('cobertura publicada', () => {
+  it('deriva do pacote e lista em missing todo par sem registro', () => {
+    const packagedPairs = readPackagedPairs()
+    const recorded = new Set(advancedMatches.map((record) => `${record.home}|${record.away}`))
+    const covered = packagedPairs.filter((pair) => recorded.has(pair))
+    const absent = packagedPairs.filter((pair) => !recorded.has(pair))
+    const { coverage } = ADVANCED_STATS_SOURCE
+
+    expect(coverage.expected).toBe(packagedPairs.length)
+    expect(coverage.matches).toBe(covered.length)
+    expect(coverage.matches + coverage.missing.length).toBe(coverage.expected)
+    expect([...coverage.missing].sort()).toEqual([...absent].sort())
   })
 })
 

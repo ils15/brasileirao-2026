@@ -25,6 +25,12 @@ depender de testes de UI (que envelheciam junto com o pacote):
 A fixture move o pacote, **offline e determinística**, e o `manifest.json` fixa
 `baseCutoffUtc` e `targetDate`: `repro:gate` não depende do corte vivo.
 
+O contrato de movimento não exige igualdade com `added`: a fixture é gerada
+sobre partidas **pendentes**, e o updater deduplica pares que entraram no
+pacote depois. O harness exige que o pacote avance (`added medido >= 1`) sem
+ultrapassar o previsto (`added medido <= added`), e registra os dois valores no
+log. Zero novos efetivos é `FIXTURE_STALE`: a fixture não move mais o pacote.
+
 ```bash
 npm run fixture:gate   # regenera a fixture a partir do pacote atual
 npm run repro:gate     # copia os payloads, roda os dois cenários e restaura a árvore
@@ -46,9 +52,10 @@ deste diretório (há teste vigiando).
 |---|---|
 | 0 | os dois cenários bateram e a árvore voltou ao baseline |
 | 2 | a restauração divergiu do baseline (bytes ou `git status`) |
-| 3 | a fixture é inválida ou não moveu o pacote |
+| 3 | a fixture é inválida, moveu mais que o previsto ou o updater não reportou o movimento |
 | 4 | a restauração falhou de forma inesperada |
 | 5 | um cenário não reproduziu o contrato |
+| 6 | `FIXTURE_STALE`: a fixture não move mais o pacote — rode `npm run fixture:gate` |
 
 ## Arquivos
 

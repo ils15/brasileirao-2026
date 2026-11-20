@@ -4,11 +4,13 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseEspnScoreboard } from './dataPipeline.mjs'
 import {
+  FIXTURE_STALE_EXIT_CODE,
   GATE_SCENARIOS,
   SCORE_PALETTE,
   addUtcDays,
   buildFixtureBundle,
   buildScoreboardPayload,
+  classifyFixtureMovement,
   enumerateGateCandidates,
   gateCandidateSpaceSize,
   kickoffFor,
@@ -34,6 +36,29 @@ const schedule = [
 const existing = [{ home: 'flamengo', away: 'palmeiras' }]
 const baseCutoffUtc = '2026-11-15T18:30:00Z'
 const targetDate = '2026-11-16'
+
+describe('classifyFixtureMovement', () => {
+  it('aceita pacote que avançou menos que o previsto, desde que avance', () => {
+    expect(classifyFixtureMovement({ measured: 5, expected: 6 })).toEqual({ status: 'ok', measured: 5, expected: 6 })
+  })
+
+  it('marca FIXTURE_STALE quando nenhum par novo entra no pacote', () => {
+    expect(classifyFixtureMovement({ measured: 0, expected: 6 })).toEqual({ status: 'stale', measured: 0, expected: 6 })
+    expect(FIXTURE_STALE_EXIT_CODE).toBe(6)
+  })
+
+  it('recusa movimento acima do previsto pela fixture', () => {
+    expect(classifyFixtureMovement({ measured: 7, expected: 6 })).toEqual({ status: 'overshoot', measured: 7, expected: 6 })
+  })
+
+  it('distingue updater que não reportou o movimento', () => {
+    expect(classifyFixtureMovement({ measured: null, expected: 6 })).toEqual({ status: 'unreported', measured: null, expected: 6 })
+  })
+
+  it('rejeita expected não positivo', () => {
+    expect(() => classifyFixtureMovement({ measured: 0, expected: 0 })).toThrow(/expected/)
+  })
+})
 
 describe('pickSyntheticPairs', () => {
   it('percorre o calendário em ordem de ref e descarta pares já disputados', () => {
