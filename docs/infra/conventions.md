@@ -27,11 +27,16 @@ CBF calendário (380 jogos)  ─┘        │                     src/sourceMet
 - Fontes secundárias (`scripts/backfill-xg-cards.mjs` → 365scores,
   `scripts/refresh-espn-scorers.mjs` → eventos de partida da ESPN para a artilharia)
   rodam sempre que há rede. O xG/cartões regrava quando `shouldRefreshSecondary`
-  aprova — `addedCount > 0 || today > lastCutoffDate`, decidido depois do merge;
-  a artilharia roda em toda execução com rede, fora do guard de dia. As duas falham
-  de forma branda (mantêm o snapshot e o módulo anteriores), e cobertura menor que
-  a publicada não é gravada (`SECONDARY_REGRESSION`). `scripts/refresh-apifutebolbr.mjs`
-  foi **removido** (trial encerrado, HTTP 429 permanente).
+  aprova — `addedCount > 0 || today > lastCutoffDate` — ou quando a captura está
+  vencida com jogo posterior (`secondaryRefreshDue`, ver §3); a artilharia roda em
+  toda execução com rede, fora do guard de dia. As duas falham de forma branda
+  (mantêm o snapshot e o módulo anteriores), e cobertura menor que a publicada não
+  é gravada (`SECONDARY_REGRESSION`). O contrário também vale: registro cujo par o
+  pacote ainda lista como pendente não é publicado (`SECONDARY_OUTSIDE_PACK`) —
+  a fonte pode encerrar um jogo antes do pacote (regra conservadora do dia do
+  corte) e `matches > expected` faria a UI anunciar cobertura parcial sem nada
+  faltando. O registro bruto fica no cache e volta quando o pacote o incorpora.
+  `scripts/refresh-apifutebolbr.mjs` foi **removido** (trial encerrado, HTTP 429 permanente).
 - Artilharia: um snapshot normalizado por partida em
   `data/source-snapshots/espn-events-<eventId>.json`; o módulo `src/scorers2026.ts` é
   agregado desses snapshots (nunca da rede direto) e declara cobertura. Cartões do ESPN
@@ -190,6 +195,22 @@ addedCount })` (`addedCount > 0 || today > lastCutoffDate`), tomada depois do me
 o guard de dia sozinho congelava a captura. Fontes secundárias têm orçamento próprio
 por ciclo: `ESPN_SCORERS_CONCURRENCY` (opcional, padrão 6) e pausa
 `THREE_SIX_FIVE_PAUSE_MS`.
+
+**Sem resultado novo não é no-op quando a captura secundária venceu.** Os caminhos
+`no-input` e `duplicates-only` saem cedo — mas só depois de
+`secondaryRefreshDue({ fetchedAt, now, packagedResults })` (`scripts/lib/freshness.mjs`)
+responder `false`. A condição é `true` somente com captura acima de
+`DEFAULT_SECONDARY_MAX_AGE_HOURS` (168h, limite inclusivo) **e** ao menos uma partida
+do pacote com kickoff posterior a `fetchedAt` — jogo que a captura não podia ter
+visto. Com ESPN o kickoff tem fuso e é comparado por instante; Football-Data não
+declara fuso e é comparado pela data (o dia inteiro conta como visto), a mesma regra
+de `isAtOrBeforeAnalyticalCutoff`. Nesse caso o updater executa o 4b
+(`planSecondarySources` com `refreshAdvancedDue: true`), regenera
+`public/projecoes.json` se algo mudou e commita — sem tocar nos módulos primários,
+porque adiantar o corte analítico sem resultado novo declararia incorporado um
+intervalo que não foi coletado. `--offline`/`--dry-run` sem `FETCH` preservam a saída
+cedo; `--today` usa o fim desse dia UTC como "agora" (reprodução determinística).
+Rodar de novo com a captura já fresca volta a sair cedo: nada de commit vazio.
 
 ## 4. Invariantes (falha = não publica)
 

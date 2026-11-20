@@ -1,3 +1,4 @@
+import { ADVANCED_STATS_SOURCE } from './advancedStats2026'
 import { currentSeasonResults } from './currentSeasonResults'
 import { currentClubs, remainingFixtures } from './projectionData'
 import { ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
@@ -14,7 +15,9 @@ import { ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff } from './sourc
  *
  * A serialização é o contrato — ordem fixa, separadores fixos, sem JSON (o JSON
  * depende da ordem de chaves do objeto de origem). Mudar o formato exige subir
- * a marca `v1` do cabeçalho, senão hashes antigos passam a colidir com novos.
+ * a marca do cabeçalho, senão hashes antigos passam a colidir com novos: a
+ * versão existe **justamente** para invalidar artefatos gerados sob outra
+ * definição (`v2` = entradas + identidade da captura secundária de xG/cartões).
  */
 
 /** Clube na forma canônica: só o que a simulação lê do pacote. */
@@ -31,12 +34,23 @@ export interface ProjectionHashFixture {
   away: string
 }
 
+/** Identidade da captura secundária (xG/cartões) que alimenta o modelo. */
+export interface ProjectionHashAdvancedStats {
+  /** Instante da captura publicada em `src/advancedStats2026.ts`. */
+  fetchedAt: string
+  /** Jogos do pacote com registro na fonte secundária. */
+  matches: number
+  /** Jogos do pacote que a fonte secundária deveria cobrir. */
+  expected: number
+}
+
 /** Entradas canônicas do hash, isoladas para permitir teste sem mocks. */
 export interface ProjectionHashInputs {
   cutoffUtc: string
   playedMatches: number
   clubs: readonly ProjectionHashClub[]
   fixtures: readonly ProjectionHashFixture[]
+  advancedStats: ProjectionHashAdvancedStats
 }
 
 /** Comparação por code unit: `localeCompare` varia com o locale do runner. */
@@ -49,14 +63,18 @@ function compareText(left: string, right: string): number {
 const FNV_OFFSET_BASIS = 0xcbf29ce484222325n
 const FNV_PRIME = 0x100000001b3n
 const UINT64_MASK = 0xffffffffffffffffn
-const HASH_HEADER = 'brasileirao-2026.projection-input.v1'
+const HASH_HEADER = 'brasileirao-2026.projection-input.v2'
 
 /**
- * Texto canônico: corte, partidas disputadas, clubes ordenados por id e
- * partidas pendentes ordenadas por (rodada, casa, fora).
+ * Texto canônico: identidade da captura secundária (xG/cartões), corte,
+ * partidas disputadas, clubes ordenados por id e partidas pendentes ordenadas
+ * por (rodada, casa, fora).
  *
- * A ordenação não confia na ordem incidental dos módulos: o updater reescreve
- * `projectionData.ts` e uma reordenação cosmética não pode mudar o hash.
+ * O xG entra em `estimateExpectedGoals`, então uma captura secundária diferente
+ * muda as probabilidades simuladas — sem estar no texto, o hash aceitaria um
+ * artefato gerado com outro xG. A ordenação não confia na ordem incidental dos
+ * módulos: o updater reescreve `projectionData.ts` e uma reordenação cosmética
+ * não pode mudar o hash.
  */
 export function canonicalProjectionInput(inputs: ProjectionHashInputs): string {
   const clubs = [...inputs.clubs].sort((left, right) => compareText(left.id, right.id))
@@ -66,8 +84,10 @@ export function canonicalProjectionInput(inputs: ProjectionHashInputs): string {
       || compareText(left.home, right.home)
       || compareText(left.away, right.away),
   )
+  const { fetchedAt, matches, expected } = inputs.advancedStats
   return [
     HASH_HEADER,
+    `advanced=${fetchedAt}|${matches}/${expected}`,
     `cutoff=${inputs.cutoffUtc}`,
     `played=${inputs.playedMatches}`,
     ...clubs.map((club) => `club=${club.id}|${club.position}|${club.points}`),
@@ -99,5 +119,10 @@ export function computeProjectionInputHash(): string {
     playedMatches: filterAtOrBeforeAnalyticalCutoff(currentSeasonResults).length,
     clubs: currentClubs,
     fixtures: remainingFixtures,
+    advancedStats: {
+      fetchedAt: ADVANCED_STATS_SOURCE.fetchedAt,
+      matches: ADVANCED_STATS_SOURCE.coverage.matches,
+      expected: ADVANCED_STATS_SOURCE.coverage.expected,
+    },
   })
 }

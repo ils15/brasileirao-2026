@@ -122,16 +122,22 @@ contagem até `libertadoresTo` e `direct` até `directTo`.
 ## `inputHash` — provar que os dois lados partiram do mesmo pacote
 
 `computeProjectionInputHash()` (`src/projectionInputHash.ts`) é síncrona e roda
-no Node e no navegador. Ela serializa de forma canônica — corte analítico,
-número de partidas disputadas, clubes ordenados por id (`id|posição|pontos`) e
-jogos pendentes ordenados por `(rodada, casa, fora)` — e aplica FNV-1a de 64
-bits sobre o UTF-8, devolvendo 16 dígitos hex.
+no Node e no navegador. Ela serializa de forma canônica — identidade da captura
+secundária de xG/cartões (`fetchedAt` + `coverage.matches/expected` de
+`src/advancedStats2026.ts`), corte analítico, número de partidas disputadas,
+clubes ordenados por id (`id|posição|pontos`) e jogos pendentes ordenados por
+`(rodada, casa, fora)` — e aplica FNV-1a de 64 bits sobre o UTF-8, devolvendo 16
+dígitos hex. O cabeçalho carrega a versão da definição (`v2`); subir o formato
+sem subir a versão deixaria hashes antigos colidirem com os novos.
 
 Consequências úteis:
 
 - a ordem incidental dos módulos não muda o hash (o updater reescreve os arquivos);
 - mudar corte, pontos de um clube, uma partida disputada ou o calendário
   pendente muda o hash;
+- uma nova captura de xG/cartões (`fetchedAt`) ou uma cobertura diferente muda o
+  hash: o xG entra em `estimateExpectedGoals`, então o artefato antigo deixa de
+  ser aceito como atual mesmo que o placar empacotado não tenha mudado;
 - o app e o gerador calculam o mesmo valor sobre os mesmos módulos, então o
   `inputHash` publicado é a prova de que a projeção corresponde ao pacote do
   commit.

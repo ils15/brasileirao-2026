@@ -10,6 +10,7 @@ import {
   expectedResultPending,
   isSecondaryStale,
   isStale,
+  secondaryRefreshDue,
   stalenessHours,
 } from './freshness.mjs'
 
@@ -157,6 +158,59 @@ describe('isSecondaryStale', () => {
       expect(() => isSecondaryStale({ fetchedAt: at(0), now: at(1), finishedMatches }))
         .toThrow(/finishedMatches inválido/)
     }
+  })
+})
+
+describe('secondaryRefreshDue', () => {
+  const packaged = (kickoff, source = 'football-data') => ({ kickoff, source })
+  const NEXT_DAY = packaged('2026-01-06T19:00')
+  const SAME_DATE = packaged('2026-01-05T23:30')
+  const NEXT_DATE = packaged('2026-01-06T00:10')
+
+  it('captura fresca não precisa de refresh nem com jogo posterior', () => {
+    expect(secondaryRefreshDue({
+      fetchedAt: at(0),
+      now: at(167.9),
+      packagedResults: [packaged(at(30), 'espn')],
+    })).toBe(false)
+  })
+
+  it('captura no limiar ou acima com jogo posterior pede refresh', () => {
+    expect(secondaryRefreshDue({ fetchedAt: at(0), now: at(168), packagedResults: [packaged(at(30), 'espn')] })).toBe(true)
+    expect(secondaryRefreshDue({ fetchedAt: at(0), now: at(720), packagedResults: [NEXT_DAY] })).toBe(true)
+  })
+
+  it('sem jogo posterior à captura não há o que atualizar', () => {
+    expect(secondaryRefreshDue({ fetchedAt: at(0), now: at(720), packagedResults: [] })).toBe(false)
+    expect(secondaryRefreshDue({
+      fetchedAt: at(0),
+      now: at(720),
+      packagedResults: [packaged(at(-1), 'espn'), packaged('2026-01-04T19:00')],
+    })).toBe(false)
+  })
+
+  it('Football-Data sem fuso compara pela data: o dia da captura conta como visto', () => {
+    expect(secondaryRefreshDue({ fetchedAt: at(0), now: at(720), packagedResults: [SAME_DATE] })).toBe(false)
+    expect(secondaryRefreshDue({ fetchedAt: at(0), now: at(720), packagedResults: [NEXT_DATE] })).toBe(true)
+  })
+
+  it('kickoff ilegível não afirma pendência', () => {
+    const kickoffs = [packaged('ontem'), packaged(''), { source: 'espn' }, packaged('2026-01-06T10:00', 'espn')]
+    expect(secondaryRefreshDue({ fetchedAt: at(0), now: at(720), packagedResults: kickoffs })).toBe(false)
+  })
+
+  it('captura ilegível lança — nunca vira "nada a fazer"', () => {
+    expect(() => secondaryRefreshDue({ fetchedAt: 'ontem', now: at(720), packagedResults: [] }))
+      .toThrow(/captura secundária inválida/)
+  })
+
+  it('maxAgeHours e packagedResults inválidos lançam', () => {
+    for (const maxAgeHours of [-1, Number.NaN, '168']) {
+      expect(() => secondaryRefreshDue({ fetchedAt: at(0), now: at(720), maxAgeHours, packagedResults: [] }))
+        .toThrow(/maxAgeHours inválido/)
+    }
+    expect(() => secondaryRefreshDue({ fetchedAt: at(0), now: at(720), packagedResults: 'nada' }))
+      .toThrow(/packagedResults deve ser uma lista/)
   })
 })
 

@@ -115,6 +115,70 @@ export function isSecondaryStale({
   return isStale({ cutoffUtc: fetchedAt, now, maxAgeHours })
 }
 
+/** Fuso explícito no fim do kickoff (ESPN); Football-Data não declara fuso. */
+const EXPLICIT_ZONE = /(?:Z|[+-]\d{2}:\d{2})$/i
+
+/**
+ * A remediação do alarme secundário tem trabalho a fazer **sem resultado novo**?
+ *
+ * O alarme (`isSecondaryStale`) reprova a captura vencida e sugere
+ * `npm run update:data`; se o updater sair cedo quando não há resultado novo, a
+ * sugestão é no-op e o xG/cartões fica congelado. A resposta aqui é `true`
+ * somente quando as duas condições valem:
+ *
+ * 1. a captura passou de `maxAgeHours` (mesmo limite inclusivo de `isStale`); e
+ * 2. existe partida do pacote com kickoff **posterior** à captura — jogo que a
+ *    captura não podia ter visto.
+ *
+ * A comparação segue a regra do pacote (`isAtOrBeforeAnalyticalCutoff`): ESPN
+ * declara fuso e é comparado por instante; Football-Data não declara fuso e é
+ * comparado pela data, com o dia inteiro tratado como já visto (conservador).
+ * Kickoff ilegível ou ausente não afirma pendência. Captura ilegível **lança**:
+ * tratar isso como "nada a fazer" é o silêncio que o alarme existe para quebrar.
+ *
+ * @param {{
+ *   fetchedAt: string | number | Date,
+ *   now?: string | number | Date,
+ *   maxAgeHours?: number,
+ *   packagedResults?: Array<{ kickoff: string, source?: string }>,
+ * }} input
+ * @returns {boolean}
+ */
+export function secondaryRefreshDue({
+  fetchedAt,
+  now = new Date(),
+  maxAgeHours = DEFAULT_SECONDARY_MAX_AGE_HOURS,
+  packagedResults = [],
+} = {}) {
+  if (!Array.isArray(packagedResults)) {
+    throw new TypeError(`packagedResults deve ser uma lista; recebido ${typeof packagedResults}`)
+  }
+  if (typeof maxAgeHours !== 'number' || !Number.isFinite(maxAgeHours) || maxAgeHours < 0) {
+    throw new Error(`maxAgeHours inválido: ${JSON.stringify(maxAgeHours)}`)
+  }
+  const fetchedMs = toEpochMs(fetchedAt)
+  const nowMs = toEpochMs(now)
+  if (fetchedMs == null || nowMs == null) {
+    throw new Error(
+      `captura secundária inválida: fetchedAt=${JSON.stringify(fetchedAt)} now=${JSON.stringify(now)}`,
+    )
+  }
+  if ((nowMs - fetchedMs) / MS_PER_HOUR < maxAgeHours) return false
+
+  const captureDate = new Date(fetchedMs).toISOString().slice(0, 10)
+  return packagedResults.some((match) => {
+    if (typeof match?.kickoff !== 'string' || match.kickoff.trim() === '') return false
+    if (match.source === 'espn') {
+      if (!EXPLICIT_ZONE.test(match.kickoff)) return false
+      const kickoffMs = toEpochMs(match.kickoff)
+      return kickoffMs != null && kickoffMs > fetchedMs
+    }
+    const date = match.kickoff.slice(0, 10)
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
+    return date > captureDate
+  })
+}
+
 /**
  * Kickoffs de partidas que o scoreboard já dá por **encerradas**.
  *

@@ -28,6 +28,7 @@ import {
   parseResultsPage,
   parseStatsCards,
   renderAdvancedStatsModule,
+  restrictToPackagedPairs,
   stampSeasonNum,
   validateAdvancedStats,
 } from './lib/threesixfive.mjs'
@@ -279,7 +280,14 @@ export async function refreshAdvancedStats({ log = console.log, write = true, wa
   const records = mergeAdvancedStats(existing, incoming)
   // Só mantém registros da temporada corrente (a paginação pode vazar temporadas antigas).
   // `seasonNum` fica no snapshot (auto-descritivo); o módulo gerado não o serializa.
-  const current = records.filter((record) => record.seasonNum === seasonNum)
+  const seasonRecords = records.filter((record) => record.seasonNum === seasonNum)
+  // Cobertura é do pacote: registro cujo par o pacote ainda não reconhece fica
+  // de fora (volta na coleta seguinte) em vez de fazer `matches > expected`.
+  const current = restrictToPackagedPairs(seasonRecords, packagedPairs)
+  if (current.length !== seasonRecords.length) {
+    log(`::notice::SECONDARY_OUTSIDE_PACK source=advanced records=${seasonRecords.length - current.length}`
+      + ` — fonte à frente do pacote (jogo ainda pendente); não publicado nesta coleta.`)
+  }
   const validation = validateAdvancedStats(current, { expectedMatches: packagedPairs.length, packagedPairs })
   log(`Validação: ${validation.matches} jogos · xG coberto em ${validation.withXg} · ΣxG ${validation.xg} vs Σgols coberto ${validation.goalsCovered} (razão ${validation.xgRatio}) · ${validation.cards} cartões · cobertura ${validation.coverage.matches}/${validation.coverage.expected ?? '?'}`)
 

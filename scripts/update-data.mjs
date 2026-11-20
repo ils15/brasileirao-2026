@@ -31,6 +31,7 @@ import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
 import { generateProjections } from './generate-projections.mjs'
 import { refreshEspnScorers } from './refresh-espn-scorers.mjs'
 import { changedDataPaths, snapshotDataPaths } from './lib/dataBaseline.mjs'
+import { secondaryRefreshDue } from './lib/freshness.mjs'
 import { buildFailureReceipt, formatFailureMessage, selectWrittenDirtyPaths, writeFailureReceipt } from './lib/updateFailure.mjs'
 import { assertCutoffNotAfterToday, parseUpdateArgs } from './lib/updateArgs.mjs'
 import {
@@ -230,6 +231,13 @@ async function main() {
   const currentMetadataSource = readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8')
   const currentResultsSource = readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8')
   const existingResults = parsePackagedResults(currentResultsSource)
+  // Captura secundária publicada: o guard do early-return e o passo 4b precisam
+  // do mesmo instante. Lido como texto (o módulo tem ~350 registros): só o campo.
+  const advancedStatsSource = readFileSync(join(srcDir, 'advancedStats2026.ts'), 'utf8')
+  const advancedStatsFetchedAt = advancedStatsSource.match(/fetchedAt:\s*['"]([^'"]+)['"]/)?.[1]
+  if (advancedStatsFetchedAt == null) {
+    throw new Error('fetchedAt não encontrado em src/advancedStats2026.ts')
+  }
   const cutoffUtc = options.cutoff ?? readCurrentCutoff(readFileSync(join(srcDir, 'sourceMetadata.ts'), 'utf8'))
   const lastCutoffDate = utcDateOf(cutoffUtc)
   const today = options.today ?? new Date().toISOString().slice(0, 10)
@@ -300,6 +308,20 @@ async function main() {
     throw new Error(`Coleta rejeitada: ${rejected.length} par(es) fora do calendário CBF 2026; nada foi publicado.\n${pairs}`)
   }
 
+  // 3b. Remediação sem resultado novo.
+  //     O alarme de frescor reprova uma captura secundária vencida e sugere
+  //     `npm run update:data`. Sair cedo aqui tornaria a sugestão um no-op; a
+  //     condição pura (`secondaryRefreshDue`) decide com captura + pacote:
+  //     vencida **e** com jogo do pacote cujo kickoff é posterior à captura.
+  //     `--today` fixa o dia para a reprodução: o "agora" é o fim desse dia UTC,
+  //     não o relógio de quem roda.
+  const networkAvailable = !offline && (!dryRun || Boolean(process.env.FETCH))
+  const secondaryDue = networkAvailable && secondaryRefreshDue({
+    fetchedAt: advancedStatsFetchedAt,
+    now: options.today ? new Date(`${options.today}T23:59:59Z`) : new Date(),
+    packagedResults: merged,
+  })
+
   if (outcome === 'no-input') {
     // Zero candidatos nas duas fontes. Se existe furo de rodada anterior
     // (jogo sem resultado numa rodada que já começou), o silêncio é suspeito:
@@ -311,12 +333,75 @@ async function main() {
     } else {
       console.log('Sem entrada de resultados na coleta e sem pendente de rodada anterior; nada a publicar.')
     }
-    process.exit(0)
+    if (!secondaryDue) process.exit(0)
   }
 
   if (outcome === 'duplicates-only') {
     console.log(`::notice::Nenhum resultado novo: ${incoming.length} candidato(s) da coleta já estavam empacotados; nada a publicar.`)
-    process.exit(0)
+    if (!secondaryDue) process.exit(0)
+  }
+
+  // 3c. Captura secundária vencida com jogo posterior e nenhum resultado novo.
+  //     O caminho padrão adiantaria o corte analítico sem resultado novo — o
+  //     pacote passaria a declarar incorporado um intervalo que não coletou.
+  //     Aqui só a fonte secundária (e a artilharia, que depende de rede) roda;
+  //     se ela não trouxer novidade, a saída continua limpa e idempotente.
+  //     Com resultado novo (`added > 0`) o fluxo normal segue e o 4b já recebe
+  //     `refreshAdvancedDue`.
+  if (secondaryDue && added.length === 0) {
+    console.log(`::notice::SECONDARY_REFRESH reason=stale source=advanced capture=${advancedStatsFetchedAt}; sem resultado novo, atualizando xG/cartões.`)
+    const secondary = planSecondarySources({ today, lastCutoffDate, addedCount: 0, networkAvailable, refreshAdvancedDue: true })
+    for (const notice of secondary.notices) console.log(notice)
+    if (secondary.refreshAdvanced) {
+      try {
+        await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`), write: !dryRun })
+      } catch (error) {
+        // xG/cartões são um bem de segunda ordem: se a fonte falhar HOJE, os
+        // dados já empacotados continuam válidos — não bloquear o run.
+        console.warn(`  Dados avançados indisponíveis nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
+      }
+    }
+    if (secondary.refreshScorers) {
+      try {
+        await refreshEspnScorers({ results: merged, log: (line) => console.log(`  ${line}`), write: !dryRun })
+      } catch (error) {
+        console.warn(`  Artilharia ESPN indisponível nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
+      }
+    }
+    if (dryRun) {
+      console.log('DRY RUN: nenhum arquivo foi escrito; fontes secundárias apenas consultadas.')
+      process.exit(0)
+    }
+    const secondaryChanged = changedDataPaths(dataBaseline, snapshotDataPaths(root, DATA_PATHS))
+    if (secondaryChanged.length === 0) {
+      console.log('Fontes secundárias sem novidade; nada a publicar.')
+      process.exit(0)
+    }
+    console.log(`  atualizado sem resultado novo: ${secondaryChanged.join(', ')}`)
+    if (options.noProjections) {
+      console.log('Projeções puladas (--no-projections).')
+    } else {
+      console.log('Gerando public/projecoes.json...')
+      const projections = await generateProjections()
+      const document = projections.document
+      console.log(
+        `  projeções: ${document.simulations} simulações · semente ${document.seed} · hash ${document.inputHash} · `
+        + `${(projections.bytes / 1024).toFixed(1)} KB em ${projections.durationMs} ms`,
+      )
+    }
+    if (!options.noProjections && !existsSync(join(root, 'public/projecoes.json'))) {
+      throw new Error('public/projecoes.json não foi gerado; pacote de dados incompleto, commit abortado.')
+    }
+    console.log('Executando suíte de testes...')
+    runShell(options.testCommand)
+    if (options.noCommit) {
+      console.log(`--no-commit: gate aprovado, git add/commit não executados (${options.testCommand}).`)
+      return
+    }
+    run('git', ['add', ...DATA_PATHS])
+    run('git', ['commit', '-m', `data: fontes secundárias (xG/cartões) ${today}`])
+    console.log('Commit criado. O workflow faz push, build e deploy.')
+    return
   }
 
   // 4. Derivados e validação de integridade — nada é publicado se falhar.
@@ -354,9 +439,9 @@ async function main() {
   //     toda execução com rede, fora do guard de dia. A decisão é tomada AQUI,
   //     depois do merge, e cada skip emite marcador — skip mudo foi a causa do
   //     congelamento sem diagnóstico. `--offline` e dry-run sem FETCH desligam
-  //     as duas fontes.
-  const networkAvailable = !offline && (!dryRun || Boolean(process.env.FETCH))
-  const secondary = planSecondarySources({ today, lastCutoffDate, addedCount: added.length, networkAvailable })
+  //     as duas fontes. `refreshAdvancedDue` (captura vencida com jogo
+  //     posterior, calculado em 3b) força o refresh mesmo sem resultado novo.
+  const secondary = planSecondarySources({ today, lastCutoffDate, addedCount: added.length, networkAvailable, refreshAdvancedDue: secondaryDue })
   for (const notice of secondary.notices) console.log(notice)
   if (secondary.refreshAdvanced) {
     try {

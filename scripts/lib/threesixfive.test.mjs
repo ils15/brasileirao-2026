@@ -11,6 +11,7 @@ import {
   parseResultsPage,
   parseStatsCards,
   renderAdvancedStatsModule,
+  restrictToPackagedPairs,
   stampSeasonNum,
   validateAdvancedStats,
 } from './threesixfive.mjs'
@@ -219,19 +220,28 @@ describe('validateAdvancedStats: cobertura parcial monotônica (D01)', () => {
     expect(validateAdvancedStats(records, { expectedMatches: records.length, strict: true }).coverage.missing).toEqual([])
   })
 
-  it('pacote real: não lança em não-estrito e missing fecha a diferença de cobertura', () => {
+  it('pacote real: missing é derivado dos pares do pacote, sem aritmética de contagem', () => {
     const snapshot = JSON.parse(readFileSync('data/source-snapshots/advanced-stats-2026.json', 'utf8'))
     const packaged = parsePackagedResults(readFileSync('src/currentSeasonResults.ts', 'utf8'))
     const pairs = packaged.map((match) => `${match.home}|${match.away}`)
     const summary = validateAdvancedStats(snapshot.records, { expectedMatches: pairs.length, packagedPairs: pairs })
+    const covered = new Set(snapshot.records.map((record) => `${record.home}|${record.away}`))
+    const missingPairs = pairs.filter((pair) => !covered.has(pair))
 
     expect(summary.ok).toBe(true)
     expect(summary.coverage.matches).toBe(snapshot.records.length)
     expect(summary.coverage.expected).toBe(packaged.length)
-    expect(summary.coverage.missing).toHaveLength(packaged.length - snapshot.records.length)
+    expect(summary.coverage.missing).toEqual(missingPairs)
     expect(summary.coverage.missing.every((pair) => pairs.includes(pair))).toBe(true)
-    expect(() => validateAdvancedStats(snapshot.records, { expectedMatches: pairs.length, strict: true }))
-      .toThrow(/≠ jogos disputados/)
+    // `strict` é a igualdade com o pacote: passa com cobertura total e aborta
+    // com qualquer par faltando. O teste não afirma o estado do dia.
+    if (missingPairs.length === 0) {
+      expect(validateAdvancedStats(snapshot.records, { expectedMatches: pairs.length, packagedPairs: pairs, strict: true }).ok)
+        .toBe(true)
+    } else {
+      expect(() => validateAdvancedStats(snapshot.records, { expectedMatches: pairs.length, packagedPairs: pairs, strict: true }))
+        .toThrow(/≠ jogos disputados/)
+    }
   })
 })
 
@@ -244,6 +254,32 @@ const legacyRecords = () => [
   { gameId: 5002, roundNum: 1, home: 'corinthians', away: 'santos', homeScore: 1, awayScore: 1, hasXg: true, xgHome: 0.9, xgAway: 1.2, shotsHome: 6, shotsAway: 7, yellowHome: 1, yellowAway: 3, redHome: 0, redAway: 1 },
   { gameId: 5003, roundNum: 2, home: 'gremio', away: 'vasco', homeScore: 0, awayScore: 2, hasXg: true, xgHome: 0.6, xgAway: 1.5, shotsHome: 6, shotsAway: 9, yellowHome: 3, yellowAway: 2, redHome: 1, redAway: 0 },
 ]
+
+describe('restrictToPackagedPairs', () => {
+  const records = [
+    { gameId: 1, home: 'a', away: 'b' },
+    { gameId: 2, home: 'c', away: 'd' },
+    { gameId: 3, home: 'd', away: 'c' },
+  ]
+
+  it('mantém apenas pares ordenados do pacote (casa, fora, não o inverso)', () => {
+    expect(restrictToPackagedPairs(records, ['a|b', 'c|d']).map((record) => record.gameId)).toEqual([1, 2])
+  })
+
+  it('sem pacote devolve lista vazia: cobertura é do pacote, não da fonte', () => {
+    expect(restrictToPackagedPairs(records, [])).toEqual([])
+  })
+
+  it('excedente não é inventado nem reescrito: os registros preservados são os mesmos objetos', () => {
+    const kept = restrictToPackagedPairs(records, ['a|b'])
+    expect(kept).toHaveLength(1)
+    expect(kept[0]).toBe(records[0])
+  })
+
+  it('recusa pacote fora de lista', () => {
+    expect(() => restrictToPackagedPairs(records, 'a|b')).toThrow(/packagedPairs deve ser uma lista/)
+  })
+})
 
 describe('stampSeasonNum', () => {
   it('carimba o seasonNum ausente, preserva quem já declara, a ordem, e não muta a entrada', () => {

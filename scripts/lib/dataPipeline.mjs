@@ -442,18 +442,24 @@ export function shouldRefreshSecondary({ today, lastCutoffDate, addedCount }) {
  * Plano das duas fontes secundárias, depois do merge.
  *
  * - xG/cartões (365scores): `shouldRefreshSecondary` — resultado novo no mesmo
- *   dia já dispara; sem resultado novo o orçamento do dia é preservado.
+ *   dia já dispara; sem resultado novo o orçamento do dia é preservado, **exceto**
+ *   quando `refreshAdvancedDue` (captura vencida com jogo posterior) força a
+ *   coleta: é a remediação que o alarme de frescor sugere.
  * - artilharia (eventos ESPN): roda em toda execução com rede, fora do guard
  *   de dia; a cobertura monotônica do módulo impede regressão.
  *
  * Cada fonte pulada emite marcador estável (`::notice::SECONDARY_SKIPPED`);
  * skip silencioso foi a causa do congelamento sem diagnóstico.
  */
-export function planSecondarySources({ today, lastCutoffDate, addedCount, networkAvailable }) {
+export function planSecondarySources({ today, lastCutoffDate, addedCount, networkAvailable, refreshAdvancedDue = false }) {
   if (typeof networkAvailable !== 'boolean') {
     throw new Error(`networkAvailable inválido para o plano das secundárias: ${networkAvailable}`)
   }
-  const refreshAdvanced = networkAvailable && shouldRefreshSecondary({ today, lastCutoffDate, addedCount })
+  if (typeof refreshAdvancedDue !== 'boolean') {
+    throw new Error(`refreshAdvancedDue inválido para o plano das secundárias: ${refreshAdvancedDue}`)
+  }
+  const refreshAdvanced = networkAvailable
+    && (shouldRefreshSecondary({ today, lastCutoffDate, addedCount }) || refreshAdvancedDue)
   const refreshScorers = networkAvailable
   const notices = []
   if (!networkAvailable) {

@@ -25,6 +25,7 @@ import * as config from '../src/projectionConfig.ts'
 import * as projection from '../src/projection.ts'
 import * as projectionDerived from '../src/projectionDerived.ts'
 import * as inputHash from '../src/projectionInputHash.ts'
+import { ADVANCED_STATS_SOURCE } from '../src/advancedStats2026.ts'
 import { currentClubs, remainingFixtures } from '../src/projectionData.ts'
 import * as metadata from '../src/sourceMetadata.ts'
 
@@ -228,6 +229,11 @@ describe('computeProjectionInputHash', () => {
     playedMatches: 7,
     clubs: currentClubs,
     fixtures: remainingFixtures,
+    advancedStats: {
+      fetchedAt: ADVANCED_STATS_SOURCE.fetchedAt,
+      matches: ADVANCED_STATS_SOURCE.coverage.matches,
+      expected: ADVANCED_STATS_SOURCE.coverage.expected,
+    },
   })
 
   it('é estável entre chamadas e não depende da ordem dos insumos', () => {
@@ -235,6 +241,19 @@ describe('computeProjectionInputHash', () => {
     expect(inputHash.hashProjectionInputs(base())).toBe(inputHash.hashProjectionInputs(base()))
     const reordered = { ...base(), clubs: [...currentClubs].reverse(), fixtures: [...remainingFixtures].reverse() }
     expect(inputHash.hashProjectionInputs(reordered)).toBe(inputHash.hashProjectionInputs(base()))
+  })
+
+  it('muda quando a captura secundária de xG/cartões muda', () => {
+    const shifted = {
+      ...base(),
+      advancedStats: { ...base().advancedStats, fetchedAt: 'captura-sintetica-deslocada' },
+    }
+    expect(inputHash.hashProjectionInputs(shifted)).not.toBe(inputHash.hashProjectionInputs(base()))
+    const moreCoverage = {
+      ...base(),
+      advancedStats: { ...base().advancedStats, matches: base().advancedStats.matches + 1 },
+    }
+    expect(inputHash.hashProjectionInputs(moreCoverage)).not.toBe(inputHash.hashProjectionInputs(base()))
   })
 
   it('muda quando o corte muda', () => {

@@ -19,6 +19,7 @@ import {
   summarizeEspnFootballDataCoverage,
   validateIntegrity,
 } from './dataPipeline.mjs'
+import { secondaryRefreshDue } from './freshness.mjs'
 
 const schedule = [
   { ref: '001', round: 1, home: 'a', away: 'b' },
@@ -290,6 +291,76 @@ describe('planSecondarySources', () => {
   it('recusa networkAvailable fora de booleano', () => {
     expect(() => planSecondarySources({ today: '2026-11-15', lastCutoffDate: '2026-11-15', addedCount: 0, networkAvailable: 'sim' }))
       .toThrow(/networkAvailable inválido/)
+  })
+
+  it('captura vencida com jogo posterior força o xG/cartões sem resultado novo', () => {
+    expect(planSecondarySources({
+      today: '2026-11-15',
+      lastCutoffDate: '2026-11-15',
+      addedCount: 0,
+      networkAvailable: true,
+      refreshAdvancedDue: true,
+    })).toEqual({ refreshAdvanced: true, refreshScorers: true, notices: [] })
+  })
+
+  it('sem rede o refresh forçado continua pulado (nada de rede em dry-run/offline)', () => {
+    expect(planSecondarySources({
+      today: '2026-11-15',
+      lastCutoffDate: '2026-11-15',
+      addedCount: 0,
+      networkAvailable: false,
+      refreshAdvancedDue: true,
+    }).refreshAdvanced).toBe(false)
+  })
+
+  it('recusa refreshAdvancedDue fora de booleano', () => {
+    expect(() => planSecondarySources({
+      today: '2026-11-15',
+      lastCutoffDate: '2026-11-15',
+      addedCount: 0,
+      networkAvailable: true,
+      refreshAdvancedDue: 'sim',
+    })).toThrow(/refreshAdvancedDue inválido/)
+  })
+})
+
+/**
+ * Decisão do early-return do updater: sem resultado novo, a única remediação
+ * possível é atualizar a fonte secundária — mas só quando o alarme teria razão
+ * (captura vencida + jogo que a captura não podia ter visto). A conta é feita
+ * com as mesmas peças que `update-data.mjs` usa.
+ */
+describe('early-return com captura secundária vencida', () => {
+  const CAPTURE = '2026-11-07T15:25:20.960Z'
+  const NOW = '2026-11-20T18:00:00Z'
+  const NOW_FRESH = '2026-11-09T00:00:00Z'
+  const packaged = (kickoff, source = 'football-data') => ({ kickoff, source })
+  const ON_CAPTURE_DAY = packaged('2026-11-06T20:00')
+  const AFTER_CAPTURE = packaged('2026-11-09T20:00')
+  const ESPN_AFTER_CAPTURE = packaged('2026-11-19T21:30:00Z', 'espn')
+  const ESPN_BEFORE_CAPTURE = packaged('2026-11-02T21:30:00Z', 'espn')
+
+  const earlyExit = ({ fetchedAt = CAPTURE, now = NOW, packagedResults, networkAvailable = true }) => {
+    const due = networkAvailable && secondaryRefreshDue({ fetchedAt, now, packagedResults })
+    return !due
+  }
+
+  it('captura fresca + sem jogo novo: sai cedo como hoje', () => {
+    expect(earlyExit({ now: NOW_FRESH, packagedResults: [AFTER_CAPTURE] })).toBe(true)
+  })
+
+  it('captura vencida + jogo posterior à captura: NÃO sai cedo (executa 4b)', () => {
+    expect(earlyExit({ packagedResults: [AFTER_CAPTURE] })).toBe(false)
+    expect(earlyExit({ packagedResults: [ESPN_AFTER_CAPTURE] })).toBe(false)
+  })
+
+  it('captura vencida + nenhum jogo posterior: sai cedo (não há o que atualizar)', () => {
+    expect(earlyExit({ packagedResults: [] })).toBe(true)
+    expect(earlyExit({ packagedResults: [ON_CAPTURE_DAY, ESPN_BEFORE_CAPTURE] })).toBe(true)
+  })
+
+  it('sem rede a saída cedo é preservada mesmo com captura vencida', () => {
+    expect(earlyExit({ packagedResults: [AFTER_CAPTURE], networkAvailable: false })).toBe(true)
   })
 })
 

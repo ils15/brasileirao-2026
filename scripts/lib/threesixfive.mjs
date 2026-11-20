@@ -196,6 +196,26 @@ export function mergeAdvancedStats(existing, incoming) {
 }
 
 /**
+ * Restringe os registros aos pares ordenados do pacote publicado.
+ *
+ * O módulo declara cobertura **do pacote**: `matches` são jogos do pacote com
+ * registro e `expected` são os jogos disputados do pacote. A fonte pode ficar
+ * à frente — um jogo que ela já encerrou e o pacote ainda lista como pendente
+ * (regra conservadora do dia do corte, Football-Data sem fuso). Publicar esse
+ * registro faria `matches` exceder `expected`: a UI passaria a anunciar
+ * "cobertura parcial" sem nada faltando e o modelo xG treinaria com um jogo que
+ * o pacote não reconhece. O registro bruto continua no cache e volta na coleta
+ * seguinte, quando o pacote o incorporar — nada é fabricado nem descartado da fonte.
+ */
+export function restrictToPackagedPairs(records, packagedPairs) {
+  if (!Array.isArray(packagedPairs)) {
+    throw new TypeError(`packagedPairs deve ser uma lista; recebido ${typeof packagedPairs}`)
+  }
+  const pairs = new Set(packagedPairs)
+  return records.filter((record) => pairs.has(`${record.home}|${record.away}`))
+}
+
+/**
  * Carimba `seasonNum` nos registros que não declaram temporada, sem
  * sobrescrever quem já declara. Migração honesta do snapshot legado (gravado
  * sem `seasonNum` até 2026-11-07): o dado não é reescrito, só rotulado — sem
