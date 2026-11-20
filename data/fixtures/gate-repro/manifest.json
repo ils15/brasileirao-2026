@@ -8,31 +8,39 @@
   "payloads": [
     {
       "path": "espn-scoreboard-2026-11-20.json",
-      "sha256": "f12ea7e0123b5b83ab9560b59c0f9aeb6c53891b6af5e00650d9b06f7ba7c3c4"
+      "sha256": "5447470ea70218bddea69e37a09b8b45c2cb0ed3321ea2ae8f1044b02caa02db"
     }
   ],
   "expected": {
     "path": "expected.json",
-    "sha256": "81d3d071ab6d23c4ab7816bd441ac2b649611d26af4b17c2c688b9870f18a6ed"
+    "sha256": "dbf23032b276287eb7a0c4cb455dbf14720cc8017c9374a8a6b33b6cad307232"
   },
-  "expectedFailures": [
-    "src/ProjectionSection.test.tsx",
-    "src/MatchSimulator.test.tsx"
+  "scenarios": [
+    {
+      "id": "red",
+      "test": "node -e \"process.exit(1)\"",
+      "expect": "fail"
+    },
+    {
+      "id": "green",
+      "test": "node -e \"process.exit(0)\"",
+      "expect": "pass"
+    }
   ],
   "search": {
-    "method": "deterministic-bounded",
-    "version": 1,
-    "winningIndex": 10,
+    "method": "injected-scenarios",
+    "version": 2,
+    "winningIndex": 0,
     "winningPairRefs": [
       "342",
-      "349",
       "352",
+      "353",
       "354",
       "355",
       "356"
     ],
     "winningScoreVector": "A",
-    "attempts": 11,
+    "attempts": 1,
     "spaceSize": 112,
     "attemptSpace": 40,
     "maxAttempts": 40,
@@ -40,6 +48,9 @@
     "order": "ref médio decrescente; desempate pela lista de refs",
     "space": "6 pares entre os 9 primeiros pendentes por ref, sempre com o primeiro, × 2 vetores fixos de placar",
     "scoreSource": "paleta fixa e sintética (SCORE_PALETTE) — nenhum placar de origem real",
-    "gateCommand": "npx vitest run src/ProjectionSection.test.tsx src/MatchSimulator.test.tsx"
+    "gateScenarios": [
+      "red: node -e \"process.exit(1)\" (expect fail)",
+      "green: node -e \"process.exit(0)\" (expect pass)"
+    ]
   }
 }

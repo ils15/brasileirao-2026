@@ -11,18 +11,18 @@
       "awayGoals": 1
     },
     {
-      "ref": "349",
-      "round": 35,
-      "home": "vitoria",
-      "away": "bragantino",
-      "homeGoals": 4,
-      "awayGoals": 0
-    },
-    {
       "ref": "352",
       "round": 36,
       "home": "botafogo",
       "away": "sao-paulo",
+      "homeGoals": 4,
+      "awayGoals": 0
+    },
+    {
+      "ref": "353",
+      "round": 36,
+      "home": "santos",
+      "away": "gremio",
       "homeGoals": 2,
       "awayGoals": 1
     },

@@ -4,13 +4,12 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { parseEspnScoreboard } from './dataPipeline.mjs'
 import {
-  GATE_TEST_FILES,
+  GATE_SCENARIOS,
   SCORE_PALETTE,
   addUtcDays,
   buildFixtureBundle,
   buildScoreboardPayload,
   enumerateGateCandidates,
-  failedGateTests,
   gateCandidateSpaceSize,
   kickoffFor,
   parsePackedResults,
@@ -19,6 +18,7 @@ import {
   serializeJson,
   sha256,
   syntheticScoreFor,
+  validateGateScenarios,
 } from './gateFixture.mjs'
 
 const schedule = [
@@ -265,20 +265,35 @@ describe('enumerateGateCandidates', () => {
   })
 })
 
-describe('failedGateTests', () => {
-  const files = ['src/A.test.tsx', 'src/B.test.tsx']
-
-  it('reconhece a linha FAIL e a linha de arquivo do relatório', () => {
-    const output = [
-      ' FAIL  src/A.test.tsx > caso > falha',
-      ' ❯ src/B.test.tsx (4 tests | 1 failed) 900ms',
-    ].join('\n')
-    expect([...failedGateTests(output, files)]).toEqual(['src/A.test.tsx', 'src/B.test.tsx'])
+describe('validateGateScenarios', () => {
+  it('aceita o contrato padrão: um cenário vermelho e um verde', () => {
+    const scenarios = validateGateScenarios(GATE_SCENARIOS)
+    expect(scenarios).toEqual([
+      { id: 'red', test: 'node -e "process.exit(1)"', expect: 'fail' },
+      { id: 'green', test: 'node -e "process.exit(0)"', expect: 'pass' },
+    ])
+    expect(scenarios.map((scenario) => scenario.expect).sort()).toEqual(['fail', 'pass'])
   })
 
-  it('não confunde um arquivo aprovado com falha', () => {
-    const output = [' ✓ src/A.test.tsx (17 tests) 900ms', ' Test Files  1 passed (1)'].join('\n')
-    expect([...failedGateTests(output, files)]).toEqual([])
+  it('recusa lista vazia, id duplicado, comando vazio e expect desconhecido', () => {
+    expect(() => validateGateScenarios([])).toThrow(/sem cenários/)
+    expect(() => validateGateScenarios([
+      { id: 'red', test: 'exit 1', expect: 'fail' },
+      { id: 'red', test: 'exit 0', expect: 'pass' },
+    ])).toThrow(/duplicado/)
+    expect(() => validateGateScenarios([
+      { id: 'red', test: '   ', expect: 'fail' },
+      { id: 'green', test: 'exit 0', expect: 'pass' },
+    ])).toThrow(/sem comando/)
+    expect(() => validateGateScenarios([
+      { id: 'red', test: 'exit 1', expect: 'talvez' },
+      { id: 'green', test: 'exit 0', expect: 'pass' },
+    ])).toThrow(/expect inválido/)
+  })
+
+  it('exige os dois lados do contrato (vermelho e verde)', () => {
+    expect(() => validateGateScenarios([{ id: 'red', test: 'exit 1', expect: 'fail' }])).toThrow(/cenário "pass"/)
+    expect(() => validateGateScenarios([{ id: 'green', test: 'exit 0', expect: 'pass' }])).toThrow(/cenário "fail"/)
   })
 })
 
@@ -295,53 +310,50 @@ describe('manifest com registro da busca', () => {
     attempts: 1,
   }
 
-  it('grava expectedFailures e o registro da busca', () => {
+  it('grava os cenários do gate e o registro da busca', () => {
     const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length, search })
     const manifest = JSON.parse(bundle.files.find((file) => file.path === 'manifest.json').content)
-    expect(manifest.expectedFailures).toEqual([...GATE_TEST_FILES])
+    expect(manifest.scenarios).toEqual(GATE_SCENARIOS.map((scenario) => ({ ...scenario })))
     expect(manifest.search).toEqual(search)
   })
 
-  it('a leitura devolve expectedFailures e o registro da busca', () => {
+  it('a leitura devolve os cenários e o registro da busca', () => {
     const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
     try {
       const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length, search })
       for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
       const read = readFixtureBundle(directory)
-      expect(read.expectedFailures).toEqual([...GATE_TEST_FILES])
+      expect(read.scenarios).toEqual(GATE_SCENARIOS.map((scenario) => ({ ...scenario })))
       expect(read.search).toEqual(search)
     } finally {
       rmSync(directory, { recursive: true, force: true })
     }
   })
 
-  it('sem registro da busca, expectedFailures cai no gate estreito padrão', () => {
+  it('sem registro da busca, os cenários padrão continuam valendo', () => {
     const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
     try {
       const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length })
       for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
-      const manifestPath = join(directory, 'manifest.json')
-      const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
-      delete manifest.expectedFailures
-      writeFileSync(manifestPath, serializeJson(manifest))
       const read = readFixtureBundle(directory)
-      expect(read.expectedFailures).toEqual([...GATE_TEST_FILES])
+      expect(read.scenarios).toEqual(GATE_SCENARIOS.map((scenario) => ({ ...scenario })))
       expect(read.search).toBeNull()
     } finally {
       rmSync(directory, { recursive: true, force: true })
     }
   })
 
-  it('recusa expectedFailures fora de src/**', () => {
+  it('recusa manifest sem cenários válidos — fixture antiga não cai no contrato de UI', () => {
     const directory = mkdtempSync(join(tmpdir(), 'gate-fixture-'))
     try {
       const bundle = buildFixtureBundle({ baseCutoffUtc, targetDate, pairs, count: pairs.length })
       for (const file of bundle.files) writeFileSync(join(directory, file.path), file.content)
       const manifestPath = join(directory, 'manifest.json')
       const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
-      manifest.expectedFailures = ['scripts/algo.test.mjs']
+      delete manifest.scenarios
+      manifest.expectedFailures = ['src/algo.test.tsx']
       writeFileSync(manifestPath, serializeJson(manifest))
-      expect(() => readFixtureBundle(directory)).toThrow(/fora de src/)
+      expect(() => readFixtureBundle(directory)).toThrow(/rode `npm run fixture:gate`/)
     } finally {
       rmSync(directory, { recursive: true, force: true })
     }
@@ -408,13 +420,13 @@ describe('independência do corte vivo', () => {
   const reproSource = readFileSync('scripts/repro-update-gate.mjs', 'utf8')
 
   it('o harness não lê o corte de src/sourceMetadata.ts', () => {
-    expect(reproSource).not.toMatch(/readCurrentCutoff/)
-    expect(reproSource).not.toMatch(/readFileSync/)
+    expect(reproSource).not.toMatch(/readCurrentCutoff|dataPipeline\.mjs/)
   })
 
   it('o harness passa corte e alvo gravados no manifest da fixture', () => {
     expect(reproSource).toContain('--cutoff=${fixture.baseCutoffUtc}')
     expect(reproSource).toContain('--today=${fixture.targetDate}')
+    expect(reproSource).toContain('--test=${scenario.test}')
   })
 
   it('a fixture versionada é autoconsistente mesmo quando o pacote avança', () => {
@@ -424,5 +436,12 @@ describe('independência do corte vivo', () => {
     const read = readFixtureBundle('data/fixtures/gate-repro')
     expect(read.baseCutoffUtc).toBe(manifest.baseCutoffUtc)
     expect(read.targetDate).toBe(manifest.targetDate)
+  })
+
+  it('o manifest versionado declara os dois cenários e nenhum teste de UI', () => {
+    const manifest = JSON.parse(readFileSync('data/fixtures/gate-repro/manifest.json', 'utf8'))
+    expect(manifest.expectedFailures).toBeUndefined()
+    expect(manifest.scenarios).toEqual(GATE_SCENARIOS.map((scenario) => ({ ...scenario })))
+    expect(JSON.stringify(manifest)).not.toMatch(/ProjectionSection|MatchSimulator/)
   })
 })

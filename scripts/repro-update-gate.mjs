@@ -1,45 +1,69 @@
 /**
- * Harness `npm run repro:gate`: reproduz o deadlock do updater de forma offline.
+ * Harness `npm run repro:gate`: prova os dois lados do updater, offline e
+ * determinístico, sem depender de testes de UI acoplados ao pacote.
  *
- * 1. Guarda de árvore: aborta se algum **caminho de dados** que o updater escreve
- *    já estiver sujo (alterações não relacionadas no repo — AGENTS.md, .gitignore —
- *    são ignoradas de propósito).
- * 2. Copia os payloads da fixture para `data/source-snapshots/`.
- * 3. Roda o updater com `--offline --no-commit --cutoff=<manifest> --today=<manifest>`
- *    e o gate estreito. O corte e o alvo vêm do manifest da fixture, nunca do
- *    pacote vivo: o harness não quebra quando o corte avança.
- * 4. Exige que o pacote tenha se movido (`Novos efetivos: <added>`), senão sai 3.
- * 5. Com o gate vermelho, exige que **todos** os `expectedFailures` do manifest
- *    apareçam na saída — uma fixture que só quebra um dos testes não protege a
- *    correção, e o harness sai 5 mandando regenerar.
- * 6. Restaura os caminhos de dados no `finally` e confere que ficaram limpos, senão sai 4.
- * 7. Propaga o código do updater: 1 = deadlock reproduzido, 0 = destravado.
+ * Cenários injetados pelo manifest da fixture (`scenarios`):
+ * - `fail`: o gate sai 1 → o updater escreve, aborta, deixa recibo em
+ *   `.pantheon/logs/` nomeando o comando, não commita e mantém a sujeira nos
+ *   caminhos de dados;
+ * - `pass`: o gate sai 0 → o updater escreve, conclui sem recibo.
  *
- * Códigos: 0 ok · 1 gate vermelho (esperado antes de T03/T04) · 2 árvore suja ·
- * 3 fixture não moveu o pacote · 4 restauração falhou · 5 fixture não reproduz
- * as duas falhas declaradas.
+ * Cada cenário copia os payloads, roda o updater e restaura os caminhos de
+ * dados no `finally`. A restauração é **byte-a-byte a partir de um baseline**
+ * capturado antes de qualquer cópia — nunca `git checkout`: a árvore de
+ * trabalho pode conter alterações legítimas de outra sessão, e o harness não
+ * tem autoridade sobre elas.
+ *
+ * Prova final: `git status --porcelain -- <DATA_PATHS>` antes e depois precisa
+ * ser idêntico (mesma lista, mesmo conteúdo), inclusive quando havia sujeira
+ * legítima. Nenhum arquivo fora de `DATA_PATHS` é removido ou sobrescrito.
+ *
+ * Códigos: 0 os dois cenários bateram e a árvore voltou ao baseline · 2 a
+ * restauração divergiu do baseline (bytes ou `git status`) · 3 fixture inválida
+ * ou não moveu o pacote · 4 restauração falhou de forma inesperada · 5 cenário
+ * não reproduz o contrato.
  */
 
 import { spawnSync } from 'node:child_process'
-import { copyFileSync, existsSync, rmSync } from 'node:fs'
+import { copyFileSync, existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { failedGateTests, listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
+import {
+  captureBaseline,
+  changedDataPaths,
+  disposeBaseline,
+  restoreBaseline,
+  snapshotDataPaths,
+  verifyBaseline,
+} from './lib/dataBaseline.mjs'
+import { listScoreboardPayloads, readFixtureBundle } from './lib/gateFixture.mjs'
+import { parsePorcelainPath } from './lib/updateFailure.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const fixtureDir = join(root, 'data/fixtures/gate-repro')
 const snapshotsDir = join(root, 'data/source-snapshots')
+const logsDir = join(root, '.pantheon', 'logs')
 
-/** Caminhos que o updater escreve — o único escopo que o harness suja e restaura. */
+/** Caminhos que o updater publica — o único escopo que o harness suja e restaura. */
 const DATA_PATHS = [
   'src/currentSeasonResults.ts',
   'src/projectionData.ts',
   'src/sourceMetadata.ts',
+  'src/advancedStats2026.ts',
+  'src/scorers2026.ts',
   'data/source-snapshots',
   'docs/atualizacoes.md',
 ]
 
-const GATE_TESTS = 'npx vitest run src/ProjectionSection.test.tsx src/MatchSimulator.test.tsx'
+/** Escrita do updater no modo offline (sem fontes secundárias). */
+const WRITTEN_PATHS = [
+  'src/currentSeasonResults.ts',
+  'src/projectionData.ts',
+  'src/sourceMetadata.ts',
+  'docs/atualizacoes.md',
+]
+
+const RECEIPT_FILE = /^update-data-failure-.+\.json$/
 
 function git(args) {
   const result = spawnSync('git', args, { cwd: root, encoding: 'utf8' })
@@ -51,51 +75,64 @@ function dataTreeStatus() {
   return git(['status', '--porcelain', '--', ...DATA_PATHS]).stdout.trim()
 }
 
-function restoreDataPaths(createdSnapshots) {
-  for (const file of createdSnapshots) {
-    const path = join(snapshotsDir, file)
-    if (existsSync(path)) rmSync(path)
-  }
-  const checkout = git(['checkout', '--', ...DATA_PATHS])
-  if (checkout.status !== 0) {
-    throw new Error(`git checkout dos caminhos de dados falhou:\n${checkout.stderr}`)
+function headSha() {
+  return git(['rev-parse', 'HEAD']).stdout.trim()
+}
+
+function listReceipts() {
+  if (!existsSync(logsDir)) return []
+  return readdirSync(logsDir).filter((file) => RECEIPT_FILE.test(file)).sort()
+}
+
+function readReceipt(file) {
+  return JSON.parse(readFileSync(join(logsDir, file), 'utf8'))
+}
+
+function isWrittenPath(path) {
+  return WRITTEN_PATHS.some((base) => path === base || path.startsWith(`${base}/`))
+}
+
+function formatDivergences(divergences) {
+  return divergences.map(({ path, expected, actual }) => `  - ${path}: esperado ${expected}, obtido ${actual}`).join('\n')
+}
+
+/**
+ * Restaura o baseline e prova os bytes. Divergência é `abortCode` 2: continuar
+ * depois disso arriscaria apagar trabalho alheio na próxima execução.
+ */
+function restoreAndVerify(baseline) {
+  restoreBaseline(baseline)
+  const divergences = verifyBaseline(baseline)
+  if (divergences.length > 0) {
+    const error = new Error(`restauração divergiu do baseline:\n${formatDivergences(divergences)}`)
+    error.abortCode = 2
+    throw error
   }
 }
 
-function main() {
-  const dirty = dataTreeStatus()
-  if (dirty !== '') {
-    console.error('repro:gate abortado: caminhos de dados já estão sujos antes da reprodução.')
-    console.error(dirty)
-    console.error('Restaure-os (git checkout -- <caminho>) e rode de novo.')
-    return 2
-  }
-
-  const fixture = readFixtureBundle(fixtureDir)
-
-  const payloadNames = listScoreboardPayloads(fixtureDir)
-  if (payloadNames.length !== fixture.payloads.length) {
-    console.error(`repro:gate abortado: fixture tem ${payloadNames.length} payloads de scoreboard, manifest declara ${fixture.payloads.length}.`)
-    return 2
-  }
-
-  let exitCode = 0
-  let restoreFailure = null
-  const createdSnapshots = []
+/**
+ * Copia a fixture, roda o updater com o gate do cenário e restaura sempre.
+ * Devolve o que o cenário precisa provar — nada é assumido.
+ */
+function runScenario(scenario, fixture, baseline) {
+  const receiptsBefore = new Set(listReceipts())
+  const headBefore = headSha()
+  let result
 
   try {
     for (const payload of fixture.payloads) {
       const destination = join(snapshotsDir, payload.path)
       if (existsSync(destination)) {
-        console.error(`repro:gate abortado: ${payload.path} já existe em data/source-snapshots/ (caminho sujo).`)
-        return 2
+        // Caminho legítimo de outra sessão: o baseline devolve os bytes originais.
+        console.log(`Caminho já existia (será restaurado do baseline): ${payload.path}`)
       }
       copyFileSync(join(fixtureDir, payload.path), destination)
-      createdSnapshots.push(payload.path)
       console.log(`Copiado: ${payload.path} → data/source-snapshots/`)
     }
 
-    console.log(`Rodando updater offline: --cutoff=${fixture.baseCutoffUtc} --today=${fixture.targetDate} · gate "${GATE_TESTS}"`)
+    console.log(
+      `Rodando updater offline: --cutoff=${fixture.baseCutoffUtc} --today=${fixture.targetDate} · cenário "${scenario.id}" (expect ${scenario.expect}) · gate "${scenario.test}"`,
+    )
     const run = spawnSync(
       process.execPath,
       [
@@ -104,7 +141,7 @@ function main() {
         '--no-commit',
         `--cutoff=${fixture.baseCutoffUtc}`,
         `--today=${fixture.targetDate}`,
-        `--test=${GATE_TESTS}`,
+        `--test=${scenario.test}`,
       ],
       { cwd: root, encoding: 'utf8' },
     )
@@ -113,55 +150,133 @@ function main() {
     if (run.stdout) process.stdout.write(run.stdout)
     if (run.stderr) process.stderr.write(run.stderr)
 
-    const expectedLine = `Novos efetivos: ${fixture.added}`
-    const moved = run.stdout.split('\n').some((line) => line.startsWith(expectedLine))
-    const failures = failedGateTests(`${run.stdout}\n${run.stderr}`, fixture.expectedFailures)
-    const gateStatus = run.status ?? 1
-
-    if (!moved) {
-      console.error(`repro:gate: fixture não moveu o pacote — esperava "${expectedLine}".`)
-      const seen = run.stdout.split('\n').find((line) => line.startsWith('Novos efetivos:')) ?? '(sem linha "Novos efetivos")'
-      console.error(`  observado: ${seen}`)
-      console.error('  Rode `npm run fixture:gate` para regenerar a fixture.')
-      exitCode = 3
-    } else if (gateStatus === 0) {
-      // Gate verde: deadlock destravado (estado pós-correção).
-      exitCode = 0
-    } else {
-      const missing = fixture.expectedFailures.filter((file) => !failures.has(file))
-      if (missing.length > 0) {
-        console.error('repro:gate: fixture não reproduz o deadlock; rode npm run fixture:gate')
-        console.error(`  esperava vermelhos: ${fixture.expectedFailures.join(', ')}`)
-        console.error(`  vermelhos observados: ${[...failures].join(', ') || 'nenhum'}`)
-        exitCode = 5
-      } else {
-        exitCode = gateStatus
-      }
+    const stdout = run.stdout ?? ''
+    const changed = changedDataPaths(baseline.files, snapshotDataPaths(root, DATA_PATHS))
+    result = {
+      exitCode: run.status ?? 1,
+      signal: run.signal ?? null,
+      moved: stdout.split('\n').some((line) => line.startsWith(`Novos efetivos: ${fixture.added}`)),
+      changed,
+      written: changed.some(isWrittenPath),
+      head: headSha(),
+      headBefore,
+      newReceipts: listReceipts().filter((file) => !receiptsBefore.has(file)),
     }
   } finally {
-    try {
-      restoreDataPaths(createdSnapshots)
-    } catch (error) {
-      restoreFailure = error.message
+    restoreAndVerify(baseline)
+  }
+
+  return result
+}
+
+/** Lista do que não bateu no cenário; vazio = contrato cumprido. */
+function evaluateScenario(scenario, fixture, result) {
+  const problems = []
+  const expectedExit = scenario.expect === 'fail' ? 1 : 0
+
+  if (!result.moved) problems.push(`fixture não moveu o pacote — esperava "Novos efetivos: ${fixture.added}"`)
+  if (result.exitCode !== expectedExit) problems.push(`exit ${result.exitCode}, esperado ${expectedExit}`)
+  if (result.signal != null) problems.push(`updater encerrado por sinal ${result.signal}`)
+  if (!result.written) problems.push('nenhum módulo/log de dados foi escrito antes do gate')
+  if (result.changed.length === 0) problems.push('nenhum caminho de dados mudou durante a execução')
+  if (result.head !== result.headBefore) problems.push('o updater criou commit (HEAD mudou)')
+
+  if (scenario.expect === 'fail') {
+    if (result.newReceipts.length === 0) {
+      problems.push('nenhum recibo de falha em .pantheon/logs')
+    } else {
+      try {
+        const receipt = readReceipt(result.newReceipts.at(-1))
+        if (receipt.command !== scenario.test) {
+          problems.push(`recibo nomeia "${receipt.command}", esperado "${scenario.test}"`)
+        }
+        if (receipt.exitCode !== 1) problems.push(`recibo com exitCode ${receipt.exitCode}, esperado 1`)
+        if (!Array.isArray(receipt.dirtyPaths) || receipt.dirtyPaths.length === 0) {
+          problems.push('recibo sem caminhos escritos nesta execução')
+        } else {
+          // Sujeira pré-existente tem que ficar de fora: o recibo só atribui ao
+          // updater o caminho cujo conteúdo mudou desde o baseline dele.
+          const changedSet = new Set(result.changed)
+          for (const line of receipt.dirtyPaths) {
+            const path = parsePorcelainPath(line)
+            if (path == null) problems.push(`recibo com linha ilegível: ${line}`)
+            else if (!changedSet.has(path)) problems.push(`recibo lista "${path}", que não foi escrito nesta execução`)
+          }
+        }
+      } catch (error) {
+        problems.push(`recibo ilegível em .pantheon/logs: ${error.message}`)
+      }
+    }
+  } else if (result.newReceipts.length > 0) {
+    problems.push(`cenário verde deixou recibo: ${result.newReceipts.join(', ')}`)
+  }
+
+  return problems
+}
+
+function runAll(baseline) {
+  const statusBefore = dataTreeStatus()
+  if (statusBefore !== '') {
+    console.log(`Baseline capturado com sujeira legítima preservada:\n${statusBefore}`)
+  }
+
+  const fixture = readFixtureBundle(fixtureDir)
+
+  const payloadNames = listScoreboardPayloads(fixtureDir)
+  if (payloadNames.length !== fixture.payloads.length) {
+    console.error(`repro:gate abortado: fixture tem ${payloadNames.length} payloads de scoreboard, manifest declara ${fixture.payloads.length}.`)
+    return 3
+  }
+
+  const failures = []
+  let fixtureMoved = true
+
+  for (const scenario of fixture.scenarios) {
+    console.log(`\n=== Cenário "${scenario.id}" (expect ${scenario.expect}) ===`)
+    const result = runScenario(scenario, fixture, baseline)
+    const problems = evaluateScenario(scenario, fixture, result)
+    if (!result.moved) fixtureMoved = false
+
+    if (problems.length === 0) {
+      console.log(`repro:gate: cenário "${scenario.id}" ok — exit ${result.exitCode}, escrita presente, sem commit${scenario.expect === 'fail' ? ', recibo nomeando o comando' : ', sem recibo'}.`)
+    } else {
+      failures.push({ scenario, problems })
+      console.error(`repro:gate: cenário "${scenario.id}" NÃO reproduziu o contrato.`)
+      for (const problem of problems) console.error(`  - ${problem}`)
     }
   }
 
-  const stillDirty = dataTreeStatus()
-  if (restoreFailure || stillDirty !== '') {
-    console.error('repro:gate: restauração dos caminhos de dados falhou.')
-    if (restoreFailure) console.error(restoreFailure)
-    if (stillDirty !== '') console.error(stillDirty)
-    return 4
+  const divergences = verifyBaseline(baseline)
+  if (divergences.length > 0) {
+    console.error('repro:gate: restauração divergiu do baseline.')
+    console.error(formatDivergences(divergences))
+    return 2
   }
 
-  if (exitCode === 0) {
-    console.log('repro:gate: gate verde com a fixture — o deadlock está destravado.')
-  } else if (exitCode === 5) {
-    console.log('repro:gate: fixture não reproduz o deadlock; árvore restaurada.')
-  } else {
-    console.log(`repro:gate: gate vermelho com a fixture (exit ${exitCode}) — deadlock reproduzido; árvore restaurada.`)
+  const statusAfter = dataTreeStatus()
+  if (statusAfter !== statusBefore) {
+    console.error('repro:gate: restauração divergiu do baseline (git status mudou).')
+    console.error(`antes:\n${statusBefore || '(limpo)'}`)
+    console.error(`depois:\n${statusAfter || '(limpo)'}`)
+    return 2
   }
-  return exitCode
+
+  if (failures.length > 0) {
+    return fixtureMoved ? 5 : 3
+  }
+
+  const dirtyLines = statusBefore === '' ? 0 : statusBefore.split('\n').length
+  console.log(`\nrepro:gate: os dois cenários passaram (vermelho com recibo, verde sem recibo); git status dos caminhos de dados idêntico antes/depois (${dirtyLines} linha(s) de sujeira preservada).`)
+  return 0
+}
+
+function main() {
+  const baseline = captureBaseline(root, DATA_PATHS)
+  try {
+    return runAll(baseline)
+  } finally {
+    disposeBaseline(baseline)
+  }
 }
 
 let code
@@ -169,6 +284,6 @@ try {
   code = main()
 } catch (error) {
   console.error(`repro:gate abortado: ${error.message}`)
-  code = 4
+  code = error.abortCode ?? 4
 }
 process.exit(code)

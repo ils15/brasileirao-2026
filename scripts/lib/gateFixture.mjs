@@ -1,11 +1,14 @@
 /**
- * Fixture sintética que reproduz o deadlock do updater.
+ * Fixture sintética do updater.
  *
- * O objetivo é mover o pacote de dados para o estado em que dois testes de UI
- * dependem do conteúdo do pacote (ver `.pantheon/deepwork/unblock-data-automation`).
- * Para isso a fixture inventa resultados de partidas **pendentes** do calendário
- * CBF 2026, no formato do scoreboard da ESPN, de modo que o updater (rodado com
- * `--offline --no-commit`) os incorpore como resultados novos.
+ * A fixture move o pacote com resultados inventados de partidas **pendentes**
+ * do calendário CBF 2026, no formato do scoreboard da ESPN, de modo que o
+ * updater (rodado com `--offline --no-commit`) os incorpore como resultados
+ * novos.
+ *
+ * O gate não tem mais acoplamento com testes de UI: `GATE_SCENARIOS` declara
+ * dois comandos injetados por `--test` — um vermelho e um verde — e o harness
+ * `repro:gate` prova os dois lados (falha com recibo + sucesso sem recibo).
  *
  * DADOS SINTÉTICOS: nada aqui vem de coleta real. Nenhum caminho de `src/**`
  * pode importar de `data/fixtures/**` — o teste irmão vigia isso.
@@ -23,18 +26,64 @@ export const FIXTURE_ID = 'gate-repro'
 export const FIXTURE_KIND = 'synthetic'
 export const DEFAULT_PAIR_COUNT = 6
 
-/** Arquivos do gate estreito: o harness só aceita a fixture se os dois ficarem vermelhos. */
-export const GATE_TEST_FILES = Object.freeze(['src/ProjectionSection.test.tsx', 'src/MatchSimulator.test.tsx'])
-export const GATE_TEST_COMMAND = `npx vitest run ${GATE_TEST_FILES.join(' ')}`
+/**
+ * Cenários do gate, injetados por `--test`.
+ *
+ * O gate deixou de depender de arquivos de teste de UI (que envelheciam junto
+ * com o pacote). Cada cenário declara um comando e o resultado exigido:
+ * `fail` = o updater deve abortar depois de escrever; `pass` = deve concluir.
+ */
+export const GATE_SCENARIOS = Object.freeze([
+  Object.freeze({ id: 'red', test: 'node -e "process.exit(1)"', expect: 'fail' }),
+  Object.freeze({ id: 'green', test: 'node -e "process.exit(0)"', expect: 'pass' }),
+])
 
-/** Limites da busca que escolhe a fixture (tentativas = execuções do gate). */
+export const GATE_SCENARIO_EXPECTATIONS = Object.freeze(['fail', 'pass'])
+
+/** Valida e normaliza os cenários; exige ao menos um vermelho e um verde. */
+export function validateGateScenarios(scenarios) {
+  if (!Array.isArray(scenarios) || scenarios.length === 0) {
+    throw new Error('Gate sem cenários: informe ao menos um cenário { id, test, expect }.')
+  }
+
+  const ids = new Set()
+  const normalized = scenarios.map((scenario) => {
+    if (scenario == null || typeof scenario !== 'object') {
+      throw new Error(`Cenário de gate inválido: ${JSON.stringify(scenario)}`)
+    }
+    const { id, test, expect: expectation } = scenario
+    if (typeof id !== 'string' || !/^[a-z][a-z0-9-]*$/.test(id)) {
+      throw new Error(`Cenário de gate com id inválido: ${JSON.stringify(id)}`)
+    }
+    if (ids.has(id)) throw new Error(`Cenário de gate duplicado: ${id}`)
+    ids.add(id)
+    if (typeof test !== 'string' || test.trim() === '') {
+      throw new Error(`Cenário de gate "${id}" sem comando de teste.`)
+    }
+    if (!GATE_SCENARIO_EXPECTATIONS.includes(expectation)) {
+      throw new Error(`Cenário de gate "${id}" com expect inválido: ${JSON.stringify(expectation)}`)
+    }
+    return { id, test, expect: expectation }
+  })
+
+  for (const expectation of GATE_SCENARIO_EXPECTATIONS) {
+    if (!normalized.some((scenario) => scenario.expect === expectation)) {
+      throw new Error(`Gate exige ao menos um cenário "${expectation}" (vermelho e verde).`)
+    }
+  }
+
+  return normalized
+}
+
+/** Limites da busca que escolhe a fixture (tentativas = execuções do updater). */
 export const GATE_SEARCH_LIMITS = Object.freeze({ maxAttempts: 40, deadlineMinutes: 15 })
 
 /**
- * Versão do algoritmo de busca. Entra no manifest: se espaço, ordem ou paleta
- * mudarem, o vencedor registrado deixa de ser reaproveitado e a busca roda de novo.
+ * Versão do algoritmo da fixture. Entra no manifest: se espaço, ordem, paleta
+ * ou contrato do gate mudarem, o vencedor registrado deixa de ser reaproveitado
+ * e a fixture é regenerada.
  */
-export const GATE_SEARCH_VERSION = 1
+export const GATE_SEARCH_VERSION = 2
 
 /** Pendentes extras além dos 6 jogados: janela de onde os conjuntos são combinados. */
 const SEARCH_WINDOW_EXTRA = 3
@@ -139,17 +188,15 @@ function compareRefLists(left, right) {
 }
 
 /**
- * Espaço de busca da fixture, determinístico e finito.
+ * Espaço de candidatos da fixture, determinístico e finito.
  *
  * Os conjuntos saem dos `count + 3` primeiros pendentes por `ref`, **sempre com
- * o primeiro** (é o confronto que o simulador renderiza por padrão; tirá-lo é o
- * que deixa o teste do simulador vermelho). Cada conjunto recebe, por posição,
- * um vetor fixo de `SCORE_PALETTE`.
+ * o primeiro** — o confronto de menor `ref` âncora a fixture. Cada conjunto
+ * recebe, por posição, um vetor fixo de `SCORE_PALETTE`.
  *
- * Ordem: `ref` médio decrescente — os conjuntos que incluem os confrontos do fim
- * da rodada vêm primeiro, porque a falha do painel de projeções aparece na faixa
- * de pontuação dos clubes de tabela mais baixa. É heurística declarada, não
- * afirmação de otimalidade; o resultado é o mesmo em qualquer máquina.
+ * Ordem: `ref` médio decrescente, desempate pela lista de refs. A ordem é
+ * declarada para que o primeiro candidato (vencedor no contrato de cenários
+ * injetados) seja o mesmo em qualquer máquina.
  */
 export function enumerateGateCandidates({ schedule, existing, count = DEFAULT_PAIR_COUNT, maxAttempts = GATE_SEARCH_LIMITS.maxAttempts }) {
   if (!Number.isInteger(maxAttempts) || maxAttempts < 1) throw new Error(`Limite de tentativas inválido: ${maxAttempts}`)
@@ -258,7 +305,7 @@ export function parsePackedResults(source) {
  * `targetDate` é sempre o dia seguinte ao corte: é a data que o harness passa
  * como `--today` junto de `--cutoff=baseCutoffUtc`, sem consultar o pacote vivo.
  */
-export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_COUNT, baseCutoffUtc, targetDate, pairs, search }) {
+export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_COUNT, baseCutoffUtc, targetDate, pairs, search, scenarios = GATE_SCENARIOS }) {
   if (!isIsoInstant(baseCutoffUtc)) {
     throw new Error(`baseCutoffUtc inválido: ${baseCutoffUtc} (esperado AAAA-MM-DDTHH:MM:SSZ)`)
   }
@@ -271,6 +318,7 @@ export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_CO
   if (!Array.isArray(resolvedPairs) || resolvedPairs.length !== count) {
     throw new Error(`A fixture exige ${count} pares; recebeu ${Array.isArray(resolvedPairs) ? resolvedPairs.length : 'nada'}.`)
   }
+  const resolvedScenarios = validateGateScenarios(scenarios)
   const payloadName = `espn-scoreboard-${resolvedTargetDate}.json`
 
   const payload = buildScoreboardPayload({ targetDate: resolvedTargetDate, pairs: resolvedPairs })
@@ -298,7 +346,7 @@ export function buildFixtureBundle({ schedule, existing, count = DEFAULT_PAIR_CO
     added: resolvedPairs.length,
     payloads: [{ path: payloadName, sha256: sha256(payloadContent) }],
     expected: { path: 'expected.json', sha256: sha256(expectedContent) },
-    expectedFailures: [...GATE_TEST_FILES],
+    scenarios: resolvedScenarios,
     ...(search ? { search } : {}),
   })
 
@@ -362,14 +410,11 @@ export function readFixtureBundle(directory) {
     throw new Error(`expected.added (${expected.added}) difere de manifest.added (${manifest.added})`)
   }
 
-  const expectedFailures = manifest.expectedFailures ?? [...GATE_TEST_FILES]
-  if (!Array.isArray(expectedFailures) || expectedFailures.length === 0) {
-    throw new Error(`expectedFailures inválido no manifest: ${JSON.stringify(manifest.expectedFailures)}`)
-  }
-  for (const file of expectedFailures) {
-    if (typeof file !== 'string' || !/^src\/[\w./-]+\.test\.tsx?$/.test(file)) {
-      throw new Error(`expectedFailures aponta caminho fora de src/**: ${file}`)
-    }
+  let scenarios
+  try {
+    scenarios = validateGateScenarios(manifest.scenarios)
+  } catch (error) {
+    throw new Error(`manifest sem scenarios válidos (${error.message}); rode \`npm run fixture:gate\` para regenerar a fixture`)
   }
 
   return {
@@ -378,7 +423,7 @@ export function readFixtureBundle(directory) {
     added: manifest.added,
     payloads,
     expected,
-    expectedFailures,
+    scenarios,
     search: manifest.search ?? null,
   }
 }
@@ -388,16 +433,4 @@ export function listScoreboardPayloads(directory) {
   return readdirSync(directory)
     .filter((file) => SCOREBOARD_FILE.test(file))
     .sort()
-}
-
-/** Arquivos do gate que apareceram vermelhos na saída do vitest. */
-export function failedGateTests(output, files = GATE_TEST_FILES) {
-  const failures = new Set()
-  for (const file of files) {
-    const escaped = file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    if (new RegExp(`FAIL\\s+${escaped}`).test(output) || new RegExp(`❯\\s+${escaped}\\s+\\([^)]*failed`).test(output)) {
-      failures.add(file)
-    }
-  }
-  return failures
 }

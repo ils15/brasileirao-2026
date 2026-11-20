@@ -1,41 +1,38 @@
 /**
  * Gera/regera a fixture `data/fixtures/gate-repro/` (npm run fixture:gate).
  *
- * A fixture move o pacote com 6 resultados sintéticos. Se o gate de 2 arquivos
- * ficar vermelho nos DOIS arquivos, ela reproduz o deadlock; se ficar verde com
- * o pacote movido, ela documenta o estado destravado. Como o efeito depende do
- * estado da tabela que os 6 resultados produzem, a escolha dos pares e dos
- * placares não é um literal copiado à mão: é uma **busca determinística e
- * limitada** (ver `enumerateGateCandidates`) que executa o gate para cada
- * candidato e prefere o primeiro que produz as duas falhas; sem nenhum, usa o
- * primeiro que move o pacote e deixa o gate verde.
+ * A fixture move o pacote com 6 resultados sintéticos e roda o updater com o
+ * cenário **vermelho** injetado (`node -e "process.exit(1)"`): se o pacote
+ * moveu e o updater abortou depois de escrever, a fixture serve ao harness.
+ * O gate não depende mais de arquivos de teste de UI.
  *
  * NENHUM placar tem origem real — a paleta é inventada e fixa. O manifest
- * registra método, índice vencedor e número de tentativas; não alega coleta.
+ * registra o candidato escolhido no espaço determinístico
+ * (`enumerateGateCandidates`), os cenários injetados e o número de tentativas;
+ * não alega coleta.
  *
  * Determinismo: mesma árvore → mesmos bytes em `data/fixtures/gate-repro/`.
  * Quando o manifest já registra um vencedor, ele é reconferido com uma única
- * execução do gate (e o metadata anterior é reaproveitado byte a byte). Se o
- * calendário avançou e o conjunto não existe mais, o índice registrado é
+ * execução do updater (e o metadata anterior é reaproveitado byte a byte). Se
+ * o calendário avançou e o conjunto não existe mais, o índice registrado é
  * reconferido no espaço atual.
  */
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { captureBaseline, disposeBaseline, restoreBaseline, verifyBaseline } from './lib/dataBaseline.mjs'
 import { loadCbfSchedule, readCurrentCutoff } from './lib/dataPipeline.mjs'
 import {
+  GATE_SCENARIOS,
   GATE_SEARCH_LIMITS,
   GATE_SEARCH_VERSION,
-  GATE_TEST_COMMAND,
-  GATE_TEST_FILES,
   SCORE_PALETTE,
   addUtcDays,
   buildFixtureBundle,
   buildScoreboardPayload,
   enumerateGateCandidates,
-  failedGateTests,
   gateCandidateSpaceSize,
   parsePackedResults,
   readFixtureBundle,
@@ -52,6 +49,8 @@ const DATA_PATHS = [
   'src/currentSeasonResults.ts',
   'src/projectionData.ts',
   'src/sourceMetadata.ts',
+  'src/advancedStats2026.ts',
+  'src/scorers2026.ts',
   'data/source-snapshots',
   'docs/atualizacoes.md',
 ]
@@ -64,37 +63,52 @@ const README = `# Fixture do gate (gate-repro)
 ## DADOS SINTÉTICOS — não são resultados reais
 
 Este diretório **não** contém coleta de nenhuma fonte nem reconstrução de
-placares reais. Os 6 pares e os placares foram **encontrados por busca
-determinística** sobre partidas **pendentes** do calendário CBF 2026 e uma
+placares reais. Os 6 pares e os placares são escolhidos de forma
+**determinística** sobre partidas **pendentes** do calendário CBF 2026 e uma
 paleta fixa de placares inventados (\`SCORE_PALETTE\` em
 \`scripts/lib/gateFixture.mjs\`), no formato do scoreboard da ESPN.
 
-O \`manifest.json\` registra a busca: \`search.winningIndex\`, o número de
-tentativas (uma execução do gate de 2 arquivos por candidato), a ordem do
-espaço e a paleta de placares. Nenhum campo alega origem real.
+O \`manifest.json\` registra \`baseCutoffUtc\`, \`targetDate\`, os sha256 de cada
+arquivo e os dois \`scenarios\` do gate. Nenhum campo alega origem real.
 
 ## Para que serve
 
-O updater escreve o pacote e só depois roda os testes; enquanto dois testes de UI
-dependeram do conteúdo do pacote, uma rodada real deixava a suíte vermelha e nada
-era commitado. Esta fixture move o pacote, **offline e determinístico**, e o
-\`manifest.json\` fixa \`baseCutoffUtc\` e \`targetDate\`: \`repro:gate\` não depende
-do corte vivo do pacote.
+O updater escreve o pacote **antes** do gate. O harness \`repro:gate\` prova os
+dois lados do contrato com comandos de gate **injetados** por \`--test\`, sem
+depender de testes de UI (que envelheciam junto com o pacote):
+
+- \`red\` — \`node -e "process.exit(1)"\`: exige exit 1, escrita presente, nenhum
+  commit e recibo em \`.pantheon/logs/\` nomeando o comando;
+- \`green\` — \`node -e "process.exit(0)"\`: exige exit 0, escrita presente e
+  nenhum recibo.
+
+A fixture move o pacote, **offline e determinística**, e o \`manifest.json\` fixa
+\`baseCutoffUtc\` e \`targetDate\`: \`repro:gate\` não depende do corte vivo.
 
 \`\`\`bash
 npm run fixture:gate   # regenera a fixture a partir do pacote atual
-npm run repro:gate     # copia os payloads, roda o updater e restaura a árvore
+npm run repro:gate     # copia os payloads, roda os dois cenários e restaura a árvore
 \`\`\`
 
-\`fixture:gate\` reconfere o vencedor registrado com uma única execução do gate;
-se o calendário avançou e o conjunto não existe mais, reconfere o candidato de
-mesmo índice no espaço atual. Prefere uma fixture que deixe os 2 testes
-vermelhos; se o gate estiver verde com o pacote movido, grava o estado
-destravado. Com a fixture já no corte atual e o gate verde, a pasta fica intacta.
-
-\`repro:gate\` restaura os caminhos de dados no \`finally\`, então os payloads daqui
-nunca ficam em \`data/source-snapshots/\`. Nenhum arquivo de \`src/**\` pode importar
+\`fixture:gate\` grava o primeiro candidato determinístico que move o pacote no
+espaço de pares pendentes; o manifest registra o candidato e os cenários.
+O harness roda sobre a árvore de trabalho: por isso \`repro:gate\` captura um
+**baseline byte-a-byte** dos caminhos de dados antes de qualquer cópia e
+restaura no \`finally\` de **cada** cenário — nunca \`git checkout\`. Alterações
+legítimas não commitadas sobrevivem; caminho que não existia antes é removido.
+Nenhum arquivo fora dos caminhos de dados é tocado, e os payloads daqui nunca
+ficam em \`data/source-snapshots/\`. Nenhum arquivo de \`src/**\` pode importar
 deste diretório (há teste vigiando).
+
+## Códigos de saída do \`repro:gate\`
+
+| código | significado |
+|---|---|
+| 0 | os dois cenários bateram e a árvore voltou ao baseline |
+| 2 | a restauração divergiu do baseline (bytes ou \`git status\`) |
+| 3 | a fixture é inválida ou não moveu o pacote |
+| 4 | a restauração falhou de forma inesperada |
+| 5 | um cenário não reproduziu o contrato |
 
 ## Arquivos
 
@@ -102,7 +116,8 @@ deste diretório (há teste vigiando).
 - \`expected.json\` — os pares que o updater deve incorporar (\`added\`, \`newResults\`).
 - \`manifest.json\` — sha256 de cada payload e do expected, \`baseCutoffUtc\` (corte
   a partir do qual a fixture foi gerada), \`targetDate\` (= corte + 1 dia),
-  \`expectedFailures\` e o registro da busca; o harness recusa hash divergente.
+  \`scenarios\` (comandos de gate injetados) e o registro do candidato; o harness
+  recusa hash divergente.
 
 Não edite à mão: a única forma aceita de mudar a fixture é \`npm run fixture:gate\`.
 `
@@ -117,28 +132,29 @@ function dataTreeStatus() {
   return git(['status', '--porcelain', '--', ...DATA_PATHS]).stdout.trim()
 }
 
-function restoreDataPaths(createdSnapshot) {
-  if (createdSnapshot && existsSync(createdSnapshot)) rmSync(createdSnapshot)
-  const checkout = git(['checkout', '--', ...DATA_PATHS])
-  if (checkout.status !== 0) throw new Error(`git checkout dos caminhos de dados falhou:\n${checkout.stderr}`)
-  const dirty = dataTreeStatus()
-  if (dirty !== '') throw new Error(`caminhos de dados continuam sujos após a restauração:\n${dirty}`)
+/**
+ * Restauração byte-a-byte do baseline. `git checkout` descartaria alterações
+ * não commitadas de outra sessão; o baseline devolve só o que esta busca sujou.
+ */
+function restoreDataPaths(baseline) {
+  restoreBaseline(baseline)
+  const divergences = verifyBaseline(baseline)
+  if (divergences.length > 0) {
+    const details = divergences.map(({ path, expected, actual }) => `  - ${path}: esperado ${expected}, obtido ${actual}`).join('\n')
+    throw new Error(`restauração divergiu do baseline:\n${details}`)
+  }
 }
 
-/** Arquivos do gate que apareceram vermelhos na saída do vitest. */
-function failedTestFiles(output) {
-  return failedGateTests(output)
-}
-
-/** Um candidato = uma execução real do updater + gate de 2 arquivos. */
-function runCandidate({ baseCutoffUtc, targetDate, pairs, expectedAdded }) {
+/** Um candidato = uma execução real do updater com o cenário vermelho injetado. */
+function runCandidate({ baseline, baseCutoffUtc, targetDate, pairs, expectedAdded }) {
+  const gateCommand = GATE_SCENARIOS.find((scenario) => scenario.expect === 'fail').test
   const payloadName = `espn-scoreboard-${targetDate}.json`
   const destination = join(snapshotsDir, payloadName)
-  if (existsSync(destination)) throw new Error(`${payloadName} já existe em data/source-snapshots/ (caminho sujo).`)
 
   const started = Date.now()
   let output = ''
   let timedOut = false
+  let exitCode = 1
   try {
     writeFileSync(destination, serializeJson(buildScoreboardPayload({ targetDate, pairs })))
     const run = spawnSync(
@@ -149,22 +165,23 @@ function runCandidate({ baseCutoffUtc, targetDate, pairs, expectedAdded }) {
         '--no-commit',
         `--cutoff=${baseCutoffUtc}`,
         `--today=${targetDate}`,
-        `--test=${GATE_TEST_COMMAND}`,
+        `--test=${gateCommand}`,
       ],
       { cwd: root, encoding: 'utf8', timeout: ATTEMPT_TIMEOUT_MS },
     )
     output = `${run.stdout ?? ''}\n${run.stderr ?? ''}`
     timedOut = run.error?.code === 'ETIMEDOUT' || run.signal === 'SIGTERM'
+    exitCode = run.status ?? 1
   } finally {
-    restoreDataPaths(destination)
+    restoreDataPaths(baseline)
   }
 
   const moved = output.split('\n').some((line) => line.startsWith(`Novos efetivos: ${expectedAdded}`))
-  return { moved, timedOut, failures: failedTestFiles(output), seconds: (Date.now() - started) / 1000 }
+  return { moved, timedOut, exitCode, seconds: (Date.now() - started) / 1000 }
 }
 
-function reproducesDeadlock(result) {
-  return result.moved && GATE_TEST_FILES.every((file) => result.failures.has(file))
+function reproducesFailure(result) {
+  return result.moved && result.exitCode === 1
 }
 
 function recordedWinner(search) {
@@ -192,7 +209,7 @@ function reconfirmationCandidate({ candidates, recorded, previousSearch }) {
 
 function buildSearchMetadata({ candidate, attempts, spaceSize }) {
   return {
-    method: 'deterministic-bounded',
+    method: 'injected-scenarios',
     version: GATE_SEARCH_VERSION,
     winningIndex: candidate.index,
     winningPairRefs: candidate.pairRefs,
@@ -205,7 +222,7 @@ function buildSearchMetadata({ candidate, attempts, spaceSize }) {
     order: 'ref médio decrescente; desempate pela lista de refs',
     space: `6 pares entre os 9 primeiros pendentes por ref, sempre com o primeiro, × ${SCORE_PALETTE.length} vetores fixos de placar`,
     scoreSource: 'paleta fixa e sintética (SCORE_PALETTE) — nenhum placar de origem real',
-    gateCommand: GATE_TEST_COMMAND,
+    gateScenarios: GATE_SCENARIOS.map((scenario) => `${scenario.id}: ${scenario.test} (expect ${scenario.expect})`),
   }
 }
 
@@ -226,23 +243,30 @@ function writeFixture({ baseCutoffUtc, targetDate, candidate, search }) {
 }
 
 function printMatrix(attempts) {
-  console.error('\nMatriz de tentativas (índice · pares · vetor · moveu · falhas · segundos):')
+  console.error('\nMatriz de tentativas (índice · pares · vetor · moveu · exit · segundos):')
   for (const attempt of attempts) {
-    const failures = [...attempt.failures].map((file) => file.replace('src/', '').replace('.test.tsx', '')).join('+') || 'nenhuma'
     const moved = attempt.moved ? 'sim' : 'NÃO'
     const timeout = attempt.timedOut ? ' (timeout)' : ''
-    console.error(`  #${String(attempt.index).padStart(2, '0')} · ${attempt.pairRefs.join(',')} · ${attempt.scoreVector} · ${moved} · ${failures} · ${attempt.seconds.toFixed(1)}s${timeout}`)
+    console.error(`  #${String(attempt.index).padStart(2, '0')} · ${attempt.pairRefs.join(',')} · ${attempt.scoreVector} · ${moved} · exit ${attempt.exitCode} · ${attempt.seconds.toFixed(1)}s${timeout}`)
   }
 }
 
 function main() {
-  const dirty = dataTreeStatus()
-  if (dirty !== '') {
-    console.error('fixture:gate abortado: caminhos de dados já estão sujos antes da busca.')
-    console.error(dirty)
-    console.error('Restaure-os (git checkout -- <caminho>) e rode de novo.')
-    return 2
+  const baseline = captureBaseline(root, DATA_PATHS)
+  try {
+    return search(baseline)
+  } finally {
+    disposeBaseline(baseline)
   }
+}
+
+/**
+ * Busca o candidato. A árvore pode conter alterações legítimas de outra sessão:
+ * `baseline` é a única fonte de restauração depois de cada tentativa.
+ */
+function search(baseline) {
+  const dirty = dataTreeStatus()
+  if (dirty !== '') console.log(`Baseline capturado com sujeira legítima preservada:\n${dirty}`)
 
   const schedule = loadCbfSchedule(srcDir)
   const existing = parsePackedResults(readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8'))
@@ -270,8 +294,7 @@ function main() {
   const attempts = []
   const record = (candidate, result) => {
     attempts.push({ index: candidate.index, pairRefs: candidate.pairRefs, scoreVector: candidate.scoreVector, ...result })
-    const failures = [...result.failures].map((file) => file.replace('src/', '')).join(' + ') || 'nenhuma'
-    console.log(`#${String(candidate.index).padStart(2, '0')} ${candidate.pairRefs.join(',')} · vetor ${candidate.scoreVector} · moveu=${result.moved ? 'sim' : 'não'} · falhas=${failures} · ${result.seconds.toFixed(1)}s`)
+    console.log(`#${String(candidate.index).padStart(2, '0')} ${candidate.pairRefs.join(',')} · vetor ${candidate.scoreVector} · moveu=${result.moved ? 'sim' : 'não'} · exit=${result.exitCode} · ${result.seconds.toFixed(1)}s`)
   }
 
   // 1. Reconferência do vencedor registrado: uma execução, não a busca inteira.
@@ -279,36 +302,22 @@ function main() {
   const recordedCandidate = reconfirmationCandidate({ candidates, recorded, previousSearch: previous?.search })
 
   if (recordedCandidate) {
-    const result = runCandidate({ baseCutoffUtc, targetDate, pairs: recordedCandidate.pairs, expectedAdded: recordedCandidate.pairs.length })
+    const result = runCandidate({ baseline, baseCutoffUtc, targetDate, pairs: recordedCandidate.pairs, expectedAdded: recordedCandidate.pairs.length })
     record(recordedCandidate, result)
-    if (reproducesDeadlock(result)) {
+    if (reproducesFailure(result)) {
       // Reaproveita a contagem de tentativas original: regenerar não pode mudar bytes.
       const search = buildSearchMetadata({ candidate: recordedCandidate, attempts: previous.search.attempts ?? attempts.length, spaceSize })
       writeFixture({ baseCutoffUtc, targetDate, candidate: recordedCandidate, search })
-      console.log(`Fixture reconferida: ${targetDate} (corte ${baseCutoffUtc}) · vencedor #${recordedCandidate.index} ainda deixa as duas falhas.`)
-      return 0
-    }
-    if (result.moved && result.failures.size === 0) {
-      if (previous.baseCutoffUtc !== baseCutoffUtc) {
-        // Fixture de um corte anterior e gate já verde: atualiza o manifest para
-        // que o harness reproduza sem consultar o pacote vivo.
-        const search = buildSearchMetadata({ candidate: recordedCandidate, attempts: previous.search.attempts ?? attempts.length, spaceSize })
-        writeFixture({ baseCutoffUtc, targetDate, candidate: recordedCandidate, search })
-        console.log(`Gate verde — fixture atualizada para o corte ${baseCutoffUtc} (${targetDate}).`)
-      } else {
-        console.log('Gate verde com a fixture registrada — deadlock destravado; nada a regenerar.')
-      }
+      console.log(`Fixture reconferida: ${targetDate} (corte ${baseCutoffUtc}) · vencedor #${recordedCandidate.index} ainda reproduz a falha do gate com recibo.`)
       return 0
     }
   }
 
-  // 2. Busca completa, limitada por tentativas e por tempo total.
-  //    Preferência: candidato que reproduz as duas falhas (fixture de regressão).
-  //    Se o gate está verde com o pacote movido, guarda o primeiro como fixture
-  //    do estado destravado — o harness precisa que o pacote se mova.
+  // 2. Primeiro candidato (ordem determinística) que move o pacote e falha no
+  //    gate vermelho injetado. O cenário não depende do conteúdo dos pares, mas
+  //    o harness exige que a fixture mova o pacote — isso a execução comprova.
   const deadline = Date.now() + GATE_SEARCH_LIMITS.deadlineMinutes * 60_000
   let winner = null
-  let greenFallback = null
   for (const candidate of candidates) {
     if (recordedCandidate && candidate.index === recordedCandidate.index) continue
     if (attempts.length >= GATE_SEARCH_LIMITS.maxAttempts) {
@@ -319,20 +328,16 @@ function main() {
       console.error(`\nBusca interrompida: limite de ${GATE_SEARCH_LIMITS.deadlineMinutes} min atingido.`)
       break
     }
-    const result = runCandidate({ baseCutoffUtc, targetDate, pairs: candidate.pairs, expectedAdded: candidate.pairs.length })
+    const result = runCandidate({ baseline, baseCutoffUtc, targetDate, pairs: candidate.pairs, expectedAdded: candidate.pairs.length })
     record(candidate, result)
-    if (reproducesDeadlock(result)) {
+    if (reproducesFailure(result)) {
       winner = candidate
       break
     }
-    if (!greenFallback && result.moved && result.failures.size === 0) {
-      greenFallback = candidate
-    }
   }
 
-  if (!winner) winner = greenFallback
   if (!winner) {
-    console.error(`fixture:gate abortado: nenhum candidato moveu o pacote e deixou os ${GATE_TEST_FILES.length} testes do gate vermelhos ou verdes.`)
+    console.error('fixture:gate abortado: nenhum candidato moveu o pacote e reproduziu a falha do gate vermelho injetado.')
     printMatrix(attempts)
     console.error('Não relaxe o critério nem edite a fixture à mão.')
     return 1
