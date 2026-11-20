@@ -11,15 +11,25 @@
  *
  * Sem rede (CI local/dry/--offline), usa fixtures locais de data/source-snapshots/.
  * O contrato das flags mora em scripts/lib/updateArgs.mjs.
+ *
+ * Falha depois da escrita não fica só no console: o catch global grava um
+ * recibo em `.pantheon/logs/update-data-failure-<UTC>.json` (caudas redigidas,
+ * caminhos escritos **nesta execução**, flags) e imprime a instrução de
+ * restauração. O recibo compara o conteúdo com um baseline capturado antes da
+ * escrita: caminho que já estava sujo não é atribuído ao updater nem recebe
+ * sugestão de `git checkout --`. `--dry-run` não escreve nenhum caminho
+ * versionado — inclusive as fontes secundárias, que recebem `write: false`.
  */
 
-import { execFileSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
 import { refreshEspnScorers } from './refresh-espn-scorers.mjs'
+import { changedDataPaths, snapshotDataPaths } from './lib/dataBaseline.mjs'
+import { buildFailureReceipt, formatFailureMessage, selectWrittenDirtyPaths, writeFailureReceipt } from './lib/updateFailure.mjs'
 import { assertCutoffNotAfterToday, parseUpdateArgs } from './lib/updateArgs.mjs'
 import {
   classifyMergeOutcome,
@@ -33,7 +43,10 @@ import {
   mergeResults,
   parseEspnScoreboard,
   parseFootballDataCsv,
+  parsePackagedResults,
   planCollectionRun,
+  planSecondarySources,
+  shouldRefreshSecondary,
   summarizeEspnFootballDataCoverage,
   overduePending,
   readCurrentCutoff,
@@ -50,6 +63,37 @@ const snapshotsDir = join(root, 'data/source-snapshots')
 const options = parseUpdateArgs(process.argv.slice(2))
 const dryRun = options.dryRun
 const offline = options.offline
+
+/**
+ * Caminhos publicados pelo updater — o mesmo escopo que o workflow confere,
+ * que o recibo de falha lista e que o harness restaura.
+ */
+const DATA_PATHS = [
+  'src/currentSeasonResults.ts',
+  'src/projectionData.ts',
+  'src/sourceMetadata.ts',
+  'src/advancedStats2026.ts',
+  'src/scorers2026.ts',
+  'data/source-snapshots',
+  'docs/atualizacoes.md',
+]
+
+/**
+ * Conteúdo dos caminhos de dados **antes de qualquer escrita**. O recibo só
+ * pode atribuir a esta execução o caminho cujo sha256 mudou desde aqui: sujeira
+ * pré-existente pertence a outra sessão e não pode virar instrução de
+ * `git checkout --`.
+ */
+const dataBaseline = snapshotDataPaths(root, DATA_PATHS)
+
+/** Contexto da execução para o recibo (o catch global não vê as locais de `main`). */
+const runContext = {
+  cutoff: options.cutoff,
+  today: options.today ?? new Date().toISOString().slice(0, 10),
+}
+
+/** Último comando externo: o recibo precisa saber qual falhou e com qual saída. */
+let lastCommand = { command: null, exitCode: null, stdout: '', stderr: '' }
 const BR_CSV_URL = 'https://www.football-data.co.uk/new/BR.csv'
 const ESPN_URL_TEMPLATE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates='
 const DISPLAY_NAMES = {
@@ -96,12 +140,78 @@ function sha256(text) {
 }
 
 function run(command, args, options = {}) {
-  execFileSync(command, args, { cwd: root, stdio: 'inherit', ...options })
+  const printable = [command, ...args].join(' ')
+  try {
+    return execFileSync(command, args, { cwd: root, stdio: 'inherit', ...options })
+  } catch (error) {
+    lastCommand = {
+      command: printable,
+      exitCode: Number.isInteger(error.status) ? error.status : 1,
+      stdout: typeof error.stdout === 'string' ? error.stdout : '',
+      stderr: typeof error.stderr === 'string' ? error.stderr : '',
+    }
+    throw error
+  }
 }
 
-/** Executa o comando do gate como shell (aceita `--test="cmd arg arg"`). */
+/**
+ * Executa o comando do gate como shell (aceita `--test="cmd arg arg"`).
+ *
+ * O gate é o único ponto cuja saída interessa ao recibo de falha: capturamos
+ * stdout/stderr, reimprimimos no console (tee) e preservamos exit code e o
+ * lançamento da exceção. `git` continua com `stdio: 'inherit'` — só o comando
+ * e o status são guardados.
+ */
 function runShell(command) {
-  execFileSync('sh', ['-c', command], { cwd: root, stdio: 'inherit' })
+  const run = spawnSync('sh', ['-c', command], {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: ['inherit', 'pipe', 'pipe'],
+    maxBuffer: 32 * 1024 * 1024,
+  })
+  if (run.error) {
+    lastCommand = { command, exitCode: 1, stdout: '', stderr: run.error.message }
+    throw run.error
+  }
+
+  const stdout = run.stdout ?? ''
+  const stderr = run.stderr ?? ''
+  if (stdout !== '') process.stdout.write(stdout)
+  if (stderr !== '') process.stderr.write(stderr)
+
+  const exitCode = Number.isInteger(run.status) ? run.status : 1
+  lastCommand = { command, exitCode, stdout, stderr }
+
+  if (exitCode !== 0) {
+    const error = new Error(`Command failed: sh -c ${command}`)
+    error.status = exitCode
+    error.stdout = stdout
+    error.stderr = stderr
+    throw error
+  }
+
+  return stdout
+}
+
+/**
+ * Linhas `git status --porcelain` restritas aos caminhos cujo **conteúdo mudou
+ * nesta execução** (comparados ao baseline capturado antes da escrita). Sujeira
+ * anterior ao updater nunca entra: a instrução de restauração seria destrutiva.
+ */
+function writtenDataPaths() {
+  try {
+    const current = snapshotDataPaths(root, DATA_PATHS)
+    if (changedDataPaths(dataBaseline, current).length === 0) return []
+    // `-uall` evita que um diretório não rastreado seja colapsado em uma linha
+    // só: o recibo precisa do caminho do arquivo que `rm --` remove.
+    const lines = execFileSync('git', ['status', '--porcelain', '--untracked-files=all', '--', ...DATA_PATHS], { cwd: root, encoding: 'utf8' })
+      .split('\n')
+      .filter((line) => line.trim() !== '')
+    return selectWrittenDirtyPaths(dataBaseline, current, lines)
+  } catch (error) {
+    console.warn(`  Não foi possível listar os caminhos escritos: ${error.message.split('\n')[0]}`)
+    return []
+  }
 }
 
 /** Lê um snapshot local; com `--offline`, ausência é erro (nunca cai para a rede). */
@@ -116,17 +226,12 @@ async function main() {
   const schedule = loadCbfSchedule(srcDir)
   const currentMetadataSource = readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8')
   const currentResultsSource = readFileSync(join(srcDir, 'currentSeasonResults.ts'), 'utf8')
-  const existingResults = currentResultsSource
-    .split('\n')
-    .filter((line) => line.trim().startsWith('{ home:'))
-    .map((line) => {
-      const match = line.match(/home: "([^"]+)", away: "([^"]+)", homeGoals: (\d+), awayGoals: (\d+), kickoff: "([^"]+)", source: "([^"]+)", sourceRef: "([^"]+)"/)
-      if (!match) throw new Error(`Linha de resultado não parseável no empacotamento atual: ${line}`)
-      return { home: match[1], away: match[2], homeGoals: Number(match[3]), awayGoals: Number(match[4]), kickoff: match[5], source: match[6], sourceRef: match[7] }
-    })
+  const existingResults = parsePackagedResults(currentResultsSource)
   const cutoffUtc = options.cutoff ?? readCurrentCutoff(readFileSync(join(srcDir, 'sourceMetadata.ts'), 'utf8'))
   const lastCutoffDate = utcDateOf(cutoffUtc)
   const today = options.today ?? new Date().toISOString().slice(0, 10)
+  runContext.cutoff = cutoffUtc
+  runContext.today = today
   if (options.cutoff !== null) {
     // `--cutoff` explícito é contrato de reprodução: coerência vale mesmo quando
     // `--today` cai no relógio, em vez de seguir para o "nada a atualizar".
@@ -138,14 +243,14 @@ async function main() {
     console.log('Corte empacotado é posterior ao dia atual; nada a atualizar.')
     process.exit(0)
   }
-  // Mesmo dia do corte: re-coleta só as fontes primárias. Um jogo que termina
-  // depois do corte no mesmo dia UTC não pode esperar ~24h; as fontes
-  // secundárias (365scores/eventos ESPN) têm orçamento próprio e só rodam
-  // quando há dia novo.
+  // Mesmo dia do corte: re-coleta as fontes primárias. Um jogo que termina
+  // depois do corte no mesmo dia UTC não pode esperar ~24h. As secundárias
+  // (365scores para xG/cartões; eventos ESPN para a artilharia) têm a decisão
+  // tomada depois do merge, quando o número de resultados novos é conhecido.
   const plan = planCollectionRun({ today, lastCutoffDate })
   console.log(plan.refreshSecondary
-    ? 'Dia novo desde o corte: coleta completa, com fontes secundárias.'
-    : 'Mesmo dia do corte: re-coleta primária (ESPN/Football-Data); fontes secundárias preservadas.')
+    ? 'Dia novo desde o corte: coleta completa.'
+    : 'Mesmo dia do corte: re-coleta primária (ESPN/Football-Data).')
 
   // 1. Coleta: CSV Football-Data + scoreboards ESPN de cada dia desde o corte.
   const localCsv = join(snapshotsDir, 'football-data-BR.csv')
@@ -240,19 +345,26 @@ async function main() {
     }
   }
 
-  // 4b. Dados avançados 2026 (xG por jogo + cartões) para os jogos novos.
-  //     Segue o mesmo padrão de rede das outras fontes: em dry-run local sem
-  //     FETCH, usa o snapshot existente e não coleta nada; `--offline` desliga
-  //     todas as fontes secundárias.
+  // 4b. Fontes secundárias.
+  //     xG/cartões (365scores) rodam quando o merge acrescentou resultado ou
+  //     quando há dia novo desde o corte; a artilharia (eventos ESPN) roda em
+  //     toda execução com rede, fora do guard de dia. A decisão é tomada AQUI,
+  //     depois do merge, e cada skip emite marcador — skip mudo foi a causa do
+  //     congelamento sem diagnóstico. `--offline` e dry-run sem FETCH desligam
+  //     as duas fontes.
   const networkAvailable = !offline && (!dryRun || Boolean(process.env.FETCH))
-  if (networkAvailable && plan.refreshSecondary) {
+  const secondary = planSecondarySources({ today, lastCutoffDate, addedCount: added.length, networkAvailable })
+  for (const notice of secondary.notices) console.log(notice)
+  if (secondary.refreshAdvanced) {
     try {
-      await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`) })
+      await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`), write: !dryRun })
     } catch (error) {
       // xG/cartões são um bem de segunda ordem: se a fonte falhar HOJE, os
       // dados já empacotados continuam válidos — não bloquear o resultado.
       console.warn(`  Dados avançados indisponíveis nesta coleta (${error.message.split('\n')[0]}); mantendo snapshot anterior.`)
     }
+  }
+  if (secondary.refreshScorers) {
     try {
       // Artilharia derivada dos eventos de partida da ESPN: um snapshot por
       // partida, agregado no módulo. Falha por partida fica isolada (warning).
@@ -350,12 +462,35 @@ async function main() {
     return
   }
 
-  run('git', ['add', 'src/currentSeasonResults.ts', 'src/projectionData.ts', 'src/sourceMetadata.ts', 'src/advancedStats2026.ts', 'src/scorers2026.ts', 'data/source-snapshots', 'docs/atualizacoes.md'])
+  run('git', ['add', ...DATA_PATHS])
   run('git', ['commit', '-m', `data: atualização pós-rodada ${processingUtcDate} (+${added.length} resultados)`])
   console.log(`Commit criado. O workflow faz push, build e deploy.`)
 }
 
 main().catch((error) => {
+  const receipt = buildFailureReceipt({
+    command: lastCommand.command ?? 'node scripts/update-data.mjs',
+    exitCode: lastCommand.exitCode ?? (Number.isInteger(error.status) ? error.status : 1),
+    stdout: lastCommand.stdout,
+    stderr: lastCommand.stderr || String(error.stderr ?? ''),
+    dirtyPaths: writtenDataPaths(),
+    flags: {
+      dryRun,
+      offline,
+      noCommit: options.noCommit,
+      test: options.testCommand,
+      fetch: Boolean(process.env.FETCH),
+    },
+    cutoff: runContext.cutoff,
+    today: runContext.today,
+  })
+  try {
+    const receiptPath = writeFailureReceipt(root, receipt)
+    console.error(`Recibo da falha: ${receiptPath.replace(`${root}/`, '')}`)
+  } catch (writeError) {
+    console.error(`Não foi possível gravar o recibo da falha: ${writeError.message}`)
+  }
   console.error(`Updater abortado: ${error.message}`)
+  console.error(formatFailureMessage(receipt))
   process.exit(1)
 })
