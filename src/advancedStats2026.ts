@@ -32,8 +32,8 @@ export const ADVANCED_STATS_SOURCE = {
   sha256: '4b50ef2ed0815af05dbd8ddb3edef1027d75e5121654234bf301ad673320b468',
   coverage: {
     matches: 339,
-    expected: 347,
-    missing: ['mirassol|atletico-mg', 'chapecoense|vasco', 'coritiba|santos', 'remo|chapecoense', 'cruzeiro|palmeiras', 'flamengo|athletico-pr', 'corinthians|botafogo', 'gremio|bahia'],
+    expected: 348,
+    missing: ['mirassol|atletico-mg', 'chapecoense|vasco', 'coritiba|santos', 'remo|chapecoense', 'cruzeiro|palmeiras', 'flamengo|athletico-pr', 'corinthians|botafogo', 'gremio|bahia', 'vasco|internacional'],
   },
 } as const
 
