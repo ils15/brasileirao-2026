@@ -11,8 +11,11 @@ import {
   parseEspnScoreboard,
   parseFootballDataCsv,
   parseCbfSchedule,
+  parsePackagedResults,
   planCollectionRun,
+  planSecondarySources,
   renderCurrentSeasonResults,
+  shouldRefreshSecondary,
   summarizeEspnFootballDataCoverage,
   validateIntegrity,
 } from './dataPipeline.mjs'
@@ -228,6 +231,82 @@ describe('planCollectionRun', () => {
   it('recusa dia fora do formato ISO', () => {
     expect(() => planCollectionRun({ today: '15/11/2026', lastCutoffDate: '2026-11-15' }))
       .toThrow(/Dia inválido/)
+  })
+})
+
+describe('shouldRefreshSecondary', () => {
+  it('dispara com resultado novo no mesmo dia UTC do corte', () => {
+    expect(shouldRefreshSecondary({ today: '2026-11-15', lastCutoffDate: '2026-11-15', addedCount: 1 })).toBe(true)
+  })
+
+  it('não dispara no mesmo dia sem resultado novo (orçamento preservado)', () => {
+    expect(shouldRefreshSecondary({ today: '2026-11-15', lastCutoffDate: '2026-11-15', addedCount: 0 })).toBe(false)
+  })
+
+  it('dia novo dispara mesmo sem resultado novo', () => {
+    expect(shouldRefreshSecondary({ today: '2026-11-16', lastCutoffDate: '2026-11-15', addedCount: 0 })).toBe(true)
+  })
+
+  it('recusa dia fora do formato ISO ou contagem inválida', () => {
+    expect(() => shouldRefreshSecondary({ today: '15/11/2026', lastCutoffDate: '2026-11-15', addedCount: 0 }))
+      .toThrow(/Dia inválido/)
+    expect(() => shouldRefreshSecondary({ today: '2026-11-15', lastCutoffDate: '2026-11-15', addedCount: -1 }))
+      .toThrow(/addedCount inválido/)
+  })
+})
+
+describe('planSecondarySources', () => {
+  it('mesmo dia + resultado novo: xG/cartões e artilharia rodam, sem skip', () => {
+    expect(planSecondarySources({ today: '2026-11-15', lastCutoffDate: '2026-11-15', addedCount: 2, networkAvailable: true }))
+      .toEqual({ refreshAdvanced: true, refreshScorers: true, notices: [] })
+  })
+
+  it('mesmo dia sem resultado novo: só a artilharia roda e o skip é anunciado', () => {
+    expect(planSecondarySources({ today: '2026-11-15', lastCutoffDate: '2026-11-15', addedCount: 0, networkAvailable: true }))
+      .toEqual({
+        refreshAdvanced: false,
+        refreshScorers: true,
+        notices: ['::notice::SECONDARY_SKIPPED reason=budget source=advanced'],
+      })
+  })
+
+  it('dia novo: xG/cartões rodam mesmo sem resultado novo', () => {
+    expect(planSecondarySources({ today: '2026-11-16', lastCutoffDate: '2026-11-15', addedCount: 0, networkAvailable: true }))
+      .toEqual({ refreshAdvanced: true, refreshScorers: true, notices: [] })
+  })
+
+  it('sem rede: as duas fontes são puladas com marcador reason=network', () => {
+    expect(planSecondarySources({ today: '2026-11-16', lastCutoffDate: '2026-11-15', addedCount: 3, networkAvailable: false }))
+      .toEqual({
+        refreshAdvanced: false,
+        refreshScorers: false,
+        notices: [
+          '::notice::SECONDARY_SKIPPED reason=network source=advanced',
+          '::notice::SECONDARY_SKIPPED reason=network source=scorers',
+        ],
+      })
+  })
+
+  it('recusa networkAvailable fora de booleano', () => {
+    expect(() => planSecondarySources({ today: '2026-11-15', lastCutoffDate: '2026-11-15', addedCount: 0, networkAvailable: 'sim' }))
+      .toThrow(/networkAvailable inválido/)
+  })
+})
+
+describe('parsePackagedResults', () => {
+  it('lê os resultados disputados do módulo empacotado', () => {
+    const source = [
+      'export const currentSeasonResults = [',
+      '  { home: "flamengo", away: "palmeiras", homeGoals: 2, awayGoals: 1, kickoff: "2026-03-01", source: "espn", sourceRef: "1" },',
+      '] as const',
+    ].join('\n')
+    expect(parsePackagedResults(source)).toEqual([
+      { home: 'flamengo', away: 'palmeiras', homeGoals: 2, awayGoals: 1, kickoff: '2026-03-01', source: 'espn', sourceRef: '1' },
+    ])
+  })
+
+  it('falha alto em linha de resultado não parseável', () => {
+    expect(() => parsePackagedResults('  { home: "flamengo" }')).toThrow(/não parseável/)
   })
 })
 

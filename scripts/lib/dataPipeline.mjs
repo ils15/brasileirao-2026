@@ -407,9 +407,10 @@ export function readCurrentCutoff(source) {
  * - `today < lastCutoffDate`: o corte é posterior ao dia corrente; nada a coletar.
  * - `today === lastCutoffDate`: re-coleta no mesmo dia. Um jogo que termina
  *   depois do corte não pode esperar ~24h, então as fontes primárias
- *   (ESPN/Football-Data) rodam de novo; as secundárias (365scores e API
- *   Futebol BR) têm orçamento por ciclo e ficam preservadas.
- * - `today > lastCutoffDate`: coleta completa, incluindo as secundárias.
+ *   (ESPN/Football-Data) rodam de novo. `refreshSecondary` aqui é só o
+ *   orçamento por dia; a decisão final das secundárias é
+ *   `shouldRefreshSecondary`, depois do merge, quando `addedCount` existe.
+ * - `today > lastCutoffDate`: coleta completa.
  *
  * Função pura: é o contrato que os testes exercitam sem rede.
  */
@@ -419,6 +420,65 @@ export function planCollectionRun({ today, lastCutoffDate }) {
   }
   if (today < lastCutoffDate) return { collect: false, refreshSecondary: false }
   return { collect: true, refreshSecondary: today > lastCutoffDate }
+}
+
+/**
+ * Gatilho efetivo das fontes secundárias (365scores para xG/cartões; eventos
+ * ESPN para a artilharia), decidido DEPOIS do merge: um resultado novo no
+ * mesmo dia UTC já justifica refresh — o guard de dia sozinho congelava a
+ * captura por ~24h. Dia novo mantém o comportamento anterior.
+ */
+export function shouldRefreshSecondary({ today, lastCutoffDate, addedCount }) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(today) || !/^\d{4}-\d{2}-\d{2}$/.test(lastCutoffDate)) {
+    throw new Error(`Dia inválido para o plano de coleta: today=${today}, lastCutoffDate=${lastCutoffDate}`)
+  }
+  if (!Number.isInteger(addedCount) || addedCount < 0) {
+    throw new Error(`addedCount inválido para o gatilho das secundárias: ${addedCount}`)
+  }
+  return addedCount > 0 || today > lastCutoffDate
+}
+
+/**
+ * Plano das duas fontes secundárias, depois do merge.
+ *
+ * - xG/cartões (365scores): `shouldRefreshSecondary` — resultado novo no mesmo
+ *   dia já dispara; sem resultado novo o orçamento do dia é preservado.
+ * - artilharia (eventos ESPN): roda em toda execução com rede, fora do guard
+ *   de dia; a cobertura monotônica do módulo impede regressão.
+ *
+ * Cada fonte pulada emite marcador estável (`::notice::SECONDARY_SKIPPED`);
+ * skip silencioso foi a causa do congelamento sem diagnóstico.
+ */
+export function planSecondarySources({ today, lastCutoffDate, addedCount, networkAvailable }) {
+  if (typeof networkAvailable !== 'boolean') {
+    throw new Error(`networkAvailable inválido para o plano das secundárias: ${networkAvailable}`)
+  }
+  const refreshAdvanced = networkAvailable && shouldRefreshSecondary({ today, lastCutoffDate, addedCount })
+  const refreshScorers = networkAvailable
+  const notices = []
+  if (!networkAvailable) {
+    notices.push('::notice::SECONDARY_SKIPPED reason=network source=advanced')
+    notices.push('::notice::SECONDARY_SKIPPED reason=network source=scorers')
+  } else if (!refreshAdvanced) {
+    notices.push('::notice::SECONDARY_SKIPPED reason=budget source=advanced')
+  }
+  return { refreshAdvanced, refreshScorers, notices }
+}
+
+/**
+ * Resultados disputados empacotados (src/currentSeasonResults.ts) → objetos do
+ * pipeline. Fonte de `CURRENT_SEASON_SOURCE`/merge e do denominador de
+ * cobertura das fontes secundárias: o pacote é a verdade, não a fonte de xG.
+ */
+export function parsePackagedResults(source) {
+  return source
+    .split('\n')
+    .filter((line) => line.trim().startsWith('{ home:'))
+    .map((line) => {
+      const match = line.match(/home: "([^"]+)", away: "([^"]+)", homeGoals: (\d+), awayGoals: (\d+), kickoff: "([^"]+)", source: "([^"]+)", sourceRef: "([^"]+)"/)
+      if (!match) throw new Error(`Linha de resultado não parseável no empacotamento atual: ${line.trim()}`)
+      return { home: match[1], away: match[2], homeGoals: Number(match[3]), awayGoals: Number(match[4]), kickoff: match[5], source: match[6], sourceRef: match[7] }
+    })
 }
 
 /** Serializa os módulos TS regenerados (ordem determinística). */
