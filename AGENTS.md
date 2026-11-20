@@ -35,6 +35,7 @@ Todos existem em `package.json`, exceto o instalador de hooks (script avulso cit
 | `npm run pack:history` | reconstrói `src/historicalSeasons.ts` a partir dos snapshots |
 | `npm run crosscheck` | cruza 2003–2011 com a Wikipédia e grava `reports/` |
 | `npm run update:data` | coleta pós-rodada: escreve módulos de dados, snapshots e `docs/atualizacoes.md`, roda a suíte e commita |
+| `npm run projections:json` | regenera `public/projecoes.json` (500 mil simulações, ~18 s); aceita `--dry-run` e `--out <caminho>` |
 | `node scripts/install-hooks.mjs` | instala `.githooks` (o pre-commit roda `test:data` para commits só de dados e suíte + build de Pages para o resto) |
 
 `node scripts/update-data.mjs --dry-run` inspeciona a coleta sem escrever.
@@ -61,7 +62,7 @@ Os testes ficam ao lado do código: `src/<modulo>.test.ts` / `.test.tsx` e `scri
 | Arquivo | Gerado por |
 |---|---|
 | `src/historicalSeasons.ts` | `npm run pack:history` |
-| `src/currentSeasonResults.ts`, `src/projectionData.ts`, `src/sourceMetadata.ts`, `docs/atualizacoes.md`, `data/source-snapshots/` | `npm run update:data` |
+| `src/currentSeasonResults.ts`, `src/projectionData.ts`, `src/sourceMetadata.ts`, `docs/atualizacoes.md`, `data/source-snapshots/`, `public/projecoes.json` | `npm run update:data` (as projeções por `npm run projections:json`) |
 | `src/advancedStats2026.ts`, `src/scorers2026.ts` | `scripts/backfill-xg-cards.mjs` e `scripts/refresh-espn-scorers.mjs` (chamados pelo updater) |
 | `reports/crosscheck-2003-2011.md`, `reports/conflicts.json` | `npm run crosscheck` |
 

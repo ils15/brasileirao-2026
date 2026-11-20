@@ -492,10 +492,39 @@ th.numeric .sort-button { justify-content: flex-end; }
 .zone-bar-segment { display: block; height: 100%; }
 .zone-bar--title { background: var(--zone-title); }
 .zone-bar--libertadores { background: var(--zone-libertadores); }
+.zone-bar--libertadores-direct { background: var(--zone-libertadores); }
+.zone-bar--libertadores-preliminary { background: var(--zone-libertadores); opacity: .55; background-image: repeating-linear-gradient(45deg, transparent 0 3px, rgba(255, 255, 255, .55) 3px 6px); }
 .zone-bar--sudamericana { background: var(--zone-sudamericana); }
 .zone-bar--middle { background: var(--zone-middle); }
 .zone-bar--relegation { background: var(--zone-relegation); }
+.zone-bar-segment--split { display: flex; }
+.zone-bar-sub { display: block; height: 100%; }
+.zone-bar-sub--direct { background: var(--zone-libertadores); }
+.zone-bar-sub--preliminary { background: var(--zone-libertadores); opacity: .55; background-image: repeating-linear-gradient(45deg, transparent 0 3px, rgba(255, 255, 255, .55) 3px 6px); }
 .zone-bar-cell { min-width: 170px; }
+
+/* Seletor de cenário das vagas continentais */
+.scenario-panel { display: grid; gap: 10px; margin: 16px 0 6px; padding: 14px 16px; border: 1px solid var(--border); border-left: 3px solid var(--selected-surface); border-radius: var(--radius-control); background: var(--surface-soft); }
+.scenario-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
+.scenario-title { margin: 0; color: var(--ink); font: 700 14px var(--display); letter-spacing: -.01em; }
+.scenario-hint { margin: 0; color: var(--text-secondary); font-size: 12px; }
+.scenario-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 13px; font-weight: 700; }
+.scenario-line select { min-height: 40px; padding: 0 30px 0 10px; border: 1px solid var(--border-strong); border-radius: var(--radius-control); color: var(--ink); background: var(--surface); font-size: 14px; }
+.scenario-line select:disabled { opacity: .55; cursor: not-allowed; }
+.scenario-flags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+.scenario-flag { display: flex; gap: 8px; align-items: start; color: var(--text); font-size: 13px; line-height: 1.4; cursor: pointer; }
+.scenario-flag input { margin-top: 3px; accent-color: var(--selected-surface); }
+.scenario-flag input:disabled { cursor: not-allowed; }
+.scenario-flag-copy { display: grid; gap: 2px; }
+.scenario-flag-copy strong { color: var(--ink); font-weight: 600; }
+.scenario-flag-copy small { color: var(--text-muted); font-size: 12px; }
+.scenario-summary { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
+.projection-refresh-status { margin: 10px 0 0; color: var(--text-secondary); font-size: 13px; }
+.projection-refreshing { opacity: .55; transition: opacity .15s ease; }
+
+@media (max-width: 767px) {
+  .scenario-flags { grid-template-columns: 1fr; }
+}
 .points-table-title { margin-top: 26px; }
 .points-final-table tbody td, .zones-table tbody td { height: 50px; }
 .zones-table { min-width: 1020px; }
@@ -1219,11 +1248,13 @@ th.numeric .sort-button { justify-content: flex-end; }
 .prob-mini-bar { height: 100%; border-radius: 2px; }
 .prob-mini-bar--title { background: #f59e0b; }
 .prob-mini-bar--libertadores { background: #10b981; }
+.prob-mini-bar--libertadores-direct { background: #34d399; }
 .prob-mini-bar--sudamericana { background: #3b82f6; }
 .prob-mini-bar--relegation { background: #ef4444; }
 .prob-mini-bar--default { background: var(--focus); }
 .probability-cell--title { background: rgba(245, 158, 11, .06); }
 .probability-cell--libertadores { background: rgba(16, 185, 129, .06); }
+.probability-cell--libertadores-direct { background: rgba(16, 185, 129, .1); }
 .probability-cell--sudamericana { background: rgba(59, 130, 246, .05); }
 .probability-cell--relegation { background: rgba(239, 68, 68, .07); }
 

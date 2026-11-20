@@ -114,7 +114,7 @@ describe('painel de confronto direto', () => {
 })
 
 describe('análise por clube', () => {
-  it('abre no Grêmio com forma, sequência, mando e próximos jogos', () => {
+  it('abre no Grêmio com forma, sequência, mando e próximos jogos', async () => {
     render(<ProjectionProvider><TeamAnalysisPanel /></ProjectionProvider>)
     expect(screen.getByRole('heading', { name: 'Como está e para onde vai' })).toBeInTheDocument()
     // KPI de posição/pontos do snapshot
@@ -126,7 +126,10 @@ describe('análise por clube', () => {
     expect(screen.getByText('Como mandante')).toBeInTheDocument()
     expect(screen.getByText('Como visitante')).toBeInTheDocument()
     // Card de projeção degradado (sem Worker no jsdom): falha anunciada com recuperação.
-    const projectionCard = screen.getByRole('alert')
+    // O caminho rápido tenta `projecoes.json` antes do worker, então o status só
+    // vira erro depois do fetch rejeitado — a asserção espera em vez de exigir
+    // render síncrono.
+    const projectionCard = await screen.findByRole('alert')
     expect(projectionCard).toHaveTextContent(/Projeção indisponível|Projeção em cálculo/)
     expect(projectionCard).toHaveTextContent('Não foi possível executar as simulações neste navegador.')
     expect(within(projectionCard).getByRole('button', { name: 'Tentar novamente' })).toBeInTheDocument()

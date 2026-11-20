@@ -28,6 +28,7 @@ export const DATA_PATHS = [
   'src/scorers2026.ts',
   'data/source-snapshots/',
   'docs/atualizacoes.md',
+  'public/projecoes.json',
 ]
 
 /**

@@ -144,6 +144,9 @@ function runScenario(scenario, fixture, baseline) {
         join(root, 'scripts/update-data.mjs'),
         '--offline',
         '--no-commit',
+        // A simulação de 500 mil é irrelevante para provar o gate de dados e
+        // custa ~18 s por execução do updater.
+        '--no-projections',
         `--cutoff=${fixture.baseCutoffUtc}`,
         `--today=${fixture.targetDate}`,
         `--test=${scenario.test}`,

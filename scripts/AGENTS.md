@@ -6,6 +6,7 @@ Aplicam-se a `scripts/**`; regras do projeto em `../AGENTS.md`.
 
 - `update-data.mjs` orquestra a coleta pós-rodada: Football-Data + ESPN (e secundárias), concilia com o calendário CBF, regenera módulos, roda a suíte e commita. `--dry-run` coleta e mostra o diff sem escrever.
 - `lib/dataPipeline.mjs` concentra parsers e validações puras; `lib/threesixfive.mjs` (xG/cartões) e `lib/espnMatchEvents.mjs` (gols/cartões por partida da ESPN) têm parsers por fonte.
+- `generate-projections.mjs` publica `public/projecoes.json` a partir da mesma `runProjectionRaw()` do worker (500 mil simulações, ~18 s; `--dry-run`, `--out <caminho>`); carrega `src/` por `vite` SSR porque não há runner TS na árvore. Contrato em `docs/projecoes-json.md`; schema e validação puros em `lib/projectionsJson.mjs`.
 - `pack-history.mjs` empacota 2003–2025 em `src/historicalSeasons.ts`; `crosscheck-wikipedia.mjs` grava `reports/crosscheck-2003-2011.md` e `reports/conflicts.json`; `check-pages-build.mjs` é o `npm run smoke:pages`.
 - `backfill-xg-cards.mjs` e `refresh-espn-scorers.mjs` rodam isolados ou por chamada do updater; `install-hooks.mjs` instala `.githooks`; `check-deploy-freshness.mjs` é a sonda do bundle publicado (advisory por padrão; `--strict` sai 1 defasado e 2 não verificado) e `check-data-freshness.mjs` (com `lib/freshness.mjs`) é o alarme agendado de defasagem, que reprova o run.
 
@@ -27,6 +28,6 @@ Aplicam-se a `scripts/**`; regras do projeto em `../AGENTS.md`.
 
 ## Verificação
 
-- Rode o teste irmão do que mudou: `npx vitest run scripts/lib/dataPipeline.test.mjs`, `npx vitest run scripts/pack-history.test.mjs`, `npx vitest run scripts/crosscheck-wikipedia.test.mjs` (ou `scripts/lib/threesixfive.test.mjs`, `scripts/lib/espnMatchEvents.test.mjs`, `scripts/lib/freshness.test.mjs`, `scripts/install-hooks.test.mjs`).
+- Rode o teste irmão do que mudou: `npx vitest run scripts/generate-projections.test.mjs`, `npx vitest run scripts/lib/dataPipeline.test.mjs`, `npx vitest run scripts/pack-history.test.mjs`, `npx vitest run scripts/crosscheck-wikipedia.test.mjs` (ou `scripts/lib/threesixfive.test.mjs`, `scripts/lib/espnMatchEvents.test.mjs`, `scripts/lib/freshness.test.mjs`, `scripts/install-hooks.test.mjs`).
 - Depois rode o script afetado em `--dry-run` quando existir e confira o diff antes de reportar.
 - `npm test` completo só no gate final; o pre-commit também o executa.

@@ -50,7 +50,7 @@ jobs:
           # detecta mudança é a comparação do HEAD antes/depois. Falha do
           # updater aborta o run: módulos podem ter sido escritos, mas nada é
           # commitado nem publicado sem o gate completo do step seguinte.
-          data_paths='src/currentSeasonResults.ts src/projectionData.ts src/sourceMetadata.ts src/advancedStats2026.ts src/scorers2026.ts data/source-snapshots docs/atualizacoes.md'
+          data_paths='src/currentSeasonResults.ts src/projectionData.ts src/sourceMetadata.ts src/advancedStats2026.ts src/scorers2026.ts data/source-snapshots docs/atualizacoes.md public/projecoes.json'
           before=$(git rev-parse HEAD)
           if ! node scripts/update-data.mjs; then
             dirty=$(git status --porcelain -- $data_paths)

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { StandingsViews } from './StandingsViews'
 import { standingsFromResults } from './rounds'
 import { currentClubs } from './projectionData'
+import { resolveLibertadoresZones, scenarioFromKey } from './projectionConfig'
 import { advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
 
@@ -31,6 +32,25 @@ describe('aba classificações', () => {
     expect(note).toHaveAttribute('id')
     expect(legend).toHaveAttribute('aria-describedby', note.id)
     expect(note).toHaveTextContent(/6º lugar depende das regras de redistribuição e da sobreposição de classificados/)
+  })
+
+  it('deriva legenda, rótulos e zonas da linha do cenário G-9', () => {
+    const zones = resolveLibertadoresZones(scenarioFromKey(15))
+    render(<StandingsViews zones={zones} />)
+
+    const legend = screen.getByRole('group', { name: 'Legenda de zonas da classificação' })
+    expect(within(legend).getByText('Libertadores · 1º–9º')).toBeInTheDocument()
+    expect(within(legend).getByText('Sul-Americana · 10º–15º')).toBeInTheDocument()
+    expect(within(legend).getByText('Meio de tabela · 16º')).toBeInTheDocument()
+    expect(within(legend).getByText('Rebaixamento · 17º–20º')).toBeInTheDocument()
+    expect(screen.getByText(/Linha da Libertadores: 1º–9º \(1º–6º direto; 7º–9º na pré\)/)).toBeVisible()
+
+    const table = screen.getByRole('region', { name: /Classificação geral/ })
+    const rows = within(table).getAllByRole('row').slice(1)
+    expect(rows[6]).toHaveAccessibleName(/Zona: Libertadores · 1º–9º/)
+    expect(rows[8]).toHaveAccessibleName(/Zona: Libertadores · 1º–9º/)
+    expect(rows[9]).toHaveAccessibleName(/Zona: Sul-Americana · 10º–15º/)
+    expect(rows[15]).toHaveAccessibleName(/Zona: Meio de tabela · 16º/)
   })
 
   it('exibe uma legenda única de zonas acima da tabela, sem chips repetidos por linha', async () => {

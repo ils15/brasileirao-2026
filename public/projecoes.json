@@ -1,0 +1,6526 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-20T10:12:29.760Z",
+  "simulations": 500000,
+  "seed": 20261104,
+  "backtestSimulations": 5000,
+  "analyticalCutoffUtc": "2026-11-20T10:12:29Z",
+  "inputHash": "e791411994becb5e",
+  "model": {
+    "leagueAverageGoals": {
+      "home": 1.4213197969543148,
+      "away": 0.9655950366610265
+    },
+    "trainingGoalAverages": {
+      "home": 1.4283697953422725,
+      "away": 0.9751235003528581
+    }
+  },
+  "clubs": [
+    {
+      "id": "flamengo",
+      "club": "Flamengo",
+      "currentPosition": 1,
+      "currentPoints": 79,
+      "positionCounts": [
+        0,
+        488713,
+        11287,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 84.635172,
+        "median": 85,
+        "stdDev": 2.0959915387246153,
+        "min": 79,
+        "max": 88,
+        "p10": 82,
+        "p25": 83,
+        "p75": 86,
+        "p90": 88
+      }
+    },
+    {
+      "id": "palmeiras",
+      "club": "Palmeiras",
+      "currentPosition": 2,
+      "currentPoints": 73,
+      "positionCounts": [
+        0,
+        11287,
+        488713,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 78.95374,
+        "median": 79,
+        "stdDev": 2.1035113530492646,
+        "min": 73,
+        "max": 82,
+        "p10": 76,
+        "p25": 77,
+        "p75": 80,
+        "p90": 82
+      }
+    },
+    {
+      "id": "cruzeiro",
+      "club": "Cruzeiro",
+      "currentPosition": 3,
+      "currentPoints": 63,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        463411,
+        36589,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 500000
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 67.601112,
+        "median": 67,
+        "stdDev": 2.2196198691338163,
+        "min": 63,
+        "max": 72,
+        "p10": 64,
+        "p25": 66,
+        "p75": 69,
+        "p90": 70
+      }
+    },
+    {
+      "id": "fluminense",
+      "club": "Fluminense",
+      "currentPosition": 4,
+      "currentPoints": 57,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        36589,
+        375071,
+        66643,
+        19814,
+        1814,
+        69,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 478303,
+          "direct": 411660
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 498117,
+          "direct": 411660
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 498117,
+          "direct": 411660
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 499931,
+          "direct": 411660
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 498117,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 499931,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 499931,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 498117,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 499931,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 499931,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 500000,
+          "direct": 478303
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 499931,
+          "direct": 498117
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 498117
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 498117
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 500000,
+          "direct": 498117
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 62.772878,
+        "median": 63,
+        "stdDev": 2.5482342115887677,
+        "min": 57,
+        "max": 69,
+        "p10": 60,
+        "p25": 61,
+        "p75": 64,
+        "p90": 66
+      }
+    },
+    {
+      "id": "athletico-pr",
+      "club": "Athletico Paranaense",
+      "currentPosition": 5,
+      "currentPoints": 54,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        53521,
+        223385,
+        158563,
+        48154,
+        14068,
+        2146,
+        163,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 276906,
+          "direct": 53521
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 435469,
+          "direct": 53521
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 435469,
+          "direct": 53521
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 483623,
+          "direct": 53521
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 435469,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 483623,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 483623,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 497691,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 435469,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 483623,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 483623,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 497691,
+          "direct": 276906
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 483623,
+          "direct": 435469
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 497691,
+          "direct": 435469
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 497691,
+          "direct": 435469
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 499837,
+          "direct": 435469
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 58.938744,
+        "median": 59,
+        "stdDev": 2.2050668249469862,
+        "min": 54,
+        "max": 63,
+        "p10": 56,
+        "p25": 57,
+        "p75": 60,
+        "p90": 61
+      }
+    },
+    {
+      "id": "bahia",
+      "club": "Bahia",
+      "currentPosition": 6,
+      "currentPoints": 54,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        30695,
+        153758,
+        175892,
+        96133,
+        38099,
+        5166,
+        256,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 184453,
+          "direct": 30695
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 360345,
+          "direct": 30695
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 360345,
+          "direct": 30695
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 456478,
+          "direct": 30695
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 360345,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 456478,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 456478,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 494577,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 360345,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 456478,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 456478,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 494577,
+          "direct": 184453
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 456478,
+          "direct": 360345
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 494577,
+          "direct": 360345
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 494577,
+          "direct": 360345
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 499743,
+          "direct": 360345
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 58.63739,
+        "median": 58,
+        "stdDev": 2.2418875948353625,
+        "min": 54,
+        "max": 63,
+        "p10": 55,
+        "p25": 57,
+        "p75": 60,
+        "p90": 61
+      }
+    },
+    {
+      "id": "atletico-mg",
+      "club": "Atlético Mineiro",
+      "currentPosition": 7,
+      "currentPoints": 51,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        3561,
+        44006,
+        97779,
+        173851,
+        109432,
+        50081,
+        17927,
+        3360,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 47567,
+          "direct": 3561
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 145346,
+          "direct": 3561
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 145346,
+          "direct": 3561
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 319197,
+          "direct": 3561
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 145346,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 319197,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 319197,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 428629,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 145346,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 319197,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 319197,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 428629,
+          "direct": 47567
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 319197,
+          "direct": 145346
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 428629,
+          "direct": 145346
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 428629,
+          "direct": 145346
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 478710,
+          "direct": 145346
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 55.604546,
+        "median": 55,
+        "stdDev": 2.2334596781413247,
+        "min": 51,
+        "max": 60,
+        "p10": 52,
+        "p25": 54,
+        "p75": 57,
+        "p90": 58
+      }
+    },
+    {
+      "id": "santos",
+      "club": "Santos FC",
+      "currentPosition": 8,
+      "currentPoints": 50,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        563,
+        11662,
+        39570,
+        120903,
+        177658,
+        96330,
+        38669,
+        13246,
+        1367,
+        32,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 12225,
+          "direct": 563
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 51795,
+          "direct": 563
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 51795,
+          "direct": 563
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 172698,
+          "direct": 563
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 51795,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 172698,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 172698,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 350356,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 51795,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 172698,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 172698,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 350356,
+          "direct": 12225
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 172698,
+          "direct": 51795
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 350356,
+          "direct": 51795
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 350356,
+          "direct": 51795
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 446686,
+          "direct": 51795
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 54.582278,
+        "median": 54,
+        "stdDev": 2.2533686628509617,
+        "min": 50,
+        "max": 59,
+        "p10": 51,
+        "p25": 53,
+        "p75": 56,
+        "p90": 57
+      }
+    },
+    {
+      "id": "bragantino",
+      "club": "Red Bull Bragantino",
+      "currentPosition": 9,
+      "currentPoints": 47,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        202,
+        3756,
+        29030,
+        82081,
+        168477,
+        119355,
+        79315,
+        15554,
+        2080,
+        144,
+        6,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 202,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 3958,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 3958,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 32988,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 3958,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 32988,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 32988,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 115069,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 3958,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 32988,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 32988,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 115069,
+          "direct": 202
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 32988,
+          "direct": 3958
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 115069,
+          "direct": 3958
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 115069,
+          "direct": 3958
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 283546,
+          "direct": 3958
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 51.370314,
+        "median": 51,
+        "stdDev": 2.227106091182586,
+        "min": 47,
+        "max": 56,
+        "p10": 48,
+        "p25": 50,
+        "p75": 53,
+        "p90": 54
+      }
+    },
+    {
+      "id": "vasco",
+      "club": "Vasco da Gama SAF",
+      "currentPosition": 10,
+      "currentPoints": 47,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        196,
+        3015,
+        21683,
+        50040,
+        101998,
+        147624,
+        140933,
+        28844,
+        5094,
+        541,
+        31,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 196,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 3211,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 3211,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 24894,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 3211,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 24894,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 24894,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 74934,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 3211,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 24894,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 24894,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 74934,
+          "direct": 196
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 24894,
+          "direct": 3211
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 74934,
+          "direct": 3211
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 74934,
+          "direct": 3211
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 176932,
+          "direct": 3211
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 50.948878,
+        "median": 51,
+        "stdDev": 2.173645909778148,
+        "min": 47,
+        "max": 56,
+        "p10": 48,
+        "p25": 50,
+        "p75": 53,
+        "p90": 54
+      }
+    },
+    {
+      "id": "sao-paulo",
+      "club": "São Paulo",
+      "currentPosition": 11,
+      "currentPoints": 44,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        148,
+        1611,
+        8432,
+        27712,
+        67860,
+        140432,
+        151948,
+        64552,
+        24375,
+        9514,
+        2828,
+        550,
+        38,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 148,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 1759,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 1759,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 10191,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 1759,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 10191,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 10191,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 37903,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 1759,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 10191,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 10191,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 37903,
+          "direct": 148
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 10191,
+          "direct": 1759
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 37903,
+          "direct": 1759
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 37903,
+          "direct": 1759
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 105763,
+          "direct": 1759
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 49.665072,
+        "median": 50,
+        "stdDev": 2.483339532733226,
+        "min": 44,
+        "max": 56,
+        "p10": 47,
+        "p25": 48,
+        "p75": 51,
+        "p90": 53
+      }
+    },
+    {
+      "id": "botafogo",
+      "club": "Botafogo",
+      "currentPosition": 12,
+      "currentPoints": 42,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        815,
+        7052,
+        25256,
+        65366,
+        157886,
+        102459,
+        60108,
+        40969,
+        28403,
+        10582,
+        1104,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 815,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 815,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 815,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 815,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 7867,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 46.452444,
+        "median": 46,
+        "stdDev": 2.2538665503633695,
+        "min": 42,
+        "max": 51,
+        "p10": 43,
+        "p25": 45,
+        "p75": 48,
+        "p90": 49
+      }
+    },
+    {
+      "id": "coritiba",
+      "club": "Coritiba SAF",
+      "currentPosition": 13,
+      "currentPoints": 42,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        13,
+        216,
+        1817,
+        8397,
+        42098,
+        80147,
+        86246,
+        97569,
+        118160,
+        57922,
+        7415,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 229,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 44.188246,
+        "median": 44,
+        "stdDev": 1.9128861553883303,
+        "min": 42,
+        "max": 51,
+        "p10": 42,
+        "p25": 43,
+        "p75": 45,
+        "p90": 47
+      }
+    },
+    {
+      "id": "vitoria",
+      "club": "Vitória",
+      "currentPosition": 14,
+      "currentPoints": 41,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        13,
+        378,
+        2932,
+        10517,
+        51423,
+        81903,
+        92973,
+        83739,
+        79381,
+        73955,
+        22786,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 13,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 391,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 44.095494,
+        "median": 44,
+        "stdDev": 2.089475268090622,
+        "min": 41,
+        "max": 50,
+        "p10": 41,
+        "p25": 42,
+        "p75": 45,
+        "p90": 47
+      }
+    },
+    {
+      "id": "mirassol",
+      "club": "Mirassol",
+      "currentPosition": 15,
+      "currentPoints": 41,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        160,
+        2484,
+        12382,
+        57302,
+        76040,
+        82881,
+        82673,
+        71582,
+        61770,
+        52460,
+        266,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 160,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 44.597066,
+        "median": 45,
+        "stdDev": 2.1685105929240818,
+        "min": 41,
+        "max": 50,
+        "p10": 42,
+        "p25": 43,
+        "p75": 46,
+        "p90": 47
+      }
+    },
+    {
+      "id": "corinthians",
+      "club": "Corinthians",
+      "currentPosition": 16,
+      "currentPoints": 40,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        136,
+        3085,
+        12646,
+        55599,
+        74770,
+        80810,
+        85982,
+        74238,
+        59849,
+        52194,
+        691,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 136,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 44.02221,
+        "median": 44,
+        "stdDev": 2.1825188924495165,
+        "min": 40,
+        "max": 49,
+        "p10": 41,
+        "p25": 43,
+        "p75": 46,
+        "p90": 47
+      }
+    },
+    {
+      "id": "internacional",
+      "club": "Internacional",
+      "currentPosition": 17,
+      "currentPoints": 38,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1433,
+        17569,
+        35643,
+        55864,
+        66504,
+        78204,
+        141867,
+        101527,
+        1389,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 42.67486,
+        "median": 42,
+        "stdDev": 2.147945059914374,
+        "min": 38,
+        "max": 47,
+        "p10": 40,
+        "p25": 41,
+        "p75": 44,
+        "p90": 45
+      }
+    },
+    {
+      "id": "gremio",
+      "club": "Grêmio",
+      "currentPosition": 18,
+      "currentPoints": 38,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        456,
+        7803,
+        17457,
+        30919,
+        39699,
+        49464,
+        93326,
+        256104,
+        4772,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 41.587672,
+        "median": 42,
+        "stdDev": 2.148896838013854,
+        "min": 38,
+        "max": 47,
+        "p10": 39,
+        "p25": 40,
+        "p75": 43,
+        "p90": 44
+      }
+    },
+    {
+      "id": "remo",
+      "club": "Remo",
+      "currentPosition": 19,
+      "currentPoints": 32,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        17,
+        691,
+        6410,
+        492882,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 35.086002,
+        "median": 35,
+        "stdDev": 2.0635458938398115,
+        "min": 32,
+        "max": 41,
+        "p10": 32,
+        "p25": 33,
+        "p75": 36,
+        "p90": 38
+      }
+    },
+    {
+      "id": "chapecoense",
+      "club": "Chapecoense",
+      "currentPosition": 20,
+      "currentPoints": 21,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        500000
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 23.128308,
+        "median": 23,
+        "stdDev": 1.878386823086748,
+        "min": 21,
+        "max": 30,
+        "p10": 21,
+        "p25": 22,
+        "p75": 24,
+        "p90": 25
+      }
+    }
+  ],
+  "pointsByPosition": [
+    {
+      "points": 21,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        122256
+      ]
+    },
+    {
+      "points": 22,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        118567
+      ]
+    },
+    {
+      "points": 23,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        37349
+      ]
+    },
+    {
+      "points": 24,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        111375
+      ]
+    },
+    {
+      "points": 25,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        64867
+      ]
+    },
+    {
+      "points": 26,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        9537
+      ]
+    },
+    {
+      "points": 27,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        26564
+      ]
+    },
+    {
+      "points": 28,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7569
+      ]
+    },
+    {
+      "points": 30,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1916
+      ]
+    },
+    {
+      "points": 32,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        53595,
+        0
+      ]
+    },
+    {
+      "points": 33,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        88560,
+        0
+      ]
+    },
+    {
+      "points": 34,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        44524,
+        0
+      ]
+    },
+    {
+      "points": 35,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        112870,
+        0
+      ]
+    },
+    {
+      "points": 36,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        98583,
+        0
+      ]
+    },
+    {
+      "points": 37,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        22332,
+        0
+      ]
+    },
+    {
+      "points": 38,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        719,
+        43114,
+        52911,
+        0
+      ]
+    },
+    {
+      "points": 39,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        8200,
+        94545,
+        21451,
+        0
+      ]
+    },
+    {
+      "points": 40,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        15272,
+        77653,
+        1544,
+        0
+      ]
+    },
+    {
+      "points": 41,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        478,
+        17377,
+        126864,
+        180338,
+        3630,
+        0
+      ]
+    },
+    {
+      "points": 42,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7,
+        373,
+        6620,
+        48688,
+        169404,
+        234375,
+        90745,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 43,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        397,
+        6754,
+        41241,
+        117542,
+        153355,
+        76468,
+        10726,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 44,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5877,
+        49421,
+        146174,
+        199176,
+        129104,
+        35558,
+        2832,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 45,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1175,
+        47291,
+        160435,
+        198488,
+        112031,
+        28807,
+        2507,
+        46,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 46,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        7687,
+        90932,
+        132795,
+        72878,
+        17947,
+        1743,
+        31,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 47,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2908,
+        47454,
+        155232,
+        112579,
+        31157,
+        4027,
+        209,
+        6,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 48,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        432,
+        30767,
+        145127,
+        140921,
+        33363,
+        3316,
+        109,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 49,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3960,
+        51771,
+        108635,
+        44470,
+        3883,
+        124,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 50,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        695,
+        28436,
+        137847,
+        121357,
+        12824,
+        395,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 51,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        153,
+        14942,
+        130490,
+        184632,
+        60695,
+        2049,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 52,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1930,
+        30343,
+        86309,
+        41750,
+        4774,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 53,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        12056,
+        99899,
+        154360,
+        44154,
+        3043,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 54,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        7,
+        1945,
+        67452,
+        174561,
+        81739,
+        5985,
+        53,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 55,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        505,
+        16857,
+        101871,
+        85443,
+        8253,
+        113,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 56,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        3213,
+        42911,
+        122447,
+        66319,
+        6021,
+        73,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 57,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        299,
+        22034,
+        119578,
+        138227,
+        25219,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 58,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        4911,
+        85927,
+        162271,
+        42954,
+        2372,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 59,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        8845,
+        60097,
+        59741,
+        10457,
+        207,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 60,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        41245,
+        158251,
+        75504,
+        2453,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 61,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        88466,
+        116122,
+        18943,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 62,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        45596,
+        8066,
+        346,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 63,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        6317,
+        120088,
+        45778,
+        1904,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 64,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        28003,
+        95200,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 65,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        27197,
+        29699,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 66,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        77874,
+        44260,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 67,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        117273,
+        18624,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 68,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        37017,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 69,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        106903,
+        2767,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 70,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        64568,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 72,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        34848,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 73,
+      "positionCounts": [
+        0,
+        0,
+        2882,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 74,
+      "positionCounts": [
+        0,
+        0,
+        10364,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 75,
+      "positionCounts": [
+        0,
+        0,
+        11880,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 76,
+      "positionCounts": [
+        0,
+        0,
+        38344,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 77,
+      "positionCounts": [
+        0,
+        0,
+        75575,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 78,
+      "positionCounts": [
+        0,
+        0,
+        38782,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 79,
+      "positionCounts": [
+        0,
+        1014,
+        118274,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 80,
+      "positionCounts": [
+        0,
+        9016,
+        114675,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 81,
+      "positionCounts": [
+        0,
+        10839,
+        3628,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 82,
+      "positionCounts": [
+        0,
+        57765,
+        85596,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 83,
+      "positionCounts": [
+        0,
+        87062,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 84,
+      "positionCounts": [
+        0,
+        39378,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 85,
+      "positionCounts": [
+        0,
+        122768,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 86,
+      "positionCounts": [
+        0,
+        98912,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "points": 88,
+      "positionCounts": [
+        0,
+        73246,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "pointCurve": {
+    "simulationCount": 500000,
+    "points": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      30,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      88
+    ],
+    "masks": [
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        524288
+      ],
+      [
+        262144
+      ],
+      [
+        262144
+      ],
+      [
+        262144
+      ],
+      [
+        262144
+      ],
+      [
+        262144
+      ],
+      [
+        262144
+      ],
+      [
+        262144,
+        131072,
+        393216,
+        458752,
+        196608
+      ],
+      [
+        131072,
+        393216,
+        262144,
+        196608,
+        65536,
+        458752
+      ],
+      [
+        131072,
+        65536,
+        196608,
+        262144,
+        393216
+      ],
+      [
+        65536,
+        131072,
+        229376,
+        196608,
+        458752,
+        98304,
+        393216,
+        32768,
+        262144,
+        245760,
+        491520,
+        114688,
+        507904
+      ],
+      [
+        32768,
+        65536,
+        229376,
+        16384,
+        98304,
+        196608,
+        245760,
+        131072,
+        114688,
+        122880,
+        49152,
+        57344,
+        253952,
+        24576,
+        126976,
+        28672,
+        258048,
+        61440,
+        8192,
+        63488,
+        129024,
+        12288,
+        30720,
+        260096
+      ],
+      [
+        16384,
+        196608,
+        49152,
+        65536,
+        32768,
+        98304,
+        8192,
+        114688,
+        131072,
+        24576,
+        57344,
+        12288,
+        6144,
+        4096,
+        229376,
+        28672,
+        61440,
+        122880,
+        245760,
+        30720,
+        14336,
+        63488,
+        2048,
+        126976,
+        253952,
+        129024,
+        258048
+      ],
+      [
+        49152,
+        32768,
+        8192,
+        57344,
+        24576,
+        16384,
+        12288,
+        98304,
+        4096,
+        28672,
+        65536,
+        122880,
+        131072,
+        6144,
+        114688,
+        14336,
+        2048,
+        126976,
+        245760,
+        61440,
+        63488,
+        229376,
+        129024,
+        196608,
+        30720,
+        253952,
+        258048
+      ],
+      [
+        8192,
+        12288,
+        24576,
+        4096,
+        14336,
+        16384,
+        28672,
+        2048,
+        57344,
+        6144,
+        30720,
+        32768,
+        98304,
+        65536,
+        49152,
+        114688,
+        122880,
+        61440,
+        126976,
+        63488,
+        3072,
+        64512,
+        7168,
+        15360,
+        1024,
+        129024,
+        31744,
+        196608,
+        253952,
+        229376,
+        245760,
+        258048
+      ],
+      [
+        4096,
+        2048,
+        8192,
+        6144,
+        12288,
+        1024,
+        14336,
+        24576,
+        16384,
+        32768,
+        28672,
+        3072,
+        49152,
+        30720,
+        7168,
+        57344,
+        61440,
+        15360,
+        31744,
+        98304,
+        65536,
+        63488,
+        131072,
+        114688,
+        122880
+      ],
+      [
+        2048,
+        1024,
+        4096,
+        6144,
+        3072,
+        28672,
+        24576,
+        12288,
+        8192,
+        30720,
+        14336,
+        7168,
+        7680,
+        512,
+        1536,
+        15360,
+        3584,
+        16384,
+        57344,
+        61440,
+        63488,
+        49152,
+        31744,
+        15872,
+        32768,
+        32256,
+        122880,
+        126976,
+        114688,
+        129024,
+        64512
+      ],
+      [
+        2048,
+        1536,
+        3072,
+        6144,
+        1024,
+        15360,
+        7168,
+        4096,
+        512,
+        3584,
+        7680,
+        12288,
+        8192,
+        1792,
+        24576,
+        15872,
+        7936,
+        14336,
+        3840,
+        768,
+        30720,
+        28672,
+        31744,
+        16384,
+        16128,
+        61440
+      ],
+      [
+        1024,
+        512,
+        1536,
+        6144,
+        4096,
+        2048,
+        768,
+        3072,
+        3584,
+        256,
+        15360,
+        7680,
+        1792,
+        7168,
+        3840,
+        12288,
+        8192,
+        14336,
+        7936,
+        28672
+      ],
+      [
+        512,
+        1536,
+        1024,
+        3072,
+        256,
+        1792,
+        3584,
+        2048,
+        768,
+        6144,
+        7168,
+        384,
+        3840,
+        896,
+        128,
+        4096,
+        1920,
+        7680,
+        3968,
+        14336,
+        7936,
+        15360
+      ],
+      [
+        1024,
+        256,
+        512,
+        768,
+        1536,
+        1792,
+        128,
+        384,
+        3584,
+        896,
+        3840,
+        1920,
+        192,
+        3072,
+        1984,
+        960,
+        2048,
+        3968,
+        448,
+        4032,
+        7680,
+        64,
+        7936
+      ],
+      [
+        512,
+        128,
+        256,
+        768,
+        384,
+        64,
+        1024,
+        896,
+        448,
+        1536,
+        192,
+        1792,
+        960,
+        1920,
+        1984
+      ],
+      [
+        256,
+        512,
+        448,
+        896,
+        128,
+        384,
+        768,
+        192,
+        64,
+        1024,
+        1792,
+        1536,
+        1920,
+        960,
+        1984
+      ],
+      [
+        128,
+        256,
+        384,
+        64,
+        192,
+        512,
+        224,
+        896,
+        448,
+        768,
+        960,
+        480,
+        96,
+        32,
+        992,
+        496,
+        1984,
+        1792,
+        1920,
+        112,
+        1536,
+        240
+      ],
+      [
+        96,
+        128,
+        64,
+        32,
+        256,
+        16,
+        192,
+        48,
+        384,
+        224,
+        512,
+        112,
+        768,
+        480,
+        448,
+        240,
+        896
+      ],
+      [
+        16,
+        64,
+        32,
+        128,
+        192,
+        96,
+        480,
+        384,
+        224,
+        240,
+        48,
+        256,
+        448,
+        112,
+        768,
+        960,
+        896,
+        496,
+        992
+      ],
+      [
+        96,
+        16,
+        112,
+        64,
+        32,
+        192,
+        128,
+        48,
+        224,
+        240,
+        56,
+        24,
+        120,
+        8,
+        248
+      ],
+      [
+        32,
+        48,
+        64,
+        16,
+        96,
+        112,
+        8,
+        24,
+        192,
+        128,
+        56,
+        224,
+        120,
+        240
+      ],
+      [
+        32,
+        64,
+        48,
+        24,
+        16,
+        8,
+        112,
+        96,
+        56,
+        128,
+        120,
+        192,
+        224
+      ],
+      [
+        16,
+        32,
+        8,
+        48,
+        24,
+        56,
+        112,
+        96,
+        120
+      ],
+      [
+        16,
+        8,
+        24,
+        32,
+        48,
+        56
+      ],
+      [
+        8,
+        16,
+        32
+      ],
+      [
+        8,
+        4,
+        16,
+        24,
+        48,
+        12,
+        28,
+        56,
+        60
+      ],
+      [
+        8,
+        4,
+        12
+      ],
+      [
+        12,
+        4,
+        8
+      ],
+      [
+        8,
+        4,
+        12
+      ],
+      [
+        4,
+        8,
+        12
+      ],
+      [
+        4
+      ],
+      [
+        12,
+        4
+      ],
+      [
+        4
+      ],
+      [
+        4
+      ],
+      [
+        2
+      ],
+      [
+        2
+      ],
+      [
+        2
+      ],
+      [
+        2
+      ],
+      [
+        2
+      ],
+      [
+        2
+      ],
+      [
+        2,
+        1,
+        3
+      ],
+      [
+        2,
+        3,
+        1
+      ],
+      [
+        2,
+        1
+      ],
+      [
+        2,
+        1,
+        3
+      ],
+      [
+        1
+      ],
+      [
+        1
+      ],
+      [
+        1
+      ],
+      [
+        1
+      ],
+      [
+        1
+      ]
+    ],
+    "counts": [
+      [
+        122256
+      ],
+      [
+        118567
+      ],
+      [
+        37349
+      ],
+      [
+        111375
+      ],
+      [
+        64867
+      ],
+      [
+        9537
+      ],
+      [
+        26564
+      ],
+      [
+        7569
+      ],
+      [
+        1916
+      ],
+      [
+        53595
+      ],
+      [
+        88560
+      ],
+      [
+        44524
+      ],
+      [
+        112870
+      ],
+      [
+        98583
+      ],
+      [
+        22332
+      ],
+      [
+        48301,
+        37867,
+        4528,
+        82,
+        637
+      ],
+      [
+        85949,
+        4045,
+        17197,
+        4342,
+        3649,
+        209
+      ],
+      [
+        73879,
+        11577,
+        3695,
+        1465,
+        79
+      ],
+      [
+        64171,
+        124444,
+        6473,
+        46585,
+        726,
+        8313,
+        1708,
+        1995,
+        1071,
+        277,
+        118,
+        194,
+        7
+      ],
+      [
+        53107,
+        103546,
+        16205,
+        5829,
+        58485,
+        34409,
+        3921,
+        35688,
+        15151,
+        2012,
+        17302,
+        2439,
+        494,
+        1175,
+        121,
+        76,
+        27,
+        134,
+        127,
+        2,
+        3,
+        8,
+        1,
+        1
+      ],
+      [
+        53554,
+        3689,
+        32924,
+        41430,
+        82376,
+        22234,
+        14103,
+        6176,
+        5179,
+        14839,
+        6113,
+        2488,
+        118,
+        1500,
+        1443,
+        1761,
+        575,
+        993,
+        354,
+        86,
+        116,
+        18,
+        55,
+        84,
+        57,
+        4,
+        4
+      ],
+      [
+        39248,
+        43797,
+        51306,
+        16479,
+        42464,
+        74190,
+        16829,
+        12455,
+        14659,
+        9878,
+        8504,
+        2993,
+        290,
+        2031,
+        8600,
+        1536,
+        1412,
+        441,
+        635,
+        3120,
+        162,
+        921,
+        23,
+        756,
+        713,
+        201,
+        29
+      ],
+      [
+        76445,
+        47046,
+        36277,
+        64398,
+        9247,
+        35908,
+        15757,
+        16445,
+        7302,
+        17669,
+        2531,
+        6597,
+        708,
+        258,
+        9770,
+        801,
+        508,
+        2543,
+        172,
+        344,
+        332,
+        10,
+        418,
+        214,
+        134,
+        14,
+        67,
+        8,
+        6,
+        11,
+        16,
+        5
+      ],
+      [
+        79979,
+        58696,
+        37857,
+        23591,
+        21334,
+        3480,
+        4101,
+        6471,
+        7829,
+        617,
+        2197,
+        3034,
+        679,
+        326,
+        1006,
+        330,
+        83,
+        157,
+        10,
+        12,
+        8,
+        11,
+        1,
+        10,
+        1
+      ],
+      [
+        94240,
+        22452,
+        55262,
+        31356,
+        16207,
+        1242,
+        1356,
+        12061,
+        9472,
+        477,
+        5348,
+        5415,
+        295,
+        533,
+        1208,
+        933,
+        823,
+        679,
+        76,
+        50,
+        16,
+        48,
+        71,
+        44,
+        12,
+        5,
+        2,
+        2,
+        1,
+        1,
+        1
+      ],
+      [
+        79282,
+        13203,
+        35937,
+        13086,
+        84130,
+        362,
+        5202,
+        11724,
+        11162,
+        5183,
+        726,
+        1174,
+        691,
+        192,
+        25,
+        61,
+        25,
+        925,
+        93,
+        119,
+        26,
+        38,
+        10,
+        9,
+        3,
+        1
+      ],
+      [
+        80667,
+        34494,
+        13148,
+        1608,
+        1568,
+        28700,
+        1691,
+        11844,
+        1584,
+        1490,
+        3,
+        75,
+        697,
+        535,
+        80,
+        51,
+        29,
+        39,
+        2,
+        2
+      ],
+      [
+        89179,
+        30735,
+        80025,
+        5015,
+        11875,
+        3549,
+        1592,
+        5701,
+        12219,
+        157,
+        114,
+        252,
+        200,
+        247,
+        105,
+        87,
+        83,
+        32,
+        8,
+        1,
+        3,
+        1
+      ],
+      [
+        24357,
+        67984,
+        102807,
+        42212,
+        24820,
+        8715,
+        3688,
+        6283,
+        832,
+        3878,
+        352,
+        889,
+        28,
+        649,
+        22,
+        46,
+        157,
+        55,
+        51,
+        2,
+        1,
+        4,
+        1
+      ],
+      [
+        29841,
+        19910,
+        67355,
+        8942,
+        8069,
+        727,
+        2966,
+        1111,
+        314,
+        1338,
+        838,
+        417,
+        48,
+        50,
+        3
+      ],
+      [
+        100579,
+        18467,
+        1580,
+        4176,
+        61130,
+        27760,
+        18789,
+        4794,
+        5437,
+        558,
+        1017,
+        1246,
+        214,
+        237,
+        8
+      ],
+      [
+        112070,
+        42280,
+        28677,
+        34662,
+        24893,
+        1193,
+        702,
+        1772,
+        5795,
+        2546,
+        398,
+        197,
+        767,
+        249,
+        23,
+        2,
+        8,
+        18,
+        23,
+        4,
+        4,
+        1
+      ],
+      [
+        7395,
+        67579,
+        78186,
+        7966,
+        6273,
+        84,
+        14832,
+        215,
+        1757,
+        1069,
+        73,
+        187,
+        36,
+        6,
+        177,
+        19,
+        4
+      ],
+      [
+        1282,
+        88799,
+        25853,
+        43080,
+        17064,
+        12644,
+        110,
+        2741,
+        2371,
+        99,
+        1290,
+        2287,
+        805,
+        537,
+        29,
+        11,
+        31,
+        5,
+        2
+      ],
+      [
+        30973,
+        9599,
+        3316,
+        88780,
+        72909,
+        11404,
+        10098,
+        8526,
+        3371,
+        344,
+        100,
+        110,
+        37,
+        50,
+        2
+      ],
+      [
+        111963,
+        29104,
+        21779,
+        49522,
+        15768,
+        3913,
+        1533,
+        2198,
+        1026,
+        1003,
+        1055,
+        333,
+        125,
+        10
+      ],
+      [
+        48869,
+        7352,
+        7545,
+        2136,
+        49819,
+        6437,
+        325,
+        2729,
+        259,
+        169,
+        13,
+        37,
+        1
+      ],
+      [
+        114080,
+        43698,
+        24949,
+        26733,
+        13544,
+        2620,
+        1142,
+        1179,
+        132
+      ],
+      [
+        86157,
+        67370,
+        19433,
+        8411,
+        8869,
+        1663
+      ],
+      [
+        45596,
+        8066,
+        346
+      ],
+      [
+        102039,
+        2885,
+        29300,
+        14071,
+        1330,
+        2901,
+        503,
+        546,
+        28
+      ],
+      [
+        87610,
+        20413,
+        7590
+      ],
+      [
+        2277,
+        24920,
+        27422
+      ],
+      [
+        33943,
+        67557,
+        10317
+      ],
+      [
+        110230,
+        11581,
+        7043
+      ],
+      [
+        37017
+      ],
+      [
+        2767,
+        104136
+      ],
+      [
+        64568
+      ],
+      [
+        34848
+      ],
+      [
+        2882
+      ],
+      [
+        10364
+      ],
+      [
+        11880
+      ],
+      [
+        38344
+      ],
+      [
+        75575
+      ],
+      [
+        38782
+      ],
+      [
+        117625,
+        365,
+        649
+      ],
+      [
+        110906,
+        3769,
+        5247
+      ],
+      [
+        3628,
+        10839
+      ],
+      [
+        67060,
+        39229,
+        18536
+      ],
+      [
+        87062
+      ],
+      [
+        39378
+      ],
+      [
+        122768
+      ],
+      [
+        98912
+      ],
+      [
+        73246
+      ]
+    ]
+  },
+  "backtest": {
+    "cutoffMatches": 300,
+    "matches": 1121,
+    "modelBrier": 0.6133528542814597,
+    "baselineBrier": 0.6327558462712286,
+    "relativeImprovement": 0.030664263481892648,
+    "productionShrinkageMatches": 15,
+    "tableSimulationsPerSeason": 5000,
+    "tableBrier": 0.34385897800000004,
+    "tableBaselineBrier": 0.5071428571428571,
+    "tableRelativeImprovement": 0.32196821239436607,
+    "seasons": [
+      {
+        "year": 2012,
+        "matches": 80,
+        "shrinkageMatches": 12,
+        "modelBrier": 0.6506232600292977,
+        "baselineBrier": 0.660716666666666,
+        "tableBrier": 0.227291648,
+        "tableBaselineBrier": 0.4
+      },
+      {
+        "year": 2013,
+        "matches": 80,
+        "shrinkageMatches": 30,
+        "modelBrier": 0.591253282158851,
+        "baselineBrier": 0.6118836505190318,
+        "tableBrier": 0.369704916,
+        "tableBaselineBrier": 0.6
+      },
+      {
+        "year": 2014,
+        "matches": 80,
+        "shrinkageMatches": 15,
+        "modelBrier": 0.5930120478022188,
+        "baselineBrier": 0.634082858668566,
+        "tableBrier": 0.23206110400000002,
+        "tableBaselineBrier": 0.2
+      },
+      {
+        "year": 2015,
+        "matches": 80,
+        "shrinkageMatches": 10,
+        "modelBrier": 0.6309980877558057,
+        "baselineBrier": 0.6327806712962966,
+        "tableBrier": 0.4480882000000001,
+        "tableBaselineBrier": 0.8
+      },
+      {
+        "year": 2016,
+        "matches": 79,
+        "shrinkageMatches": 15,
+        "modelBrier": 0.5902813485063113,
+        "baselineBrier": 0.6192258701098596,
+        "tableBrier": 0.378627248,
+        "tableBaselineBrier": 0.3
+      },
+      {
+        "year": 2017,
+        "matches": 80,
+        "shrinkageMatches": 12,
+        "modelBrier": 0.6681734509020254,
+        "baselineBrier": 0.6420881602927947,
+        "tableBrier": 0.2652545680000001,
+        "tableBaselineBrier": 0.4
+      },
+      {
+        "year": 2018,
+        "matches": 80,
+        "shrinkageMatches": 20,
+        "modelBrier": 0.5743555270274544,
+        "baselineBrier": 0.6040206181072071,
+        "tableBrier": 0.27982488000000005,
+        "tableBaselineBrier": 0.4
+      },
+      {
+        "year": 2019,
+        "matches": 80,
+        "shrinkageMatches": 20,
+        "modelBrier": 0.6018047796364387,
+        "baselineBrier": 0.6580284274861079,
+        "tableBrier": 0.20778432399999996,
+        "tableBaselineBrier": 0.2
+      },
+      {
+        "year": 2020,
+        "matches": 80,
+        "shrinkageMatches": 15,
+        "modelBrier": 0.6214744056537167,
+        "baselineBrier": 0.612096307346694,
+        "tableBrier": 0.39391034,
+        "tableBaselineBrier": 0.8
+      },
+      {
+        "year": 2021,
+        "matches": 80,
+        "shrinkageMatches": 20,
+        "modelBrier": 0.5634259036053568,
+        "baselineBrier": 0.5723405011408821,
+        "tableBrier": 0.327385868,
+        "tableBaselineBrier": 0.6
+      },
+      {
+        "year": 2022,
+        "matches": 80,
+        "shrinkageMatches": 20,
+        "modelBrier": 0.6050304677930017,
+        "baselineBrier": 0.6516853728954419,
+        "tableBrier": 0.25316122,
+        "tableBaselineBrier": 0.4
+      },
+      {
+        "year": 2023,
+        "matches": 80,
+        "shrinkageMatches": 15,
+        "modelBrier": 0.6407256819298544,
+        "baselineBrier": 0.6625087562254377,
+        "tableBrier": 0.44269352,
+        "tableBaselineBrier": 0.6
+      },
+      {
+        "year": 2024,
+        "matches": 82,
+        "shrinkageMatches": 15,
+        "modelBrier": 0.6555326326563242,
+        "baselineBrier": 0.6762332584310686,
+        "tableBrier": 0.387755848,
+        "tableBaselineBrier": 0.4
+      },
+      {
+        "year": 2025,
+        "matches": 80,
+        "shrinkageMatches": 15,
+        "modelBrier": 0.5989061962022177,
+        "baselineBrier": 0.6196346686051328,
+        "tableBrier": 0.600482008,
+        "tableBaselineBrier": 1
+      }
+    ]
+  },
+  "featureBacktest": {
+    "cutoffMatches": 300,
+    "baselineShrinkageMatches": 20,
+    "productionShrinkageMatches": 20,
+    "h2hShrinkageMatches": 6,
+    "h2hConsistentlyImproves": false,
+    "productionUsesH2H": false,
+    "seasons": [
+      {
+        "year": 2012,
+        "trainingMatches": 300,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 12,
+        "combinedShrinkageMatches": 12,
+        "baseline": {
+          "brier": 0.6486339222633057
+        },
+        "homeAway": {
+          "brier": 0.6444643749180797
+        },
+        "h2h": {
+          "brier": 0.6518007109478473
+        },
+        "combined": {
+          "brier": 0.6444680387861392
+        }
+      },
+      {
+        "year": 2013,
+        "trainingMatches": 680,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 15,
+        "combinedShrinkageMatches": 15,
+        "baseline": {
+          "brier": 0.6005552710289346
+        },
+        "homeAway": {
+          "brier": 0.6092528701395066
+        },
+        "h2h": {
+          "brier": 0.6089387953268897
+        },
+        "combined": {
+          "brier": 0.6138943084527981
+        }
+      },
+      {
+        "year": 2014,
+        "trainingMatches": 1060,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 15,
+        "combinedShrinkageMatches": 15,
+        "baseline": {
+          "brier": 0.6129754701535837
+        },
+        "homeAway": {
+          "brier": 0.5998018113686299
+        },
+        "h2h": {
+          "brier": 0.6249800303385248
+        },
+        "combined": {
+          "brier": 0.615725310021095
+        }
+      },
+      {
+        "year": 2015,
+        "trainingMatches": 1440,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 10,
+        "combinedShrinkageMatches": 12,
+        "baseline": {
+          "brier": 0.6159220853390359
+        },
+        "homeAway": {
+          "brier": 0.6115297769397806
+        },
+        "h2h": {
+          "brier": 0.6132901329310952
+        },
+        "combined": {
+          "brier": 0.6102153868311833
+        }
+      },
+      {
+        "year": 2016,
+        "trainingMatches": 1820,
+        "testMatches": 79,
+        "homeAwayShrinkageMatches": 12,
+        "combinedShrinkageMatches": 12,
+        "baseline": {
+          "brier": 0.6123892602154141
+        },
+        "homeAway": {
+          "brier": 0.5934319188511324
+        },
+        "h2h": {
+          "brier": 0.6226881677709806
+        },
+        "combined": {
+          "brier": 0.6011375804888028
+        }
+      },
+      {
+        "year": 2017,
+        "trainingMatches": 2199,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 10,
+        "combinedShrinkageMatches": 8,
+        "baseline": {
+          "brier": 0.6633305407682999
+        },
+        "homeAway": {
+          "brier": 0.6780692871646083
+        },
+        "h2h": {
+          "brier": 0.6790043443064315
+        },
+        "combined": {
+          "brier": 0.6963021072753388
+        }
+      },
+      {
+        "year": 2018,
+        "trainingMatches": 2579,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 15,
+        "combinedShrinkageMatches": 15,
+        "baseline": {
+          "brier": 0.5910794113374165
+        },
+        "homeAway": {
+          "brier": 0.5750067918856205
+        },
+        "h2h": {
+          "brier": 0.5865020921698172
+        },
+        "combined": {
+          "brier": 0.571591964496818
+        }
+      },
+      {
+        "year": 2019,
+        "trainingMatches": 2959,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 15,
+        "combinedShrinkageMatches": 12,
+        "baseline": {
+          "brier": 0.618589126717905
+        },
+        "homeAway": {
+          "brier": 0.6078874580347919
+        },
+        "h2h": {
+          "brier": 0.624254049150857
+        },
+        "combined": {
+          "brier": 0.6135344444615047
+        }
+      },
+      {
+        "year": 2020,
+        "trainingMatches": 3339,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 12,
+        "combinedShrinkageMatches": 12,
+        "baseline": {
+          "brier": 0.627671779599934
+        },
+        "homeAway": {
+          "brier": 0.6363124250251031
+        },
+        "h2h": {
+          "brier": 0.6284446974774218
+        },
+        "combined": {
+          "brier": 0.6337785631888979
+        }
+      },
+      {
+        "year": 2021,
+        "trainingMatches": 3719,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 15,
+        "combinedShrinkageMatches": 12,
+        "baseline": {
+          "brier": 0.5733883616957527
+        },
+        "homeAway": {
+          "brier": 0.5870309388411366
+        },
+        "h2h": {
+          "brier": 0.575861326564803
+        },
+        "combined": {
+          "brier": 0.5891987335481199
+        }
+      },
+      {
+        "year": 2022,
+        "trainingMatches": 4099,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 20,
+        "combinedShrinkageMatches": 15,
+        "baseline": {
+          "brier": 0.6206868715258189
+        },
+        "homeAway": {
+          "brier": 0.611271612845398
+        },
+        "h2h": {
+          "brier": 0.6212718654618493
+        },
+        "combined": {
+          "brier": 0.6123955269425789
+        }
+      },
+      {
+        "year": 2023,
+        "trainingMatches": 4479,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 20,
+        "combinedShrinkageMatches": 15,
+        "baseline": {
+          "brier": 0.6163696615153659
+        },
+        "homeAway": {
+          "brier": 0.6274303799120675
+        },
+        "h2h": {
+          "brier": 0.6183793267023209
+        },
+        "combined": {
+          "brier": 0.625283543756828
+        }
+      },
+      {
+        "year": 2024,
+        "trainingMatches": 4857,
+        "testMatches": 82,
+        "homeAwayShrinkageMatches": 20,
+        "combinedShrinkageMatches": 20,
+        "baseline": {
+          "brier": 0.6543903779520615
+        },
+        "homeAway": {
+          "brier": 0.6470497499471168
+        },
+        "h2h": {
+          "brier": 0.6472638496275758
+        },
+        "combined": {
+          "brier": 0.6423373913673465
+        }
+      },
+      {
+        "year": 2025,
+        "trainingMatches": 5239,
+        "testMatches": 80,
+        "homeAwayShrinkageMatches": 20,
+        "combinedShrinkageMatches": 20,
+        "baseline": {
+          "brier": 0.5964207560495814
+        },
+        "homeAway": {
+          "brier": 0.5949698646353628
+        },
+        "h2h": {
+          "brier": 0.6010092273177274
+        },
+        "combined": {
+          "brier": 0.5995508374056182
+        }
+      }
+    ]
+  }
+}

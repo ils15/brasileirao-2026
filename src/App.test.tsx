@@ -160,7 +160,7 @@ describe('painel do Brasileirão 2026', () => {
     render(<App />)
 
     const legend = screen.getByRole('group', { name: 'Legenda de zonas da classificação' })
-    expect(legend).toHaveTextContent('Libertadores · 1º–6º*')
+    expect(legend).toHaveTextContent('Libertadores · 1º–6º')
     expect(legend).toHaveTextContent('Sul-Americana · 7º–12º')
     expect(legend).toHaveTextContent('Meio de tabela · 13º–16º')
     expect(legend).toHaveTextContent('Rebaixamento · 17º–20º')
@@ -171,11 +171,11 @@ describe('painel do Brasileirão 2026', () => {
     // A legenda fica acima da tabela e nenhum chip de zona se repete por linha.
     expect(legend.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(table.querySelectorAll('tbody .sr-only')).toHaveLength(20)
-    expect(within(table).queryAllByText('Libertadores · 1º–6º*')).toHaveLength(0)
+    expect(within(table).queryAllByText('Libertadores · 1º–6º')).toHaveLength(0)
 
     const rows = within(table).getAllByRole('row').slice(1)
     // A zona de cada linha continua acessível mesmo sem o texto visível repetido.
-    expect(rows[0]).toHaveAccessibleName(/Flamengo.*Libertadores · 1º–6º\*/)
+    expect(rows[0]).toHaveAccessibleName(/Flamengo.*Libertadores · 1º–6º/)
     expect(rows[6]).toHaveAccessibleName(/Sul-Americana · 7º–12º/)
     expect(rows[12]).toHaveAccessibleName(/Meio de tabela · 13º–16º/)
     expect(rows[16]).toHaveAccessibleName(/Rebaixamento · 17º–20º/)
@@ -205,7 +205,7 @@ describe('painel do Brasileirão 2026', () => {
     await user.click(screen.getByRole('tab', { name: 'Classificações & Análises' }))
     expect(await screen.findByRole('heading', { name: 'Classificações' }, { timeout: LAZY_TIMEOUT })).toBeVisible()
     expect(screen.getByRole('tablist', { name: 'Vistas da classificação' })).toBeInTheDocument()
-    expect((await screen.findAllByText(/Libertadores · 1º–6º\*/, undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText(/Libertadores · 1º–6º/, undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
     expect((await screen.findAllByText('Sul-Americana · 7º–12º', undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
     expect((await screen.findAllByText('Meio de tabela · 13º–16º', undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
     expect((await screen.findAllByText('Rebaixamento · 17º–20º', undefined, { timeout: LAZY_TIMEOUT })).length).toBeGreaterThan(0)
@@ -221,12 +221,12 @@ describe('painel do Brasileirão 2026', () => {
     const kpis = screen.getByRole('region', { name: 'Indicadores da temporada' })
     expect(within(kpis).getByText('Pontos do líder · Flamengo')).toBeInTheDocument()
     expect(within(kpis).getByText('Jogos disputados no corte')).toBeInTheDocument()
-    expect(within(kpis).getByText('Vagas de Libertadores (1º–6º*)')).toBeInTheDocument()
+    expect(within(kpis).getByText('Vagas de Libertadores (1º–6º)')).toBeInTheDocument()
     expect(within(kpis).getByText('Jogos restantes · rodadas + adiados')).toBeInTheDocument()
     const zoneLegend = screen.getByRole('group', { name: 'Legenda de zonas da classificação' })
-    const g6Note = screen.getByText(/G-6 é cenário adotado com redistribuição assumida.*não é automática/i)
-    expect(g6Note).toBeVisible()
-    expect(zoneLegend).toHaveAttribute('aria-describedby', g6Note.id)
+    const scenarioNote = screen.getByText(/Linha da Libertadores: 1º–6º \(1º–4º direto; 5º–6º na pré\).*Sul-Americana 7º–12º/)
+    expect(scenarioNote).toBeVisible()
+    expect(zoneLegend).toHaveAttribute('aria-describedby', scenarioNote.id)
     expect(screen.getByText((_, element) => element?.classList.contains('leader-stat-caption') ?? false)).toHaveTextContent('Classificação derivada do pacote')
     // Prosa de proveniência derivada do metadata da fonte: sem contagem fixa.
     expect(screen.getByText(new RegExp(`classificação calculada dos resultados do pacote; ${escapeRegExp(cbfArchiveProvenance)}`, 'i'))).toBeInTheDocument()

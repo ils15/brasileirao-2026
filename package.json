@@ -18,6 +18,7 @@
     "pack:history": "node scripts/pack-history.mjs",
     "crosscheck": "node scripts/crosscheck-wikipedia.mjs",
     "update:data": "node scripts/update-data.mjs",
+    "projections:json": "node scripts/generate-projections.mjs",
     "fixture:gate": "node scripts/make-gate-fixture.mjs",
     "repro:gate": "node scripts/repro-update-gate.mjs"
   },

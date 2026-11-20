@@ -18,6 +18,10 @@
  *                   Default: `npm run test:data` (contrato de dados). O gate
  *                   completo (`npm test`) roda no workflow, antes da publicação.
  * - `--no-commit`   escreve módulos/snapshots/log e roda o gate, sem `git add/commit`.
+ * - `--no-projections`  não regenera `public/projecoes.json`. Só para harness de
+ *                   reprodução (`repro:gate`, `fixture:gate`), que roda o updater
+ *                   várias vezes: a simulação de 500 mil custa ~18 s e é
+ *                   irrelevante para provar o gate de dados.
  */
 
 export const DEFAULT_TEST_COMMAND = 'npm run test:data'
@@ -56,7 +60,7 @@ export function assertCutoffNotAfterToday({ cutoffUtc, today }) {
 
 /**
  * @param {string[]} argv argumentos após o nome do script
- * @returns {{dryRun: boolean, offline: boolean, today: string | null, cutoff: string | null, testCommand: string, noCommit: boolean}}
+ * @returns {{dryRun: boolean, offline: boolean, today: string | null, cutoff: string | null, testCommand: string, noCommit: boolean, noProjections: boolean}}
  */
 export function parseUpdateArgs(argv = []) {
   const options = {
@@ -66,6 +70,7 @@ export function parseUpdateArgs(argv = []) {
     cutoff: null,
     testCommand: DEFAULT_TEST_COMMAND,
     noCommit: false,
+    noProjections: false,
   }
 
   for (const arg of argv) {
@@ -85,6 +90,11 @@ export function parseUpdateArgs(argv = []) {
 
     if (arg === '--no-commit') {
       options.noCommit = true
+      continue
+    }
+
+    if (arg === '--no-projections') {
+      options.noProjections = true
       continue
     }
 

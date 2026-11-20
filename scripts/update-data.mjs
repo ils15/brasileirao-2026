@@ -8,6 +8,7 @@
  *   node scripts/update-data.mjs             # escreve, roda o gate de dados e commita
  *   node scripts/update-data.mjs --offline --no-commit --today=2026-11-16 \
  *     --test="npx vitest run src/a.test.tsx"  # reprodução determinística sem rede
+ *   node scripts/update-data.mjs --no-projections --no-commit  # sem a simulação de 500 mil
  *
  * Sem rede (CI local/dry/--offline), usa fixtures locais de data/source-snapshots/.
  * O contrato das flags mora em scripts/lib/updateArgs.mjs.
@@ -27,6 +28,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { refreshAdvancedStats } from './backfill-xg-cards.mjs'
+import { generateProjections } from './generate-projections.mjs'
 import { refreshEspnScorers } from './refresh-espn-scorers.mjs'
 import { changedDataPaths, snapshotDataPaths } from './lib/dataBaseline.mjs'
 import { buildFailureReceipt, formatFailureMessage, selectWrittenDirtyPaths, writeFailureReceipt } from './lib/updateFailure.mjs'
@@ -76,6 +78,7 @@ const DATA_PATHS = [
   'src/scorers2026.ts',
   'data/source-snapshots',
   'docs/atualizacoes.md',
+  'public/projecoes.json',
 ]
 
 /**
@@ -439,6 +442,23 @@ async function main() {
   writeFileSync(join(snapshotsDir, 'football-data-BR.csv'), csvText)
   for (const [date, jsonText] of espnSnapshots) writeFileSync(join(snapshotsDir, `espn-scoreboard-${date}.json`), jsonText)
 
+  // 6.1. Projeções publicadas para consumo externo (agentes, outros projetos e
+  // o caminho rápido do app): mesma `runProjectionRaw` do worker, constantes de
+  // produção. Roda **depois** dos módulos porque a simulação lê o pacote
+  // recém-escrito, e só quando há dado novo — o early-return de `changed === 0`
+  // acima garante que um no-op não gera diff no arquivo.
+  if (options.noProjections) {
+    console.log('Projeções puladas (--no-projections).')
+  } else {
+    console.log('Gerando public/projecoes.json...')
+    const projections = await generateProjections()
+    const document = projections.document
+    console.log(
+      `  projeções: ${document.simulations} simulações · semente ${document.seed} · hash ${document.inputHash} · `
+      + `${(projections.bytes / 1024).toFixed(1)} KB em ${projections.durationMs} ms`,
+    )
+  }
+
   // Log de atualizações (entrega pública do histórico): cabeçalho derivado do
   // instante do pacote e entrada com o bloco de fechamento (corte, contagem,
   // adiados). Entradas anteriores são preservadas verbatim.
@@ -462,6 +482,9 @@ async function main() {
     return
   }
 
+  if (!options.noProjections && !existsSync(join(root, 'public/projecoes.json'))) {
+    throw new Error('public/projecoes.json não foi gerado; pacote de dados incompleto, commit abortado.')
+  }
   run('git', ['add', ...DATA_PATHS])
   run('git', ['commit', '-m', `data: atualização pós-rodada ${processingUtcDate} (+${added.length} resultados)`])
   console.log(`Commit criado. O workflow faz push, build e deploy.`)

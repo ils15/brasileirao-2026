@@ -1,13 +1,13 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
-import { getZoneLabel, matchesClubFilter, scorers, standings, SCORERS_SOURCE, type ClubFilter, type Standing } from './data'
+import { getZoneLabel, matchesClubFilter, scorers, standings, SCORERS_SOURCE, zoneLabelsFor, type ClubFilter, type Standing } from './data'
 import { ScorersPanel } from './ScorersPanel'
 import { InfoIcon } from './icons'
 import { ZoneLegend } from './ZoneLegend'
-import { ProjectionProvider } from './ProjectionContext'
+import { ProjectionProvider, useProjection } from './ProjectionContext'
 import { AsyncStatus } from './AsyncStatus'
 import { espnLogoUrlByClub, currentClubs } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
-import { ZONES } from './projectionConfig'
+import { ZONES, resolveLibertadoresZones, type LibertadoresZones } from './projectionConfig'
 import { seasonFacts, cutoffLabel, cutoffSummaryLine, scorersCaptureLabel, scorersCaptureRelation, scorersCoverageNote, updateClock, cbfArchiveProvenance, formatUtcIso } from './seasonFacts'
 import { buildInfo } from './buildInfo'
 
@@ -107,9 +107,9 @@ function normalizeText(value: string): string {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR')
 }
 
-function zoneClass(position: number): string {
-  if (position <= ZONES.libertadores.to) return 'qualification'
-  if (position <= ZONES.sudamericana.to) return 'sudamericana'
+function zoneClass(position: number, zones?: LibertadoresZones): string {
+  if (position <= (zones?.libertadoresTo ?? ZONES.libertadores.to)) return 'qualification'
+  if (position <= (zones?.sudamericanaTo ?? ZONES.sudamericana.to)) return 'sudamericana'
   if (position >= ZONES.relegation.from) return 'relegation'
   return 'middle'
 }
@@ -159,6 +159,60 @@ const standingsColumns: SortableColumn<Standing>[] = [
   { id: 'points', header: 'Pts', accessor: ({ points }) => points, numeric: true },
   { id: 'played', header: 'J', accessor: ({ played }) => played, numeric: true },
 ]
+
+/**
+ * Zonas efetivas dentro do ProjectionProvider: o resultado do worker manda
+ * enquanto existir (reflete o cenário simulado); sem resultado, o próprio
+ * cenário selecionado resolve as fronteiras — G-6 no default.
+ */
+function useActiveZones(): LibertadoresZones {
+  const { result, scenario } = useProjection()
+  return result?.libertadoresZones ?? resolveLibertadoresZones(scenario)
+}
+
+/** KPI da visão geral com a linha da Libertadores do cenário ativo. */
+function LibertadoresSlotsKpi(): JSX.Element {
+  const zones = useActiveZones()
+  return (
+    <div className="kpi-card"><strong className="kpi-value">{zones.libertadoresTo}</strong><span className="kpi-label">Vagas de Libertadores (1º–{zones.libertadoresTo}º)</span></div>
+  )
+}
+
+/** Legenda de zonas da classificação presa ao cenário ativo. */
+function StandingsZonesLegend(): JSX.Element {
+  const zones = useActiveZones()
+  const labels = zoneLabelsFor(zones)
+  return (
+    <>
+      <ZoneLegend ariaLabel="Legenda de zonas da classificação" describedBy="standings-zone-legend-note" zones={zones} />
+      <p className="zone-legend-note" id="standings-zone-legend-note" role="note">
+        Linha da Libertadores: {labels.libertadores.detail}; Sul-Americana {labels.sudamericana.range}. A linha desliza quando uma vaga das copas volta à tabela — ajuste o cenário em Projeções & Simulador.
+      </p>
+    </>
+  )
+}
+
+/** Linha da classificação da visão geral com zona e rótulo acessível dinâmicos. */
+function OverviewStandingsRow({ team, index, customSort }: { team: Standing; index: number; customSort: boolean }): JSX.Element {
+  const zones = useActiveZones()
+  return (
+    <tr className={`standing-row standing-row--${zoneClass(team.position, zones)}`}>
+      <td className="position-cell"><span>{String(index + 1).padStart(2, '0')}</span></td>
+      <th scope="row" className="club-cell">
+        <TeamBadge team={team} />
+        <span className="club-cell-name">{team.club}</span>
+        {customSort && (
+          <span className="official-pos-badge" title={`Posição oficial no campeonato: ${team.position}º`}>
+            {team.position}º oficial
+          </span>
+        )}
+        <span className="sr-only">Zona: {getZoneLabel(team.position, zones)}</span>
+      </th>
+      <td className="points-cell numeric">{team.points}</td>
+      <td className="games-cell numeric">{team.played}</td>
+    </tr>
+  )
+}
 
 function App(): JSX.Element {
   const [query, setQuery] = useState('')
@@ -349,7 +403,7 @@ function App(): JSX.Element {
             <section className="kpi-strip" aria-label="Indicadores da temporada">
               <div className="kpi-card"><strong className="kpi-value">{leader.points}</strong><span className="kpi-label">Pontos do líder · {leader.club}</span></div>
               <div className="kpi-card"><strong className="kpi-value">{seasonFacts.playedCount}<span className="kpi-divider">/{seasonFacts.scheduledCount}</span></strong><span className="kpi-label">Jogos disputados no corte</span></div>
-              <div className="kpi-card"><strong className="kpi-value">{ZONES.libertadores.to}</strong><span className="kpi-label">Vagas de Libertadores (1º–6º*)</span></div>
+              <LibertadoresSlotsKpi />
               <div className="kpi-card"><strong className="kpi-value">{seasonFacts.remainingCount}</strong><span className="kpi-label">Jogos restantes · rodadas + adiados</span></div>
             </section>
 
@@ -380,8 +434,7 @@ function App(): JSX.Element {
                     {filteredStandings.length} {filteredStandings.length === 1 ? 'clube encontrado' : 'clubes encontrados'}
                   </p>
                 </div>
-                <ZoneLegend ariaLabel="Legenda de zonas da classificação" describedBy="standings-g6-note" />
-                <p className="zone-legend-note" id="standings-g6-note" role="note">* O G-6 é cenário adotado com redistribuição assumida; a vaga ao 6º não é automática apenas pela ida do Palmeiras à final da Copa do Brasil.</p>
+                <StandingsZonesLegend />
                 <div className="table-scroll" role="region" aria-label="Tabela classificatória; role para rolagem horizontal em telas pequenas" tabIndex={0}>
                   <table>
                     <thead>
@@ -398,21 +451,7 @@ function App(): JSX.Element {
                     </thead>
                     <tbody>
                       {sortedStandings.map((team, index) => (
-                        <tr className={`standing-row standing-row--${zoneClass(team.position)}`} key={team.club}>
-                          <td className="position-cell"><span>{String(index + 1).padStart(2, '0')}</span></td>
-                          <th scope="row" className="club-cell">
-                            <TeamBadge team={team} />
-                            <span className="club-cell-name">{team.club}</span>
-                            {isCustomStandingsSort && (
-                              <span className="official-pos-badge" title={`Posição oficial no campeonato: ${team.position}º`}>
-                                {team.position}º oficial
-                              </span>
-                            )}
-                            <span className="sr-only">Zona: {getZoneLabel(team.position)}</span>
-                          </th>
-                          <td className="points-cell numeric">{team.points}</td>
-                          <td className="games-cell numeric">{team.played}</td>
-                        </tr>
+                        <OverviewStandingsRow key={team.club} team={team} index={index} customSort={isCustomStandingsSort} />
                       ))}
                       {sortedStandings.length === 0 && (
                         <tr><td className="empty-state" colSpan={4}>Nenhum clube encontrado. Tente outro nome.</td></tr>

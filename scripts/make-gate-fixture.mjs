@@ -170,6 +170,9 @@ function runCandidate({ baseline, baseCutoffUtc, targetDate, pairs, expectedAdde
         join(root, 'scripts/update-data.mjs'),
         '--offline',
         '--no-commit',
+        // A simulação de 500 mil é irrelevante para provar o gate de dados e
+        // custa ~18 s por execução do updater.
+        '--no-projections',
         `--cutoff=${baseCutoffUtc}`,
         `--today=${targetDate}`,
         `--test=${gateCommand}`,

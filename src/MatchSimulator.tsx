@@ -3,7 +3,7 @@ import { currentClubs, remainingFixtures, type RemainingFixture } from './projec
 import { matchProbabilities } from './matchProbabilities'
 import { sampleMatchScore } from './matchModel'
 import { Crest } from './Crest'
-import { ZONES, SIMULATION_SEED } from './projectionConfig'
+import { LEGACY_LIBERTADORES_SCENARIO, ZONES, SIMULATION_SEED, resolveLibertadoresZones } from './projectionConfig'
 import { runScenarioProjection, type ProjectionResult, type UserScore } from './projection'
 import { GearIcon, DiceIcon, TargetIcon, BoltIcon, HomeIcon, BurstIcon, ShieldIcon, ScalesIcon, FireIcon, InfoIcon } from './icons'
 import { groupPendingRounds, type RoundGroup } from './roundGroups'
@@ -59,6 +59,8 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
     [goalProfile],
   )
   const activeMultiplier = activeConfig.multiplier
+  // Sem resultado (componente isolado), vale o cenário default G-6.
+  const zones = result?.libertadoresZones ?? resolveLibertadoresZones(LEGACY_LIBERTADORES_SCENARIO)
 
   // Incrementa/decrementa gols partindo do placar projetado ou do placar atual
   const adjustGoals = (
@@ -582,10 +584,10 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
               </thead>
               <tbody>
                 {simulatedTable.map((team, index) => {
-                  const isG4 = index + 1 <= ZONES.libertadores.to
-                  const isSula = index + 1 <= ZONES.sudamericana.to && !isG4
-                  const isZ4 = index + 1 >= ZONES.relegation.from
-                  const zoneClass = isG4 ? 'qualification' : isSula ? 'sudamericana' : isZ4 ? 'relegation' : 'middle'
+                  const isLibertadores = index + 1 <= zones.libertadoresTo
+                  const isSudamericana = index + 1 <= zones.sudamericanaTo && !isLibertadores
+                  const isRelegation = index + 1 >= ZONES.relegation.from
+                  const zoneClass = isLibertadores ? 'qualification' : isSudamericana ? 'sudamericana' : isRelegation ? 'relegation' : 'middle'
 
                   return (
                     <tr key={team.id} className={`standing-row standing-row--${zoneClass}`}>
@@ -720,7 +722,7 @@ export function MatchSimulator({ result }: { result?: ProjectionResult | null })
               <strong>Placares e Gols Reais:</strong> Os jogos que você define têm seus placares fixados exatamente nos gols informados, alterando pontos, vitórias, gols marcados, gols sofridos e saldo de gols. As demais partidas não definidas são simuladas estocasticamente pela distribuição Poisson com Expected Goals (xG) ajustados por mando de campo.
             </p>
             <p>
-              <strong>Critérios Oficiais CBF (Art. 15):</strong> Pontos, Vitórias, Saldo de Gols, Gols Marcados e Confronto Direto são aplicados em cada uma das 2.000 temporadas simuladas para determinar as probabilidades de Título (1º), Libertadores (1º–6º*), Sul-Americana (7º–12º) e Rebaixamento (17º–20º).
+              <strong>Critérios Oficiais CBF (Art. 15):</strong> Pontos, Vitórias, Saldo de Gols, Gols Marcados e Confronto Direto são aplicados em cada uma das 2.000 temporadas simuladas para determinar as probabilidades de Título (1º), Libertadores (1º–{zones.libertadoresTo}º), Sul-Americana ({zones.sudamericanaFrom}º–{zones.sudamericanaTo}º) e Rebaixamento ({ZONES.relegation.from}º–{ZONES.relegation.to}º).
             </p>
           </div>
         </details>

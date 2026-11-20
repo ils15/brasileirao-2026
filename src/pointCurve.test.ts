@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { buildPointOutcomeCurve, type PointCurveSample } from './pointCurve'
+import {
+  PointOutcomeCurveAccumulator,
+  buildPointOutcomeCurve,
+  buildPointOutcomeCurveFromSnapshot,
+  type PointCurveSample,
+} from './pointCurve'
 
 describe('curva de resultado por pontos finais', () => {
   it('agrega observações clube×simulação, exibe K/N e preserva simulações como clusters no IC', () => {
@@ -87,5 +92,44 @@ describe('curva de resultado por pontos finais', () => {
 
   it('trata uma amostra vazia como não estimável', () => {
     expect(buildPointOutcomeCurve([], 0)).toEqual({ rows: [], inclusiveLibertadores: [], simulationCount: 0 })
+  })
+
+  it('deriva curvas diferentes das mesmas amostras quando a zona muda (posição, não desfecho)', () => {
+    const samples: PointCurveSample[] = [
+      { simulation: 0, club: 'A', points: 50, position: 6 },
+      { simulation: 1, club: 'B', points: 50, position: 7 },
+      { simulation: 2, club: 'C', points: 50, position: 9 },
+    ]
+    const g6 = buildPointOutcomeCurve(samples, 3, { libertadoresTo: 6, sudamericanaTo: 12 })
+    const g9 = buildPointOutcomeCurve(samples, 3, { libertadoresTo: 9, sudamericanaTo: 15 })
+
+    expect(g6.rows.map(({ outcome, successes }) => [outcome, successes])).toEqual([
+      ['libertadores', 1],
+      ['sudamericana', 2],
+    ])
+    expect(g9.rows.map(({ outcome, successes }) => [outcome, successes])).toEqual([
+      ['libertadores', 3],
+    ])
+    expect(g6.rows).not.toEqual(g9.rows)
+  })
+
+  it('reaproveita o agregado bruto (snapshot) para qualquer cenário sem reacumular', () => {
+    const samples: PointCurveSample[] = [
+      { simulation: 0, club: 'A', points: 50, position: 1 },
+      { simulation: 0, club: 'B', points: 50, position: 7 },
+      { simulation: 1, club: 'C', points: 50, position: 3 },
+      { simulation: 1, club: 'D', points: 70, position: 18 },
+    ]
+    const accumulator = new PointOutcomeCurveAccumulator(2)
+    for (const sample of samples) accumulator.add(sample)
+    const snapshot = accumulator.snapshot()
+
+    const g6 = { libertadoresTo: 6, sudamericanaTo: 12 }
+    const g9 = { libertadoresTo: 9, sudamericanaTo: 15 }
+    expect(buildPointOutcomeCurveFromSnapshot(snapshot, g6)).toEqual(buildPointOutcomeCurve(samples, 2, g6))
+    expect(buildPointOutcomeCurveFromSnapshot(snapshot, g9)).toEqual(buildPointOutcomeCurve(samples, 2, g9))
+    expect(buildPointOutcomeCurveFromSnapshot(snapshot, g6).rows).not.toEqual(
+      buildPointOutcomeCurveFromSnapshot(snapshot, g9).rows,
+    )
   })
 })

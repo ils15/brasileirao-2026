@@ -57,7 +57,17 @@ Libertadores, conforme Art. 7 do REC CBF 2026), 13º–16º como meio de tabela 
 17º–20º como rebaixamento. O asterisco marca o cenário adotado pelo painel; a
 redistribuição depende das regras e da sobreposição de classificados, não sendo
 conclusão automática apenas pela ida do Palmeiras à final da Copa do Brasil.
-Resultados de copas e redistribuições não são simulados.
+
+**Cenários de vaga (G-5 a G-9):** resultados de copas não são simulados, mas a
+redistribuição é escolhida pelo usuário. `LibertadoresScenario` modela quatro
+vagas que podem ser devolvidas à tabela — campeão e vice da Copa do Brasil
+(tipo preliminar) e campeões da Libertadores e da Sul-Americana (tipo direto) —
+quando o detentor já estava classificado pelo Brasileirão ou foi rebaixado.
+`resolveLibertadoresZones` resolve a linha (G-5 a G-9), a divisão
+direto/preliminar e a faixa da Sul-Americana (`linha + 1` a `linha + 6`); como
+o mix de tipos muda a divisão, a simulação acumula as 16 combinações em
+`ClubProbability.lineCounts`, indexadas por `scenarioKeyOf` (bitmask 0–15). O
+default sem cenário continua G-6 para preservar o backtest e os testes.
 
 ## 4. Critério adicional no comparador H2H de projeções — **Documentado**
 

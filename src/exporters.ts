@@ -9,6 +9,8 @@
 
 export type ExportValue = string | number | boolean | null
 export type ExportRow = Record<string, ExportValue>
+/** Par chave/valor do preâmbulo do CSV; vira uma linha `# chave,valor`. */
+export type ExportMetadata = ReadonlyArray<readonly [label: string, value: ExportValue]>
 export interface ExportColumn {
   key: string
   header: string
@@ -27,10 +29,14 @@ function escapeCsvCell(value: ExportValue): string {
   return text
 }
 
-export function toCSV(columns: readonly ExportColumn[], rows: readonly ExportRow[]): string {
+export function toCSV(columns: readonly ExportColumn[], rows: readonly ExportRow[], metadata: ExportMetadata = []): string {
   const header = columns.map(({ header }) => escapeCsvCell(header)).join(',')
   const body = rows.map((row) => columns.map(({ key }) => escapeCsvCell(row[key] ?? null)).join(',')).join('\r\n')
-  return `${UTF8_BOM}${header}\r\n${body}`
+  // Preâmbulo `#`: pandas (`comment='#'`) e R (`comment.char='#'`) o ignoram,
+  // enquanto leitores simples o descartam como linha não tabular. Fica entre o
+  // BOM e o cabeçalho para não quebrar a detecção de encoding.
+  const preamble = metadata.map(([label, value]) => `# ${escapeCsvCell(label)},${escapeCsvCell(value)}`).join('\r\n')
+  return `${UTF8_BOM}${preamble ? `${preamble}\r\n` : ''}${header}\r\n${body}`
 }
 
 export function toJson(payload: unknown): string {

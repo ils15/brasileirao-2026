@@ -3,6 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ProjectionPanel } from './ProjectionSection'
 import { runProjection } from './projection'
+import { scenarioFromKey } from './projectionConfig'
+import { EXPECTED_SIMULATION_COUNT } from './ProjectionContext'
 
 const percentFormat = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -23,11 +25,12 @@ describe('painel de projeções', () => {
     // Guia de leitura e duas tabelas com perguntas claras
     expect(screen.getByText(/Em que zona o clube pode terminar\?/)).toBeInTheDocument()
     expect(screen.getByText(/Quantos pontos o clube deve fazer\?/)).toBeInTheDocument()
-    expect(screen.getByText('G-6*:').closest('p')).toHaveTextContent(/cenário adotado neste painel.*não é conclusão automática apenas porque o Palmeiras chegou à final/i)
+    const scenarioNote = screen.getByText('Cenário ativo:').closest('p')!
+    expect(scenarioNote).toHaveTextContent(/Libertadores 1º–6º \(1º–4º direto; 5º–6º na pré\).*6 vagas pela tabela/i)
     const regulationNote = screen.getByText('Regulamento:').closest('p')!
     expect(regulationNote).toHaveTextContent(/Art\. 7.*seis clubes seguintes que não estejam na Libertadores \(7º–12º neste cenário\)/i)
     expect(regulationNote).toHaveTextContent(/redistribuição depende das regras aplicáveis e da sobreposição de classificados/i)
-    expect(screen.getByText(/Posições 7–12: seis melhores não classificados à Libertadores/)).toBeInTheDocument()
+    expect(screen.getByText(/Sul-Americana 7º–12º: seis melhores não classificados à Libertadores/)).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'REC CBF 2026 (Art. 7)' }).getAttribute('href')).toContain('REC_Brasileiro_SA_rie_A_2026')
     const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
     expect(within(zones).getByRole('row', { name: /Flamengo/ })).toBeInTheDocument()
@@ -35,9 +38,10 @@ describe('painel de projeções', () => {
     // Barra empilhada de 5 zonas por linha
     expect(within(zones).getAllByRole('img', { name: /Cenários de/ })).toHaveLength(20)
     const firstClubBar = within(zones).getByRole('img', { name: /Cenários de Flamengo/ })
-    expect(firstClubBar).toHaveAccessibleName(/Campeão .*Libertadores 2º–6º/)
+    expect(firstClubBar).toHaveAccessibleName(/Campeão .*Libertadores direto 2º–4º .*Libertadores pré 5º–6º/)
     const barLegend = screen.getByRole('group', { name: 'Legenda das barras de zonas' })
-    expect(within(barLegend).getByText('Libertadores 2º–6º')).toBeVisible()
+    expect(within(barLegend).getByText('Libertadores direto 2º–4º')).toBeVisible()
+    expect(within(barLegend).getByText('Libertadores pré 5º–6º')).toBeVisible()
     const pointsTable = screen.getByRole('region', { name: /Pontos finais projetados por clube/ })
     expect(within(pointsTable).getAllByRole('row')).toHaveLength(21)
     expect(screen.getByText(/Não são odds nem recomendação de apostas/)).toBeInTheDocument()
@@ -273,9 +277,9 @@ describe('painel de projeções', () => {
     // Badge de variação: valor absoluto + percentual em todas as linhas
     expect(within(points).getAllByText(/ pts \(/)).toHaveLength(20)
 
-    await user.click(screen.getByRole('button', { name: 'CSV' }))
+    await user.click(screen.getByRole('button', { name: /Exportar projeções do cenário G-6 em CSV/ }))
     expect(createObjectURL).toHaveBeenCalledTimes(1)
-    expect((click.mock.instances.at(-1) as HTMLAnchorElement).download).toContain('brasileirao-2026-projecoes')
+    expect((click.mock.instances.at(-1) as HTMLAnchorElement).download).toMatch(/^projecoes-g6-\d{8}-\d{4}\.csv$/)
 
     // Ordenação por título troca o estado do cabeçalho
     const titleHeaderButton = within(zones).getByRole('button', { name: /^Título/ })
@@ -695,7 +699,7 @@ describe('painel de projeções', () => {
     const result = runProjection({ simulations: 8, seed: 123 })
     const firstClub = result.clubProbabilities[0]!
     result.clubProbabilities = [
-      { ...firstClub, title: 0.1, libertadores: 0.4, sudamericana: 0.2, relegation: 0.1 },
+      { ...firstClub, title: 0.1, libertadores: 0.4, libertadoresDirect: 0.3, sudamericana: 0.2, relegation: 0.1 },
       ...result.clubProbabilities.slice(1),
     ]
     render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
@@ -712,9 +716,17 @@ describe('painel de projeções', () => {
     expect(widths[3]).toBeCloseTo(30)
     expect(widths[4]).toBeCloseTo(10)
     expect(widths.reduce((sum, width) => sum + width, 0)).toBeCloseTo(100)
+    // A faixa da Libertadores segue um único segmento, com o miolo dividido
+    // entre vaga direta (2º–4º) e preliminar (5º–6º).
+    const nestedWidths = [...bar.querySelectorAll('.zone-bar-segment--split .zone-bar-sub')]
+      .map((segment) => Number.parseFloat((segment as HTMLElement).style.width))
+    expect(nestedWidths).toHaveLength(2)
+    expect(nestedWidths[0]).toBeCloseTo((20 / 30) * 100)
+    expect(nestedWidths[1]).toBeCloseTo(100 - (20 / 30) * 100)
     expect(displayedChances).toEqual([
       percentFormat.format(0.1),
       percentFormat.format(0.4),
+      percentFormat.format(0.3),
       percentFormat.format(0.2),
       percentFormat.format(0.1),
     ])
@@ -723,6 +735,99 @@ describe('painel de projeções', () => {
   it('informa quando as simulações ainda estão em processamento', () => {
     render(<ProjectionPanel result={null} status="loading" onRetry={vi.fn()} />)
     expect(screen.getByRole('status')).toHaveTextContent('Carregando simulações')
+  })
+
+  it('anuncia o número de simulações do resultado, não a constante de produção', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const meta = document.querySelector('.projection-meta')
+    expect(meta).toHaveTextContent('8 simulações')
+    expect(meta).not.toHaveTextContent('500.000')
+  })
+
+  it('mostra o orçamento esperado do ambiente antes do primeiro resultado', () => {
+    render(<ProjectionPanel result={null} status="loading" onRetry={vi.fn()} />)
+    expect(document.querySelector('.projection-meta')).toHaveTextContent(`${EXPECTED_SIMULATION_COUNT.toLocaleString('pt-BR')} simulações`)
+  })
+
+  it('expõe o seletor de cenário e aplica as devoluções marcadas', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    const onScenarioChange = vi.fn()
+    const scenario = scenarioFromKey(1)
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} scenario={scenario} onScenarioChange={onScenarioChange} />)
+
+    const line = screen.getByRole('combobox', { name: 'Linha da Libertadores' })
+    expect(line).toHaveValue('auto')
+    expect(within(line).getByRole('option', { name: 'Automático (G-6)' })).toBeInTheDocument()
+
+    const flags = screen.getByRole('group', { name: 'Vagas devolvidas à tabela' })
+    const copaChampion = within(flags).getByRole('checkbox', { name: /Campeão da Copa do Brasil devolve a vaga/ })
+    const libertadoresChampion = within(flags).getByRole('checkbox', { name: /Campeão da Libertadores devolve a vaga/ })
+    expect(copaChampion).toBeChecked()
+    expect(libertadoresChampion).not.toBeChecked()
+
+    await user.click(libertadoresChampion)
+    expect(onScenarioChange).toHaveBeenCalledWith({ ...scenario, libertadoresCampeaoDevolvido: true })
+  })
+
+  it('converte o dropdown no cenário canônico: G-9 liga as quatro devoluções', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    const onScenarioChange = vi.fn()
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} scenario={scenarioFromKey(1)} onScenarioChange={onScenarioChange} />)
+
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Linha da Libertadores' }), '9')
+    expect(onScenarioChange).toHaveBeenCalledWith({
+      copaDoBrasilCampeaoDevolvido: true,
+      copaDoBrasilViceDevolvido: true,
+      libertadoresCampeaoDevolvido: true,
+      sudamericanaCampeaoDevolvido: true,
+    })
+  })
+
+  it('mostra no resumo as faixas de G-6 e G-9', { timeout: 30_000 }, () => {
+    const g6 = runProjection({ simulations: 8, seed: 123, scenario: scenarioFromKey(1) })
+    const { unmount } = render(<ProjectionPanel result={g6} status="ready" onRetry={vi.fn()} scenario={scenarioFromKey(1)} onScenarioChange={vi.fn()} />)
+    expect(screen.getByText(/Libertadores 1º–6º \(4 diretas \+ 2 na pré\) · Sul-Americana 7º–12º/)).toHaveAttribute('aria-live', 'polite')
+    unmount()
+
+    const g9 = runProjection({ simulations: 8, seed: 123, scenario: scenarioFromKey(15) })
+    render(<ProjectionPanel result={g9} status="ready" onRetry={vi.fn()} scenario={scenarioFromKey(15)} onScenarioChange={vi.fn()} />)
+    expect(screen.getByText(/Libertadores 1º–9º \(6 diretas \+ 3 na pré\) · Sul-Americana 10º–15º/)).toHaveAttribute('aria-live', 'polite')
+    const line = screen.getByRole('combobox', { name: 'Linha da Libertadores' })
+    expect(within(line).getByRole('option', { name: 'Automático (G-9)' })).toBeInTheDocument()
+  })
+
+  it('exibe a coluna Libertadores (grupos) com a probabilidade direta', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
+    expect(within(zones).getByRole('columnheader', { name: /Libertadores \(grupos\)/ })).toBeInTheDocument()
+    const club = result.clubProbabilities.find((entry) => entry.club === 'Flamengo')!
+    const row = within(zones).getByRole('row', { name: /Flamengo/ })
+    const chances = [...row.querySelectorAll('.probability-cell strong')].map((cell) => cell.textContent)
+    expect(chances[2]).toBe(percentFormat.format(club.libertadoresDirect))
+  })
+
+  it('rotula cada checkbox de devolução e mantém a tabela anterior ao recalcular', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="loading" onRetry={vi.fn()} scenario={scenarioFromKey(15)} onScenarioChange={vi.fn()} />)
+
+    const flags = screen.getByRole('group', { name: 'Vagas devolvidas à tabela' })
+    for (const label of [
+      'Campeão da Copa do Brasil devolve a vaga',
+      'Campeão da Libertadores devolve a vaga',
+      'Campeão da Sul-Americana devolve a vaga',
+      'Vice da Copa do Brasil devolve a vaga',
+    ]) {
+      expect(within(flags).getByRole('checkbox', { name: new RegExp(label) })).toBeDisabled()
+    }
+    expect(screen.getByRole('status')).toHaveTextContent('Recalculando')
+    const zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
+    expect(zones.closest('.projection-refreshing')).not.toBeNull()
   })
 
   it.each(['loading', 'error'] as const)('mantém destinos de navegação disponíveis no estado %s', (status) => {
@@ -737,5 +842,227 @@ describe('painel de projeções', () => {
     if (status === 'error') {
       expect(screen.getByRole('alert')).toHaveTextContent('Nenhum percentual foi substituído por estimativa manual.')
     }
+  })
+
+  it('explica o timeout e oferece retry quando nenhum resultado existe', () => {
+    const onRetry = vi.fn()
+    render(<ProjectionPanel result={null} status="error" onRetry={onRetry} errorReason="timeout" />)
+
+    expect(screen.getByRole('alert')).toHaveTextContent('tempo limite')
+    screen.getByRole('button', { name: 'Tentar novamente' }).click()
+    expect(onRetry).toHaveBeenCalledTimes(1)
+  })
+
+  it('degrada em vez de apagar a tabela quando a execução falha com resultado anterior', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    const onRetry = vi.fn()
+    render(<ProjectionPanel result={result} status="error" onRetry={onRetry} errorReason="timeout" />)
+
+    const alert = screen.getByRole('alert')
+    expect(alert).toHaveTextContent('último resultado concluído')
+    expect(alert).toHaveTextContent('Tentar novamente')
+    expect(screen.getByRole('region', { name: /Zonas possíveis por clube/ })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: /Pontos finais projetados por clube/ })).toBeInTheDocument()
+
+    within(alert).getByRole('button', { name: 'Tentar novamente' }).click()
+    expect(onRetry).toHaveBeenCalledTimes(1)
+  })
+
+  it('usa as linhas disponíveis do contexto como opções do seletor de cenário', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(
+      <ProjectionPanel
+        result={result}
+        status="ready"
+        onRetry={vi.fn()}
+        availableLines={[5, 6, 7]}
+        scenario={scenarioFromKey(1)}
+        onScenarioChange={vi.fn()}
+      />,
+    )
+
+    const line = screen.getByRole('combobox', { name: 'Linha da Libertadores' })
+    expect(within(line).getAllByRole('option').map((option) => option.textContent)).toEqual([
+      'Automático (G-6)',
+      'G-5',
+      'G-6',
+      'G-7',
+    ])
+  })
+
+  it('identifica números publicados pelo pipeline e o carimbo do pacote', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(
+      <ProjectionPanel
+        result={result}
+        status="ready"
+        onRetry={vi.fn()}
+        source="snapshot"
+        snapshotGeneratedAt="2026-11-18T12:00:00.000Z"
+      />,
+    )
+
+    const meta = screen.getByLabelText('Parâmetros da projeção')
+    expect(within(meta).getByText(/Números publicados pelo pipeline/)).toBeInTheDocument()
+    expect(within(meta).getByText(/18\/11\/2026/)).toBeInTheDocument()
+    expect(within(meta).queryByText(/Calculado agora neste navegador/)).not.toBeInTheDocument()
+  })
+
+  it('identifica números recalculados neste navegador', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} source="worker" />)
+
+    const meta = screen.getByLabelText('Parâmetros da projeção')
+    expect(within(meta).getByText(/Calculado agora neste navegador/)).toBeInTheDocument()
+    expect(within(meta).queryByText(/Números publicados pelo pipeline/)).not.toBeInTheDocument()
+  })
+
+  it('não inventa proveniência antes do primeiro resultado', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const meta = screen.getByLabelText('Parâmetros da projeção')
+    expect(within(meta).queryByText(/publicados pelo pipeline/)).not.toBeInTheDocument()
+    expect(within(meta).queryByText(/Calculado agora neste navegador/)).not.toBeInTheDocument()
+  })
+})
+
+interface CapturedJsonPayload {
+  scenario: Record<string, boolean>
+  zones: { libertadoresTo: number; directTo: number; sudamericanaFrom: number; sudamericanaTo: number }
+  generatedAt: string
+  rows: Array<Record<string, string | number>>
+}
+
+function captureDownloads(): { blobs: Blob[]; filenames: () => string[] } {
+  const blobs: Blob[] = []
+  Object.defineProperty(URL, 'createObjectURL', {
+    value: vi.fn((blob: Blob) => {
+      blobs.push(blob)
+      return `blob:projecoes-${blobs.length}`
+    }),
+    configurable: true,
+  })
+  Object.defineProperty(URL, 'revokeObjectURL', { value: vi.fn(), configurable: true })
+  const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
+  return {
+    blobs,
+    filenames: () => click.mock.instances.map((instance) => (instance as HTMLAnchorElement).download),
+  }
+}
+
+async function readBlobText(blob: Blob): Promise<string> {
+  return (await blob.text()).replace('\uFEFF', '')
+}
+
+describe('exportação das projeções com cenário', () => {
+  it('prefixa o CSV com o cenário ativo e acrescenta as colunas direto/pré', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const download = captureDownloads()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const button = screen.getByRole('button', { name: /Exportar projeções do cenário G-6 em CSV/ })
+    expect(button.getAttribute('title')).toContain('cenário G-6')
+    expect(button.getAttribute('aria-label')).toContain('cenário G-6')
+    await user.click(button)
+
+    expect(download.filenames()[0]).toMatch(/^projecoes-g6-\d{8}-\d{4}\.csv$/)
+    const lines = (await readBlobText(download.blobs[0]!)).split('\r\n')
+    expect(lines.slice(0, 4)).toEqual([
+      '# linha_libertadores,6',
+      '# limite_direto,4',
+      '# sudamericana,7-12',
+      '# cenario,copaDoBrasilCampeaoDevolvido=true;copaDoBrasilViceDevolvido=false;libertadoresCampeaoDevolvido=false;sudamericanaCampeaoDevolvido=false',
+    ])
+    expect(lines[4]).toMatch(/^# gerado_em,\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+
+    const header = lines[5]!.split(',')
+    const gruposIndex = header.indexOf('Libertadores Grupos (%)')
+    const preIndex = header.indexOf('Libertadores Pré (%)')
+    expect(gruposIndex).toBeGreaterThan(-1)
+    expect(preIndex).toBeGreaterThan(-1)
+
+    const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
+    const flamengoRow = lines.slice(6).map((line) => line.split(',')).find((cells) => cells[1] === 'Flamengo')!
+    expect(flamengoRow[gruposIndex]).toBe(String(flamengo.libertadoresDirect * 100))
+    expect(flamengoRow[preIndex]).toBe(String((flamengo.libertadores - flamengo.libertadoresDirect) * 100))
+  })
+
+  it('serializa o JSON como objeto com scenario, zones, generatedAt e rows', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const download = captureDownloads()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('button', { name: /Exportar projeções do cenário G-6 em JSON/ }))
+
+    expect(download.filenames()[0]).toMatch(/^projecoes-g6-\d{8}-\d{4}\.json$/)
+    const payload: CapturedJsonPayload = JSON.parse(await readBlobText(download.blobs[0]!))
+    expect(payload.scenario).toEqual(result.scenario)
+    expect(payload.zones).toEqual(result.libertadoresZones)
+    expect(payload.generatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)
+    expect(payload.rows).toHaveLength(result.clubProbabilities.length)
+
+    const flamengo = result.clubProbabilities.find(({ club }) => club === 'Flamengo')!
+    const flamengoRow = payload.rows.find((row) => row.club === 'Flamengo')!
+    expect(flamengoRow.libertadores_grupos_pct).toBe(flamengo.libertadoresDirect * 100)
+    expect(flamengoRow.libertadores_pre_pct).toBe((flamengo.libertadores - flamengo.libertadoresDirect) * 100)
+  })
+
+  it('acrescenta a aba Cenário ao XLSX com a linha e as devoluções', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const download = captureDownloads()
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    await user.click(screen.getByRole('button', { name: /Exportar projeções do cenário G-6 em XLSX/ }))
+
+    expect(download.filenames()[0]).toMatch(/^projecoes-g6-\d{8}-\d{4}\.xlsx$/)
+    const bytes = new Uint8Array(await download.blobs[0]!.arrayBuffer())
+    const text = new TextDecoder().decode(bytes)
+    expect(text).toContain('name="Projeções por clube"')
+    expect(text).toContain('name="Cenário"')
+    expect(text).toContain('xl/worksheets/sheet2.xml')
+    expect(text).toContain('Libertadores Grupos (%)')
+    expect(text).toContain('Libertadores Pré (%)')
+
+    const scenarioSheet = text.slice(text.indexOf('Linha da Libertadores'))
+    expect(scenarioSheet).toMatch(/Posições diretas ao grupo.*?<c r="B3"><v>4<\/v>/)
+    expect(scenarioSheet).toMatch(/Posições na pré.*?<c r="B4"><v>2<\/v>/)
+    expect(scenarioSheet).toMatch(/Faixa da Sul-Americana.*?<c r="B5" t="inlineStr"><is><t xml:space="preserve">7–12<\/t>/)
+    expect(scenarioSheet).toMatch(/Campeão da Copa do Brasil devolvido.*?<c r="B6" t="inlineStr"><is><t xml:space="preserve">Sim<\/t>/)
+    expect(scenarioSheet).toMatch(/Vice da Copa do Brasil devolvido.*?<c r="B7" t="inlineStr"><is><t xml:space="preserve">Não<\/t>/)
+    expect(scenarioSheet).toMatch(/Campeão da Libertadores devolvido.*?<c r="B8" t="inlineStr"><is><t xml:space="preserve">Não<\/t>/)
+    expect(scenarioSheet).toMatch(/Campeão da Sul-Americana devolvido.*?<c r="B9" t="inlineStr"><is><t xml:space="preserve">Não<\/t>/)
+    expect(scenarioSheet).toMatch(/Gerado em.*?\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/)
+  })
+
+  it('muda metadados e nome do arquivo entre os cenários G-6 e G-9', { timeout: 30_000 }, async () => {
+    const user = userEvent.setup()
+    const download = captureDownloads()
+
+    const g6 = runProjection({ simulations: 8, seed: 123 })
+    const firstRender = render(<ProjectionPanel result={g6} status="ready" onRetry={vi.fn()} />)
+    await user.click(screen.getByRole('button', { name: /Exportar projeções do cenário G-6 em CSV/ }))
+    firstRender.unmount()
+
+    const g9Scenario = scenarioFromKey(15)
+    const g9 = runProjection({ simulations: 8, seed: 123, scenario: g9Scenario })
+    render(<ProjectionPanel result={g9} status="ready" onRetry={vi.fn()} scenario={g9Scenario} onScenarioChange={vi.fn()} />)
+    await user.click(screen.getByRole('button', { name: /Exportar projeções do cenário G-9 em CSV/ }))
+
+    const [g6Name, g9Name] = download.filenames()
+    expect(g6Name).toMatch(/^projecoes-g6-\d{8}-\d{4}\.csv$/)
+    expect(g9Name).toMatch(/^projecoes-g9-\d{8}-\d{4}\.csv$/)
+
+    const g6Lines = (await readBlobText(download.blobs[0]!)).split('\r\n')
+    const g9Lines = (await readBlobText(download.blobs[1]!)).split('\r\n')
+    expect(g6Lines[0]).toBe('# linha_libertadores,6')
+    expect(g6Lines[2]).toBe('# sudamericana,7-12')
+    expect(g9Lines[0]).toBe('# linha_libertadores,9')
+    expect(g9Lines[1]).toBe('# limite_direto,6')
+    expect(g9Lines[2]).toBe('# sudamericana,10-15')
+    expect(g9Lines[3]).toBe('# cenario,copaDoBrasilCampeaoDevolvido=true;copaDoBrasilViceDevolvido=true;libertadoresCampeaoDevolvido=true;sudamericanaCampeaoDevolvido=true')
   })
 })

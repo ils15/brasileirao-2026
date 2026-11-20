@@ -18,8 +18,19 @@ import {
   historicalGoalAverages,
   poissonResultProbabilities,
 } from './matchModel'
-import { PointOutcomeCurveAccumulator, type PointOutcomeCurve } from './pointCurve'
-import { PointsDistributionAccumulator, probabilityWithInterval, type PointsStats, type ProbabilityInterval } from './pointsDistribution'
+import {
+  PointOutcomeCurveAccumulator,
+  type PointCurveZones,
+  type PointOutcomeCurve,
+} from './pointCurve'
+import {
+  analysisFromPositionCounts,
+  createPositionHistogram,
+  deriveProjectionResult,
+  pointsRows,
+  type RawProjectionResult,
+} from './projectionDerived'
+import { PointsDistributionAccumulator, type PointsStats, type ProbabilityInterval } from './pointsDistribution'
 import { normalizeTeamId } from './clubIds'
 import { filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import { disciplineTable, disciplineTiebreak } from './discipline'
@@ -27,12 +38,16 @@ import {
   BACKTEST_CUTOFF,
   BACKTEST_SIMULATIONS,
   isPositionInZone,
+  LEGACY_LIBERTADORES_SCENARIO,
   RESULT_GROUPS,
   SHRINKAGE_CANDIDATES,
   SIMULATION_COUNT,
   SIMULATION_SEED,
   XG_BLEND_WEIGHT,
   ZONES,
+  type LibertadoresScenario,
+  type LibertadoresScenarioKey,
+  type LibertadoresZones,
   type ResultGroupId,
 } from './projectionConfig'
 
@@ -49,6 +64,15 @@ export {
 } from './projectionConfig'
 export type { ResultGroupId } from './projectionConfig'
 export type { PointsStats, ProbabilityInterval } from './pointsDistribution'
+// Derivação bruta → cenário vive em `projectionDerived.ts` (módulo leve, sem
+// importar histórico nem backtest em runtime). Reexportado aqui para manter
+// estável a superfície pública de `./projection`.
+export { deriveProjectionResult } from './projectionDerived'
+export type {
+  PointsPositionCounts,
+  RawClubProjection,
+  RawProjectionResult,
+} from './projectionDerived'
 
 export interface ExpectedGoals {
   home: number
@@ -73,6 +97,28 @@ export interface SingleSeasonResult {
   totalPoints: number
 }
 
+/**
+ * Contagem bruta de uma das 16 combinações de devoluções de vaga.
+ *
+ * A chave `scenarioKey` é o bitmask de `scenarioKeyOf` (0–15); `libertadoresTo`
+ * e `directTo` são as fronteiras resolvidas daquela combinação. Como o mix de
+ * vagas diretas e preliminares muda a divisão da linha, dois cenários com a
+ * mesma linha (por exemplo G-6 com campeão da Libertadores ou com campeão da
+ * Copa do Brasil) produzem `directTo` diferente e não podem compartilhar um
+ * único contador.
+ */
+export interface LibertadoresScenarioCount {
+  scenarioKey: LibertadoresScenarioKey
+  /** Linha de corte (5 a 9). */
+  libertadoresTo: number
+  /** Última posição com vaga direta na fase de grupos. */
+  directTo: number
+  /** Classificações à Libertadores (diretas + preliminares). */
+  libertadores: number
+  /** Classificações diretas à fase de grupos. */
+  direct: number
+}
+
 export interface ClubProbability {
   id: string
   club: string
@@ -80,12 +126,22 @@ export interface ClubProbability {
   currentPoints: number
   title: number
   libertadores: number
+  libertadoresDirect: number
   sudamericana: number
   relegation: number
   titleInterval: ProbabilityInterval
   libertadoresInterval: ProbabilityInterval
+  libertadoresDirectInterval: ProbabilityInterval
   sudamericanaInterval: ProbabilityInterval
   relegationInterval: ProbabilityInterval
+  /** Contagem bruta das 16 combinações de devoluções, sempre na ordem das chaves 0–15. */
+  lineCounts: LibertadoresScenarioCount[]
+  /**
+   * Histograma de posições finais (índice 0 sem uso; 1..20 = temporadas
+   * terminando naquela posição). Fonte única de todas as probabilidades:
+   * título, zonas do cenário ativo e `lineCounts` são somas deste vetor.
+   */
+  positionCounts: number[]
   pointsStats: PointsStats
 }
 
@@ -139,6 +195,10 @@ let cachedTemporalBacktest: BacktestSummary | null = null
 export interface ProjectionResult {
   simulations: number
   seed: number
+  /** Cenário efetivo: o recebido ou, sem cenário, o legado G-6. */
+  scenario: LibertadoresScenario
+  /** Zonas resolvidas do cenário ativo (linha, divisão direta/preliminar e Sul-Americana). */
+  libertadoresZones: LibertadoresZones
   clubProbabilities: ClubProbability[]
   pointsAnalysis: PointsAnalysis
   pointCurve: PointCurveResult
@@ -197,13 +257,13 @@ export interface HeadToHeadRecord {
 
 export type HeadToHeadMatrix = ReadonlyMap<string, ReadonlyMap<string, HeadToHeadRecord>>
 
-interface PointOutcomeSample {
+/**
+ * Amostra de pontuação final de um clube. Guarda a posição, não o desfecho:
+ * as zonas dependem do cenário ativo e são aplicadas só na leitura.
+ */
+export interface PointOutcomeSample {
   points: number
-  outcome: ResultGroupId
-}
-
-interface PointCountAccumulator {
-  outcomeCounts: Record<ResultGroupId, Map<number, number>>
+  position: number
 }
 
 interface RandomSource {
@@ -282,46 +342,26 @@ export function estimateExpectedGoals(homeId: string, awayId: string): ExpectedG
   return blendExpectedGoals(goalsExpected, expectedGoalsFromXg(homeId, awayId, productionXgMatches, backtest.productionShrinkageMatches), XG_BLEND_WEIGHT)
 }
 
-function getOutcome(position: number): ResultGroupId {
-  if (position === 1) return 'champion'
-  if (position <= ZONES.libertadores.to) return 'libertadores'
-  if (position <= ZONES.sudamericana.to) return 'sudamericana'
-  if (position <= ZONES.middle.to) return 'middle'
-  return 'relegation'
+const DEFAULT_POINTS_ANALYSIS_ZONES: PointCurveZones = {
+  libertadoresTo: ZONES.libertadores.to,
+  sudamericanaTo: ZONES.sudamericana.to,
 }
 
-function createAccumulator(): PointCountAccumulator {
-  const outcomeCounts = Object.fromEntries(RESULT_GROUPS.map(({ id }) => [id, new Map<number, number>()])) as Record<ResultGroupId, Map<number, number>>
-  return { outcomeCounts }
-}
-
-function analysisFromAccumulator(accumulator: PointCountAccumulator): PointsAnalysis {
-  const distributionByOutcome = RESULT_GROUPS.map(({ id, label }): OutcomeDistribution => {
-    const pointCounts = accumulator.outcomeCounts[id]!
-    const samples = [...pointCounts.values()].reduce((sum, count) => sum + count, 0)
-    return {
-      id,
-      label,
-      samples,
-      points: [...pointCounts.entries()]
-        .filter(([, count]) => count > 0)
-        .sort(([left], [right]) => left - right)
-        .map(([points, count]) => ({ points, count, probability: count / samples })),
-    }
-  })
-  return { distributionByOutcome }
-}
-
-export function buildPointsAnalysis(samples: readonly PointOutcomeSample[]): PointsAnalysis {
-  const accumulator = createAccumulator()
+export function buildPointsAnalysis(
+  samples: readonly PointOutcomeSample[],
+  zones: PointCurveZones = DEFAULT_POINTS_ANALYSIS_ZONES,
+): PointsAnalysis {
+  const rows = new Map<number, number[]>()
   for (const sample of samples) {
-    // Pontuação negativa não existe no formato de pontos corridos; descartar
-    // evita que amostras corrompidas gerem categorias impossíveis (auditoria).
-    if (!Number.isInteger(sample.points) || sample.points < 0 || !RESULT_GROUPS.some(({ id }) => id === sample.outcome)) continue
-    const pointCounts = accumulator.outcomeCounts[sample.outcome]!
-    pointCounts.set(sample.points, (pointCounts.get(sample.points) ?? 0) + 1)
+    // Pontuação negativa não existe no formato de pontos corridos e a posição
+    // precisa estar em 1–20; descartar evita categorias impossíveis (auditoria).
+    if (!Number.isInteger(sample.points) || sample.points < 0) continue
+    if (!Number.isInteger(sample.position) || sample.position < 1 || sample.position > 20) continue
+    const positionCounts = rows.get(sample.points) ?? createPositionHistogram()
+    positionCounts[sample.position] = (positionCounts[sample.position] ?? 0) + 1
+    rows.set(sample.points, positionCounts)
   }
-  return analysisFromAccumulator(accumulator)
+  return analysisFromPositionCounts(pointsRows(rows), zones)
 }
 
 /**
@@ -734,7 +774,7 @@ function deriveSeasonPositions(season: (typeof historicalSeasons)[number]): Map<
   return new Map(rows.map((row, index) => [row.id, index + 1]))
 }
 
-function historicalTableBacktest(year: number, shrinkageMatches: number): { tableBrier: number; tableBaselineBrier: number } {
+function historicalTableBacktest(year: number, shrinkageMatches: number, tableSimulations: number): { tableBrier: number; tableBaselineBrier: number } {
   const { seasonMatches, priorMatches } = createBacktestSeason(year)
   const { training: cutoff, test } = splitWalkForwardByKickoff(seasonMatches, BACKTEST_CUTOFF)
   const futureFixtures = test.map(({ home, away }) => ({ home, away }))
@@ -782,7 +822,7 @@ function historicalTableBacktest(year: number, shrinkageMatches: number): { tabl
   const simulatedCounts = new Map(clubs.map((club) => [club.id, RESULT_GROUPS.map(() => 0)]))
   const random = createRandom(20_260_000 + year * 100)
 
-  for (let simulation = 0; simulation < BACKTEST_SIMULATIONS; simulation += 1) {
+  for (let simulation = 0; simulation < tableSimulations; simulation += 1) {
     const table = simulateSeason(random, clubs, futureFixtures, expectedGoals, headToHead).table
     for (const club of table) {
       const group = RESULT_GROUPS.findIndex(({ id }) => id === historicalOutcomeGroup(club.position))
@@ -795,15 +835,19 @@ function historicalTableBacktest(year: number, shrinkageMatches: number): { tabl
   for (const club of clubs) {
     const observed = actualOutcome.get(club.id)!
     const current = baselineOutcome.get(club.id)!
-    const probabilities = simulatedCounts.get(club.id)!.map((count) => count / BACKTEST_SIMULATIONS)
+    const probabilities = simulatedCounts.get(club.id)!.map((count) => count / tableSimulations)
     modelBrier += probabilities.reduce((sum, probability, group) => sum + (probability - Number(group === observed)) ** 2, 0)
     currentTableBrier += RESULT_GROUPS.reduce((sum, _group, group) => sum + (Number(group === current) - Number(group === observed)) ** 2, 0)
   }
   return { tableBrier: modelBrier / clubs.length, tableBaselineBrier: currentTableBrier / clubs.length }
 }
 
-export function runTemporalBacktest(): BacktestSummary {
-  if (cachedTemporalBacktest) return cachedTemporalBacktest
+export function runTemporalBacktest(options: { tableSimulations?: number } = {}): BacktestSummary {
+  const tableSimulations = options.tableSimulations ?? BACKTEST_SIMULATIONS
+  if (!Number.isInteger(tableSimulations) || tableSimulations < 1) {
+    throw new Error('O número de simulações do backtest deve ser um inteiro positivo.')
+  }
+  if (cachedTemporalBacktest?.tableSimulationsPerSeason === tableSimulations) return cachedTemporalBacktest
   const seasons: BacktestSeason[] = []
   const candidatesByYear = new Map<number, MatchBacktestResult[]>()
 
@@ -818,7 +862,7 @@ export function runTemporalBacktest(): BacktestSummary {
       }, SHRINKAGE_CANDIDATES[0])
     seasons.push({
       ...evaluateHistoricalYear(season.year, shrinkageMatches),
-      ...historicalTableBacktest(season.year, shrinkageMatches),
+      ...historicalTableBacktest(season.year, shrinkageMatches, tableSimulations),
     })
     candidatesByYear.set(season.year, SHRINKAGE_CANDIDATES.map((candidate) => evaluateHistoricalYear(season.year, candidate)))
   }
@@ -841,7 +885,7 @@ export function runTemporalBacktest(): BacktestSummary {
     baselineBrier,
     relativeImprovement: relativeImprovement(baselineBrier, modelBrier),
     productionShrinkageMatches,
-    tableSimulationsPerSeason: BACKTEST_SIMULATIONS,
+    tableSimulationsPerSeason: tableSimulations,
     tableBrier,
     tableBaselineBrier,
     tableRelativeImprovement: relativeImprovement(tableBaselineBrier, tableBrier),
@@ -914,7 +958,16 @@ function createExpectedGoals(): ExpectedGoals[] {
   return remainingFixtures.map((fixture) => estimateExpectedGoals(fixture.home, fixture.away))
 }
 
-export function runProjection(options: { simulations?: number; seed?: number } = {}): ProjectionResult {
+export interface ProjectionRunOptions {
+  simulations?: number
+  seed?: number
+  /** Simulações por temporada no backtest de tabela; default `BACKTEST_SIMULATIONS`. */
+  backtestSimulations?: number
+}
+
+export function runProjectionRaw(
+  options: ProjectionRunOptions = {},
+): RawProjectionResult {
   const simulations = options.simulations ?? SIMULATION_COUNT
   const seed = options.seed ?? SIMULATION_SEED
   if (!Number.isInteger(simulations) || simulations < 1) throw new Error('O número de simulações deve ser um inteiro positivo.')
@@ -922,60 +975,54 @@ export function runProjection(options: { simulations?: number; seed?: number } =
   const random = createRandom(seed)
   const expectedGoals = createExpectedGoals()
   const initialHeadToHead = buildCurrentSeasonHeadToHead()
-  const probabilityCounts = new Map(currentClubs.map((club) => [club.id, { title: 0, libertadores: 0, sudamericana: 0, relegation: 0 }]))
-  const pointAccumulator = createAccumulator()
+  // Um histograma de posições por clube basta para derivar as 16 combinações
+  // e as zonas de qualquer cenário: a posição de cada temporada simulada é
+  // contada uma única vez e o cenário ativo vira soma na main thread.
+  const positionCounts = new Map(currentClubs.map((club) => [club.id, createPositionHistogram()]))
   const pointCurveAccumulator = new PointOutcomeCurveAccumulator(simulations)
+  const pointsByPosition = new Map<number, number[]>()
   const pointsDistribution = new PointsDistributionAccumulator(currentClubs.map(({ id }) => id), simulations)
   const featureBacktest = runFeatureBacktest()
 
   for (let simulation = 0; simulation < simulations; simulation += 1) {
     const season = simulateSeason(random, currentClubs, remainingFixtures, expectedGoals, initialHeadToHead)
     for (const club of season.table) {
-      const counts = probabilityCounts.get(club.id)!
-      if (club.position === 1) counts.title += 1
-      if (isPositionInZone(club.position, ZONES.libertadores)) counts.libertadores += 1
-      if (isPositionInZone(club.position, ZONES.sudamericana)) counts.sudamericana += 1
-      if (club.position >= ZONES.relegation.from) counts.relegation += 1
-      const outcome = getOutcome(club.position)
+      const positions = positionCounts.get(club.id)!
+      positions[club.position] = positions[club.position]! + 1
       pointCurveAccumulator.add({ simulation, club: club.id, points: club.points, position: club.position })
+      const row = pointsByPosition.get(club.points) ?? createPositionHistogram()
+      row[club.position] = (row[club.position] ?? 0) + 1
+      pointsByPosition.set(club.points, row)
       pointsDistribution.add(club.id, club.points)
-      const pointCounts = pointAccumulator.outcomeCounts[outcome]!
-      pointCounts.set(club.points, (pointCounts.get(club.points) ?? 0) + 1)
     }
   }
 
   const pointsStats = pointsDistribution.build()
-
   return {
     simulations,
     seed,
-    clubProbabilities: currentClubs.map((club) => {
-      const counts = probabilityCounts.get(club.id)!
-      const titleInterval = probabilityWithInterval(counts.title, simulations)
-      const libertadoresInterval = probabilityWithInterval(counts.libertadores, simulations)
-      const sudamericanaInterval = probabilityWithInterval(counts.sudamericana, simulations)
-      const relegationInterval = probabilityWithInterval(counts.relegation, simulations)
-      return {
-        id: club.id,
-        club: club.club,
-        currentPosition: club.position,
-        currentPoints: club.points,
-        title: titleInterval.probability,
-        libertadores: libertadoresInterval.probability,
-        sudamericana: sudamericanaInterval.probability,
-        relegation: relegationInterval.probability,
-        titleInterval,
-        libertadoresInterval,
-        sudamericanaInterval,
-        relegationInterval,
-        pointsStats: pointsStats.get(club.id)!,
-      }
-    }),
-    pointsAnalysis: analysisFromAccumulator(pointAccumulator),
-    pointCurve: pointCurveAccumulator.build(),
+    clubs: currentClubs.map((club) => ({
+      id: club.id,
+      club: club.club,
+      currentPosition: club.position,
+      currentPoints: club.points,
+      positionCounts: positionCounts.get(club.id)!,
+      pointsStats: pointsStats.get(club.id)!,
+    })),
+    pointCurve: pointCurveAccumulator.snapshot(),
+    pointsByPosition: pointsRows(pointsByPosition),
     leagueAverageGoals: fullHistoryGoalAverages,
     trainingGoalAverages: historicalGoalAverages(productionTrainingMatches),
-    backtest: runTemporalBacktest(),
+    backtest: runTemporalBacktest({ tableSimulations: options.backtestSimulations }),
     featureBacktest,
   }
+}
+
+export function runProjection(
+  options: ProjectionRunOptions & { scenario?: LibertadoresScenario } = {},
+): ProjectionResult {
+  return deriveProjectionResult(
+    runProjectionRaw(options),
+    options.scenario ?? LEGACY_LIBERTADORES_SCENARIO,
+  )
 }

@@ -60,18 +60,28 @@ if (!iconSource.trimStart().startsWith('<svg')) {
   throw new Error(`Favicon is not an SVG document: ${iconHref}`)
 }
 
-const mainBundlePath = assetPaths.find((assetPath) => assetPath.endsWith('.js'))
-if (!mainBundlePath) {
+const scriptPaths = assetPaths.filter((assetPath) => assetPath.endsWith('.js'))
+if (scriptPaths.length === 0) {
   throw new Error('No JavaScript entry asset was found in dist/index.html')
 }
 
-const mainBundle = await readFile(join(outputDirectory, mainBundlePath.slice(basePath.length)), 'utf8')
-const workerMatch = mainBundle.match(/["'`]([^"'`]*projection\.worker-[^"'`]+\.js)["'`]/)
-if (!workerMatch) {
+// O Vite pode dividir o app em chunks compartilhados carregados por
+// `modulepreload`; o `new Worker(new URL(...))` fica no chunk que importa o
+// provider, não necessariamente no entry. Varra todos os JS declarados no HTML.
+let workerPath = null
+for (const scriptPath of scriptPaths) {
+  const source = await readFile(join(outputDirectory, scriptPath.slice(basePath.length)), 'utf8')
+  const match = source.match(/["'`]([^"'`]*projection\.worker-[^"'`]+\.js)["'`]/)
+  if (match) {
+    workerPath = match[1]
+    break
+  }
+}
+
+if (!workerPath) {
   throw new Error('The emitted JavaScript does not reference the projection Web Worker')
 }
 
-const workerPath = workerMatch[1]
 if (!workerPath.startsWith(basePath)) {
   throw new Error(`Web Worker is not under ${basePath}: ${workerPath}`)
 }

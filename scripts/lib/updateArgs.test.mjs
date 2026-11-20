@@ -10,6 +10,7 @@ describe('parseUpdateArgs — default da camada de contrato', () => {
       cutoff: null,
       testCommand: DEFAULT_TEST_COMMAND,
       noCommit: false,
+      noProjections: false,
     })
     expect(DEFAULT_TEST_COMMAND).toBe('npm run test:data')
   })
@@ -83,6 +84,18 @@ describe('parseUpdateArgs — --offline e --no-commit', () => {
 
   it('rejeita --dry-run com --no-commit em vez de escolher um silenciosamente', () => {
     expect(() => parseUpdateArgs(['--dry-run', '--no-commit'])).toThrow(/incompatíveis/)
+  })
+})
+
+describe('parseUpdateArgs — --no-projections', () => {
+  it('default gera public/projecoes.json; a flag desliga só essa etapa', () => {
+    expect(parseUpdateArgs([]).noProjections).toBe(false)
+    expect(parseUpdateArgs(['--no-projections']).noProjections).toBe(true)
+    expect(parseUpdateArgs(['--offline', '--no-commit', '--no-projections'])).toMatchObject({
+      offline: true,
+      noCommit: true,
+      noProjections: true,
+    })
   })
 })
 

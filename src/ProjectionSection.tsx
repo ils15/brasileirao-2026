@@ -1,8 +1,24 @@
-import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
-import { SIMULATION_COUNT, SIMULATION_SEED } from './projectionConfig'
+import { useMemo, useRef, useState, type ChangeEvent, type JSX, type KeyboardEvent } from 'react'
+import {
+  LEGACY_LIBERTADORES_SCENARIO,
+  LIBERTADORES_LINES,
+  SIMULATION_SEED,
+  resolveLibertadoresZones,
+  scenarioFromKey,
+  type LibertadoresScenario,
+  type LibertadoresScenarioKey,
+  type LibertadoresZones,
+} from './projectionConfig'
 import type { ClubProbability, ProjectionResult } from './projection'
 import type { PointCurveAggregateRow } from './pointCurve'
-import { useProjection, type ProjectionStatus } from './ProjectionContext'
+import {
+  EXPECTED_SIMULATION_COUNT,
+  useProjection,
+  type ProjectionErrorReason,
+  type ProjectionSource,
+  type ProjectionStatus,
+} from './ProjectionContext'
+import { zoneLabelsFor } from './data'
 import { AsyncStatus, SIMULATIONS_LOADING, SIMULATIONS_UNAVAILABLE } from './AsyncStatus'
 import { Crest } from './Crest'
 import { GamepadIcon } from './icons'
@@ -15,12 +31,141 @@ interface ProjectionPanelProps {
   result: ProjectionResult | null
   status: ProjectionStatus
   onRetry: () => void
+  scenario?: LibertadoresScenario
+  onScenarioChange?: (scenario: LibertadoresScenario) => void
+  /** Motivo da falha quando `status === 'error'`. */
+  errorReason?: ProjectionErrorReason | null
+  /** Linhas de corte oferecidas no atalho do seletor de cenário. */
+  availableLines?: readonly number[]
+  /** Proveniência do resultado exibido; `null` antes do primeiro resultado. */
+  source?: ProjectionSource | null
+  /** Carimbo do pacote publicado, exibido quando `source === 'snapshot'`. */
+  snapshotGeneratedAt?: string | null
 }
 
 const percent = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const integer = new Intl.NumberFormat('pt-BR')
 const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 const signedDecimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1, signDisplay: 'always' })
+const snapshotDate = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' })
+
+/** Data do carimbo do artefato publicado, ou `null` quando o campo falta/é inválido. */
+function snapshotDateLabel(iso: string | null): string | null {
+  if (iso === null) return null
+  const date = new Date(iso)
+  return Number.isNaN(date.getTime()) ? null : snapshotDate.format(date)
+}
+
+interface ScenarioFlag {
+  field: keyof LibertadoresScenario
+  label: string
+  event: string
+}
+
+const SCENARIO_FLAGS: ReadonlyArray<ScenarioFlag> = [
+  { field: 'copaDoBrasilCampeaoDevolvido', label: 'Campeão da Copa do Brasil devolve a vaga', event: 'Palmeiras já está na final e no G-5 — confirmado' },
+  { field: 'libertadoresCampeaoDevolvido', label: 'Campeão da Libertadores devolve a vaga', event: 'Palmeiras campeão da Libertadores' },
+  { field: 'sudamericanaCampeaoDevolvido', label: 'Campeão da Sul-Americana devolve a vaga', event: 'Galo campeão da Sul-Americana e dentro da linha' },
+  { field: 'copaDoBrasilViceDevolvido', label: 'Vice da Copa do Brasil devolve a vaga', event: 'Grêmio rebaixado como vice da Copa do Brasil' },
+]
+
+/**
+ * Menor chave do bitmask que produz cada linha. Os bits seguem a ordem
+ * canônica (1 CdB campeão, 2 CdB vice, 4 Libertadores, 8 Sul-Americana), então
+ * a busca começa pelas devoluções preliminares e só recorre às diretas quando
+ * a linha exige: G-5→0, G-6→1, G-7→3, G-8→7, G-9→15.
+ */
+const CANONICAL_LINE_KEYS: ReadonlyMap<number, LibertadoresScenarioKey> = new Map(
+  LIBERTADORES_LINES.map((line) => {
+    for (let key = 0; key < 16; key += 1) {
+      if (resolveLibertadoresZones(scenarioFromKey(key)).libertadoresTo === line) return [line, key] as const
+    }
+    throw new Error(`Nenhuma chave de cenário produz a linha G-${line}`)
+  }),
+)
+
+function toggleScenarioFlag(scenario: LibertadoresScenario, field: keyof LibertadoresScenario, value: boolean): LibertadoresScenario {
+  const next: LibertadoresScenario = { ...scenario }
+  next[field] = value
+  return next
+}
+
+function sameScenario(left: LibertadoresScenario, right: LibertadoresScenario): boolean {
+  return SCENARIO_FLAGS.every((flag) => left[flag.field] === right[flag.field])
+}
+
+interface LibertadoresScenarioControlsProps {
+  scenario: LibertadoresScenario
+  zones: LibertadoresZones
+  disabled: boolean
+  /** Linhas oferecidas no dropdown (fonte: `availableLines` do contexto). */
+  lines: readonly number[]
+  onChange: (scenario: LibertadoresScenario) => void
+}
+
+/**
+ * Seletor do cenário de vagas: o dropdown é o atalho "e se fosse G-8" e os
+ * checkboxes são o modo real (cada vaga devolvida à tabela). Qualquer mudança
+ * nos checkboxes volta o dropdown para Automático, porque a linha passa a ser
+ * derivada do próprio cenário.
+ */
+function LibertadoresScenarioControls({ scenario, zones, disabled, lines, onChange }: LibertadoresScenarioControlsProps): JSX.Element {
+  const [selectedLine, setSelectedLine] = useState<'auto' | number>('auto')
+
+  function handleLineChange(event: ChangeEvent<HTMLSelectElement>): void {
+    const value = event.currentTarget.value
+    if (value === 'auto') {
+      setSelectedLine('auto')
+      return
+    }
+    const line = Number(value)
+    const key = CANONICAL_LINE_KEYS.get(line)
+    if (key === undefined) return
+    const next = scenarioFromKey(key)
+    setSelectedLine(line)
+    if (!sameScenario(next, scenario)) onChange(next)
+  }
+
+  function handleFlagChange(field: keyof LibertadoresScenario, checked: boolean): void {
+    setSelectedLine('auto')
+    onChange(toggleScenarioFlag(scenario, field, checked))
+  }
+
+  return (
+    <section className="scenario-panel" aria-labelledby="scenario-panel-title">
+      <div className="scenario-heading">
+        <h5 className="scenario-title" id="scenario-panel-title">Cenário das vagas continentais</h5>
+        <p className="scenario-hint">Cada vaga devolvida à tabela empurra a linha da Libertadores em uma posição.</p>
+      </div>
+      <div className="scenario-line">
+        <label htmlFor="scenario-line-select">Linha da Libertadores</label>
+        <select id="scenario-line-select" value={selectedLine === 'auto' ? 'auto' : String(selectedLine)} disabled={disabled} onChange={handleLineChange}>
+          <option value="auto">Automático (G-{zones.libertadoresTo})</option>
+          {lines.map((line) => <option key={line} value={String(line)}>G-{line}</option>)}
+        </select>
+      </div>
+      <div className="scenario-flags" role="group" aria-label="Vagas devolvidas à tabela">
+        {SCENARIO_FLAGS.map((flag) => (
+          <label key={flag.field} className="scenario-flag">
+            <input
+              type="checkbox"
+              checked={scenario[flag.field]}
+              disabled={disabled}
+              onChange={(event) => handleFlagChange(flag.field, event.currentTarget.checked)}
+            />
+            <span className="scenario-flag-copy">
+              <strong>{flag.label}</strong>
+              <small>{flag.event}</small>
+            </span>
+          </label>
+        ))}
+      </div>
+      <p className="scenario-summary" aria-live="polite">
+        Libertadores 1º–{zones.libertadoresTo}º ({zones.directTo} diretas + {zones.libertadoresTo - zones.directTo} na pré) · Sul-Americana {zones.sudamericanaFrom}º–{zones.sudamericanaTo}º
+      </p>
+    </section>
+  )
+}
 
 /**
  * Texto do IC 95% na tabela por pontuação. Só faixas de 1 ponto exibem IC: em
@@ -110,7 +255,7 @@ function MagicCurveChart({ rows, destiny }: { rows: MagicRow[]; destiny: MagicDe
   const yAt = (probability: number): number =>
     height - padding.bottom - probability * (height - padding.top - padding.bottom)
 
-  // A chance inclusiva de Libertadores (1º–6º*) vem do agregado por simulação.
+  // A chance inclusiva de Libertadores (1º–linha) vem do agregado por simulação.
   const probabilityFor = (row: MagicRow, destinyId: MagicKey): number => {
     if (destinyId === 'libertadores') return row.inclusiveLibertadores.probability
     return row.probabilities[destinyId]
@@ -166,6 +311,7 @@ type MagicDestiny = (typeof MAGIC_DESTINIES)[number]['id']
  */
 function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element {
   const [destiny, setDestiny] = useState<MagicDestiny>('relegation')
+  const labels = zoneLabelsFor(result.libertadoresZones)
   const rows = useMemo<MagicRow[]>(() => {
     const byPoints = new Map<number, MagicRow>()
     for (const row of result.pointCurve.rows) {
@@ -188,8 +334,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   const destinyEntry = MAGIC_DESTINIES.find((entry) => entry.id === destiny)!
   const destinyPhrase = destinyEntry.phrase
   const cap = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1)
-  // Libertadores é chance inclusiva de vaga (1º–6º*); Sul-Americana fica
-  // exclusiva (7º–12º), assim como título (1º) e as demais faixas.
+  // Libertadores é chance inclusiva de vaga (1º–linha); Sul-Americana fica
+  // exclusiva (as seis posições seguintes), assim como título (1º) e as demais faixas.
   const chanceOf = (row: MagicRow, destinyOverride?: MagicKey): number => {
     const key = destinyOverride ?? destiny
     if (key === 'libertadores') return row.inclusiveLibertadores.probability
@@ -206,7 +352,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   /**
    * Uma linha só tem estimativa quando houve ao menos uma observação do
    * destino naquela pontuação. `observed` é `successes > 0`; Libertadores usa
-   * o agregado inclusivo (1º–6º), que existe para todo ponto com simulações e
+   * o agregado inclusivo (1º–linha), que existe para todo ponto com simulações e
    * pode ter zero sucessos — por isso não usa o denominador.
    */
   const hasObservationsFor = (row: MagicRow): boolean => {
@@ -371,8 +517,8 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
           <MagicCurveChart rows={rows} destiny={destiny} />
           <p className="magic-chart-caption">
             Linha tracejada: 50% — acima dela, ser {destinyPhrase} é o resultado mais provável.
-            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga (1º–6º*)</strong>, incluindo o campeão: a curva sobe até 100%.</>}
-            {destiny === 'sudamericana' && <> Sul-Americana é a faixa exclusiva de <strong>7º–12º</strong>; não inclui título nem vaga de Libertadores.</>}
+            {destiny === 'libertadores' && <> Libertadores conta como <strong>vaga ({labels.libertadores.range})</strong>, incluindo o campeão: a curva sobe até 100%.</>}
+            {destiny === 'sudamericana' && <> Sul-Americana é a faixa exclusiva de <strong>{labels.sudamericana.range}</strong>; não inclui título nem vaga de Libertadores.</>}
           </p>
         </div>
         <div className="magic-kpis" aria-label={`Linhas do destino para ${destinyPhrase}`}>
@@ -383,7 +529,7 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
                 {escaping
                   ? `Sem Série B é o mais provável (${percent.format(1 - chanceOf(likely))})`
                   : destiny === 'sudamericana'
-                  ? `Faixa Sul-Americana (7º–12º: ${percent.format(chanceOf(likely))})`
+                  ? `Faixa Sul-Americana (${labels.sudamericana.range}: ${percent.format(chanceOf(likely))})`
                   : `${cap(destinyPhrase)} é o mais provável (${percent.format(chanceOf(likely))})`}
               </span>
             </div>
@@ -504,6 +650,7 @@ const zoneColumns: SortableColumn<ClubProbability>[] = [
   { id: 'club', header: 'Clube', accessor: ({ club }) => club, numeric: false },
   { id: 'title', header: 'Título', accessor: ({ title }) => title, numeric: true },
   { id: 'libertadores', header: 'Libertadores', accessor: ({ libertadores }) => libertadores, numeric: true },
+  { id: 'libertadoresDirect', header: 'Libertadores (grupos)', accessor: ({ libertadoresDirect }) => libertadoresDirect, numeric: true },
   { id: 'sudamericana', header: 'Sul-Americana', accessor: ({ sudamericana }) => sudamericana, numeric: true },
   { id: 'relegation', header: 'Rebaixamento', accessor: ({ relegation }) => relegation, numeric: true },
 ]
@@ -523,7 +670,7 @@ interface ProbabilityCellProps {
   value: number
   lower: number
   upper: number
-  kind?: 'title' | 'libertadores' | 'sudamericana' | 'relegation'
+  kind?: 'title' | 'libertadores' | 'libertadores-direct' | 'sudamericana' | 'relegation'
 }
 
 function ProbabilityCell({ value, lower, upper, kind }: ProbabilityCellProps): JSX.Element {
@@ -545,50 +692,101 @@ function ProbabilityCell({ value, lower, upper, kind }: ProbabilityCellProps): J
   )
 }
 
-const ZONE_BAR_SEGMENTS = [
-  { key: 'title', className: 'zone-bar--title', label: 'Campeão' },
-  { key: 'libertadores', className: 'zone-bar--libertadores', label: 'Libertadores 2º–6º' },
-  { key: 'sudamericana', className: 'zone-bar--sudamericana', label: 'Sul-Americana' },
-  { key: 'middle', className: 'zone-bar--middle', label: 'Meio de tabela' },
-  { key: 'relegation', className: 'zone-bar--relegation', label: 'Rebaixamento' },
-] as const
+type ZoneBarKey = 'title' | 'libertadores' | 'sudamericana' | 'middle' | 'relegation'
 
-interface ClubForBar extends ClubProbability {}
+const ZONE_BAR_SEGMENTS: ReadonlyArray<{ key: ZoneBarKey; className: string }> = [
+  { key: 'title', className: 'zone-bar--title' },
+  { key: 'libertadores', className: 'zone-bar--libertadores' },
+  { key: 'sudamericana', className: 'zone-bar--sudamericana' },
+  { key: 'middle', className: 'zone-bar--middle' },
+  { key: 'relegation', className: 'zone-bar--relegation' },
+]
 
 /** Barra 100% com as cinco zonas possíveis do clube — leitura instantânea do cenário. */
-function ZoneStackedBar({ club }: { club: ClubForBar }): JSX.Element {
-  // A coluna geral de Libertadores é inclusiva (1º–6º); na barra, o campeão
-  // fica separado e a faixa Libertadores representa somente 2º–6º.
+function ZoneStackedBar({ club, zones }: { club: ClubProbability; zones: LibertadoresZones }): JSX.Element {
+  // A coluna geral de Libertadores é inclusiva (1º–linha); na barra, o campeão
+  // fica separado. A faixa 2º–linha continua um único segmento, mas o miolo
+  // divide a vaga direta e a preliminar em duas metades visíveis.
   const libertadoresExclusive = Math.max(0, club.libertadores - club.title)
+  const directExclusive = Math.max(0, club.libertadoresDirect - club.title)
+  const preliminaryExclusive = Math.max(0, libertadoresExclusive - directExclusive)
   const middle = Math.max(0, 1 - club.title - libertadoresExclusive - club.sudamericana - club.relegation)
-  const values: Record<(typeof ZONE_BAR_SEGMENTS)[number]['key'], number> = {
+  const values: Record<ZoneBarKey, number> = {
     title: club.title,
     libertadores: libertadoresExclusive,
     sudamericana: club.sudamericana,
     middle,
     relegation: club.relegation,
   }
-  const ariaLabel = ZONE_BAR_SEGMENTS.map((segment) => `${segment.label} ${percent.format(values[segment.key])}`).join(', ')
+  const directShare = libertadoresExclusive > 0 ? (directExclusive / libertadoresExclusive) * 100 : 0
+  const firstExclusivePosition = 2
+  const directRange = zones.directTo === firstExclusivePosition ? `${firstExclusivePosition}º` : `${firstExclusivePosition}º–${zones.directTo}º`
+  const preliminaryRange = zones.directTo + 1 === zones.libertadoresTo
+    ? `${zones.libertadoresTo}º`
+    : `${zones.directTo + 1}º–${zones.libertadoresTo}º`
+  const ariaLabel = [
+    `Campeão ${percent.format(club.title)}`,
+    `Libertadores direto ${directRange} ${percent.format(directExclusive)}`,
+    `Libertadores pré ${preliminaryRange} ${percent.format(preliminaryExclusive)}`,
+    `Sul-Americana ${percent.format(club.sudamericana)}`,
+    `Meio de tabela ${percent.format(middle)}`,
+    `Rebaixamento ${percent.format(club.relegation)}`,
+  ].join(', ')
   return (
     <div className="zone-bar" role="img" aria-label={`Cenários de ${club.club}: ${ariaLabel}`}>
-      {ZONE_BAR_SEGMENTS.map((segment) => (
+      {ZONE_BAR_SEGMENTS.map((segment) => segment.key === 'libertadores' ? (
+        <span key={segment.key} className="zone-bar-segment zone-bar-segment--split" style={{ width: `${values.libertadores * 100}%` }}>
+          <span className="zone-bar-sub zone-bar-sub--direct" style={{ width: `${directShare}%` }} />
+          <span className="zone-bar-sub zone-bar-sub--preliminary" style={{ width: `${100 - directShare}%` }} />
+        </span>
+      ) : (
         <span key={segment.key} className={`zone-bar-segment ${segment.className}`} style={{ width: `${values[segment.key] * 100}%` }} />
       ))}
     </div>
   )
 }
 
-function ZoneBarLegend(): JSX.Element {
+function ZoneBarLegend({ zones }: { zones: LibertadoresZones }): JSX.Element {
+  const labels = zoneLabelsFor(zones)
   return (
     <div className="zone-bar-legend" role="group" aria-label="Legenda das barras de zonas">
-      {ZONE_BAR_SEGMENTS.map((segment) => (
-        <span key={segment.key}><i className={`zone-bar-swatch ${segment.className}`} aria-hidden="true" />{segment.label}</span>
-      ))}
+      <span><i className="zone-bar-swatch zone-bar--title" aria-hidden="true" />Campeão</span>
+      <span><i className="zone-bar-swatch zone-bar--libertadores-direct" aria-hidden="true" />Libertadores direto 2º–{zones.directTo}º</span>
+      <span><i className="zone-bar-swatch zone-bar--libertadores-preliminary" aria-hidden="true" />Libertadores pré {zones.directTo + 1}º–{zones.libertadoresTo}º</span>
+      <span><i className="zone-bar-swatch zone-bar--sudamericana" aria-hidden="true" />Sul-Americana {labels.sudamericana.range}</span>
+      <span><i className="zone-bar-swatch zone-bar--middle" aria-hidden="true" />Meio de tabela {labels.middle.range}</span>
+      <span><i className="zone-bar-swatch zone-bar--relegation" aria-hidden="true" />Rebaixamento {labels.relegation.range}</span>
     </div>
   )
 }
 
-function exportProjections(result: ProjectionResult, format: 'csv' | 'xlsx' | 'json'): void {
+type ExportFormat = 'csv' | 'xlsx' | 'json'
+
+function padTwo(value: number): string {
+  return String(value).padStart(2, '0')
+}
+
+/** `yyyyMMdd-HHmm` em horário local, para diferenciar exports de cenários distintos. */
+function filenameStamp(date: Date): string {
+  return `${date.getFullYear()}${padTwo(date.getMonth() + 1)}${padTwo(date.getDate())}-${padTwo(date.getHours())}${padTwo(date.getMinutes())}`
+}
+
+/** Serialização estável do cenário; a ordem segue a do bitmask em `projectionConfig`. */
+function scenarioFlagsText(scenario: LibertadoresScenario): string {
+  return [
+    `copaDoBrasilCampeaoDevolvido=${scenario.copaDoBrasilCampeaoDevolvido}`,
+    `copaDoBrasilViceDevolvido=${scenario.copaDoBrasilViceDevolvido}`,
+    `libertadoresCampeaoDevolvido=${scenario.libertadoresCampeaoDevolvido}`,
+    `sudamericanaCampeaoDevolvido=${scenario.sudamericanaCampeaoDevolvido}`,
+  ].join(';')
+}
+
+function exportProjections(result: ProjectionResult, format: ExportFormat): void {
+  // Cenário efetivo da projeção exportada, não o do controle: durante o
+  // recálculo o resultado na tela ainda é o anterior e o arquivo deve
+  // descrever exatamente as linhas que ele contém.
+  const { scenario, libertadoresZones: zones } = result
+  const generatedAt = new Date()
   const columns = [
     { key: 'position', header: 'Posição Atual' },
     { key: 'club', header: 'Clube' },
@@ -605,6 +803,8 @@ function exportProjections(result: ProjectionResult, format: 'csv' | 'xlsx' | 'j
     { key: 'p75', header: 'P75 de Pontos Finais' },
     { key: 'p90', header: 'P90 de Pontos Finais' },
     { key: 'stdDev', header: 'Desvio-Padrão de Pontos Finais' },
+    { key: 'libertadores_grupos_pct', header: 'Libertadores Grupos (%)' },
+    { key: 'libertadores_pre_pct', header: 'Libertadores Pré (%)' },
   ]
   const rows = result.clubProbabilities.map((club) => ({
     position: club.currentPosition,
@@ -622,30 +822,81 @@ function exportProjections(result: ProjectionResult, format: 'csv' | 'xlsx' | 'j
     p75: club.pointsStats.p75,
     p90: club.pointsStats.p90,
     stdDev: Number(club.pointsStats.stdDev.toFixed(2)),
+    libertadores_grupos_pct: club.libertadoresDirect * 100,
+    libertadores_pre_pct: (club.libertadores - club.libertadoresDirect) * 100,
   }))
-  const filename = `brasileirao-2026-projecoes-n${integer.format(result.simulations)}`
+  const filename = `projecoes-g${zones.libertadoresTo}-${filenameStamp(generatedAt)}`
   if (format === 'csv') {
-    downloadFile(`${filename}.csv`, 'text/csv;charset=utf-8', toCSV(columns, rows))
+    downloadFile(`${filename}.csv`, 'text/csv;charset=utf-8', toCSV(columns, rows, [
+      ['linha_libertadores', zones.libertadoresTo],
+      ['limite_direto', zones.directTo],
+      ['sudamericana', `${zones.sudamericanaFrom}-${zones.sudamericanaTo}`],
+      ['cenario', scenarioFlagsText(scenario)],
+      ['gerado_em', generatedAt.toISOString()],
+    ]))
     return
   }
   if (format === 'xlsx') {
-    downloadFile(`${filename}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buildXlsx([{ name: 'Projeções por clube', columns, rows }]))
+    downloadFile(`${filename}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', buildXlsx([
+      { name: 'Projeções por clube', columns, rows },
+      {
+        name: 'Cenário',
+        columns: [
+          { key: 'indicador', header: 'Indicador' },
+          { key: 'valor', header: 'Valor' },
+        ],
+        rows: [
+          { indicador: 'Linha da Libertadores', valor: zones.libertadoresTo },
+          { indicador: 'Posições diretas ao grupo', valor: zones.directTo },
+          { indicador: 'Posições na pré', valor: zones.libertadoresTo - zones.directTo },
+          { indicador: 'Faixa da Sul-Americana', valor: `${zones.sudamericanaFrom}–${zones.sudamericanaTo}` },
+          { indicador: 'Campeão da Copa do Brasil devolvido', valor: scenario.copaDoBrasilCampeaoDevolvido ? 'Sim' : 'Não' },
+          { indicador: 'Vice da Copa do Brasil devolvido', valor: scenario.copaDoBrasilViceDevolvido ? 'Sim' : 'Não' },
+          { indicador: 'Campeão da Libertadores devolvido', valor: scenario.libertadoresCampeaoDevolvido ? 'Sim' : 'Não' },
+          { indicador: 'Campeão da Sul-Americana devolvido', valor: scenario.sudamericanaCampeaoDevolvido ? 'Sim' : 'Não' },
+          { indicador: 'Gerado em', valor: generatedAt.toISOString() },
+        ],
+      },
+    ]))
     return
   }
   downloadFile(`${filename}.json`, 'application/json;charset=utf-8', toJson({
     dataset: 'Projeções Monte Carlo por clube',
+    scenario,
+    zones,
     simulacoes: result.simulations,
     semente: result.seed,
     corteAnalitico: seasonFacts.cutoffLocal,
+    generatedAt: generatedAt.toISOString(),
     colunas: columns.map(({ header }) => header),
-    linhas: rows,
+    rows,
   }))
 }
 
-function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX.Element {
+function ProjectionPanel({
+  result,
+  status,
+  onRetry,
+  scenario: scenarioProp,
+  onScenarioChange,
+  errorReason = null,
+  availableLines = LIBERTADORES_LINES,
+  source = null,
+  snapshotGeneratedAt = null,
+}: ProjectionPanelProps): JSX.Element {
+  const scenario = scenarioProp ?? LEGACY_LIBERTADORES_SCENARIO
+  const zones = result?.libertadoresZones ?? resolveLibertadoresZones(scenario)
+  const labels = zoneLabelsFor(zones)
+  const refreshing = status === 'loading' && result !== null
+  /** Falha depois de um resultado bom: a tabela continua, com aviso não bloqueante. */
+  const degraded = status === 'error' && result !== null
+  const errorMessage = errorReason === 'timeout'
+    ? 'As simulações passaram do tempo limite e foram interrompidas.'
+    : SIMULATIONS_UNAVAILABLE
   const [activeAnalysis, setActiveAnalysis] = useState<'por-clube' | 'por-pontuacao' | 'simulador'>('por-clube')
   const analysisTabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const probabilityRows = useMemo(() => result?.clubProbabilities ?? [], [result])
+  const snapshotLabel = source === 'snapshot' ? snapshotDateLabel(snapshotGeneratedAt) : null
   const { sortedRows: sortedZones, sortColumnId: zoneSortColumnId, direction: zoneDirection, toggleSort: toggleZoneSort, resetSort: resetZoneSort, ariaSort: zoneAriaSort } = useTableSort(probabilityRows, zoneColumns, 'position')
   const { sortedRows: sortedPoints, sortColumnId: pointsSortColumnId, direction: pointsDirection, toggleSort: togglePointsSort, resetSort: resetPointsSort, ariaSort: pointsAriaSort } = useTableSort(probabilityRows, pointsColumns, 'position')
   const isCustomZoneSort = zoneSortColumnId !== 'position' || zoneDirection !== 'ascending'
@@ -676,28 +927,38 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
       </div>
 
       <div className="projection-meta" aria-label="Parâmetros da projeção">
-        <span><strong>{integer.format(SIMULATION_COUNT)}</strong> simulações</span>
+        <span><strong>{integer.format(result?.simulations ?? EXPECTED_SIMULATION_COUNT)}</strong> simulações</span>
         <span><strong>{seasonFacts.remainingCount}</strong> jogos restantes</span>
         <span><strong>{cutoffLabel}</strong> corte analítico</span>
         <span><strong>{result?.seed ?? SIMULATION_SEED}</strong> semente fixa</span>
+        {source === 'snapshot' && (
+          <span>
+            <strong>Números publicados pelo pipeline</strong>
+            {snapshotLabel === null ? '' : ` em ${snapshotLabel}`}
+          </span>
+        )}
+        {source === 'worker' && <span><strong>Calculado agora neste navegador</strong></span>}
       </div>
 
       <p className="projection-disclaimer">
         Não são odds nem recomendação de apostas.
       </p>
       <details className="clean-disclosure clean-disclosure--callout">
-        <summary>Ressalvas do método, cenário G-6* e regulamento</summary>
+        <summary>Ressalvas do método, cenário ativo e regulamento</summary>
         <p className="projection-table-note">A dispersão de Monte Carlo mede apenas a variação da simulação com este modelo; não representa toda a incerteza dos dados ou da metodologia.</p>
-        <p className="projection-table-note"><strong>G-6*:</strong> cenário adotado neste painel; a vaga ao 6º não é conclusão automática apenas porque o Palmeiras chegou à final da Copa do Brasil.</p>
-        <p className="projection-table-note"><strong>Regulamento:</strong> o <a href="https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf" target="_blank" rel="noreferrer">REC CBF 2026 (Art. 7)</a> aloca à Sul-Americana os seis clubes seguintes que não estejam na Libertadores (7º–12º neste cenário). A redistribuição depende das regras aplicáveis e da sobreposição de classificados; títulos e vagas de copas não são simulados.</p>
+        <p className="projection-table-note"><strong>Cenário ativo:</strong> Libertadores {labels.libertadores.detail} e Sul-Americana {labels.sudamericana.range}, com {zones.libertadoresTo} vagas pela tabela. Cada vaga das copas devolvida ao Brasileirão desloca a linha em uma posição.</p>
+        <p className="projection-table-note"><strong>Regulamento:</strong> o <a href="https://stcbfsiteprdimgbrs.blob.core.windows.net/img-site/cdn/REC_Brasileiro_SA_rie_A_2026_v15_12_2025_final_02692c1077.pdf" target="_blank" rel="noreferrer">REC CBF 2026 (Art. 7)</a> aloca à Sul-Americana os seis clubes seguintes que não estejam na Libertadores ({labels.sudamericana.range} neste cenário). A redistribuição depende das regras aplicáveis e da sobreposição de classificados; as vagas das copas não são simuladas, apenas deslocam a linha pelo cenário selecionado.</p>
       </details>
 
-      {status === 'loading' && <AsyncStatus phase="loading" message={SIMULATIONS_LOADING} />}
-      {status === 'ready' && <p className="sr-only" role="status">Projeção concluída: probabilidades e distribuições para {integer.format(result?.simulations ?? SIMULATION_COUNT)} simulações disponíveis.</p>}
+      {status === 'loading' && !result && <AsyncStatus phase="loading" message={SIMULATIONS_LOADING} />}
+      {refreshing && <p className="projection-refresh-status" role="status">Recalculando {integer.format(EXPECTED_SIMULATION_COUNT)} simulações…</p>}
+      {status === 'ready' && <p className="sr-only" role="status">Projeção concluída: probabilidades e distribuições para {integer.format(result?.simulations ?? EXPECTED_SIMULATION_COUNT)} simulações disponíveis.</p>}
       {status === 'error' && (
         <AsyncStatus
           phase="error"
-          message={`${SIMULATIONS_UNAVAILABLE} Nenhum percentual foi substituído por estimativa manual.`}
+          message={degraded
+            ? `${errorMessage} Exibindo o último resultado concluído; os percentuais abaixo não foram atualizados.`
+            : `${errorMessage} Nenhum percentual foi substituído por estimativa manual.`}
           onRetry={onRetry}
         />
       )}
@@ -746,7 +1007,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
       )}
 
       {result && (
-        <>
+        <div className={refreshing ? 'projection-refreshing' : undefined} aria-busy={refreshing || undefined}>
           <div role="tabpanel" id="analise-por-clube" aria-labelledby="aba-por-clube" hidden={activeAnalysis !== 'por-clube'}>
           <section className="projection-block" id="probabilidades-time" aria-labelledby="club-probabilities-title">
             <div className="projection-block-heading">
@@ -762,6 +1023,8 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
               </ul>
             </details>
 
+            <LibertadoresScenarioControls scenario={scenario} zones={zones} disabled={refreshing} lines={availableLines} onChange={onScenarioChange ?? (() => {})} />
+
             <div className="table-header-flex">
               <h4 className="points-table-title" id="zones-table-title">Em que zona cada clube pode terminar?</h4>
               {isCustomZoneSort && (
@@ -770,7 +1033,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                 </button>
               )}
             </div>
-            <ZoneBarLegend />
+            <ZoneBarLegend zones={zones} />
             <div className="table-scroll projection-table-scroll" role="region" aria-label="Zonas possíveis por clube nas simulações; role para rolagem horizontal em telas pequenas" tabIndex={0}>
               <table className="projection-table zones-table">
                 <thead>
@@ -778,7 +1041,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                     {zoneColumns.map((column) => (
                       <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={zoneAriaSort(column.id)}>
                         <button type="button" className="sort-button" onClick={() => toggleZoneSort(column.id)}>
-                          {column.id === 'libertadores' ? 'LIBERTADORES¹' : column.header}
+                          {column.id === 'libertadores' ? `LIBERTADORES · ${labels.libertadores.range}¹` : column.header}
                           <span className="sort-indicator" aria-hidden="true">{zoneAriaSort(column.id) === 'ascending' ? ' ↑' : zoneAriaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
                         </button>
                       </th>
@@ -798,9 +1061,10 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                           </span>
                         )}
                       </th>
-                      <td className="zone-bar-cell"><ZoneStackedBar club={club} /></td>
+                      <td className="zone-bar-cell"><ZoneStackedBar club={club} zones={zones} /></td>
                       <ProbabilityCell kind="title" value={club.title} lower={club.titleInterval.lower95} upper={club.titleInterval.upper95} />
                       <ProbabilityCell kind="libertadores" value={club.libertadores} lower={club.libertadoresInterval.lower95} upper={club.libertadoresInterval.upper95} />
+                      <ProbabilityCell kind="libertadores-direct" value={club.libertadoresDirect} lower={club.libertadoresDirectInterval.lower95} upper={club.libertadoresDirectInterval.upper95} />
                       <ProbabilityCell kind="sudamericana" value={club.sudamericana} lower={club.sudamericanaInterval.lower95} upper={club.sudamericanaInterval.upper95} />
                       <ProbabilityCell kind="relegation" value={club.relegation} lower={club.relegationInterval.lower95} upper={club.relegationInterval.upper95} />
                     </tr>
@@ -808,7 +1072,7 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
                 </tbody>
               </table>
             </div>
-            <p className="projection-footnote">¹ Considera as posições 1–6* na tabela (1º–4º direto; 5º preliminar); consulte acima a premissa do asterisco. ² Posições 7–12: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. As chances são condicionais a este recorte.</p>
+            <p className="projection-footnote">¹ Libertadores {labels.libertadores.detail}, incluindo o campeão; a coluna “Libertadores (grupos)” conta apenas a classificação direta à fase de grupos. ² Sul-Americana {labels.sudamericana.range}: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. As chances são condicionais a este cenário.</p>
 
             <div className="table-header-flex">
               <h4 className="points-table-title" id="points-final-title">Quantos pontos cada clube deve fazer?</h4>
@@ -868,9 +1132,27 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
 
             <div className="export-row" role="group" aria-label="Exportar projeções por clube">
               <span className="export-row-label">Baixar as duas tabelas:</span>
-              <button type="button" className="filter-button" onClick={() => exportProjections(result, 'csv')}>CSV</button>
-              <button type="button" className="filter-button" onClick={() => exportProjections(result, 'xlsx')}>XLSX</button>
-              <button type="button" className="filter-button" onClick={() => exportProjections(result, 'json')}>JSON</button>
+              <button
+                type="button"
+                className="filter-button"
+                title={`Exportar projeções do cenário G-${zones.libertadoresTo} em CSV, com metadados do cenário`}
+                aria-label={`Exportar projeções do cenário G-${zones.libertadoresTo} em CSV, com metadados do cenário`}
+                onClick={() => exportProjections(result, 'csv')}
+              >CSV</button>
+              <button
+                type="button"
+                className="filter-button"
+                title={`Exportar projeções do cenário G-${zones.libertadoresTo} em XLSX, com metadados do cenário`}
+                aria-label={`Exportar projeções do cenário G-${zones.libertadoresTo} em XLSX, com metadados do cenário`}
+                onClick={() => exportProjections(result, 'xlsx')}
+              >XLSX</button>
+              <button
+                type="button"
+                className="filter-button"
+                title={`Exportar projeções do cenário G-${zones.libertadoresTo} em JSON, com metadados do cenário`}
+                aria-label={`Exportar projeções do cenário G-${zones.libertadoresTo} em JSON, com metadados do cenário`}
+                onClick={() => exportProjections(result, 'json')}
+              >JSON</button>
             </div>
           </section>
           </div>
@@ -889,15 +1171,27 @@ function ProjectionPanel({ result, status, onRetry }: ProjectionPanelProps): JSX
           <div role="tabpanel" id="analise-simulador" aria-labelledby="aba-simulador" hidden={activeAnalysis !== 'simulador'}>
             <MatchSimulator result={result} />
           </div>
-        </>
+        </div>
       )}
     </section>
   )
 }
 
 export function ProjectionSection(): JSX.Element {
-  const { result, status, retry } = useProjection()
-  return <ProjectionPanel result={result} status={status} onRetry={retry} />
+  const { result, status, retry, scenario, setScenario, errorReason, availableLines, source, snapshotGeneratedAt } = useProjection()
+  return (
+    <ProjectionPanel
+      result={result}
+      status={status}
+      onRetry={retry}
+      scenario={scenario}
+      onScenarioChange={setScenario}
+      errorReason={errorReason}
+      availableLines={availableLines}
+      source={source}
+      snapshotGeneratedAt={snapshotGeneratedAt}
+    />
+  )
 }
 
 export { ProjectionPanel }

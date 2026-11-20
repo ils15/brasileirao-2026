@@ -2,8 +2,8 @@ import { useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
 import { attackDefenseLeaders, currentStreaks, lastNRounds, positionByRound, standingsFromResults, type StandingsRow } from './rounds'
 import { espnLogoUrl } from './projectionData'
 import { useTableSort, type SortableColumn } from './useTableSort'
-import { ZONES } from './projectionConfig'
-import { getZoneLabel } from './data'
+import { ZONES, type LibertadoresZones } from './projectionConfig'
+import { getZoneLabel, zoneLabelsFor } from './data'
 import { ZoneLegend } from './ZoneLegend'
 import { advancedStatsCaptureLabel, advancedStatsCaptureRelation } from './advancedStatsFacts'
 import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
@@ -36,9 +36,11 @@ const SHORT_COLUMNS: SortableColumn<StandingsRow>[] = [
   { id: 'goalDifference', header: 'SG', accessor: ({ goalDifference }) => goalDifference, numeric: true },
 ]
 
-function zoneClass(position: number): string {
-  if (position <= ZONES.libertadores.to) return 'qualification'
-  if (position <= ZONES.sudamericana.to) return 'sudamericana'
+function zoneClass(position: number, zones?: LibertadoresZones): string {
+  const libertadoresTo = zones?.libertadoresTo ?? ZONES.libertadores.to
+  const sudamericanaTo = zones?.sudamericanaTo ?? ZONES.sudamericana.to
+  if (position <= libertadoresTo) return 'qualification'
+  if (position <= sudamericanaTo) return 'sudamericana'
   if (position >= ZONES.relegation.from) return 'relegation'
   return 'middle'
 }
@@ -48,9 +50,10 @@ interface StandingsTableViewProps {
   columns: SortableColumn<StandingsRow>[]
   initialSort: string
   caption: string
+  zones?: LibertadoresZones
 }
 
-function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTableViewProps): JSX.Element {
+function StandingsTableView({ rows, columns, initialSort, caption, zones }: StandingsTableViewProps): JSX.Element {
   const { sortedRows, sortColumnId, direction, toggleSort, ariaSort } = useTableSort(rows, columns, initialSort)
   const isCustomSort = sortColumnId !== 'position' || direction !== 'ascending'
   const formatCell = (row: StandingsRow, key: string, rowIndex: number): string => {
@@ -75,7 +78,7 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
         </thead>
         <tbody>
           {sortedRows.map((row, rowIndex) => (
-            <tr key={row.id} className={`standing-row standing-row--${zoneClass(row.position)}`}>
+            <tr key={row.id} className={`standing-row standing-row--${zoneClass(row.position, zones)}`}>
               {columns.map((column, index) => (
                 index === 1
                   ? (
@@ -89,7 +92,7 @@ function StandingsTableView({ rows, columns, initialSort, caption }: StandingsTa
                           {row.position}º oficial
                         </span>
                       )}
-                      <span className="sr-only">Zona: {getZoneLabel(row.position)}</span>
+                      <span className="sr-only">Zona: {getZoneLabel(row.position, zones)}</span>
                     </th>
                   )
                   : <td key={column.id} className={column.id === 'points' ? 'numeric points-cell' : 'numeric games-cell'}>{formatCell(row, column.id, rowIndex)}</td>
@@ -109,7 +112,7 @@ const CHART_COLORS = ['#d62728', '#1f77b4', '#2ca02c', '#ff7f0e', '#9467bd', '#8
  * visíveis em traço fino, e os selecionados ganham traço grosso + rótulo.
  * Faixas de zona (Libertadores/rebaixamento) aparecem como fundo colorido.
  */
-function PositionEvolutionChart(): JSX.Element {
+function PositionEvolutionChart({ zones }: { zones?: LibertadoresZones }): JSX.Element {
   const evolution = useMemo(() => positionByRound(), [])
   const [focusedIds, setFocusedIds] = useState<string[]>(() => ['flamengo', 'palmeiras'])
   const width = 960
@@ -129,9 +132,10 @@ function PositionEvolutionChart(): JSX.Element {
   }
 
   const zoneBands = [
-    { from: ZONES.libertadores.from, to: ZONES.libertadores.to, className: 'evolution-band--top' },
+    { from: ZONES.libertadores.from, to: zones?.libertadoresTo ?? ZONES.libertadores.to, className: 'evolution-band--top' },
     { from: ZONES.relegation.from, to: ZONES.relegation.to, className: 'evolution-band--bottom' },
   ]
+  const libertadoresDetail = zones ? zoneLabelsFor(zones).libertadores.detail : ZONES.libertadores.detail
 
   return (
     <figure className="evolution-figure">
@@ -156,7 +160,7 @@ function PositionEvolutionChart(): JSX.Element {
         className="evolution-chart"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Evolução da posição por rodada, da primeira à ${evolution.rounds.length}ª. Destacados: ${focusedIds.map((id) => labelFor.get(id) ?? id).join(', ') || 'nenhum clube'}. Faixa verde marca Libertadores ${ZONES.libertadores.detail}; faixa vermelha, rebaixamento ${ZONES.relegation.detail}.`}
+        aria-label={`Evolução da posição por rodada, da primeira à ${evolution.rounds.length}ª. Destacados: ${focusedIds.map((id) => labelFor.get(id) ?? id).join(', ') || 'nenhum clube'}. Faixa verde marca Libertadores ${libertadoresDetail}; faixa vermelha, rebaixamento ${ZONES.relegation.detail}.`}
       >
         {zoneBands.map((band) => (
           <rect key={band.className} x={padding.left} y={positionAt(band.from)} width={width - padding.left - padding.right} height={(band.to - band.from + 1) * stepY} className={`evolution-band ${band.className}`} />
@@ -243,7 +247,7 @@ const VIEWS: { id: ViewId; label: string; table: boolean }[] = [
   { id: 'sequencias', label: 'Sequências e extremos', table: false },
 ]
 
-export function StandingsViews(): JSX.Element {
+export function StandingsViews({ zones }: { zones?: LibertadoresZones }): JSX.Element {
   const [activeView, setActiveView] = useState<ViewId>('geral')
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const lastTenRounds = useMemo(() => lastNRounds(10), [])
@@ -265,13 +269,17 @@ export function StandingsViews(): JSX.Element {
     tabRefs.current[nextIndex]?.focus()
   }
 
+  const labels = zones ? zoneLabelsFor(zones) : null
   const generalLegend = (
     <ZoneLegend
       ariaLabel="Legenda de zonas da classificação"
       describedBy="standings-zone-legend-note"
+      zones={zones}
       note={(
         <p id="standings-zone-legend-note" className="zone-legend-note">
-          * O asterisco indica o cenário G-6 adotado pelo painel; o 6º lugar depende das regras de redistribuição e da sobreposição de classificados.
+          {labels
+            ? `Linha da Libertadores: ${labels.libertadores.detail}; Sul-Americana ${labels.sudamericana.range}. A linha desliza quando uma vaga das copas volta à tabela — ajuste o cenário em Projeções & Simulador.`
+            : '* O asterisco indica o cenário G-6 adotado pelo painel; o 6º lugar depende das regras de redistribuição e da sobreposição de classificados.'}
         </p>
       )}
     />
@@ -279,13 +287,13 @@ export function StandingsViews(): JSX.Element {
   const tableViews = VIEWS.filter((view) => view.table).map((view) => view.id)
   const activeViewHasZoneLegend = tableViews.includes(activeView)
   const viewContent: Record<ViewId, JSX.Element> = {
-    geral: <StandingsTableView rows={standingsFromResults()} columns={FULL_COLUMNS} initialSort="position" caption="Classificação geral; role para rolagem horizontal em telas pequenas" />,
-    ultimas: <StandingsTableView rows={standingsFromResults({ rounds: lastTenRounds })} columns={SHORT_COLUMNS} initialSort="points" caption={`Classificação nas últimas 10 rodadas completas (${lastTenRounds[0]}ª à ${lastTenRounds.at(-1)}ª)`} />,
-    mandante: <StandingsTableView rows={standingsFromResults({ venue: 'home' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só com jogos como mandante" />,
-    visitante: <StandingsTableView rows={standingsFromResults({ venue: 'away' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só jogos como visitante" />,
-    turno: <StandingsTableView rows={standingsFromResults({ fromRound: 1, toRound: 19 })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação do turno (rodadas 1 a 19)" />,
-    returno: <StandingsTableView rows={standingsFromResults({ fromRound: 20 })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação do returno (rodadas 20 em diante)" />,
-    evolucao: <PositionEvolutionChart />,
+    geral: <StandingsTableView rows={standingsFromResults()} columns={FULL_COLUMNS} initialSort="position" caption="Classificação geral; role para rolagem horizontal em telas pequenas" zones={zones} />,
+    ultimas: <StandingsTableView rows={standingsFromResults({ rounds: lastTenRounds })} columns={SHORT_COLUMNS} initialSort="points" caption={`Classificação nas últimas 10 rodadas completas (${lastTenRounds[0]}ª à ${lastTenRounds.at(-1)}ª)`} zones={zones} />,
+    mandante: <StandingsTableView rows={standingsFromResults({ venue: 'home' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só com jogos como mandante" zones={zones} />,
+    visitante: <StandingsTableView rows={standingsFromResults({ venue: 'away' })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação só jogos como visitante" zones={zones} />,
+    turno: <StandingsTableView rows={standingsFromResults({ fromRound: 1, toRound: 19 })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação do turno (rodadas 1 a 19)" zones={zones} />,
+    returno: <StandingsTableView rows={standingsFromResults({ fromRound: 20 })} columns={SHORT_COLUMNS} initialSort="points" caption="Classificação do returno (rodadas 20 em diante)" zones={zones} />,
+    evolucao: <PositionEvolutionChart zones={zones} />,
     sequencias: <StreaksAndExtremesView />,
   }
 

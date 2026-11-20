@@ -12,14 +12,18 @@ Football-Data CSV (BR.csv)  ─┐                              src/currentSeaso
 ESPN scoreboard (1 por dia) ─┼─► scripts/update-data.mjs ──► src/projectionData.ts
 CBF calendário (380 jogos)  ─┘        │                     src/sourceMetadata.ts
                                       ├─► data/source-snapshots/   (cópias brutas + SHA-256)
-                                      └─► docs/atualizacoes.md     (log público por execução)
+                                      ├─► docs/atualizacoes.md     (log público por execução)
+                                      └─► public/projecoes.json    (Monte Carlo de produção)
                                                     │
                                                     ▼
                                      npm run build (Vite, dist/ estático) ──► GitHub Pages
 ```
 
-- `scripts/update-data.mjs` coleta, concilia, valida, regenera os módulos TS, roda a
-  suíte e **commita** o pacote. Ele não faz push nem deploy: isso é do workflow.
+- `scripts/update-data.mjs` coleta, concilia, valida, regenera os módulos TS,
+  regenera `public/projecoes.json` (`scripts/generate-projections.mjs`, a mesma
+  `runProjectionRaw` do worker com as constantes de produção), roda a suíte e
+  **commita** o pacote. Ele não faz push nem deploy: isso é do workflow. O
+  contrato do arquivo de projeções está em `docs/projecoes-json.md`.
 - Fontes secundárias (`scripts/backfill-xg-cards.mjs` → 365scores,
   `scripts/refresh-espn-scorers.mjs` → eventos de partida da ESPN para a artilharia)
   rodam sempre que há rede. O xG/cartões regrava quando `shouldRefreshSecondary`
@@ -72,6 +76,11 @@ after=$(git rev-parse HEAD)
 | contrato de dados | `npm run test:data`, default do updater | sentinela de dados, parsers, módulos de dados e estatística pura — nunca UI/jsdom | a ingestão não pode ser refém de teste de apresentação que depende do pacote |
 | suíte completa | `npm test`, step `Full test suite gate` no workflow | repositório inteiro | regressão de UI/renderização continua bloqueando a publicação |
 
+`--no-projections` existe só para os harnesses de reprodução (`repro:gate`,
+`fixture:gate`), que executam o updater várias vezes: a simulação de produção
+custa ~18 s e não prova nada sobre o gate. Nenhum outro caminho usa a flag — o
+pacote publicado sempre inclui `public/projecoes.json`.
+
 O updater falha alto no contrato de dados; o workflow roda a suíte completa só
 quando `changed == 'true'` e **antes** do push, então um teste vermelho bloqueia a
 publicação mesmo já havendo commit local. Para reproduzir o gate completo no
@@ -84,7 +93,7 @@ Push do commit de dados: até 3 tentativas com `git fetch origin main` +
 
 Caminhos que contam como dado: `src/currentSeasonResults.ts`, `src/projectionData.ts`,
 `src/sourceMetadata.ts`, `src/advancedStats2026.ts`, `src/scorers2026.ts`,
-`data/source-snapshots`, `docs/atualizacoes.md`.
+`data/source-snapshots`, `docs/atualizacoes.md`, `public/projecoes.json`.
 
 ### 2.2. Publicação — um único workflow reutilizável
 
@@ -138,7 +147,7 @@ divergência:
 - `src/currentSeasonResults.ts`, `src/projectionData.ts`, `src/sourceMetadata.ts`,
   `src/advancedStats2026.ts`, `src/scorers2026.ts`
 - prefixo `data/source-snapshots/`
-- `docs/atualizacoes.md`
+- `docs/atualizacoes.md`, `public/projecoes.json`
 
 - O commit interno do updater (`scripts/update-data.mjs`) cai em `data-only`: é o
   mesmo contrato que ele já roda antes de commitar, então o hook não repete a

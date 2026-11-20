@@ -5,7 +5,21 @@ import { currentSeasonResults } from './currentSeasonResults'
 import { HISTORICAL_SOURCE, modelableHistoricalSeasons } from './historicalSeasons'
 import historicalSourceCode from './historicalSeasons?raw'
 import { historicalSeasons, remainingFixtures, currentClubs } from './projectionData'
-import { buildCurrentSeasonHeadToHead, buildPointsAnalysis, compareHeadToHeadForTable, isPositionInZone, runProjection, runScenarioProjection, runTemporalBacktest, simulateOneSeason, validateHistoricalSeason, ZONES } from './projection'
+import {
+  buildCurrentSeasonHeadToHead,
+  buildPointsAnalysis,
+  compareHeadToHeadForTable,
+  deriveProjectionResult,
+  isPositionInZone,
+  runProjection,
+  runProjectionRaw,
+  runScenarioProjection,
+  runTemporalBacktest,
+  simulateOneSeason,
+  validateHistoricalSeason,
+  ZONES,
+} from './projection'
+import { resolveLibertadoresZones, scenarioFromKey, LEGACY_LIBERTADORES_SCENARIO } from './projectionConfig'
 
 describe('projeção estática do Brasileirão 2026', () => {
   it('separa integridade estrutural, amostra RSSSF e verificação de tabela final', () => {
@@ -166,12 +180,12 @@ describe('projeção estática do Brasileirão 2026', () => {
 
   it('conta cada pontuação inteira exata, usa N por resultado e omite pontos sem observações', () => {
     const analysis = buildPointsAnalysis([
-      { points: 40, outcome: 'champion' },
-      { points: 40, outcome: 'champion' },
-      { points: 41, outcome: 'champion' },
-      { points: 40, outcome: 'libertadores' },
-      { points: 42, outcome: 'libertadores' },
-      { points: 41, outcome: 'sudamericana' },
+      { points: 40, position: 1 },
+      { points: 40, position: 1 },
+      { points: 41, position: 1 },
+      { points: 40, position: 2 },
+      { points: 42, position: 2 },
+      { points: 41, position: 7 },
     ])
 
     expect(analysis.distributionByOutcome.find(({ id }) => id === 'champion')).toEqual({
@@ -199,9 +213,9 @@ describe('projeção estática do Brasileirão 2026', () => {
 
   it('rejeita amostras com pontuação negativa ou não inteira', () => {
     const analysis = buildPointsAnalysis([
-      { points: -3, outcome: 'relegation' },
-      { points: 40.5, outcome: 'champion' },
-      { points: 30, outcome: 'relegation' },
+      { points: -3, position: 18 },
+      { points: 40.5, position: 1 },
+      { points: 30, position: 18 },
     ])
     const relegation = analysis.distributionByOutcome.find(({ id }) => id === 'relegation')
     const champion = analysis.distributionByOutcome.find(({ id }) => id === 'champion')
@@ -320,5 +334,73 @@ describe('projeção estática do Brasileirão 2026', () => {
     const repeat = runScenarioProjection(fixedScores, 500, 20_261_104)
     expect(repeat.map((c) => c.title)).toEqual(scenario.map((c) => c.title))
     expect(repeat.map((c) => c.relegation)).toEqual(scenario.map((c) => c.relegation))
+  })
+
+  it('deriva todas as probabilidades do histograma de posições, sem assar o cenário', () => {
+    const simulations = 80
+    const result = runProjection({ simulations, seed: 4242 })
+    const sumRange = (counts: readonly number[], from: number, to: number): number =>
+      counts.slice(from, to + 1).reduce((total, count) => total + count, 0)
+    for (const club of result.clubProbabilities) {
+      expect(club.positionCounts).toHaveLength(21)
+      expect(club.positionCounts[0]).toBe(0)
+      expect(club.positionCounts.reduce((total, count) => total + count, 0)).toBe(simulations)
+      // Cenário default (G-6): 1º título; 1º–6º Libertadores; 1º–4º direto;
+      // 7º–12º Sul-Americana; 17º–20º rebaixamento.
+      expect(club.title).toBe(club.positionCounts[1]! / simulations)
+      expect(club.libertadores).toBe(sumRange(club.positionCounts, 1, 6) / simulations)
+      expect(club.libertadoresDirect).toBe(sumRange(club.positionCounts, 1, 4) / simulations)
+      expect(club.sudamericana).toBe(sumRange(club.positionCounts, 7, 12) / simulations)
+      expect(club.relegation).toBe(sumRange(club.positionCounts, 17, 20) / simulations)
+    }
+  })
+
+  it('reproduz as 16 combinações de lineCounts a partir do mesmo positionCounts', () => {
+    const result = runProjection({ simulations: 40, seed: 909 })
+    for (const club of result.clubProbabilities) {
+      expect(club.lineCounts).toHaveLength(16)
+      for (const [key, entry] of club.lineCounts.entries()) {
+        const zones = resolveLibertadoresZones(scenarioFromKey(key))
+        expect(entry.scenarioKey).toBe(key)
+        expect(entry.libertadoresTo).toBe(zones.libertadoresTo)
+        expect(entry.directTo).toBe(zones.directTo)
+        expect(entry.libertadores).toBe(
+          club.positionCounts.slice(1, zones.libertadoresTo + 1).reduce((total, count) => total + count, 0),
+        )
+        expect(entry.direct).toBe(
+          club.positionCounts.slice(1, zones.directTo + 1).reduce((total, count) => total + count, 0),
+        )
+      }
+    }
+  })
+
+  it('mantém o bruto independente do cenário e deriva cada troca sem re-simular', () => {
+    const simulations = 60
+    const raw = runProjectionRaw({ simulations, seed: 1017 })
+    const g5 = deriveProjectionResult(raw, scenarioFromKey(0))
+    const g9 = deriveProjectionResult(raw, scenarioFromKey(15))
+    expect(g5.clubProbabilities.map(({ positionCounts }) => positionCounts)).toEqual(
+      g9.clubProbabilities.map(({ positionCounts }) => positionCounts),
+    )
+    expect(g5.libertadoresZones).toMatchObject({ libertadoresTo: 5, sudamericanaFrom: 6, sudamericanaTo: 11 })
+    expect(g9.libertadoresZones).toMatchObject({ libertadoresTo: 9, sudamericanaFrom: 10, sudamericanaTo: 15 })
+    expect(g5.pointCurve).not.toEqual(g9.pointCurve)
+    expect(g5.pointsAnalysis).not.toEqual(g9.pointsAnalysis)
+    // O cenário não está assado: as probabilidades por clube mudam no mesmo bruto.
+    expect(g5.clubProbabilities.map(({ libertadores }) => libertadores))
+      .not.toEqual(g9.clubProbabilities.map(({ libertadores }) => libertadores))
+    for (const club of g5.clubProbabilities) {
+      expect(club.positionCounts.reduce((total, count) => total + count, 0)).toBe(simulations)
+    }
+    for (const club of g9.clubProbabilities) {
+      expect(club.libertadores).toBe(
+        club.positionCounts.slice(1, 10).reduce((total, count) => total + count, 0) / simulations,
+      )
+    }
+  })
+
+  it('reproduz o caminho direto quando deriva o bruto com o cenário default G-6', () => {
+    const options = { simulations: 40, seed: 314 }
+    expect(deriveProjectionResult(runProjectionRaw(options), LEGACY_LIBERTADORES_SCENARIO)).toEqual(runProjection(options))
   })
 })
