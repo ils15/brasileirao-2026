@@ -1,7 +1,7 @@
 // Corte analítico do pacote gerado; não é kickoff, captura individual nem horário de publicação.
 // Football-Data não informa fuso; o dia-limite inteiro permanece de fora (política conservadora).
-export const ANALYTICAL_CUTOFF_LOCAL = '2026-11-19T21:30:37-03:00'
-export const ANALYTICAL_CUTOFF_UTC = '2026-11-20T00:30:37Z'
+export const ANALYTICAL_CUTOFF_LOCAL = '2026-11-20T07:12:29-03:00'
+export const ANALYTICAL_CUTOFF_UTC = '2026-11-20T10:12:29Z'
 
 export interface CutoffDatedMatch {
   kickoff: string
