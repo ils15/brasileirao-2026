@@ -1,10 +1,12 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import snapshotJson from '../public/projecoes.json?raw'
 import { ProjectionPanel } from './ProjectionSection'
-import { runProjection } from './projection'
+import { deriveProjectionResult, runProjection, runProjectionRaw } from './projection'
 import { resolveLibertadoresZones, scenarioFromKey } from './projectionConfig'
 import { EXPECTED_SIMULATION_COUNT } from './ProjectionContext'
+import { parseProjectionsSnapshot } from './projectionsSnapshot'
 
 const percentFormat = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
@@ -17,6 +19,13 @@ function scenarioKeyForLine(line: number): number {
     if (resolveLibertadoresZones(scenarioFromKey(key)).libertadoresTo === line) return key
   }
   throw new Error(`Nenhum cenário produz a linha G-${line}`)
+}
+
+/** Soma crua de `positionCounts` numa faixa fechada de posições (1º–20º). */
+function countInRange(positions: readonly number[], from: number, to: number): number {
+  let total = 0
+  for (let position = from; position <= to; position += 1) total += positions[position] ?? 0
+  return total
 }
 
 afterEach(() => {
@@ -861,19 +870,67 @@ describe('painel de projeções', () => {
     expect(footnote).toHaveTextContent(/meio de tabela \+ rebaixamento = 100%/i)
   })
 
-  it('mantém Libertadores + Sul-Americana + meio + rebaixamento = 100% em G-5 a G-9', { timeout: 30_000 }, () => {
-    for (const line of [5, 6, 7, 8, 9]) {
-      const result = runProjection({ simulations: 8, seed: 123, scenario: scenarioFromKey(scenarioKeyForLine(line)) })
-      expect(result.libertadoresZones.libertadoresTo).toBe(line)
-      for (const club of result.clubProbabilities) {
-        // O “meio de tabela” é o que sobra entre a Sul-Americana e o
-        // rebaixamento, exatamente como a barra empilhada calcula.
-        const meio = 1 - club.libertadores - club.sudamericana - club.relegation
-        expect(meio).toBeGreaterThanOrEqual(-1e-12)
-        expect(club.libertadores + club.sudamericana + meio + club.relegation).toBeCloseTo(1, 12)
-        // Cumulativas contêm as posições, nunca o contrário.
-        expect(club.title).toBeLessThanOrEqual(club.libertadores + 1e-12)
-        expect(club.libertadoresDirect).toBeLessThanOrEqual(club.libertadores + 1e-12)
+  it('deriva as faixas do histograma de posições, sem sobreposição, em G-5 a G-9', { timeout: 30_000 }, () => {
+    // Os dois caminhos de dados entregam o mesmo bruto: o worker recalculado
+    // nesta máquina e o artefato publicado que o contexto adota sem recalcular.
+    const workerRaw = runProjectionRaw({ simulations: 8, seed: 123 })
+    const snapshotRaw = parseProjectionsSnapshot(JSON.parse(snapshotJson))
+    expect(snapshotRaw).not.toBeNull()
+
+    for (const [source, raw] of [['worker', workerRaw], ['snapshot', snapshotRaw!]] as const) {
+      for (const line of [5, 6, 7, 8, 9]) {
+        const scenario = scenarioFromKey(scenarioKeyForLine(line))
+        const result = deriveProjectionResult(raw, scenario)
+        const zones = result.libertadoresZones
+        expect(zones.libertadoresTo, source).toBe(line)
+        const simulations = result.simulations
+
+        for (const club of result.clubProbabilities) {
+          const positions = club.positionCounts
+          // Base da partição: cada simulação termina em exatamente uma posição.
+          expect(countInRange(positions, 1, 20), `${source} ${club.club}`).toBe(simulations)
+
+          // As faixas saem do histograma bruto e da fronteira do cenário ativo,
+          // não das probabilidades já derivadas — a soma não é verdadeira por
+          // construção, e sim porque as posições não se repetem.
+          const libertadoresCount = countInRange(positions, 1, zones.libertadoresTo)
+          const directCount = countInRange(positions, 1, zones.directTo)
+          const sudamericanaCount = countInRange(positions, zones.sudamericanaFrom, zones.sudamericanaTo)
+          const relegationCount = countInRange(positions, 17, 20)
+          const libertadores = libertadoresCount / simulations
+          const direct = directCount / simulations
+          const sudamericana = sudamericanaCount / simulations
+          const relegation = relegationCount / simulations
+          const middle = (simulations - (libertadoresCount + sudamericanaCount + relegationCount)) / simulations
+
+          expect(libertadores + sudamericana + middle + relegation, `${source} ${club.club}`).toBeCloseTo(1, 12)
+          // Prova direta da não-sobreposição, em contagens inteiras para não
+          // depender do arredondamento das razões.
+          expect(
+            libertadoresCount + sudamericanaCount + relegationCount,
+            `${source} ${club.club}`,
+          ).toBeLessThanOrEqual(simulations)
+          expect(libertadores + sudamericana + relegation).toBeLessThanOrEqual(1 + 1e-12)
+          // Cumulativas contêm as posições, nunca o contrário.
+          expect(direct).toBeLessThanOrEqual(libertadores)
+          expect(positions[1]! / simulations).toBeLessThanOrEqual(libertadores)
+          expect(middle).toBeGreaterThanOrEqual(0)
+          // O “meio de tabela” é literalmente a faixa entre a Sul-Americana e o
+          // rebaixamento (16º é a última posição antes dos 17º–20º).
+          expect(middle).toBeCloseTo(countInRange(positions, zones.sudamericanaTo + 1, 16) / simulations, 12)
+          // E as probabilidades públicas são exatamente essas somas.
+          expect(club.libertadores).toBeCloseTo(libertadores, 12)
+          expect(club.libertadoresDirect).toBeCloseTo(direct, 12)
+          expect(club.sudamericana).toBeCloseTo(sudamericana, 12)
+          expect(club.relegation).toBeCloseTo(relegation, 12)
+          expect(club.title).toBeCloseTo(positions[1]! / simulations, 12)
+        }
+
+        // Invariante do dominó: a Sul-Americana começa na posição seguinte à
+        // Libertadores, ocupa seis posições e nunca invade o rebaixamento
+        // (no máximo 15º, contra 17º–20º).
+        expect(zones.sudamericanaFrom, source).toBe(zones.libertadoresTo + 1)
+        expect(zones.sudamericanaTo, source).toBe(zones.libertadoresTo + 6)
       }
     }
   })
