@@ -1,6 +1,6 @@
 /**
  * Eventos de partida da ESPN (gols e cartões por atleta) — fonte da artilharia
- * do painel. Substitui a dependência da API Futebol BR (trial encerrado).
+ * do painel.
  *
  * Endpoint: site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary?event=<id>
  * Extrai de `keyEvents`:

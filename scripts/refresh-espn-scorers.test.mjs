@@ -43,22 +43,44 @@ const INDEX_PAYLOAD = {
   ],
 }
 
-function stubFetch({ failingEventIds = [], summaryText = FIXTURE_TEXT } = {}) {
+function stubFetch({ failingEventIds = [], summaryText = FIXTURE_TEXT, summaries = {}, indexPayload = INDEX_PAYLOAD } = {}) {
   const calls = []
   const fetchImpl = async (url) => {
     calls.push(url)
     if (url.includes('/scoreboard')) {
-      return { ok: true, status: 200, text: async () => JSON.stringify(INDEX_PAYLOAD) }
+      return { ok: true, status: 200, text: async () => JSON.stringify(indexPayload) }
     }
     if (failingEventIds.some((eventId) => url.includes(`event=${eventId}`))) {
       return { ok: false, status: 429, text: async () => '' }
     }
-    return { ok: true, status: 200, text: async () => summaryText }
+    const eventId = url.match(/event=(\d+)/)?.[1]
+    return { ok: true, status: 200, text: async () => summaries[eventId] ?? summaryText }
   }
   return { calls, fetchImpl }
 }
 
 const RESULT = { home: 'coritiba', away: 'santos', homeGoals: 0, awayGoals: 1, kickoff: '2026-11-18T22:30Z', source: 'espn', sourceRef: '401841315' }
+const SECOND_RESULT = { home: 'flamengo', away: 'coritiba', homeGoals: 1, awayGoals: 2, kickoff: '2026-11-19T00:00Z', source: 'espn', sourceRef: '401841399' }
+
+/** Summary sintético do segundo jogo (mesmo shape mínimo que o parser exige). */
+const SECOND_SUMMARY = JSON.stringify({
+  header: {
+    competitions: [{
+      id: '401841399',
+      date: '2026-11-19T00:00Z',
+      status: { type: { state: 'post', completed: true } },
+      competitors: [
+        { homeAway: 'home', team: { displayName: 'Flamengo' }, score: '1' },
+        { homeAway: 'away', team: { displayName: 'Coritiba' }, score: '2' },
+      ],
+    }],
+  },
+  keyEvents: [
+    { id: 'a', type: { id: '80', text: 'Goal', type: 'goal' }, clock: { displayValue: "12'" }, team: { displayName: 'Flamengo' }, participants: [{ athlete: { displayName: 'Pedro' } }] },
+    { id: 'b', type: { id: '80', text: 'Goal', type: 'goal' }, clock: { displayValue: "40'" }, team: { displayName: 'Coritiba' }, participants: [{ athlete: { displayName: 'Lucas Ronier' } }] },
+    { id: 'c', type: { id: '80', text: 'Goal', type: 'goal' }, clock: { displayValue: "70'" }, team: { displayName: 'Coritiba' }, participants: [{ athlete: { displayName: 'Josué' } }] },
+  ],
+})
 
 function tempProject() {
   const dir = mkdtempSync(join(tmpdir(), 'espn-scorers-'))
@@ -139,6 +161,40 @@ describe('refreshEspnScorers', () => {
     expect(second.calls.filter((url) => url.includes('/summary'))).toHaveLength(0)
     expect(outcome.captured).toBe(0)
     expect(readFileSync(join(snapshotsDir, 'espn-events-401841315.json'), 'utf8')).toBe(snapshotText)
+  })
+
+  it('resultado novo no mesmo dia atualiza a artilharia e cresce a cobertura', async () => {
+    const { snapshotsDir, modulePath } = tempProject()
+    const first = await refreshEspnScorers({
+      results: [RESULT],
+      snapshotsDir,
+      modulePath,
+      fetchImpl: stubFetch().fetchImpl,
+      log: () => {},
+      warn: () => {},
+    })
+    expect(first.written).toBe(true)
+    expect(first.coverage.matchesCovered).toBe(1)
+    const before = readFileSync(modulePath, 'utf8')
+
+    const { calls, fetchImpl } = stubFetch({ summaries: { '401841399': SECOND_SUMMARY } })
+    const second = await refreshEspnScorers({
+      results: [RESULT, SECOND_RESULT],
+      snapshotsDir,
+      modulePath,
+      fetchImpl,
+      log: () => {},
+      warn: () => {},
+    })
+
+    expect(second.written).toBe(true)
+    expect(second.coverage.matchesCovered).toBe(2)
+    expect(second.coverage.goalsInPackage).toBe(4)
+    expect(calls.filter((url) => url.includes('/summary'))).toHaveLength(1)
+    const after = readFileSync(modulePath, 'utf8')
+    expect(after).not.toBe(before)
+    expect(after).toContain('matchesCovered: 2')
+    expect(after).toContain("{ name: 'Pedro', club: 'flamengo', goals: 1 }")
   })
 
   it('falha de uma partida emite ::warning:: com o eventId e mantém o snapshot anterior', async () => {

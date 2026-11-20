@@ -1,12 +1,11 @@
 /**
  * Artilharia 2026 derivada dos eventos de partida da ESPN.
  *
- * Substitui a coleta da API Futebol BR (trial encerrado, 429 permanente).
- * Para cada resultado já empacotado, resolve o eventId no scoreboard da
- * temporada, baixa o summary UMA vez e guarda o payload normalizado em
- * data/source-snapshots/espn-events-<eventId>.json. O módulo
- * src/scorers2026.ts é regenerado a partir dos snapshots — nunca da rede
- * direto — para que a coleta seja reprocessável e auditável.
+ * Fonte única da artilharia. Para cada resultado já empacotado, resolve o
+ * eventId no scoreboard da temporada, baixa o summary UMA vez e guarda o
+ * payload normalizado em data/source-snapshots/espn-events-<eventId>.json. O
+ * módulo src/scorers2026.ts é regenerado a partir dos snapshots — nunca da
+ * rede direto — para que a coleta seja reprocessável e auditável.
  *
  * Falha por partida é isolada: emite ::warning:: com o eventId, mantém o
  * snapshot anterior e não preenche nada com zero. Se a cobertura regredir
