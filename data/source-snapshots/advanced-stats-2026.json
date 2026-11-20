@@ -1,8 +1,8 @@
 {
  "source": "365scores",
  "seasonNum": 76,
- "fetchedAt": "2026-11-07T15:25:20.960Z",
- "sha256": "4b50ef2ed0815af05dbd8ddb3edef1027d75e5121654234bf301ad673320b468",
+ "fetchedAt": "2026-11-20T18:26:07.400Z",
+ "sha256": "28175857b61e21ff8d4ced0eab9f58602dc86b5eba7f53471a4783bdc1b1ca98",
  "records": [
   {
    "gameId": 4632512,
@@ -19,7 +19,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632513,
@@ -36,7 +37,8 @@
    "yellowHome": 0,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632514,
@@ -53,7 +55,8 @@
    "yellowHome": 5,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632515,
@@ -70,7 +73,8 @@
    "yellowHome": 1,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632516,
@@ -87,7 +91,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632517,
@@ -104,7 +109,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632518,
@@ -121,7 +127,8 @@
    "yellowHome": 0,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632519,
@@ -138,7 +145,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632520,
@@ -155,7 +163,8 @@
    "yellowHome": 0,
    "yellowAway": 3,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632521,
@@ -172,7 +181,8 @@
    "yellowHome": 6,
    "yellowAway": 3,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632522,
@@ -189,7 +199,8 @@
    "yellowHome": 5,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632523,
@@ -206,7 +217,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632524,
@@ -223,7 +235,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632525,
@@ -240,7 +253,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632526,
@@ -257,7 +271,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632527,
@@ -274,7 +289,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632528,
@@ -291,7 +307,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632529,
@@ -308,7 +325,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632530,
@@ -325,7 +343,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632531,
@@ -342,7 +361,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632532,
@@ -359,7 +379,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632533,
@@ -376,7 +397,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632534,
@@ -393,7 +415,8 @@
    "yellowHome": 0,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632535,
@@ -410,7 +433,8 @@
    "yellowHome": 3,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632536,
@@ -427,7 +451,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632537,
@@ -444,7 +469,8 @@
    "yellowHome": 5,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632538,
@@ -461,7 +487,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632539,
@@ -478,7 +505,8 @@
    "yellowHome": 1,
    "yellowAway": 6,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632540,
@@ -495,7 +523,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632541,
@@ -510,6 +539,169 @@
    "shotsHome": 8,
    "shotsAway": 25,
    "yellowHome": 3,
+   "yellowAway": 3,
+   "redHome": 0,
+   "redAway": 0,
+   "seasonNum": 76
+  },
+  {
+   "gameId": 4632597,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "remo",
+   "away": "chapecoense",
+   "homeScore": 2,
+   "awayScore": 0,
+   "hasXg": true,
+   "xgHome": 2.43,
+   "xgAway": 0.85,
+   "shotsHome": 18,
+   "shotsAway": 11,
+   "yellowHome": 3,
+   "yellowAway": 3,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632598,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "vitoria",
+   "away": "bragantino",
+   "homeScore": 2,
+   "awayScore": 1,
+   "hasXg": true,
+   "xgHome": 1.33,
+   "xgAway": 1.21,
+   "shotsHome": 12,
+   "shotsAway": 20,
+   "yellowHome": 2,
+   "yellowAway": 6,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632599,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "coritiba",
+   "away": "santos",
+   "homeScore": 0,
+   "awayScore": 1,
+   "hasXg": true,
+   "xgHome": 0.59,
+   "xgAway": 1.72,
+   "shotsHome": 14,
+   "shotsAway": 13,
+   "yellowHome": 5,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632600,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "gremio",
+   "away": "bahia",
+   "homeScore": 0,
+   "awayScore": 0,
+   "hasXg": true,
+   "xgHome": 1.64,
+   "xgAway": 1.38,
+   "shotsHome": 25,
+   "shotsAway": 14,
+   "yellowHome": 2,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632601,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "cruzeiro",
+   "away": "palmeiras",
+   "homeScore": 2,
+   "awayScore": 1,
+   "hasXg": true,
+   "xgHome": 0.74,
+   "xgAway": 0.99,
+   "shotsHome": 16,
+   "shotsAway": 9,
+   "yellowHome": 4,
+   "yellowAway": 4,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632602,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "mirassol",
+   "away": "atletico-mg",
+   "homeScore": 0,
+   "awayScore": 0,
+   "hasXg": true,
+   "xgHome": 0.93,
+   "xgAway": 1.07,
+   "shotsHome": 11,
+   "shotsAway": 16,
+   "yellowHome": 3,
+   "yellowAway": 2,
+   "redHome": 1,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632603,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "corinthians",
+   "away": "botafogo",
+   "homeScore": 4,
+   "awayScore": 0,
+   "hasXg": true,
+   "xgHome": 1.54,
+   "xgAway": 0.15,
+   "shotsHome": 16,
+   "shotsAway": 5,
+   "yellowHome": 3,
+   "yellowAway": 2,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632605,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "vasco",
+   "away": "internacional",
+   "homeScore": 2,
+   "awayScore": 1,
+   "hasXg": true,
+   "xgHome": 0.52,
+   "xgAway": 1.58,
+   "shotsHome": 9,
+   "shotsAway": 16,
+   "yellowHome": 3,
+   "yellowAway": 4,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632606,
+   "seasonNum": 76,
+   "roundNum": 35,
+   "home": "flamengo",
+   "away": "athletico-pr",
+   "homeScore": 2,
+   "awayScore": 1,
+   "hasXg": true,
+   "xgHome": 1.41,
+   "xgAway": 0.13,
+   "shotsHome": 10,
+   "shotsAway": 5,
+   "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
    "redAway": 0
@@ -529,7 +721,8 @@
    "yellowHome": 2,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632608,
@@ -546,7 +739,8 @@
    "yellowHome": 4,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632609,
@@ -563,7 +757,8 @@
    "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632610,
@@ -580,7 +775,8 @@
    "yellowHome": 3,
    "yellowAway": 5,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632611,
@@ -597,7 +793,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632612,
@@ -614,7 +811,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632613,
@@ -631,7 +829,8 @@
    "yellowHome": 0,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632614,
@@ -648,7 +847,8 @@
    "yellowHome": 5,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 2
+   "redAway": 2,
+   "seasonNum": 76
   },
   {
    "gameId": 4632615,
@@ -665,7 +865,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632616,
@@ -682,7 +883,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632617,
@@ -699,7 +901,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632618,
@@ -716,7 +919,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632619,
@@ -733,7 +937,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632620,
@@ -750,7 +955,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632621,
@@ -767,7 +973,8 @@
    "yellowHome": 2,
    "yellowAway": 6,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632622,
@@ -784,7 +991,8 @@
    "yellowHome": 0,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632623,
@@ -801,7 +1009,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632624,
@@ -818,7 +1027,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632625,
@@ -835,7 +1045,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632626,
@@ -852,7 +1063,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632627,
@@ -869,7 +1081,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632628,
@@ -886,7 +1099,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632629,
@@ -903,7 +1117,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632630,
@@ -920,7 +1135,8 @@
    "yellowHome": 1,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632631,
@@ -937,7 +1153,8 @@
    "yellowHome": 0,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632632,
@@ -954,7 +1171,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632633,
@@ -971,7 +1189,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632634,
@@ -988,7 +1207,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632635,
@@ -1005,7 +1225,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632636,
@@ -1022,7 +1243,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632637,
@@ -1039,7 +1261,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632638,
@@ -1056,7 +1279,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632639,
@@ -1073,7 +1297,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632640,
@@ -1090,7 +1315,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632641,
@@ -1107,7 +1333,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632642,
@@ -1124,7 +1351,8 @@
    "yellowHome": 2,
    "yellowAway": 6,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632643,
@@ -1141,7 +1369,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632644,
@@ -1158,7 +1387,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632645,
@@ -1175,7 +1405,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632646,
@@ -1192,7 +1423,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632647,
@@ -1209,7 +1441,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632648,
@@ -1226,7 +1459,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632649,
@@ -1243,7 +1477,8 @@
    "yellowHome": 5,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632650,
@@ -1260,7 +1495,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632651,
@@ -1277,7 +1513,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632652,
@@ -1294,7 +1531,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632653,
@@ -1311,7 +1549,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632654,
@@ -1328,7 +1567,8 @@
    "yellowHome": 5,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632655,
@@ -1345,7 +1585,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632656,
@@ -1362,7 +1603,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632657,
@@ -1379,7 +1621,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632658,
@@ -1396,7 +1639,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632659,
@@ -1413,7 +1657,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632660,
@@ -1430,7 +1675,8 @@
    "yellowHome": 4,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632661,
@@ -1447,7 +1693,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632662,
@@ -1464,7 +1711,8 @@
    "yellowHome": 0,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632663,
@@ -1481,7 +1729,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632664,
@@ -1498,7 +1747,8 @@
    "yellowHome": 6,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632665,
@@ -1515,7 +1765,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632666,
@@ -1532,7 +1783,8 @@
    "yellowHome": 1,
    "yellowAway": 0,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632667,
@@ -1549,7 +1801,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632668,
@@ -1566,7 +1819,8 @@
    "yellowHome": 0,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632669,
@@ -1583,7 +1837,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632670,
@@ -1600,7 +1855,8 @@
    "yellowHome": 5,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632671,
@@ -1617,7 +1873,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632672,
@@ -1634,7 +1891,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632673,
@@ -1651,7 +1909,8 @@
    "yellowHome": 3,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632674,
@@ -1668,7 +1927,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632675,
@@ -1685,7 +1945,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632676,
@@ -1702,7 +1963,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632677,
@@ -1719,7 +1981,8 @@
    "yellowHome": 7,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632678,
@@ -1736,7 +1999,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632679,
@@ -1753,7 +2017,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632680,
@@ -1770,7 +2035,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632681,
@@ -1787,7 +2053,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632682,
@@ -1804,7 +2071,8 @@
    "yellowHome": 5,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632683,
@@ -1821,7 +2089,8 @@
    "yellowHome": 4,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632684,
@@ -1838,7 +2107,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632685,
@@ -1855,7 +2125,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632686,
@@ -1872,7 +2143,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632687,
@@ -1889,7 +2161,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632688,
@@ -1906,7 +2179,8 @@
    "yellowHome": 2,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632689,
@@ -1923,7 +2197,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632690,
@@ -1940,7 +2215,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632691,
@@ -1957,7 +2233,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632692,
@@ -1974,7 +2251,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632693,
@@ -1991,7 +2269,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632694,
@@ -2008,7 +2287,8 @@
    "yellowHome": 0,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632695,
@@ -2025,7 +2305,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632696,
@@ -2042,7 +2323,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632697,
@@ -2059,7 +2341,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632698,
@@ -2076,7 +2359,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632699,
@@ -2093,7 +2377,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632700,
@@ -2110,7 +2395,8 @@
    "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632701,
@@ -2127,7 +2413,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632702,
@@ -2144,7 +2431,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632703,
@@ -2161,7 +2449,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632704,
@@ -2178,7 +2467,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632705,
@@ -2195,7 +2485,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632706,
@@ -2212,7 +2503,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632707,
@@ -2229,7 +2521,8 @@
    "yellowHome": 4,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632708,
@@ -2246,7 +2539,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632709,
@@ -2263,7 +2557,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632710,
@@ -2280,7 +2575,8 @@
    "yellowHome": 5,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632711,
@@ -2297,7 +2593,8 @@
    "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632712,
@@ -2314,7 +2611,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632713,
@@ -2331,7 +2629,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632714,
@@ -2348,7 +2647,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632715,
@@ -2365,7 +2665,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632716,
@@ -2382,7 +2683,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632717,
@@ -2399,7 +2701,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632718,
@@ -2416,7 +2719,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632719,
@@ -2433,7 +2737,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632720,
@@ -2450,7 +2755,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632721,
@@ -2467,7 +2773,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632722,
@@ -2484,7 +2791,8 @@
    "yellowHome": 3,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632723,
@@ -2501,7 +2809,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632724,
@@ -2518,7 +2827,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632725,
@@ -2535,7 +2845,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632726,
@@ -2552,7 +2863,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632727,
@@ -2569,7 +2881,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632728,
@@ -2586,7 +2899,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632729,
@@ -2603,7 +2917,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632730,
@@ -2620,7 +2935,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632731,
@@ -2637,7 +2953,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632732,
@@ -2654,7 +2971,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632733,
@@ -2671,7 +2989,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632734,
@@ -2688,7 +3007,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632735,
@@ -2705,7 +3025,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632736,
@@ -2720,6 +3041,25 @@
    "shotsHome": 20,
    "shotsAway": 7,
    "yellowHome": 1,
+   "yellowAway": 1,
+   "redHome": 0,
+   "redAway": 0,
+   "seasonNum": 76
+  },
+  {
+   "gameId": 4632737,
+   "seasonNum": 76,
+   "roundNum": 21,
+   "home": "chapecoense",
+   "away": "vasco",
+   "homeScore": 0,
+   "awayScore": 2,
+   "hasXg": true,
+   "xgHome": 0.45,
+   "xgAway": 2.68,
+   "shotsHome": 13,
+   "shotsAway": 17,
+   "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 0,
    "redAway": 0
@@ -2739,7 +3079,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 2,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632739,
@@ -2756,7 +3097,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632740,
@@ -2773,7 +3115,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632741,
@@ -2790,7 +3133,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632742,
@@ -2807,7 +3151,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632743,
@@ -2824,7 +3169,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632744,
@@ -2841,7 +3187,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632745,
@@ -2858,7 +3205,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632746,
@@ -2875,7 +3223,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632747,
@@ -2892,7 +3241,8 @@
    "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632748,
@@ -2909,7 +3259,8 @@
    "yellowHome": 0,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632749,
@@ -2926,7 +3277,8 @@
    "yellowHome": 3,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632750,
@@ -2943,7 +3295,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632751,
@@ -2960,7 +3313,8 @@
    "yellowHome": 4,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632752,
@@ -2977,7 +3331,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632753,
@@ -2994,7 +3349,8 @@
    "yellowHome": 0,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632754,
@@ -3011,7 +3367,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632755,
@@ -3028,7 +3385,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632756,
@@ -3045,7 +3403,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632757,
@@ -3062,7 +3421,8 @@
    "yellowHome": 1,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632758,
@@ -3079,7 +3439,8 @@
    "yellowHome": 0,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632759,
@@ -3096,7 +3457,8 @@
    "yellowHome": 1,
    "yellowAway": 6,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632760,
@@ -3113,7 +3475,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632761,
@@ -3130,7 +3493,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632762,
@@ -3147,7 +3511,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632763,
@@ -3164,7 +3529,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632764,
@@ -3181,7 +3547,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632765,
@@ -3198,7 +3565,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 2
+   "redAway": 2,
+   "seasonNum": 76
   },
   {
    "gameId": 4632766,
@@ -3215,7 +3583,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632767,
@@ -3232,7 +3601,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632768,
@@ -3249,7 +3619,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632769,
@@ -3266,7 +3637,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632770,
@@ -3283,7 +3655,8 @@
    "yellowHome": 3,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632771,
@@ -3300,7 +3673,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632772,
@@ -3317,7 +3691,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632773,
@@ -3334,7 +3709,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632774,
@@ -3351,7 +3727,8 @@
    "yellowHome": 4,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632775,
@@ -3368,7 +3745,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632776,
@@ -3385,7 +3763,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632777,
@@ -3402,7 +3781,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632778,
@@ -3419,7 +3799,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632779,
@@ -3436,7 +3817,8 @@
    "yellowHome": 0,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632780,
@@ -3453,7 +3835,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632781,
@@ -3470,7 +3853,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632782,
@@ -3487,7 +3871,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632784,
@@ -3504,7 +3889,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632785,
@@ -3521,7 +3907,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632786,
@@ -3538,7 +3925,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632787,
@@ -3555,7 +3943,8 @@
    "yellowHome": 6,
    "yellowAway": 6,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632788,
@@ -3572,7 +3961,8 @@
    "yellowHome": 4,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632789,
@@ -3589,7 +3979,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632790,
@@ -3606,7 +3997,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632791,
@@ -3623,7 +4015,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632792,
@@ -3640,7 +4033,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632793,
@@ -3657,7 +4051,8 @@
    "yellowHome": 2,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632794,
@@ -3674,7 +4069,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632795,
@@ -3691,7 +4087,8 @@
    "yellowHome": 6,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632796,
@@ -3708,7 +4105,8 @@
    "yellowHome": 2,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632797,
@@ -3725,7 +4123,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632798,
@@ -3742,7 +4141,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632799,
@@ -3759,7 +4159,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632800,
@@ -3776,7 +4177,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632801,
@@ -3793,7 +4195,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632802,
@@ -3810,7 +4213,8 @@
    "yellowHome": 1,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632803,
@@ -3827,7 +4231,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632804,
@@ -3844,7 +4249,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632805,
@@ -3861,7 +4267,8 @@
    "yellowHome": 4,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632806,
@@ -3878,7 +4285,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632807,
@@ -3895,7 +4303,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632808,
@@ -3912,7 +4321,8 @@
    "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632809,
@@ -3929,7 +4339,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632810,
@@ -3946,7 +4357,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632811,
@@ -3963,7 +4375,8 @@
    "yellowHome": 3,
    "yellowAway": 6,
    "redHome": 2,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632812,
@@ -3980,7 +4393,8 @@
    "yellowHome": 5,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632813,
@@ -3997,7 +4411,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632814,
@@ -4014,7 +4429,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632815,
@@ -4031,7 +4447,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632816,
@@ -4048,7 +4465,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632817,
@@ -4065,7 +4483,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632818,
@@ -4082,7 +4501,8 @@
    "yellowHome": 6,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632819,
@@ -4099,7 +4519,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632820,
@@ -4116,7 +4537,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 2
+   "redAway": 2,
+   "seasonNum": 76
   },
   {
    "gameId": 4632821,
@@ -4133,7 +4555,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632822,
@@ -4150,7 +4573,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632823,
@@ -4167,7 +4591,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632824,
@@ -4184,7 +4609,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632825,
@@ -4201,7 +4627,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632826,
@@ -4218,7 +4645,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632827,
@@ -4235,7 +4663,8 @@
    "yellowHome": 0,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632828,
@@ -4252,7 +4681,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 1,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632829,
@@ -4269,7 +4699,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632830,
@@ -4286,7 +4717,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632831,
@@ -4303,7 +4735,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632832,
@@ -4320,7 +4753,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632833,
@@ -4337,7 +4771,8 @@
    "yellowHome": 3,
    "yellowAway": 5,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632834,
@@ -4354,7 +4789,8 @@
    "yellowHome": 5,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632835,
@@ -4371,7 +4807,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632836,
@@ -4388,7 +4825,8 @@
    "yellowHome": 2,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632837,
@@ -4405,7 +4843,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632838,
@@ -4422,7 +4861,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632839,
@@ -4439,7 +4879,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632840,
@@ -4456,7 +4897,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632841,
@@ -4473,7 +4915,8 @@
    "yellowHome": 5,
    "yellowAway": 2,
    "redHome": 2,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632842,
@@ -4490,7 +4933,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632843,
@@ -4507,7 +4951,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 2,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632844,
@@ -4524,7 +4969,8 @@
    "yellowHome": 4,
    "yellowAway": 1,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632845,
@@ -4541,7 +4987,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632846,
@@ -4558,7 +5005,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632847,
@@ -4575,7 +5023,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632848,
@@ -4592,7 +5041,8 @@
    "yellowHome": 2,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632849,
@@ -4609,7 +5059,8 @@
    "yellowHome": 3,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632850,
@@ -4626,7 +5077,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632851,
@@ -4643,7 +5095,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632852,
@@ -4660,7 +5113,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632853,
@@ -4677,7 +5131,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632854,
@@ -4694,7 +5149,8 @@
    "yellowHome": 2,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632855,
@@ -4711,7 +5167,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632856,
@@ -4728,7 +5185,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632857,
@@ -4745,7 +5203,8 @@
    "yellowHome": 1,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632858,
@@ -4762,7 +5221,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632859,
@@ -4779,7 +5239,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632860,
@@ -4796,7 +5257,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632861,
@@ -4813,7 +5275,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632862,
@@ -4830,7 +5293,8 @@
    "yellowHome": 4,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632863,
@@ -4847,7 +5311,8 @@
    "yellowHome": 0,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632864,
@@ -4864,7 +5329,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632865,
@@ -4881,7 +5347,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632866,
@@ -4898,7 +5365,8 @@
    "yellowHome": 1,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632867,
@@ -4915,7 +5383,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632868,
@@ -4932,7 +5401,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632869,
@@ -4949,7 +5419,8 @@
    "yellowHome": 0,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632870,
@@ -4966,7 +5437,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632871,
@@ -4983,7 +5455,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632872,
@@ -5000,7 +5473,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632873,
@@ -5017,7 +5491,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632874,
@@ -5034,7 +5509,8 @@
    "yellowHome": 3,
    "yellowAway": 6,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632875,
@@ -5051,7 +5527,8 @@
    "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632876,
@@ -5068,7 +5545,8 @@
    "yellowHome": 5,
    "yellowAway": 5,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632877,
@@ -5085,7 +5563,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632878,
@@ -5102,7 +5581,8 @@
    "yellowHome": 3,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632879,
@@ -5119,7 +5599,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632880,
@@ -5136,7 +5617,8 @@
    "yellowHome": 1,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632881,
@@ -5153,7 +5635,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632882,
@@ -5170,7 +5653,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632883,
@@ -5187,7 +5671,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632884,
@@ -5204,7 +5689,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632885,
@@ -5221,7 +5707,8 @@
    "yellowHome": 2,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632886,
@@ -5238,7 +5725,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632887,
@@ -5255,7 +5743,8 @@
    "yellowHome": 3,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632888,
@@ -5272,7 +5761,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632889,
@@ -5289,7 +5779,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632890,
@@ -5306,7 +5797,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632891,
@@ -5323,7 +5815,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632892,
@@ -5340,7 +5833,8 @@
    "yellowHome": 4,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632893,
@@ -5357,7 +5851,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632894,
@@ -5374,7 +5869,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632895,
@@ -5391,7 +5887,8 @@
    "yellowHome": 4,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632896,
@@ -5408,7 +5905,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632897,
@@ -5425,7 +5923,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632898,
@@ -5442,7 +5941,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632899,
@@ -5459,7 +5959,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632900,
@@ -5476,7 +5977,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632901,
@@ -5493,7 +5995,8 @@
    "yellowHome": 2,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632902,
@@ -5510,7 +6013,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 1,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632903,
@@ -5527,7 +6031,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632904,
@@ -5544,7 +6049,8 @@
    "yellowHome": 0,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632905,
@@ -5561,7 +6067,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632906,
@@ -5578,7 +6085,8 @@
    "yellowHome": 2,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632907,
@@ -5595,7 +6103,8 @@
    "yellowHome": 5,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632908,
@@ -5612,7 +6121,8 @@
    "yellowHome": 2,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632909,
@@ -5629,7 +6139,8 @@
    "yellowHome": 4,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632910,
@@ -5646,7 +6157,8 @@
    "yellowHome": 4,
    "yellowAway": 0,
    "redHome": 0,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632911,
@@ -5663,7 +6175,8 @@
    "yellowHome": 2,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 1
+   "redAway": 1,
+   "seasonNum": 76
   },
   {
    "gameId": 4632912,
@@ -5680,7 +6193,8 @@
    "yellowHome": 3,
    "yellowAway": 2,
    "redHome": 2,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632913,
@@ -5697,7 +6211,8 @@
    "yellowHome": 1,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632914,
@@ -5714,7 +6229,8 @@
    "yellowHome": 2,
    "yellowAway": 1,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632915,
@@ -5731,7 +6247,8 @@
    "yellowHome": 3,
    "yellowAway": 4,
    "redHome": 1,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4632916,
@@ -5748,7 +6265,8 @@
    "yellowHome": 0,
    "yellowAway": 3,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   },
   {
    "gameId": 4662730,
@@ -5765,7 +6283,8 @@
    "yellowHome": 1,
    "yellowAway": 2,
    "redHome": 0,
-   "redAway": 0
+   "redAway": 0,
+   "seasonNum": 76
   }
  ]
 }
