@@ -4,7 +4,9 @@
  * NÃO EDITAR À MÃO: regenerado a cada atualização pós-rodada.
  *
  * Fonte validada contra os resultados empacotados (pares ordenados únicos e
- * placares idênticos); ΣxG é auditado contra Σgols em cada coleta.
+ * placares idênticos); ΣxG é auditado contra Σgols coberto em cada coleta.
+ * 'coverage' declara quantos jogos do pacote têm registro; 'missing' lista os
+ * pares sem cobertura — cobertura parcial nunca é publicada como completa.
  */
 
 export interface AdvancedMatchRecord {
@@ -28,6 +30,11 @@ export const ADVANCED_STATS_SOURCE = {
   seasonNum: 76,
   fetchedAt: '2026-11-07T15:25:20.960Z',
   sha256: '4b50ef2ed0815af05dbd8ddb3edef1027d75e5121654234bf301ad673320b468',
+  coverage: {
+    matches: 339,
+    expected: 347,
+    missing: ['mirassol|atletico-mg', 'chapecoense|vasco', 'coritiba|santos', 'remo|chapecoense', 'cruzeiro|palmeiras', 'flamengo|athletico-pr', 'corinthians|botafogo', 'gremio|bahia'],
+  },
 } as const
 
 export const advancedMatches: readonly AdvancedMatchRecord[] = [

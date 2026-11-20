@@ -8,8 +8,10 @@
  *  - cartões em `game.events[]` (`eventType.name` "Yellow Card"/"Red Card" + `competitorId`);
  *  - lista paginada de resultados em `/web/games/results/` (`paging.previousPage`).
  *
- * Validação feita contra o nosso dataset na adesão: 339/339 pares ordenados
- * e placares idênticos aos resultados empacotados.
+ * Validação de adesão: pares ordenados e placares idênticos aos resultados
+ * empacotados na captura inicial. A fonte pode não cobrir todos os jogos do
+ * pacote; a publicação declara a cobertura (`matches`/`expected`/`missing`) em
+ * vez de recusar o lote inteiro (política parcial monotônica).
  */
 
 // Nomes da API 365scores → slug do projeto (mesma convenção do ESPN_NAME_SLUGS).
@@ -208,12 +210,28 @@ export function stampSeasonNum(records, seasonNum) {
 
 /**
  * Sanidade dos agregados: pares únicos, placares coerentes e xG da temporada
- * próximo do total de gols (efeito de recuperação do xG — ΣxG/Σgols ≈ 1).
- * Não-publicação se falhar: dado avançado ruim não vai para o bundle.
+ * próximo do total de gols coberto (efeito de recuperação do xG ≈ 1).
+ *
+ * Duas famílias de regra, deliberadamente separadas:
+ *  - sempre (fatal, lança): par duplicado, jogo sem placar, cartão inválido,
+ *    xG fora da tolerância sobre os jogos COBERTOS, lote sem nenhum cartão;
+ *  - só em `strict` (fatal, lança): `records.length === expectedMatches`.
+ *    Publicar um conjunto completo é o gate estrito; a atualização incremental
+ *    aceita cobertura parcial e a declara em `coverage`.
+ *
+ * `packagedPairs` são os pares (casa|fora) dos resultados empacotados; é deles
+ * que sai `coverage.missing` (pares do pacote sem registro na fonte).
+ *
+ * Devolve `ok` (nenhuma regra fatal violada) e `issues` (avisos não fatais,
+ * como cobertura parcial) — o chamador decide publicar.
  */
-export function validateAdvancedStats(records, { expectedMatches, xgTolerance = 0.25 } = {}) {
+export function validateAdvancedStats(
+  records,
+  { expectedMatches, packagedPairs = [], strict = false, xgTolerance = 0.25 } = {},
+) {
   const seenPairs = new Map()
   let goals = 0
+  let goalsCovered = 0
   let xg = 0
   let withXg = 0
   let cards = 0
@@ -223,24 +241,51 @@ export function validateAdvancedStats(records, { expectedMatches, xgTolerance = 
     seenPairs.set(pair, record)
     if (record.homeScore == null || record.awayScore == null) throw new Error(`Jogo ${record.gameId} sem placar.`)
     goals += record.homeScore + record.awayScore
-    if (record.xgHome != null && record.xgAway != null) { xg += record.xgHome + record.xgAway; withXg += 1 }
+    if (record.xgHome != null && record.xgAway != null) {
+      xg += record.xgHome + record.xgAway
+      goalsCovered += record.homeScore + record.awayScore
+      withXg += 1
+    }
     cards += record.yellowHome + record.yellowAway + record.redHome + record.redAway
     for (const field of ['yellowHome', 'yellowAway', 'redHome', 'redAway']) {
       if (!Number.isInteger(record[field]) || record[field] < 0) throw new Error(`Cartão inválido (${field}) no jogo ${record.gameId}: ${record[field]}`)
     }
   }
-  if (expectedMatches != null && records.length !== expectedMatches) {
-    throw new Error(`Registros avançados ${records.length} ≠ jogos disputados ${expectedMatches}.`)
+  const expected = expectedMatches ?? (packagedPairs.length > 0 ? packagedPairs.length : null)
+  if (strict && expected != null && records.length !== expected) {
+    throw new Error(`Registros avançados ${records.length} ≠ jogos disputados ${expected}.`)
   }
-  if (withXg > 0 && Math.abs(xg - goals) / Math.max(1, goals) > xgTolerance) {
-    throw new Error(`ΣxG ${xg.toFixed(2)} divergiu de Σgols ${goals} além da tolerância ${xgTolerance * 100}%.`)
+  if (withXg > 0 && Math.abs(xg - goalsCovered) / Math.max(1, goalsCovered) > xgTolerance) {
+    throw new Error(`ΣxG ${xg.toFixed(2)} divergiu de Σgols ${goalsCovered} além da tolerância ${xgTolerance * 100}%.`)
   }
   if (cards === 0) throw new Error('Nenhum cartão nos agregados — fonte mudou de formato?')
-  return { matches: records.length, withXg, goals, xg: Math.round(xg * 100) / 100, cards, xgRatio: Math.round((xg / Math.max(1, goals)) * 1000) / 1000 }
+  const missing = packagedPairs.filter((pair) => !seenPairs.has(pair))
+  const issues = []
+  if (missing.length > 0) {
+    issues.push(`cobertura parcial: ${missing.length} de ${expected ?? packagedPairs.length} jogos do pacote sem registro avançado`)
+  }
+  return {
+    ok: true,
+    issues,
+    matches: records.length,
+    withXg,
+    goals,
+    goalsCovered,
+    xg: Math.round(xg * 100) / 100,
+    cards,
+    xgRatio: Math.round((xg / Math.max(1, goalsCovered)) * 1000) / 1000,
+    coverage: { matches: records.length, expected, missing },
+  }
 }
 
 /** Módulo TS gerado (src/advancedStats2026.ts) — regenerado a cada coleta. */
-export function renderAdvancedStatsModule({ records, fetchedAt, sourceSha, seasonNum }) {
+export function renderAdvancedStatsModule({
+  records,
+  fetchedAt,
+  sourceSha,
+  seasonNum,
+  coverage = { matches: records.length, expected: records.length, missing: [] },
+}) {
   const lines = records.map((record) => {
     const xgHome = record.xgHome == null ? 'null' : record.xgHome.toFixed(2)
     const xgAway = record.xgAway == null ? 'null' : record.xgAway.toFixed(2)
@@ -252,7 +297,9 @@ export function renderAdvancedStatsModule({ records, fetchedAt, sourceSha, seaso
  * NÃO EDITAR À MÃO: regenerado a cada atualização pós-rodada.
  *
  * Fonte validada contra os resultados empacotados (pares ordenados únicos e
- * placares idênticos); ΣxG é auditado contra Σgols em cada coleta.
+ * placares idênticos); ΣxG é auditado contra Σgols coberto em cada coleta.
+ * 'coverage' declara quantos jogos do pacote têm registro; 'missing' lista os
+ * pares sem cobertura — cobertura parcial nunca é publicada como completa.
  */
 
 export interface AdvancedMatchRecord {
@@ -276,6 +323,11 @@ export const ADVANCED_STATS_SOURCE = {
   seasonNum: ${seasonNum},
   fetchedAt: '${fetchedAt}',
   sha256: '${sourceSha}',
+  coverage: {
+    matches: ${coverage.matches},
+    expected: ${coverage.expected ?? 'null'},
+    missing: [${coverage.missing.map((pair) => `'${pair}'`).join(', ')}],
+  },
 } as const
 
 export const advancedMatches: readonly AdvancedMatchRecord[] = [

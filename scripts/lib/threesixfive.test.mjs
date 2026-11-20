@@ -1,4 +1,7 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { parsePackagedResults } from './dataPipeline.mjs'
 import {
   CLUB_NAME_SLUGS,
   currentSeasonNum,
@@ -173,7 +176,62 @@ describe('mergeAdvancedStats e validateAdvancedStats', () => {
     expect(() => validateAdvancedStats([{ ...base }, { ...base }])).toThrow(/duplicado/)
     expect(() => validateAdvancedStats([{ ...base, yellowHome: -1 }])).toThrow(/Cartão inválido/)
     expect(() => validateAdvancedStats([{ ...base, xgHome: 0, xgAway: 0 }])).toThrow(/ΣxG/)
-    expect(() => validateAdvancedStats([], { expectedMatches: 1 })).toThrow(/≠ jogos disputados/)
+    expect(() => validateAdvancedStats([], { expectedMatches: 1 })).toThrow(/Nenhum cartão/)
+    expect(() => validateAdvancedStats([], { expectedMatches: 1, strict: true })).toThrow(/≠ jogos disputados/)
+  })
+
+  it('compara ΣxG apenas com os gols dos jogos cobertos (cobertura parcial)', () => {
+    const covered = { ...base, seasonNum: undefined, xgHome: 1.1, xgAway: 1.9 }
+    const noXg = {
+      gameId: 4632699, seasonNum: undefined, roundNum: 9, home: 'bahia', away: 'santos',
+      homeScore: 5, awayScore: 5, hasXg: false, xgHome: null, xgAway: null,
+      yellowHome: 1, yellowAway: 2, redHome: 0, redAway: 0,
+    }
+    const summary = validateAdvancedStats([covered, noXg])
+    expect(summary.goals).toBe(13)
+    expect(summary.goalsCovered).toBe(3)
+    expect(summary.xgRatio).toBe(1)
+  })
+})
+
+describe('validateAdvancedStats: cobertura parcial monotônica (D01)', () => {
+  const covered = parseGameDetail(gameDetail)
+  const records = [
+    { ...covered, seasonNum: undefined, xgHome: 1.1, xgAway: 1.9 },
+    {
+      gameId: 4632700, seasonNum: undefined, roundNum: 9, home: 'bahia', away: 'santos',
+      homeScore: 1, awayScore: 1, hasXg: true, xgHome: 1.2, xgAway: 0.8,
+      yellowHome: 2, yellowAway: 1, redHome: 0, redAway: 0,
+    },
+  ]
+  const packagedPairs = ['vitoria|fluminense', 'bahia|santos', 'gremio|vasco']
+
+  it('não-estrito aceita lote menor e mostra missing derivado do pacote', () => {
+    const summary = validateAdvancedStats(records, { expectedMatches: packagedPairs.length, packagedPairs })
+    expect(summary.ok).toBe(true)
+    expect(summary.issues).toHaveLength(1)
+    expect(summary.coverage).toEqual({ matches: records.length, expected: packagedPairs.length, missing: ['gremio|vasco'] })
+  })
+
+  it('strict continua exigindo igualdade com o pacote', () => {
+    expect(() => validateAdvancedStats(records, { expectedMatches: packagedPairs.length, packagedPairs, strict: true }))
+      .toThrow(/≠ jogos disputados/)
+    expect(validateAdvancedStats(records, { expectedMatches: records.length, strict: true }).coverage.missing).toEqual([])
+  })
+
+  it('pacote real: não lança em não-estrito e missing fecha a diferença de cobertura', () => {
+    const snapshot = JSON.parse(readFileSync('data/source-snapshots/advanced-stats-2026.json', 'utf8'))
+    const packaged = parsePackagedResults(readFileSync('src/currentSeasonResults.ts', 'utf8'))
+    const pairs = packaged.map((match) => `${match.home}|${match.away}`)
+    const summary = validateAdvancedStats(snapshot.records, { expectedMatches: pairs.length, packagedPairs: pairs })
+
+    expect(summary.ok).toBe(true)
+    expect(summary.coverage.matches).toBe(snapshot.records.length)
+    expect(summary.coverage.expected).toBe(packaged.length)
+    expect(summary.coverage.missing).toHaveLength(packaged.length - snapshot.records.length)
+    expect(summary.coverage.missing.every((pair) => pairs.includes(pair))).toBe(true)
+    expect(() => validateAdvancedStats(snapshot.records, { expectedMatches: pairs.length, strict: true }))
+      .toThrow(/≠ jogos disputados/)
   })
 })
 
@@ -202,10 +260,10 @@ describe('stampSeasonNum', () => {
 
   it('destrava o filtro da temporada corrente: sem carimbo, zero registros', () => {
     const legacy = legacyRecords()
-    // Comportamento anterior ao carimbo: o filtro descarta tudo e a contagem
-    // da validação aborta com "N ≠ jogos disputados".
+    // Comportamento anterior ao carimbo: o filtro descarta tudo; em modo
+    // estrito a contagem da validação aborta com "N ≠ jogos disputados".
     expect(filterCurrentSeason(legacy, SEASON)).toHaveLength(0)
-    expect(() => validateAdvancedStats(filterCurrentSeason(legacy, SEASON), { expectedMatches: legacy.length })).toThrow(/≠ jogos disputados/)
+    expect(() => validateAdvancedStats(filterCurrentSeason(legacy, SEASON), { expectedMatches: legacy.length, strict: true })).toThrow(/≠ jogos disputados/)
 
     const stamped = stampSeasonNum(legacy, SEASON)
     const current = filterCurrentSeason(stamped, SEASON)
@@ -221,18 +279,26 @@ describe('stampSeasonNum', () => {
 })
 
 describe('renderAdvancedStatsModule', () => {
-  it('gera módulo TS com registros ordenados e metadados da fonte', () => {
+  it('gera módulo TS com registros ordenados, metadados da fonte e cobertura', () => {
     const detail = parseGameDetail(gameDetail)
     const source = renderAdvancedStatsModule({
       records: [detail],
       fetchedAt: '2026-11-07T12:00:00Z',
       sourceSha: 'abc123',
       seasonNum: 76,
+      coverage: { matches: 1, expected: 2, missing: ['bahia|santos'] },
     })
     expect(source).toContain("export const advancedMatches: readonly AdvancedMatchRecord[] = [")
     expect(source).toContain("{ gameId: 4632607, round: 34, home: 'vitoria', away: 'fluminense'")
     expect(source).toContain('xgHome: 1.10, xgAway: 1.90')
     expect(source).toContain("sha256: 'abc123'")
+    expect(source).toContain('coverage: {\n    matches: 1,\n    expected: 2,\n    missing: [\'bahia|santos\'],\n  },')
     expect(CLUB_NAME_SLUGS['Vitoria']).toBe('vitoria')
+  })
+
+  it('sem cobertura explícita declara o conjunto completo', () => {
+    const detail = parseGameDetail(gameDetail)
+    const source = renderAdvancedStatsModule({ records: [detail], fetchedAt: '2026-11-07T12:00:00Z', sourceSha: 'abc123', seasonNum: 76 })
+    expect(source).toContain('matches: 1,\n    expected: 1,\n    missing: [],')
   })
 })

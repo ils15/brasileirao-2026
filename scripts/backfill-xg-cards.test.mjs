@@ -2,14 +2,16 @@
  * Roundtrip do snapshot de dados avançados (365scores): o snapshot legado não
  * tinha `seasonNum` por registro e o backfill o removia ao gravar, então o
  * filtro da temporada corrente descartava tudo e `validateAdvancedStats`
- * abortava por contagem. Aqui o arquivo é temporário — nada toca
- * `data/source-snapshots/`.
+ * abortava por contagem. Os testes de persistência usam diretório temporário;
+ * o caso `write:false` apenas LÊ `src/advancedStats2026.ts` e o snapshot real
+ * para provar que os bytes não mudam.
  */
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, rmSync, writeFileSync, existsSync, readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { readExisting } from './backfill-xg-cards.mjs'
+import { collectGameDetails, publishAdvancedStats, readExisting, renderModuleFromSnapshot } from './backfill-xg-cards.mjs'
 import { filterCurrentSeason, mergeAdvancedStats, renderAdvancedStatsModule, validateAdvancedStats } from './lib/threesixfive.mjs'
 
 // Fixture sintética: mesma forma dos registros legados (sem `seasonNum`).
@@ -83,6 +85,225 @@ describe('readExisting', () => {
     const dir = mkdtempSync(join(tmpdir(), 'advanced-stats-'))
     try {
       expect(readExisting(join(dir, 'nao-existe.json'))).toEqual([])
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+})
+
+describe('publishAdvancedStats', () => {
+  const MODULE_PATH = 'src/advancedStats2026.ts'
+  const SNAPSHOT_PATH = 'data/source-snapshots/advanced-stats-2026.json'
+  const fetchedAt = '2026-11-20T00:00:00.000Z'
+  const recordsWithSeason = () => legacyRecords().map((record) => ({ ...record, seasonNum: SEASON }))
+
+  it('write:false não altera src/advancedStats2026.ts nem o snapshot (bytes iguais)', () => {
+    const moduleBefore = readFileSync(MODULE_PATH)
+    const snapshotBefore = readFileSync(SNAPSHOT_PATH)
+
+    const result = publishAdvancedStats({
+      records: recordsWithSeason(),
+      seasonNum: SEASON,
+      expectedMatches: recordsWithSeason().length,
+      fetchedAt,
+      write: false,
+    })
+
+    expect(result.written).toBe(false)
+    expect(result.coverage).toEqual({ matches: recordsWithSeason().length, expected: recordsWithSeason().length, missing: [] })
+    expect(readFileSync(MODULE_PATH)).toEqual(moduleBefore)
+    expect(readFileSync(SNAPSHOT_PATH)).toEqual(snapshotBefore)
+  })
+
+  it('write:true grava snapshot autoconsistente e módulo na mesma validação', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'advanced-publish-'))
+    const snapshotPath = join(dir, 'advanced-stats-2026.json')
+    const modulePath = join(dir, 'advancedStats2026.ts')
+    try {
+      const records = recordsWithSeason()
+      const result = publishAdvancedStats({
+        records,
+        seasonNum: SEASON,
+        expectedMatches: records.length,
+        fetchedAt,
+        write: true,
+        snapshotPath,
+        modulePath,
+      })
+
+      expect(result.written).toBe(true)
+      const snapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'))
+      expect(snapshot.records).toEqual(records)
+      expect(snapshot.fetchedAt).toBe(fetchedAt)
+      expect(snapshot.sha256).toBe(createHash('sha256').update(JSON.stringify(records), 'utf8').digest('hex'))
+      const moduleText = readFileSync(modulePath, 'utf8')
+      expect(moduleText).toContain(`fetchedAt: '${fetchedAt}'`)
+      expect(moduleText).toContain(`matches: ${records.length},\n    expected: ${records.length},\n    missing: [],`)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it('regressão de cobertura não escreve e emite SECONDARY_REGRESSION', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'advanced-publish-'))
+    const snapshotPath = join(dir, 'advanced-stats-2026.json')
+    const modulePath = join(dir, 'advancedStats2026.ts')
+    const packagedModule = 'export const ADVANCED_STATS_SOURCE = {\n  coverage: {\n    matches: 5,\n    expected: 5,\n    missing: [],\n  },\n} as const\n'
+    writeFileSync(modulePath, packagedModule)
+    try {
+      const warnings = []
+      const records = recordsWithSeason()
+      const result = publishAdvancedStats({
+        records,
+        seasonNum: SEASON,
+        expectedMatches: records.length,
+        fetchedAt,
+        write: true,
+        snapshotPath,
+        modulePath,
+        warn: (line) => warnings.push(line),
+      })
+
+      expect(result.written).toBe(false)
+      expect(result.reason).toBe('coverage-regression')
+      expect(result.coverage).toMatchObject({ matches: records.length })
+      expect(warnings.join('\n')).toContain('::warning::SECONDARY_REGRESSION')
+      expect(readFileSync(modulePath, 'utf8')).toBe(packagedModule)
+      expect(existsSync(snapshotPath)).toBe(false)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it('falha de validação não escreve nem o snapshot nem o módulo', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'advanced-publish-'))
+    const snapshotPath = join(dir, 'advanced-stats-2026.json')
+    const modulePath = join(dir, 'advancedStats2026.ts')
+    try {
+      const records = recordsWithSeason()
+      expect(() => publishAdvancedStats({
+        records: [...records, records[0]],
+        seasonNum: SEASON,
+        expectedMatches: records.length,
+        fetchedAt,
+        write: true,
+        snapshotPath,
+        modulePath,
+      })).toThrow(/duplicado/)
+
+      expect(existsSync(snapshotPath)).toBe(false)
+      expect(existsSync(modulePath)).toBe(false)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+})
+
+describe('coleta incremental', () => {
+  it('merge preserva registros antigos e adiciona só os novos', () => {
+    const existing = legacyRecords().map((record) => ({ ...record, seasonNum: SEASON }))
+    const fresh = { ...freshRecord, home: 'bahia', away: 'santos' }
+    const merged = mergeAdvancedStats(existing, [fresh])
+
+    expect(merged).toHaveLength(existing.length + 1)
+    expect(merged.find((record) => record.gameId === existing[0].gameId)).toEqual(existing[0])
+    expect(merged.find((record) => record.gameId === fresh.gameId)).toEqual(fresh)
+  })
+
+  it('detalhe de um jogo que falha não aborta o lote e o par fica sem registro', async () => {
+    const games = [
+      { gameId: 9001, home: 'flamengo', away: 'palmeiras' },
+      { gameId: 9002, home: 'corinthians', away: 'santos' },
+      { gameId: 9003, home: 'gremio', away: 'vasco' },
+    ]
+    const details = {
+      9001: { home: 'Flamengo', away: 'Palmeiras' },
+      9003: { home: 'Gremio', away: 'Vasco da Gama' },
+    }
+    const warnings = []
+    const { records, failures } = await collectGameDetails({
+      games,
+      fetchDetail: async (game) => {
+        const names = details[game.gameId]
+        if (!names) throw new Error('Resposta 365scores sem objeto game.')
+        return {
+          game: {
+            id: game.gameId,
+            roundNum: 1,
+            homeCompetitor: { id: 1, name: names.home, score: '1.0' },
+            awayCompetitor: { id: 2, name: names.away, score: '1.0' },
+            chartEvents: { events: [{ xg: '1.00', competitorNum: 1 }, { xg: '1.00', competitorNum: 2 }] },
+            events: [{ eventType: { name: 'Yellow Card' }, competitorId: 1 }],
+          },
+        }
+      },
+      warn: (line) => warnings.push(line),
+    })
+
+    expect(records.map((record) => record.gameId)).toEqual([9001, 9003])
+    expect(failures).toEqual([{ gameId: 9002, message: 'Resposta 365scores sem objeto game.' }])
+    expect(warnings.join('\n')).toContain('::warning::SECONDARY_DETAIL_FAILED source=advanced game=9002')
+
+    // O par sem registro aparece na cobertura quando o pacote é conhecido.
+    const summary = validateAdvancedStats(records, {
+      expectedMatches: games.length,
+      packagedPairs: ['flamengo|palmeiras', 'corinthians|santos', 'gremio|vasco'],
+    })
+    expect(summary.coverage.missing).toEqual(['corinthians|santos'])
+  })
+
+  it('render-only não regride cobertura: módulo vigente maior que o snapshot não é reescrito', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'advanced-render-'))
+    const snapshotPath = join(dir, 'advanced-stats-2026.json')
+    const modulePath = join(dir, 'advancedStats2026.ts')
+    const packagedModule = 'export const ADVANCED_STATS_SOURCE = {\n  coverage: {\n    matches: 5,\n    expected: 5,\n    missing: [],\n  },\n} as const\n'
+    writeFileSync(modulePath, packagedModule)
+    try {
+      const snapshot = { source: '365scores', seasonNum: SEASON, fetchedAt: '2026-11-07T12:00:00Z', sha256: 'legado', records: legacyRecords() }
+      writeFileSync(snapshotPath, JSON.stringify(snapshot, null, 1) + '\n')
+
+      const warnings = []
+      const result = renderModuleFromSnapshot({
+        snapshotPath,
+        modulePath,
+        packagedPairs: ['flamengo|palmeiras', 'corinthians|santos'],
+        warn: (line) => warnings.push(line),
+      })
+
+      expect(result.written).toBe(false)
+      expect(result.reason).toBe('coverage-regression')
+      expect(result.coverage).toMatchObject({ matches: legacyRecords().length })
+      expect(warnings.join('\n')).toContain('::warning::SECONDARY_REGRESSION source=advanced')
+      expect(readFileSync(modulePath, 'utf8')).toBe(packagedModule)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it('render-only regenera o módulo a partir do snapshot sem tocar no snapshot', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'advanced-render-'))
+    const snapshotPath = join(dir, 'advanced-stats-2026.json')
+    const modulePath = join(dir, 'advancedStats2026.ts')
+    const records = legacyRecords()
+    const fixtureFetchedAt = '2026-11-07T12:00:00Z'
+    try {
+      const snapshot = { source: '365scores', seasonNum: SEASON, fetchedAt: fixtureFetchedAt, sha256: 'legado', records }
+      writeFileSync(snapshotPath, JSON.stringify(snapshot, null, 1) + '\n')
+      const before = readFileSync(snapshotPath)
+
+      const result = renderModuleFromSnapshot({
+        snapshotPath,
+        modulePath,
+        packagedPairs: ['flamengo|palmeiras', 'corinthians|santos', 'bahia|santos'],
+      })
+
+      expect(result.written).toBe(true)
+      expect(result.coverage).toEqual({ matches: records.length, expected: 3, missing: ['bahia|santos'] })
+      const moduleText = readFileSync(modulePath, 'utf8')
+      expect(moduleText).toContain(`fetchedAt: '${fixtureFetchedAt}'`)
+      expect(moduleText).toContain("sha256: 'legado'")
+      expect(moduleText).toContain("missing: ['bahia|santos'],")
+      expect(readFileSync(snapshotPath)).toEqual(before)
     } finally {
       rmSync(dir, { recursive: true, force: true })
     }
