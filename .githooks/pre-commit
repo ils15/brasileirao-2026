@@ -12,17 +12,8 @@ if ! command -v npm >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! npm test; then
-  printf '%s\n' "pre-commit: 'npm test' falhou. Verifique as dependências locais; nenhuma instalação automática foi executada." >&2
-  exit 1
-fi
-
-if ! GITHUB_PAGES=true npm run build; then
-  printf '%s\n' "pre-commit: 'GITHUB_PAGES=true npm run build' falhou. Verifique as dependências locais; nenhuma instalação automática foi executada." >&2
-  exit 1
-fi
-
-if ! git diff --cached --check; then
-  printf '%s\n' "pre-commit: 'git diff --cached --check' encontrou problemas no conteúdo staged." >&2
-  exit 1
-fi
+# Gate condicional por caminho (scripts/lib/commitGate.mjs): dados gerados rodam
+# só `npm run test:data`; qualquer outro caminho roda suíte completa + build de
+# Pages. A checagem de whitespace (`git diff --cached --check`) fica no runner,
+# que falha fechado (`full`) quando não consegue listar os caminhos staged.
+exec node scripts/pre-commit-gate.mjs

@@ -35,7 +35,7 @@ Todos existem em `package.json`, exceto o instalador de hooks (script avulso cit
 | `npm run pack:history` | reconstrói `src/historicalSeasons.ts` a partir dos snapshots |
 | `npm run crosscheck` | cruza 2003–2011 com a Wikipédia e grava `reports/` |
 | `npm run update:data` | coleta pós-rodada: escreve módulos de dados, snapshots e `docs/atualizacoes.md`, roda a suíte e commita |
-| `node scripts/install-hooks.mjs` | instala `.githooks` (o pre-commit roda `npm test` e o build do Pages) |
+| `node scripts/install-hooks.mjs` | instala `.githooks` (o pre-commit roda `test:data` para commits só de dados e suíte + build de Pages para o resto) |
 
 `node scripts/update-data.mjs --dry-run` inspeciona a coleta sem escrever.
 

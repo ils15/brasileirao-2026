@@ -64,7 +64,8 @@ Para build idêntico ao do Pages (base `/brasileirao-2026/`):
 GITHUB_PAGES=true npm run build && npm run smoke:pages
 ```
 
-Hooks de commit opcionais (rodam testes e build antes de commitar):
+Hooks de commit opcionais (rodam o gate condicional por caminho: `test:data` para
+commits só de dados, suíte completa + build do Pages para o resto):
 
 ```bash
 node scripts/install-hooks.mjs
