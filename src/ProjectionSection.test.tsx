@@ -3,10 +3,21 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ProjectionPanel } from './ProjectionSection'
 import { runProjection } from './projection'
-import { scenarioFromKey } from './projectionConfig'
+import { resolveLibertadoresZones, scenarioFromKey } from './projectionConfig'
 import { EXPECTED_SIMULATION_COUNT } from './ProjectionContext'
 
 const percentFormat = new Intl.NumberFormat('pt-BR', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+/**
+ * Menor chave de cenário que produz a linha G-n — a mesma busca canônica que o
+ * componente usa no dropdown, para o teste não cravar o bitmask.
+ */
+function scenarioKeyForLine(line: number): number {
+  for (let key = 0; key < 16; key += 1) {
+    if (resolveLibertadoresZones(scenarioFromKey(key)).libertadoresTo === line) return key
+  }
+  throw new Error(`Nenhum cenário produz a linha G-${line}`)
+}
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -810,6 +821,61 @@ describe('painel de projeções', () => {
     const row = within(zones).getByRole('row', { name: /Flamengo/ })
     const chances = [...row.querySelectorAll('.probability-cell strong')].map((cell) => cell.textContent)
     expect(chances[2]).toBe(percentFormat.format(club.libertadoresDirect))
+  })
+
+  it('declara faixa e convenção em cada coluna de zona, seguindo o cenário', { timeout: 30_000 }, () => {
+    const g6Scenario = scenarioFromKey(scenarioKeyForLine(6))
+    const g6 = runProjection({ simulations: 8, seed: 123, scenario: g6Scenario })
+    const { unmount } = render(
+      <ProjectionPanel result={g6} status="ready" onRetry={vi.fn()} scenario={g6Scenario} onScenarioChange={vi.fn()} />,
+    )
+    const g6Zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
+    // As três primeiras são acumuladas (contêm as seguintes); as duas últimas
+    // são faixas exclusivas. Sem a faixa explícita, “0,00% de Sul-Americana”
+    // é lido como erro em vez de “nunca terminou naquela faixa”.
+    expect(within(g6Zones).getByRole('columnheader', { name: /^Título · 1º \(acumulada\)/ })).toBeInTheDocument()
+    expect(within(g6Zones).getByRole('columnheader', { name: /^LIBERTADORES · 1º–6º¹ \(acumulada\)/ })).toBeInTheDocument()
+    expect(within(g6Zones).getByRole('columnheader', { name: /^Libertadores \(grupos\) · 1º–4º \(acumulada\)/ })).toBeInTheDocument()
+    expect(within(g6Zones).getByRole('columnheader', { name: /^Sul-Americana · 7º–12º² \(faixa\)/ })).toBeInTheDocument()
+    expect(within(g6Zones).getByRole('columnheader', { name: /^Rebaixamento · 17º–20º \(faixa\)/ })).toBeInTheDocument()
+    unmount()
+
+    // G-9 desloca a linha: nada do G-6 pode ficar cravado no cabeçalho.
+    const g9Scenario = scenarioFromKey(scenarioKeyForLine(9))
+    const g9 = runProjection({ simulations: 8, seed: 123, scenario: g9Scenario })
+    render(<ProjectionPanel result={g9} status="ready" onRetry={vi.fn()} scenario={g9Scenario} onScenarioChange={vi.fn()} />)
+    const g9Zones = screen.getByRole('region', { name: /Zonas possíveis por clube/ })
+    expect(within(g9Zones).getByRole('columnheader', { name: /^LIBERTADORES · 1º–9º¹ \(acumulada\)/ })).toBeInTheDocument()
+    expect(within(g9Zones).getByRole('columnheader', { name: /^Libertadores \(grupos\) · 1º–6º \(acumulada\)/ })).toBeInTheDocument()
+    expect(within(g9Zones).getByRole('columnheader', { name: /^Sul-Americana · 10º–15º² \(faixa\)/ })).toBeInTheDocument()
+    expect(within(g9Zones).queryByRole('columnheader', { name: /Sul-Americana · 7º–12º/ })).not.toBeInTheDocument()
+  })
+
+  it('explica na nota de rodapé que as faixas são exclusivas e que título e grupos são subconjuntos', { timeout: 30_000 }, () => {
+    const result = runProjection({ simulations: 8, seed: 123 })
+    render(<ProjectionPanel result={result} status="ready" onRetry={vi.fn()} />)
+
+    const footnote = screen.getByText(/Cada clube termina em uma única posição/).closest('p')!
+    expect(footnote).toHaveTextContent(/mutuamente exclusivas com a da Libertadores/i)
+    expect(footnote).toHaveTextContent(/subconjuntos da coluna Libertadores/i)
+    expect(footnote).toHaveTextContent(/meio de tabela \+ rebaixamento = 100%/i)
+  })
+
+  it('mantém Libertadores + Sul-Americana + meio + rebaixamento = 100% em G-5 a G-9', { timeout: 30_000 }, () => {
+    for (const line of [5, 6, 7, 8, 9]) {
+      const result = runProjection({ simulations: 8, seed: 123, scenario: scenarioFromKey(scenarioKeyForLine(line)) })
+      expect(result.libertadoresZones.libertadoresTo).toBe(line)
+      for (const club of result.clubProbabilities) {
+        // O “meio de tabela” é o que sobra entre a Sul-Americana e o
+        // rebaixamento, exatamente como a barra empilhada calcula.
+        const meio = 1 - club.libertadores - club.sudamericana - club.relegation
+        expect(meio).toBeGreaterThanOrEqual(-1e-12)
+        expect(club.libertadores + club.sudamericana + meio + club.relegation).toBeCloseTo(1, 12)
+        // Cumulativas contêm as posições, nunca o contrário.
+        expect(club.title).toBeLessThanOrEqual(club.libertadores + 1e-12)
+        expect(club.libertadoresDirect).toBeLessThanOrEqual(club.libertadores + 1e-12)
+      }
+    }
   })
 
   it('rotula cada checkbox de devolução e mantém a tabela anterior ao recalcular', { timeout: 30_000 }, () => {

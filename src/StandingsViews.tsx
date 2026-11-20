@@ -278,7 +278,7 @@ export function StandingsViews({ zones }: { zones?: LibertadoresZones }): JSX.El
       note={(
         <p id="standings-zone-legend-note" className="zone-legend-note">
           {labels
-            ? `Linha da Libertadores: ${labels.libertadores.detail}; Sul-Americana ${labels.sudamericana.range}. A linha desliza quando uma vaga das copas volta à tabela — ajuste o cenário em Projeções & Simulador.`
+            ? `Linha da Libertadores: ${labels.libertadores.detail}; Sul-Americana ${labels.sudamericana.range}. A linha desliza quando uma vaga das copas volta à tabela — ajuste o cenário em Projeções & Simulador. Cada clube ocupa uma única posição: Libertadores, Sul-Americana, meio de tabela e rebaixamento são faixas exclusivas e somam 100%; o título está dentro da Libertadores.`
             : '* O asterisco indica o cenário G-6 adotado pelo painel; o 6º lugar depende das regras de redistribuição e da sobreposição de classificados.'}
         </p>
       )}

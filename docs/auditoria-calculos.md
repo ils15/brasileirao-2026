@@ -481,3 +481,22 @@ parcial é publicada como parcial.
   (`complete`, `partial` ou `stale`) e a data de captura de `coverage`/`fetchedAt`.
   Cobertura parcial aparece rotulada como parcial, com os pares ausentes
   acessíveis; nunca é apresentada como completa.
+
+## 23. Sul-Americana como vaga direta pela tabela — **Decisão pendente**
+
+A coluna "Sul-Americana" das projeções mede a **vaga direta pelo Brasileirão**:
+as seis posições imediatamente posteriores à linha da Libertadores
+(`G+1 .. G+6`, derivadas de `libertadoresZones`), conforme o Art. 7 do REC 2026.
+Ela não representa o desfecho "disputou a Sul-Americana". Um clube na faixa da
+pré-Libertadores que seja eliminado na fase preliminar também cai na
+Sul-Americana, e esse caminho não é modelado: a simulação trata a posição final
+como desfecho único e as vagas das copas apenas deslocam a linha.
+
+Modelar o caminho exigiria uma taxa de sucesso na pré-Libertadores por clube —
+dependente de adversários e sorteio, sem base estimável nos snapshots atuais.
+Fica registrado para avaliação futura; nenhum número é inventado e nenhuma
+fórmula, contagem ou zona muda por causa desta nota. A apresentação foi ajustada
+para deixar isso explícito: cada coluna de zona declara a faixa e se é
+`acumulada` (Título, Libertadores, Libertadores (grupos)) ou `faixa`
+(Sul-Americana, Rebaixamento), e a nota de rodapé explica que a soma das quatro
+faixas exclusivas é 100% para cada clube.

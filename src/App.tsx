@@ -186,7 +186,7 @@ function StandingsZonesLegend(): JSX.Element {
     <>
       <ZoneLegend ariaLabel="Legenda de zonas da classificação" describedBy="standings-zone-legend-note" zones={zones} />
       <p className="zone-legend-note" id="standings-zone-legend-note" role="note">
-        Linha da Libertadores: {labels.libertadores.detail}; Sul-Americana {labels.sudamericana.range}. A linha desliza quando uma vaga das copas volta à tabela — ajuste o cenário em Projeções & Simulador.
+        Linha da Libertadores: {labels.libertadores.detail}; Sul-Americana {labels.sudamericana.range}. A linha desliza quando uma vaga das copas volta à tabela — ajuste o cenário em Projeções & Simulador. Cada clube ocupa uma única posição: Libertadores, Sul-Americana, meio de tabela e rebaixamento são faixas exclusivas e somam 100%; o título está dentro da Libertadores.
       </p>
     </>
   )

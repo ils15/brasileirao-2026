@@ -645,11 +645,44 @@ function MagicPointsPanel({ result }: { result: ProjectionResult }): JSX.Element
   )
 }
 
+type ZoneConvention = 'acumulada' | 'faixa'
+
+interface ZoneHeaderSpec {
+  /** Faixa de posições que a coluna mede, derivada das zonas do cenário. */
+  range: string
+  /** `acumulada` contém as faixas seguintes; `faixa` é exclusiva. */
+  convention: ZoneConvention
+  /** Marcador da nota de rodapé, quando a coluna tem nota. */
+  note: string
+}
+
+/** Faixa em pt-BR; uma posição só não vira intervalo ("1º", não "1º–1º"). */
+function positionRange(from: number, to: number): string {
+  return from === to ? `${from}º` : `${from}º–${to}º`
+}
+
+/**
+ * Cabeçalho de cada coluna de zona: nome · faixa · convenção. A faixa vem das
+ * zonas resolvidas do cenário ativo (`result.libertadoresZones`), nunca de um
+ * G-6 fixo. As três primeiras são acumuladas — título e vaga direta estão
+ * dentro da vaga na Libertadores — e as duas últimas são faixas exclusivas.
+ */
+function zoneHeaderSpecs(zones: LibertadoresZones): ReadonlyMap<string, ZoneHeaderSpec> {
+  const labels = zoneLabelsFor(zones)
+  return new Map<string, ZoneHeaderSpec>([
+    ['title', { range: positionRange(1, 1), convention: 'acumulada', note: '' }],
+    ['libertadores', { range: labels.libertadores.range, convention: 'acumulada', note: '¹' }],
+    ['libertadoresDirect', { range: positionRange(1, zones.directTo), convention: 'acumulada', note: '' }],
+    ['sudamericana', { range: labels.sudamericana.range, convention: 'faixa', note: '²' }],
+    ['relegation', { range: labels.relegation.range, convention: 'faixa', note: '' }],
+  ])
+}
+
 const zoneColumns: SortableColumn<ClubProbability>[] = [
   { id: 'position', header: 'Pos', accessor: ({ currentPosition }) => currentPosition, numeric: true },
   { id: 'club', header: 'Clube', accessor: ({ club }) => club, numeric: false },
   { id: 'title', header: 'Título', accessor: ({ title }) => title, numeric: true },
-  { id: 'libertadores', header: 'Libertadores', accessor: ({ libertadores }) => libertadores, numeric: true },
+  { id: 'libertadores', header: 'LIBERTADORES', accessor: ({ libertadores }) => libertadores, numeric: true },
   { id: 'libertadoresDirect', header: 'Libertadores (grupos)', accessor: ({ libertadoresDirect }) => libertadoresDirect, numeric: true },
   { id: 'sudamericana', header: 'Sul-Americana', accessor: ({ sudamericana }) => sudamericana, numeric: true },
   { id: 'relegation', header: 'Rebaixamento', accessor: ({ relegation }) => relegation, numeric: true },
@@ -749,14 +782,19 @@ function ZoneStackedBar({ club, zones }: { club: ClubProbability; zones: Liberta
 function ZoneBarLegend({ zones }: { zones: LibertadoresZones }): JSX.Element {
   const labels = zoneLabelsFor(zones)
   return (
-    <div className="zone-bar-legend" role="group" aria-label="Legenda das barras de zonas">
-      <span><i className="zone-bar-swatch zone-bar--title" aria-hidden="true" />Campeão</span>
-      <span><i className="zone-bar-swatch zone-bar--libertadores-direct" aria-hidden="true" />Libertadores direto 2º–{zones.directTo}º</span>
-      <span><i className="zone-bar-swatch zone-bar--libertadores-preliminary" aria-hidden="true" />Libertadores pré {zones.directTo + 1}º–{zones.libertadoresTo}º</span>
-      <span><i className="zone-bar-swatch zone-bar--sudamericana" aria-hidden="true" />Sul-Americana {labels.sudamericana.range}</span>
-      <span><i className="zone-bar-swatch zone-bar--middle" aria-hidden="true" />Meio de tabela {labels.middle.range}</span>
-      <span><i className="zone-bar-swatch zone-bar--relegation" aria-hidden="true" />Rebaixamento {labels.relegation.range}</span>
-    </div>
+    <>
+      <div className="zone-bar-legend" role="group" aria-label="Legenda das barras de zonas">
+        <span title="1º lugar — dentro da faixa da Libertadores"><i className="zone-bar-swatch zone-bar--title" aria-hidden="true" />Campeão</span>
+        <span title="Vaga direta na fase de grupos — parte da faixa da Libertadores"><i className="zone-bar-swatch zone-bar--libertadores-direct" aria-hidden="true" />Libertadores direto 2º–{zones.directTo}º</span>
+        <span title="Vaga na fase preliminar — parte da faixa da Libertadores"><i className="zone-bar-swatch zone-bar--libertadores-preliminary" aria-hidden="true" />Libertadores pré {zones.directTo + 1}º–{zones.libertadoresTo}º</span>
+        <span title="Faixa exclusiva logo depois da Libertadores"><i className="zone-bar-swatch zone-bar--sudamericana" aria-hidden="true" />Sul-Americana {labels.sudamericana.range}</span>
+        <span title="Faixa exclusiva entre a Sul-Americana e o rebaixamento"><i className="zone-bar-swatch zone-bar--middle" aria-hidden="true" />Meio de tabela {labels.middle.range}</span>
+        <span title="Faixa exclusiva das quatro últimas posições"><i className="zone-bar-swatch zone-bar--relegation" aria-hidden="true" />Rebaixamento {labels.relegation.range}</span>
+      </div>
+      <p className="projection-table-note">
+        As fatias da barra não se sobrepõem: “direto” e “pré” são a mesma vaga na Libertadores vista em duas partes, e o campeão é o 1º lugar — na tabela, “Título” e “Libertadores (grupos)” são subconjuntos da coluna Libertadores.
+      </p>
+    </>
   )
 }
 
@@ -887,6 +925,7 @@ function ProjectionPanel({
   const scenario = scenarioProp ?? LEGACY_LIBERTADORES_SCENARIO
   const zones = result?.libertadoresZones ?? resolveLibertadoresZones(scenario)
   const labels = zoneLabelsFor(zones)
+  const headerSpecs = zoneHeaderSpecs(zones)
   const refreshing = status === 'loading' && result !== null
   /** Falha depois de um resultado bom: a tabela continua, com aviso não bloqueante. */
   const degraded = status === 'error' && result !== null
@@ -1038,14 +1077,22 @@ function ProjectionPanel({
               <table className="projection-table zones-table">
                 <thead>
                   <tr>
-                    {zoneColumns.map((column) => (
-                      <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={zoneAriaSort(column.id)}>
-                        <button type="button" className="sort-button" onClick={() => toggleZoneSort(column.id)}>
-                          {column.id === 'libertadores' ? `LIBERTADORES · ${labels.libertadores.range}¹` : column.header}
-                          <span className="sort-indicator" aria-hidden="true">{zoneAriaSort(column.id) === 'ascending' ? ' ↑' : zoneAriaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
-                        </button>
-                      </th>
-                    ))}
+                    {zoneColumns.map((column) => {
+                      const spec = headerSpecs.get(column.id)
+                      return (
+                        <th key={column.id} scope="col" className={column.numeric ? 'numeric sortable' : 'sortable'} aria-sort={zoneAriaSort(column.id)}>
+                          <button type="button" className="sort-button" onClick={() => toggleZoneSort(column.id)}>
+                            {spec === undefined ? column.header : (
+                              <span className="zone-header-text">
+                                {column.header} · {spec.range}{spec.note}{' '}
+                                <span className={`zone-header-convention zone-header-convention--${spec.convention}`}>({spec.convention})</span>
+                              </span>
+                            )}
+                            <span className="sort-indicator" aria-hidden="true">{zoneAriaSort(column.id) === 'ascending' ? ' ↑' : zoneAriaSort(column.id) === 'descending' ? ' ↓' : ' ↕'}</span>
+                          </button>
+                        </th>
+                      )
+                    })}
                   </tr>
                 </thead>
                 <tbody>
@@ -1072,7 +1119,13 @@ function ProjectionPanel({
                 </tbody>
               </table>
             </div>
-            <p className="projection-footnote">¹ Libertadores {labels.libertadores.detail}, incluindo o campeão; a coluna “Libertadores (grupos)” conta apenas a classificação direta à fase de grupos. ² Sul-Americana {labels.sudamericana.range}: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão. As chances são condicionais a este cenário.</p>
+            <p className="projection-footnote">
+              ¹ {labels.libertadores.label} {labels.libertadores.detail}, incluindo o campeão; a coluna “Libertadores (grupos)” conta apenas a classificação direta à fase de grupos.
+              {' '}² {labels.sudamericana.label} {labels.sudamericana.range}: seis melhores não classificados à Libertadores, somente pela tabela do Brasileirão.
+              {' '}Cada clube termina em uma única posição: as colunas marcadas como (faixa) — Sul-Americana {labels.sudamericana.range} e rebaixamento {labels.relegation.range} — são mutuamente exclusivas com a da Libertadores e não se somam a ela.
+              {' '}As marcadas como (acumulada) contêm as seguintes: “Título” ({positionRange(1, 1)}) e “Libertadores (grupos)” ({positionRange(1, zones.directTo)}) são subconjuntos da coluna Libertadores, somáveis apenas nesse sentido.
+              {' '}Para cada clube, Libertadores + Sul-Americana + meio de tabela + rebaixamento = 100%. As chances são condicionais a este cenário.
+            </p>
 
             <div className="table-header-flex">
               <h4 className="points-table-title" id="points-final-title">Quantos pontos cada clube deve fazer?</h4>
