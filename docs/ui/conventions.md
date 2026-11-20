@@ -11,6 +11,7 @@ Atualizado em 2026-11 para o trabalho de retrospecto H2H e auditoria.
 ## Padrões em uso
 
 - Componentes funcionais com props tipadas; estado de seleção e filtros fica local em hooks. Derivações reutilizáveis usam `useMemo` quando adequado.
+- Dado estático grande não é varrido no render: derivações por seleção saem de uma única `useMemo` (ex.: clube selecionado → estatísticas por mando e H2H das fixtures pendentes), e índices de varredura sobre módulos empacotados são lazy singleton por módulo (ex.: `buildHeadToHeadIndex` em `seasonStats.ts`), construídos no máximo uma vez por build. Agregados por clube também são memoizados por chave, nunca recalculados a cada interação.
 - Estrutura semântica (`section`, headings, labels, lists, tables) com nomes acessíveis para controles e regiões roláveis. Mudanças interativas cobrem estados e eventos com Testing Library.
 - CSS centralizado em `styles.css`, classes de componente e custom properties de cor, foco, superfícies e raios definidas em `:root`. Propriedades calculadas para largura proporcional de gráficos são o uso inline dinâmico observado; preferir classes para estilos estáticos.
 - Interface em português, datas em pt-BR e valores numéricos apresentados com `Intl.NumberFormat`; tabelas com cabeçalhos e `scope` explícitos.

@@ -354,12 +354,13 @@ fonte) o jogo entra nos cartões mas sai do dataset xG; módulo
 > **Substituído em nov/2026.** O trial expirou e o endpoint responde 429
 > permanente. A artilharia passou a ser derivada dos eventos de partida da ESPN
 > (`scripts/refresh-espn-scorers.mjs`, um snapshot por partida); a coleta da API
-> Futebol BR permanece no repositório como registro histórico, sem chamada no
-> updater. Cartões do produto seguem exclusivamente na 365scores (§20).
+> Futebol BR foi removida do repositório, sem chamada no updater, e este
+> registro permanece como histórico. Cartões do produto seguem exclusivamente na
+> 365scores (§20).
 
-**Fonte:** API Futebol BR (api.api-futebol.com.br, Bearer key no secret
-`API_FUTEBOL_BR_KEY`). Sondagem em nov/2026 (plano Premium de teste,
-1.000 req/dia até 14/11; plano grátis segue com 100/dia):
+**Fonte:** API Futebol BR (api.api-futebol.com.br, autenticação por Bearer key
+fornecida em secret do CI, já sem uso). Sondagem em nov/2026 (plano Premium de
+teste, 1.000 req/dia até 14/11; plano grátis segue com 100/dia):
 
 - `/v1/campeonatos/10/artilharia` → goleadores da edição atual
   (**sem assistências** nos dados; endpoint dedicado de assistências não existe);
@@ -382,7 +383,8 @@ conciliação da tabela como guarda. Posição por empate compartilha o
 número do primeiro lugar.
 
 **Preenchimento histórico em segundo plano (sem pressa):** cada ciclo do
-updater coleta até `API_FUTEBOL_BR_PER_RUN` detalhes de partidas
+updater coleta até `API_FUTEBOL_BR_PER_RUN` (nome da API desativada, mantido
+aqui como registro histórico da decisão) detalhes de partidas
 encerradas ainda não cobertos (rodadas recentes primeiro), guardando o
 acumulado em `data/source-snapshots/apifb-partidas-2026.json`. O
 "histórico" que o projeto consegue não vem desta API (sem edições
@@ -447,3 +449,25 @@ Referências: [RSSSF 2003](https://www.rsssfbrasil.com/tablesae/br2003.htm), [20
 - Em 2005, 11 pares de clubes aparecem três vezes devido aos replays. Repetição de par não é tratada como duplicata: os jogos são registros distintos, e a checagem de identidade usa rodada, data e mando/visitante.
 
 Detalhamento de snapshots, amostras e regras do parser: [`docs/historico-2003-2011.md`](historico-2003-2011.md). Os rótulos na auditoria da UI distinguem integridade estrutural, amostra RSSSF e tabela final independente; uma amostra positiva não marca a temporada inteira como verificada.
+
+## 22. Cobertura parcial monotônica de xG/cartões — **Corrigido**
+
+A validação de `src/advancedStats2026.ts` deixou de exigir igualdade com
+`ended.length` (todos os jogos disputados) e passou a declarar
+`coverage: { matches, expected, missing }` no próprio módulo. `expected` é o
+total de jogos encerrados do pacote, `matches` é quantos têm registro e `missing`
+lista os pares ausentes. Igualdade estrita (`matches === expected`) só é exigida
+no modo estrito; a publicação normal valida consistência interna e cobertura
+parcial é publicada como parcial.
+
+- **Denominador:** a mudança é de `ended.length` — que exigia todos os jogos e
+  abortava a gravação inteira quando a fonte não cobria um par — para o pacote
+  declarado. O módulo anterior não é apagado por falta de cobertura.
+- **Monotonicidade:** uma coleta com `matches` menor que a cobertura já publicada
+  não sobrescreve o módulo e emite `SECONDARY_REGRESSION`.
+- **Disciplina:** `matchesCovered` por clube em `src/discipline.ts` conta os
+  registros daquele clube, não o total do pacote; a taxa é por jogo coberto.
+- **UI:** `src/advancedStatsFacts.ts` deriva `matches/expected`, o status
+  (`complete`, `partial` ou `stale`) e a data de captura de `coverage`/`fetchedAt`.
+  Cobertura parcial aparece rotulada como parcial, com os pares ausentes
+  acessíveis; nunca é apresentada como completa.

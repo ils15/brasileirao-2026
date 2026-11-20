@@ -25,6 +25,22 @@ Definidas em `src/projectionConfig.ts`:
 | `XG_BLEND_WEIGHT` | 0.15 |
 | `MC_CI_Z` | 1.96 |
 
+## Cobertura parcial de xG/cartões
+
+`src/advancedStats2026.ts` declara `coverage: { matches, expected, missing }`: quantos
+jogos do pacote têm registro, quantos o pacote tem e quais pares ficaram sem registro.
+A UI exibe `matches/expected partidas` e deriva o status do próprio módulo; quando
+`matches < expected`, o rótulo é **cobertura parcial** e os pares ausentes ficam
+listados em um disclosure. Cobertura parcial nunca é apresentada como completa.
+
+- O denominador das taxas de disciplina é `matchesCovered` por clube — o número de
+  registros daquele clube no snapshot 365scores, não o total de jogos do pacote
+  (`src/discipline.ts`). Cartões reais só entram onde há registro; jogos restantes
+  usam a taxa por jogo coberto.
+- O blend de xG usa somente as partidas com xG; jogos sem registro continuam no
+  modelo de gols. A publicação é monotônica: uma coleta com menos partidas que a
+  anterior não substitui o módulo.
+
 ## Leitura complementar
 
 - [Auditoria de cálculos](auditoria-calculos.md) — fórmulas duplicadas removidas, guardas e efeito nas grandezas publicadas.
