@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841308",
+ "fetchedAt": "2026-11-20T00:30:37.716Z",
+ "date": "2026-11-19T22:30Z",
+ "status": "post",
+ "home": "vasco",
+ "away": "internacional",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Thiago Mendes",
+   "club": "vasco",
+   "minute": "26'",
+   "penalty": false
+  },
+  {
+   "athlete": "Juninho",
+   "club": "internacional",
+   "minute": "51'",
+   "penalty": false
+  },
+  {
+   "athlete": "Facundo Colidio",
+   "club": "vasco",
+   "minute": "63'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Alan Patrick",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Bruno Duarte",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Vitinho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "74'"
+  },
+  {
+   "athlete": "Andrés Gómez",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "85'"
+  },
+  {
+   "athlete": "Marino Hinestroza",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Rodrigo Villagra",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Gabriel Mercado",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

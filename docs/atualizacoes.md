@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-19T13:05:52.134Z` (`2026-11-19T10:05:52-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-20T00:30:37.744Z` (`2026-11-19T21:30:37-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -40,3 +40,10 @@ Fontes secundárias não recoletadas nesta execução (sem `API_FUTEBOL_BR_KEY` 
 
 Corte do pacote: `2026-11-19T13:05:52Z` (`2026-11-19T10:05:52-03:00`); gerado em `2026-11-19T13:05:52.134Z`.
 Resultados de 2026: 341 → 347; pendentes: 39 → 33 (347 disputados + 33 pendentes = 380 do calendário CBF; 0 adiado(s)).
+
+## 2026-11-20 — 1 novo(s) resultado(s)
+
+- vasco 2–1 internacional (espn, 401841308)
+
+Corte do pacote: `2026-11-20T00:30:37Z` (`2026-11-19T21:30:37-03:00`); gerado em `2026-11-20T00:30:37.744Z`.
+Resultados de 2026: 347 → 348; pendentes: 33 → 32 (348 disputados + 32 pendentes = 380 do calendário CBF; 0 adiado(s)).

@@ -1,7 +1,7 @@
-// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-19T13:05:52.134Z.
+// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-20T00:30:37.744Z.
 // Fontes e hashes em CURRENT_SEASON_SOURCE; cópias brutas em data/source-snapshots/.
 // Football-Data: 341 linhas 2026 no CSV da coleta (sha256 54587cb3a55765b475d397b7937376489cee7f832b0c725175e1777ce441504d).
-// ESPN: 16 resultados atribuídos à fonte no conjunto empacotado.
+// ESPN: 17 resultados atribuídos à fonte no conjunto empacotado.
 export type CurrentSeasonMatch = {
   home: string
   away: string
@@ -12,7 +12,7 @@ export type CurrentSeasonMatch = {
   sourceRef: string
 }
 
-export const CURRENT_SEASON_PACK_GENERATED_AT = '2026-11-19T13:05:52.134Z'
+export const CURRENT_SEASON_PACK_GENERATED_AT = '2026-11-20T00:30:37.744Z'
 
 export const CURRENT_SEASON_SOURCE = {
   footballData: {
@@ -27,10 +27,10 @@ export const CURRENT_SEASON_SOURCE = {
     url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard',
     collectedAt: 'não registrada no snapshot',
     timezone: 'UTC (kickoff timestamps include Z)',
-    sha256: '086d18bd49a95954949240c1c2299bc4d5c5fb2211a75389ed046da171af7522',
-    file: 'data/source-snapshots/espn-scoreboard-2026-11-03.json | data/source-snapshots/espn-scoreboard-2026-11-04.json | data/source-snapshots/espn-scoreboard-2026-11-05.json | data/source-snapshots/espn-scoreboard-2026-11-06.json | data/source-snapshots/espn-scoreboard-2026-11-07.json | data/source-snapshots/espn-scoreboard-2026-11-08.json | data/source-snapshots/espn-scoreboard-2026-11-09.json | data/source-snapshots/espn-scoreboard-2026-11-10.json | data/source-snapshots/espn-scoreboard-2026-11-11.json | data/source-snapshots/espn-scoreboard-2026-11-12.json | data/source-snapshots/espn-scoreboard-2026-11-13.json | data/source-snapshots/espn-scoreboard-2026-11-14.json | data/source-snapshots/espn-scoreboard-2026-11-15.json | data/source-snapshots/espn-scoreboard-2026-11-16.json | data/source-snapshots/espn-scoreboard-2026-11-17.json | data/source-snapshots/espn-scoreboard-2026-11-18.json | data/source-snapshots/espn-scoreboard-2026-11-19.json',
-    completedMatches: 16,
-    withoutFootballDataScore: 6,
+    sha256: 'b4ad28c17d68678ed1ed684abdd5c2601f1de97076a26307f8fb399fe4d79212',
+    file: 'data/source-snapshots/espn-scoreboard-2026-11-03.json | data/source-snapshots/espn-scoreboard-2026-11-04.json | data/source-snapshots/espn-scoreboard-2026-11-05.json | data/source-snapshots/espn-scoreboard-2026-11-06.json | data/source-snapshots/espn-scoreboard-2026-11-07.json | data/source-snapshots/espn-scoreboard-2026-11-08.json | data/source-snapshots/espn-scoreboard-2026-11-09.json | data/source-snapshots/espn-scoreboard-2026-11-10.json | data/source-snapshots/espn-scoreboard-2026-11-11.json | data/source-snapshots/espn-scoreboard-2026-11-12.json | data/source-snapshots/espn-scoreboard-2026-11-13.json | data/source-snapshots/espn-scoreboard-2026-11-14.json | data/source-snapshots/espn-scoreboard-2026-11-15.json | data/source-snapshots/espn-scoreboard-2026-11-16.json | data/source-snapshots/espn-scoreboard-2026-11-17.json | data/source-snapshots/espn-scoreboard-2026-11-18.json | data/source-snapshots/espn-scoreboard-2026-11-19.json | data/source-snapshots/espn-scoreboard-2026-11-20.json',
+    completedMatches: 17,
+    withoutFootballDataScore: 7,
   },
   historical: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
@@ -396,4 +396,5 @@ export const currentSeasonResults: CurrentSeasonMatch[] = [
   { home: "flamengo", away: "athletico-pr", homeGoals: 2, awayGoals: 1, kickoff: "2026-11-18T23:30Z", source: "espn", sourceRef: "401841313" },
   { home: "corinthians", away: "botafogo", homeGoals: 4, awayGoals: 0, kickoff: "2026-11-19T00:30Z", source: "espn", sourceRef: "401841316" },
   { home: "gremio", away: "bahia", homeGoals: 0, awayGoals: 0, kickoff: "2026-11-19T00:30Z", source: "espn", sourceRef: "401841312" },
+  { home: "vasco", away: "internacional", homeGoals: 2, awayGoals: 1, kickoff: "2026-11-19T22:30Z", source: "espn", sourceRef: "401841308" },
 ]
