@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { ANALYTICAL_CUTOFF_UTC } from './sourceMetadata'
+import { ANALYTICAL_CUTOFF_UTC, filterAtOrBeforeAnalyticalCutoff } from './sourceMetadata'
 import { standings } from './data'
 import { currentSeasonResults } from './currentSeasonResults'
 import { HISTORICAL_SOURCE, modelableHistoricalSeasons } from './historicalSeasons'
@@ -44,13 +44,32 @@ describe('projeção estática do Brasileirão 2026', () => {
   })
 
   it('usa o confronto direto 2026 concluído no desempate de dois clubes empatados', () => {
+    // Agregado derivado dos resultados disputados do próprio pacote: o valor
+    // esperado acompanha cada rodada publicada em vez de um placar fixo.
+    const aggregate = (clubId: string, opponentId: string) => {
+      const total = { points: 0, goalDifference: 0, goalsFor: 0 }
+      for (const match of filterAtOrBeforeAnalyticalCutoff(currentSeasonResults)) {
+        const atHome = match.home === clubId && match.away === opponentId
+        const away = match.away === clubId && match.home === opponentId
+        if (!atHome && !away) continue
+        const scored = atHome ? match.homeGoals : match.awayGoals
+        const conceded = atHome ? match.awayGoals : match.homeGoals
+        total.points += scored > conceded ? 3 : scored === conceded ? 1 : 0
+        total.goalDifference += scored - conceded
+        total.goalsFor += scored
+      }
+      return total
+    }
     const headToHead = buildCurrentSeasonHeadToHead()
-    const flamengoAgainstPalmeiras = headToHead.get('flamengo')?.get('palmeiras')
-    const palmeirasAgainstFlamengo = headToHead.get('palmeiras')?.get('flamengo')
-    expect(flamengoAgainstPalmeiras).toEqual({ points: 0, goalDifference: -3, goalsFor: 0 })
-    expect(palmeirasAgainstFlamengo).toEqual({ points: 3, goalDifference: 3, goalsFor: 3 })
-    expect(compareHeadToHeadForTable(flamengoAgainstPalmeiras!, palmeirasAgainstFlamengo!)).toBeGreaterThan(0)
-    expect(compareHeadToHeadForTable(palmeirasAgainstFlamengo!, flamengoAgainstPalmeiras!)).toBeLessThan(0)
+    const flamengoAgainstPalmeiras = aggregate('flamengo', 'palmeiras')
+    const palmeirasAgainstFlamengo = aggregate('palmeiras', 'flamengo')
+    expect(headToHead.get('flamengo')?.get('palmeiras')).toEqual(flamengoAgainstPalmeiras)
+    expect(headToHead.get('palmeiras')?.get('flamengo')).toEqual(palmeirasAgainstFlamengo)
+    // Palmeiras fez mais pontos no confronto de 2026: o comparador precisa
+    // apontar o Flamengo como pior nos dois sentidos.
+    expect(palmeirasAgainstFlamengo.points).toBeGreaterThan(flamengoAgainstPalmeiras.points)
+    expect(compareHeadToHeadForTable(flamengoAgainstPalmeiras, palmeirasAgainstFlamengo)).toBeGreaterThan(0)
+    expect(compareHeadToHeadForTable(palmeirasAgainstFlamengo, flamengoAgainstPalmeiras)).toBeLessThan(0)
     expect(buildCurrentSeasonHeadToHead([
       ...currentSeasonResults,
       {

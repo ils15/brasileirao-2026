@@ -245,8 +245,21 @@ export function renderModuleFromSnapshot({
   return { written: write, validation: checked, coverage: checked.coverage }
 }
 
-/** Fluxo principal: lista resultados, detalha o que falta, valida e renderiza. */
-export async function refreshAdvancedStats({ log = console.log, write = true, warn = (line) => console.warn(line) } = {}) {
+/**
+ * Fluxo principal: lista resultados, detalha o que falta, valida e renderiza.
+ *
+ * `packagedPairs` é o denominador da cobertura. Quando o updater chama esta
+ * função **antes** de gravar `src/currentSeasonResults.ts`, reler do disco
+ * usaria o pacote anterior (faltando os jogos recém-mergeados) e publicaria
+ * `coverage.expected` menor que o pacote final — por isso o chamador passa os
+ * pares frescos. O default lê do disco para o uso isolado (CLI).
+ */
+export async function refreshAdvancedStats({
+  log = console.log,
+  write = true,
+  warn = (line) => console.warn(line),
+  packagedPairs = readPackagedPairs(),
+} = {}) {
   log('365scores: listando resultados…')
   const { pages, seasonNum } = await fetchAllResults({ log })
   if (seasonNum == null) throw new Error('Temporada corrente não identificada na fonte.')
@@ -256,7 +269,6 @@ export async function refreshAdvancedStats({ log = console.log, write = true, wa
 
   // Denominador = pacote publicado (resultados disputados filtrados pelo
   // corte), não a lista da fonte: a fonte pode não cobrir todos os jogos.
-  const packagedPairs = readPackagedPairs()
   log(`Pacote: ${packagedPairs.length} jogos disputados — denominador da cobertura.`)
 
   const existing = readExisting()

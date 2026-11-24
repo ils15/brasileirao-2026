@@ -300,6 +300,11 @@ async function main() {
   const outcome = classifyMergeOutcome({ incoming, added, rejected })
   const espnCoverage = summarizeEspnFootballDataCoverage(merged, fdMatches)
   console.log(`Novos efetivos: ${added.length} (FD ${fdMatches.length}, ESPN ${espnMatches.length}) · rejeitados: ${rejected.length}`)
+  // Pares do pacote **desta execução** (existente + recém-mergeados). As fontes
+  // secundárias rodam antes da gravação de `src/currentSeasonResults.ts`, então
+  // reler o módulo do disco daria o pacote anterior: passar os pares frescos
+  // mantém `coverage.expected` igual ao pacote final.
+  const mergedPairs = merged.map(({ home, away }) => `${home}|${away}`)
 
   // Par fora do calendário não é no-op: é sinal de fonte ou calendário
   // divergentes. Publicar o resto esconderia o problema — aborta o run.
@@ -354,7 +359,7 @@ async function main() {
     for (const notice of secondary.notices) console.log(notice)
     if (secondary.refreshAdvanced) {
       try {
-        await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`), write: !dryRun })
+        await refreshAdvancedStats({ packagedPairs: mergedPairs, log: (line) => console.log(`  ${line}`), write: !dryRun })
       } catch (error) {
         // xG/cartões são um bem de segunda ordem: se a fonte falhar HOJE, os
         // dados já empacotados continuam válidos — não bloquear o run.
@@ -445,7 +450,7 @@ async function main() {
   for (const notice of secondary.notices) console.log(notice)
   if (secondary.refreshAdvanced) {
     try {
-      await refreshAdvancedStats({ log: (line) => console.log(`  ${line}`), write: !dryRun })
+      await refreshAdvancedStats({ packagedPairs: mergedPairs, log: (line) => console.log(`  ${line}`), write: !dryRun })
     } catch (error) {
       // xG/cartões são um bem de segunda ordem: se a fonte falhar HOJE, os
       // dados já empacotados continuam válidos — não bloquear o resultado.

@@ -57,8 +57,20 @@ describe('calendário e retrospecto por mando', () => {
 
     const calendar = screen.getByRole('region', { name: 'Calendário restante por clube' })
     expect(within(calendar).getByRole('heading', { name: 'Jogos de Palmeiras' })).toBeInTheDocument()
-    expect(within(calendar).getByText(/Adversário: Flamengo · jogo em casa/)).toBeInTheDocument()
-    expect(within(calendar).queryByText(/Adversário: Athletico Paranaense/)).not.toBeInTheDocument()
+    // Lista e rótulos derivados do pacote: cada pendente do Palmeiras precisa
+    // aparecer com o adversário e o mando reais — nada de confronto fixo.
+    const palmeirasFixtures = remainingFixtures.filter(({ home, away }) => home === 'palmeiras' || away === 'palmeiras')
+    const nameOf = (id: string): string => currentClubs.find((club) => club.id === id)!.club
+    const items = within(calendar).getAllByRole('listitem').filter((item) => item.classList.contains('remaining-fixture'))
+    expect(items).toHaveLength(palmeirasFixtures.length)
+    expect(items.some((item) => item.textContent?.includes('jogo em casa'))).toBe(true)
+    for (const fixture of palmeirasFixtures) {
+      const atHome = fixture.home === 'palmeiras'
+      const opponent = nameOf(atHome ? fixture.away : fixture.home)
+      const item = items.find((entry) => entry.textContent?.includes(`Referência CBF ${fixture.cbfRef}`))
+      expect(item).toBeDefined()
+      expect(item!.textContent).toContain(`Adversário: ${opponent} · ${atHome ? 'jogo em casa' : 'jogo fora'}`)
+    }
   })
 
   it('mostra retrospecto H2H histórico e de 2026 como contexto, sem chamá-lo de previsão', async () => {

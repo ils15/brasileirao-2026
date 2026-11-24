@@ -34,13 +34,21 @@ describe('painel da próxima rodada', () => {
     expect(within(match).getByRole('img')).toHaveAttribute('aria-label', expect.stringContaining(percent.format(probabilities[0])))
   })
 
-  it('troca de rodada e mostra os jogos da rodada 35', async () => {
+  it('troca de rodada e mostra os jogos da rodada pendente escolhida', async () => {
     const user = userEvent.setup()
     render(<NextRoundPanel />)
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Selecionar rodada pendente' }), '35')
-    const round35Fixtures = remainingFixtures.filter(({ round }) => round === '35')
-    expect(screen.getAllByRole('article')).toHaveLength(round35Fixtures.length)
-    expect(screen.getAllByRole('img')).toHaveLength(round35Fixtures.length)
+    // Rodada-alvo derivada do pacote: a última pendente, diferente da inicial
+    // que o painel abre sozinho.
+    const rounds = [...new Set(remainingFixtures.map(({ round }) => round))].sort(
+      (left, right) => Number.parseInt(left, 10) - Number.parseInt(right, 10) || left.localeCompare(right),
+    )
+    const targetRound = rounds[rounds.length - 1]!
+    const select = screen.getByRole('combobox', { name: 'Selecionar rodada pendente' })
+    await user.selectOptions(select, targetRound)
+    expect(select).toHaveValue(targetRound)
+    const targetFixtures = remainingFixtures.filter(({ round }) => round === targetRound)
+    expect(screen.getAllByRole('article')).toHaveLength(targetFixtures.length)
+    expect(screen.getAllByRole('img')).toHaveLength(targetFixtures.length)
     // Cada artigo tem os dois λ e a nota de metodologia segue no painel
     for (const match of screen.getAllByRole('article')) {
       expect(within(match).getAllByText(/^λ /)).toHaveLength(2)
@@ -63,35 +71,70 @@ describe('painel de confronto direto', () => {
     const user = userEvent.setup()
     render(<HeadToHeadPanel />)
     const summary = getHeadToHeadSummary('flamengo', 'palmeiras')
+    const nameOf = (id: string): string => currentClubs.find(({ id: clubId }) => clubId === id)!.club
+    // Agregado H/E/F e gols derivados dos encontros do período: os números
+    // acompanham o pacote em vez de cravar contadores de temporada.
+    const outcomeOf = (matches: typeof summary.matches) => {
+      const total = { winsA: 0, draws: 0, winsB: 0, goalsA: 0, goalsB: 0 }
+      for (const match of matches) {
+        const scoredA = match.home === 'flamengo' ? match.homeGoals : match.awayGoals
+        const scoredB = match.home === 'palmeiras' ? match.homeGoals : match.awayGoals
+        if (scoredA > scoredB) total.winsA += 1
+        else if (scoredA === scoredB) total.draws += 1
+        else total.winsB += 1
+        total.goalsA += scoredA
+        total.goalsB += scoredB
+      }
+      return { ...total, matches: matches.length }
+    }
+    const barLabel = (outcome: ReturnType<typeof outcomeOf>): string =>
+      `Retrospecto direto: Vitórias de Flamengo ${outcome.winsA}, Empates ${outcome.draws}, Vitórias de Palmeiras ${outcome.winsB}`
+    const periodText = (from: number, to: number): string => {
+      const outcome = outcomeOf(summary.matches.filter(({ seasonYear }) => seasonYear >= from && seasonYear <= to))
+      return `Período ${from}–${to}: ${outcome.matches === 1 ? '1 encontro' : `${outcome.matches} encontros`} · gols ${outcome.goalsA}–${outcome.goalsB} (Flamengo primeiro)`
+    }
+    const from2012 = summary.matches.filter(({ seasonYear }) => seasonYear >= 2012 && seasonYear <= 2026)
+    const meetings2026 = summary.matches.filter(({ seasonYear }) => seasonYear === 2026)
 
-    // Barra com contagens somadas de todos os encontros
-    const bar = screen.getByRole('img', { name: /Retrospecto direto: Vitórias de Flamengo/ })
-    expect(bar).toBeInTheDocument()
+    // Barra com contagens somadas de todos os encontros do período
+    expect(screen.getByRole('img', { name: barLabel(outcomeOf(from2012)) })).toBeInTheDocument()
 
     const timeline = screen.getByRole('list', { name: /Timeline de encontros entre Flamengo e Palmeiras/ })
-    const from2012 = summary.matches.filter(({ seasonYear }) => seasonYear >= 2012 && seasonYear <= 2026)
     expect(within(timeline).getAllByRole('listitem')).toHaveLength(from2012.length)
-    // O encontro 2026 Flamengo 0–3 Palmeiras está na timeline com badge de derrota
-    const meeting2026 = within(timeline).getAllByRole('listitem').find((item) => item.textContent?.includes('Flamengo') && item.textContent?.includes('0–3'))!
-    expect(meeting2026).toHaveTextContent('D')
-    expect(within(timeline).getAllByRole('listitem').filter((item) => item.textContent?.includes('Palmeiras')).length).toBeGreaterThan(0)
+
+    // Todo encontro de 2026 aparece na timeline com o badge V/E/D do Flamengo
+    // (clube A): o badge é conferido contra o placar real de cada encontro.
+    expect(meetings2026.length).toBeGreaterThan(0)
+    for (const meeting of meetings2026) {
+      const item = within(timeline).getAllByRole('listitem').find((entry) =>
+        entry.textContent?.includes(String(meeting.seasonYear))
+        && entry.textContent?.includes(`${meeting.homeGoals}–${meeting.awayGoals}`)
+        && entry.textContent?.includes(nameOf(meeting.home))
+        && entry.textContent?.includes(nameOf(meeting.away)))
+      expect(item).toBeDefined()
+      const scoredA = meeting.home === 'flamengo' ? meeting.homeGoals : meeting.awayGoals
+      const scoredB = meeting.home === 'palmeiras' ? meeting.homeGoals : meeting.awayGoals
+      expect(item!.querySelector('.meeting-badge')).toHaveTextContent(scoredA > scoredB ? 'V' : scoredA === scoredB ? 'E' : 'D')
+    }
 
     // Presets de período: barra e resumo respondem ao filtro (default desde 2012)
-    const summaryBox = document.querySelector('.h2h-summary')!
-    expect(summaryBox.textContent).toContain('Período 2012–2026: 27 encontros')
+    expect(document.querySelector('.h2h-summary')!.textContent).toContain(periodText(2012, 2026))
     await user.click(screen.getByRole('button', { name: 'Temporada 2026' }))
-    expect(document.querySelector('.h2h-summary')!.textContent).toContain('Período 2026–2026: 1 encontro · gols 0–3 (Flamengo primeiro)')
-    expect(within(timeline).getAllByRole('listitem')).toHaveLength(1)
-    const bar2026 = screen.getByRole('img', { name: /Retrospecto direto: Vitórias de Flamengo 0, Empates 0, Vitórias de Palmeiras 1/ })
-    expect(bar2026).toBeInTheDocument()
+    expect(document.querySelector('.h2h-summary')!.textContent).toContain(periodText(2026, 2026))
+    expect(within(timeline).getAllByRole('listitem')).toHaveLength(meetings2026.length)
+    expect(screen.getByRole('img', { name: barLabel(outcomeOf(meetings2026)) })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Desde 2012' }))
-    expect(document.querySelector('.h2h-summary')!.textContent).toContain('Período 2012–2026')
+    expect(document.querySelector('.h2h-summary')!.textContent).toContain(periodText(2012, 2026))
     expect(within(timeline).getAllByRole('listitem')).toHaveLength(from2012.length)
 
-
-    // Próximo confronto entre os dois: rodada 36 (palmeiras × flamengo)
-    expect(screen.getByText(/Próximo confronto no calendário/)).toBeInTheDocument()
-    expect(screen.getByText(/Rodada 36/)).toBeInTheDocument()
+    // Próximo confronto: seleciona o par do primeiro jogo pendente do
+    // calendário e o painel precisa anunciar a rodada desse jogo.
+    const nextFixture = remainingFixtures[0]!
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Clube A do confronto' }), nextFixture.home)
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Clube B do confronto' }), nextFixture.away)
+    const nextMeeting = screen.getByText(/Próximo confronto no calendário/).closest('.h2h-next-meeting')
+    expect(nextMeeting).not.toBeNull()
+    expect(nextMeeting!.textContent).toContain(`Rodada ${nextFixture.round}`)
   })
 
   it('exibe estado vazio quando os dois selects têm o mesmo clube', async () => {

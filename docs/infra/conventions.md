@@ -36,6 +36,11 @@ CBF calendário (380 jogos)  ─┘        │                     src/sourceMet
   a fonte pode encerrar um jogo antes do pacote (regra conservadora do dia do
   corte) e `matches > expected` faria a UI anunciar cobertura parcial sem nada
   faltando. O registro bruto fica no cache e volta quando o pacote o incorpora.
+  O denominador (`coverage.expected`) vem dos pares que a execução vai publicar
+  (pacote anterior + mergeados), passado explicitamente pelo updater: as
+  secundárias rodam **antes** da escrita de `src/currentSeasonResults.ts`, então
+  reler o módulo do disco publicaria o total do pacote anterior (já quebrou o
+  gate com `expected 349` para um pacote de 352).
   `scripts/refresh-apifutebolbr.mjs` foi **removido** (trial encerrado, HTTP 429 permanente).
 - Artilharia: um snapshot normalizado por partida em
   `data/source-snapshots/espn-events-<eventId>.json`; o módulo `src/scorers2026.ts` é
