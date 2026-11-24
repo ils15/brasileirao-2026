@@ -1,0 +1,72 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841326",
+ "fetchedAt": "2026-11-24T12:38:55.249Z",
+ "date": "2026-11-23T23:00Z",
+ "status": "post",
+ "home": "botafogo",
+ "away": "sao-paulo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Pedro Lima",
+   "club": "sao-paulo",
+   "minute": "28'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tiquinho Soares",
+   "club": "botafogo",
+   "minute": "81'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Newton",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Luis Osorio",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Rafael",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "33'"
+  },
+  {
+   "athlete": "Pedro Lima",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "65'"
+  },
+  {
+   "athlete": "Nahuel Ferraresi",
+   "club": "botafogo",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Fernando Marçal",
+   "club": "botafogo",
+   "type": "red",
+   "minute": "90'+2'"
+  },
+  {
+   "athlete": "Wendell",
+   "club": "sao-paulo",
+   "type": "red",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

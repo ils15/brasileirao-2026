@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841321",
+ "fetchedAt": "2026-11-24T12:38:55.361Z",
+ "date": "2026-11-22T22:30Z",
+ "status": "post",
+ "home": "bragantino",
+ "away": "vasco",
+ "homeGoals": 1,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Eduardo Sasha",
+   "club": "bragantino",
+   "minute": "66'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Gabriel Pereira",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "23'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "45'+1'"
+  },
+  {
+   "athlete": "Alix Vinicius",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Paulo Henrique",
+   "club": "vasco",
+   "type": "yellow",
+   "minute": "73'"
+  },
+  {
+   "athlete": "Wallace Yan",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Robert",
+   "club": "vasco",
+   "type": "red",
+   "minute": "89'"
+  },
+  {
+   "athlete": "Agustín Sant'Anna",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

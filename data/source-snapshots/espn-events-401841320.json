@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841320",
+ "fetchedAt": "2026-11-24T12:38:55.296Z",
+ "date": "2026-11-24T00:00Z",
+ "status": "post",
+ "home": "santos",
+ "away": "gremio",
+ "homeGoals": 0,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Francis Amuzu",
+   "club": "gremio",
+   "minute": "14'",
+   "penalty": false
+  },
+  {
+   "athlete": "Martin Braithwaite",
+   "club": "gremio",
+   "minute": "77'",
+   "penalty": true
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Erick Noriega",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "João Alencar",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "40'"
+  },
+  {
+   "athlete": "Caio Paulista",
+   "club": "gremio",
+   "type": "yellow",
+   "minute": "90'+4'"
+  },
+  {
+   "athlete": "Willian Arão",
+   "club": "santos",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

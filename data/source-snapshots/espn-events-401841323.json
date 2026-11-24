@@ -1,0 +1,108 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841323",
+ "fetchedAt": "2026-11-24T12:38:55.179Z",
+ "date": "2026-11-23T22:30Z",
+ "status": "post",
+ "home": "internacional",
+ "away": "vitoria",
+ "homeGoals": 2,
+ "awayGoals": 5,
+ "goals": [
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "1'",
+   "penalty": false
+  },
+  {
+   "athlete": "Diego Tarzia",
+   "club": "vitoria",
+   "minute": "19'",
+   "penalty": false
+  },
+  {
+   "athlete": "Vitinho",
+   "club": "internacional",
+   "minute": "41'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ramon",
+   "club": "vitoria",
+   "minute": "57'",
+   "penalty": false
+  },
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "minute": "70'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Baralhas",
+   "club": "vitoria",
+   "minute": "87'",
+   "penalty": false
+  },
+  {
+   "athlete": "Renato Kayzer",
+   "club": "vitoria",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Yuri Sena",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Matheus Bahia",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "31'"
+  },
+  {
+   "athlete": "Gabriel Baralhas",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Juninho",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Jamerson",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "60'"
+  },
+  {
+   "athlete": "Emmanuel Martínez",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Alerrando",
+   "club": "internacional",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Zé Vitor",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "81'"
+  }
+ ],
+ "unresolved": []
+}

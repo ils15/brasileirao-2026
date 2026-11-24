@@ -1,0 +1,108 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841318",
+ "fetchedAt": "2026-11-24T12:38:55.108Z",
+ "date": "2026-11-22T19:00Z",
+ "status": "post",
+ "home": "athletico-pr",
+ "away": "remo",
+ "homeGoals": 4,
+ "awayGoals": 2,
+ "goals": [
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "minute": "9'",
+   "penalty": false
+  },
+  {
+   "athlete": "Kerwin Vargas",
+   "club": "athletico-pr",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "David Francisco",
+   "club": "remo",
+   "minute": "62'",
+   "penalty": false
+  },
+  {
+   "athlete": "Leozinho",
+   "club": "athletico-pr",
+   "minute": "68'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jorge Rivaldo",
+   "club": "athletico-pr",
+   "minute": "84'",
+   "penalty": false
+  },
+  {
+   "athlete": "Antonio Galeano",
+   "club": "remo",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "José Welison",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "25'"
+  },
+  {
+   "athlete": "Edson Fernando",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "34'"
+  },
+  {
+   "athlete": "Zé Ivaldo",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "35'"
+  },
+  {
+   "athlete": "Stiven Mendoza",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "50'"
+  },
+  {
+   "athlete": "Marllon",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "56'"
+  },
+  {
+   "athlete": "Duplexe Tchamba",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "59'"
+  },
+  {
+   "athlete": "Dantas",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "61'"
+  },
+  {
+   "athlete": "Lucas Esquivel",
+   "club": "athletico-pr",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Jajá",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "66'"
+  }
+ ],
+ "unresolved": []
+}

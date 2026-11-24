@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-22T12:00:54.960Z` (`2026-11-22T09:00:54-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-24T12:38:55.380Z` (`2026-11-24T09:38:55-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -64,3 +64,15 @@ Resultados de 2026: 348 → 349; pendentes: 32 → 31 (349 disputados + 31 pende
 
 Corte do pacote: `2026-11-22T12:00:54Z` (`2026-11-22T09:00:54-03:00`); gerado em `2026-11-22T12:00:54.960Z`.
 Resultados de 2026: 349 → 353; pendentes: 31 → 27 (353 disputados + 27 pendentes = 380 do calendário CBF; 0 adiado(s)).
+
+## 2026-11-24 — 6 novo(s) resultado(s)
+
+- athletico-pr 4–2 remo (football-data, csv-line-5675)
+- fluminense 1–0 mirassol (football-data, csv-line-5676)
+- bragantino 1–0 vasco (football-data, csv-line-5677)
+- internacional 2–5 vitoria (football-data, csv-line-5678)
+- botafogo 1–1 sao-paulo (football-data, csv-line-5679)
+- santos 0–2 gremio (espn, 401841320)
+
+Corte do pacote: `2026-11-24T12:38:55Z` (`2026-11-24T09:38:55-03:00`); gerado em `2026-11-24T12:38:55.380Z`.
+Resultados de 2026: 353 → 359; pendentes: 27 → 21 (359 disputados + 21 pendentes = 380 do calendário CBF; 0 adiado(s)).
