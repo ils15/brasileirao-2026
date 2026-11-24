@@ -1,0 +1,54 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841327",
+ "fetchedAt": "2026-11-22T12:00:54.831Z",
+ "date": "2026-11-21T20:30Z",
+ "status": "post",
+ "home": "bahia",
+ "away": "coritiba",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "minute": "74'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Breno",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Jean Lucas",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "78'"
+  },
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Nicolás Acevedo",
+   "club": "bahia",
+   "type": "red",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Joaquín Lavega",
+   "club": "coritiba",
+   "type": "yellow",
+   "minute": "90'+7'"
+  }
+ ],
+ "unresolved": []
+}

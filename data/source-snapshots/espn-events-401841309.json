@@ -1,0 +1,36 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841309",
+ "fetchedAt": "2026-11-22T12:00:54.937Z",
+ "date": "2026-11-20T00:30Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "fluminense",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Hércules",
+   "club": "fluminense",
+   "minute": "32'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Pablo Maia",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "80'"
+  }
+ ],
+ "unresolved": []
+}

@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841322",
+ "fetchedAt": "2026-11-22T12:00:54.951Z",
+ "date": "2026-11-21T19:30Z",
+ "status": "post",
+ "home": "palmeiras",
+ "away": "flamengo",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jhon Arias",
+   "club": "palmeiras",
+   "minute": "12'",
+   "penalty": false
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "minute": "76'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Andreas Pereira",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "43'"
+  },
+  {
+   "athlete": "Alex Sandro",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "45'+2'"
+  },
+  {
+   "athlete": "Samuel Lino",
+   "club": "flamengo",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Carlos Miguel",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Arthur Gabriel",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "80'"
+  },
+  {
+   "athlete": "Lucas Evangelista",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "83'"
+  }
+ ],
+ "unresolved": []
+}

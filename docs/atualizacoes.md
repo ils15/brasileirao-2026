@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-20T10:12:29.760Z` (`2026-11-20T07:12:29-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-22T12:00:54.960Z` (`2026-11-22T09:00:54-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -54,3 +54,13 @@ Resultados de 2026: 347 → 348; pendentes: 33 → 32 (348 disputados + 32 pende
 
 Corte do pacote: `2026-11-20T10:12:29Z` (`2026-11-20T07:12:29-03:00`); gerado em `2026-11-20T10:12:29.760Z`.
 Resultados de 2026: 348 → 349; pendentes: 32 → 31 (349 disputados + 31 pendentes = 380 do calendário CBF; 0 adiado(s)).
+
+## 2026-11-22 — 4 novo(s) resultado(s)
+
+- sao-paulo 0–1 fluminense (football-data, csv-line-5671)
+- palmeiras 1–1 flamengo (espn, 401841322)
+- bahia 0–1 coritiba (espn, 401841327)
+- chapecoense 1–2 cruzeiro (espn, 401841325)
+
+Corte do pacote: `2026-11-22T12:00:54Z` (`2026-11-22T09:00:54-03:00`); gerado em `2026-11-22T12:00:54.960Z`.
+Resultados de 2026: 349 → 353; pendentes: 31 → 27 (353 disputados + 27 pendentes = 380 do calendário CBF; 0 adiado(s)).

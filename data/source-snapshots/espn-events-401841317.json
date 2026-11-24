@@ -1,0 +1,84 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841317",
+ "fetchedAt": "2026-11-22T12:00:54.834Z",
+ "date": "2026-11-19T22:30Z",
+ "status": "post",
+ "home": "vitoria",
+ "away": "bragantino",
+ "homeGoals": 2,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Emanuel Britez",
+   "club": "vitoria",
+   "minute": "4'",
+   "penalty": false
+  },
+  {
+   "athlete": "Renê",
+   "club": "vitoria",
+   "minute": "24'",
+   "penalty": false
+  },
+  {
+   "athlete": "Henry Mosquera",
+   "club": "bragantino",
+   "minute": "73'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Fernando",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "1'"
+  },
+  {
+   "athlete": "Juninho Capixaba",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "12'"
+  },
+  {
+   "athlete": "Matheusinho",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "39'"
+  },
+  {
+   "athlete": "Fabinho",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "64'"
+  },
+  {
+   "athlete": "Gustavo Marques",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "79'"
+  },
+  {
+   "athlete": "Matheus Fernandes",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "81'"
+  },
+  {
+   "athlete": "Wallace Yan",
+   "club": "bragantino",
+   "type": "yellow",
+   "minute": "90'+5'"
+  },
+  {
+   "athlete": "Gean",
+   "club": "vitoria",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}

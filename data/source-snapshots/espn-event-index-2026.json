@@ -1,7 +1,7 @@
 {
  "source": "ESPN",
  "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates=2026",
- "fetchedAt": "2026-11-20T00:30:37.641Z",
+ "fetchedAt": "2026-11-22T12:00:54.663Z",
  "events": [
   {
    "eventId": "401840808",
@@ -2394,8 +2394,8 @@
    "eventId": "401841309",
    "date": "2026-11-20T00:30Z",
    "homeScore": 0,
-   "awayScore": 0,
-   "completed": false
+   "awayScore": 1,
+   "completed": true
   },
   {
    "eventId": "401841310",
@@ -2451,7 +2451,7 @@
    "date": "2026-11-19T22:30Z",
    "homeScore": 2,
    "awayScore": 1,
-   "completed": false
+   "completed": true
   },
   {
    "eventId": "401841318",
@@ -2484,9 +2484,9 @@
   {
    "eventId": "401841322",
    "date": "2026-11-21T19:30Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "completed": false
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
   },
   {
    "eventId": "401841323",
@@ -2505,9 +2505,9 @@
   {
    "eventId": "401841325",
    "date": "2026-11-22T00:00Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "completed": false
+   "homeScore": 1,
+   "awayScore": 2,
+   "completed": true
   },
   {
    "eventId": "401841326",
@@ -2520,8 +2520,8 @@
    "eventId": "401841327",
    "date": "2026-11-21T20:30Z",
    "homeScore": 0,
-   "awayScore": 0,
-   "completed": false
+   "awayScore": 1,
+   "completed": true
   },
   {
    "eventId": "401841328",
