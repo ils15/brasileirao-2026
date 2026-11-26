@@ -1,7 +1,7 @@
-// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-24T12:38:55.380Z.
+// Empacotado automaticamente por scripts/update-data.mjs em 2026-11-26T09:48:10.493Z.
 // Fontes e hashes em CURRENT_SEASON_SOURCE; cópias brutas em data/source-snapshots/.
 // Football-Data: 359 linhas 2026 no CSV da coleta (sha256 dbca5197cc77ac85ad092c3cf9b7eaeac4bc2054bf76724676a3262757597444).
-// ESPN: 21 resultados atribuídos à fonte no conjunto empacotado.
+// ESPN: 23 resultados atribuídos à fonte no conjunto empacotado.
 export type CurrentSeasonMatch = {
   home: string
   away: string
@@ -12,7 +12,7 @@ export type CurrentSeasonMatch = {
   sourceRef: string
 }
 
-export const CURRENT_SEASON_PACK_GENERATED_AT = '2026-11-24T12:38:55.380Z'
+export const CURRENT_SEASON_PACK_GENERATED_AT = '2026-11-26T09:48:10.493Z'
 
 export const CURRENT_SEASON_SOURCE = {
   footballData: {
@@ -27,10 +27,10 @@ export const CURRENT_SEASON_SOURCE = {
     url: 'https://site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard',
     collectedAt: 'não registrada no snapshot',
     timezone: 'UTC (kickoff timestamps include Z)',
-    sha256: '2acaefab0a7f047e70336c57df0a6864991a24d29490875b21c8f40ef394c3f2',
-    file: 'data/source-snapshots/espn-scoreboard-2026-11-03.json | data/source-snapshots/espn-scoreboard-2026-11-04.json | data/source-snapshots/espn-scoreboard-2026-11-05.json | data/source-snapshots/espn-scoreboard-2026-11-06.json | data/source-snapshots/espn-scoreboard-2026-11-07.json | data/source-snapshots/espn-scoreboard-2026-11-08.json | data/source-snapshots/espn-scoreboard-2026-11-09.json | data/source-snapshots/espn-scoreboard-2026-11-10.json | data/source-snapshots/espn-scoreboard-2026-11-11.json | data/source-snapshots/espn-scoreboard-2026-11-12.json | data/source-snapshots/espn-scoreboard-2026-11-13.json | data/source-snapshots/espn-scoreboard-2026-11-14.json | data/source-snapshots/espn-scoreboard-2026-11-15.json | data/source-snapshots/espn-scoreboard-2026-11-16.json | data/source-snapshots/espn-scoreboard-2026-11-17.json | data/source-snapshots/espn-scoreboard-2026-11-18.json | data/source-snapshots/espn-scoreboard-2026-11-19.json | data/source-snapshots/espn-scoreboard-2026-11-20.json | data/source-snapshots/espn-scoreboard-2026-11-21.json | data/source-snapshots/espn-scoreboard-2026-11-22.json | data/source-snapshots/espn-scoreboard-2026-11-23.json | data/source-snapshots/espn-scoreboard-2026-11-24.json',
-    completedMatches: 21,
-    withoutFootballDataScore: 1,
+    sha256: 'f306513db0b27f935db154e9198d5735d34b922dc19650b80100e2cac5e42bcc',
+    file: 'data/source-snapshots/espn-scoreboard-2026-11-03.json | data/source-snapshots/espn-scoreboard-2026-11-04.json | data/source-snapshots/espn-scoreboard-2026-11-05.json | data/source-snapshots/espn-scoreboard-2026-11-06.json | data/source-snapshots/espn-scoreboard-2026-11-07.json | data/source-snapshots/espn-scoreboard-2026-11-08.json | data/source-snapshots/espn-scoreboard-2026-11-09.json | data/source-snapshots/espn-scoreboard-2026-11-10.json | data/source-snapshots/espn-scoreboard-2026-11-11.json | data/source-snapshots/espn-scoreboard-2026-11-12.json | data/source-snapshots/espn-scoreboard-2026-11-13.json | data/source-snapshots/espn-scoreboard-2026-11-14.json | data/source-snapshots/espn-scoreboard-2026-11-15.json | data/source-snapshots/espn-scoreboard-2026-11-16.json | data/source-snapshots/espn-scoreboard-2026-11-17.json | data/source-snapshots/espn-scoreboard-2026-11-18.json | data/source-snapshots/espn-scoreboard-2026-11-19.json | data/source-snapshots/espn-scoreboard-2026-11-20.json | data/source-snapshots/espn-scoreboard-2026-11-21.json | data/source-snapshots/espn-scoreboard-2026-11-22.json | data/source-snapshots/espn-scoreboard-2026-11-23.json | data/source-snapshots/espn-scoreboard-2026-11-24.json | data/source-snapshots/espn-scoreboard-2026-11-25.json | data/source-snapshots/espn-scoreboard-2026-11-26.json',
+    completedMatches: 23,
+    withoutFootballDataScore: 2,
   },
   historical: {
     url: 'https://www.football-data.co.uk/new/BR.csv',
@@ -408,4 +408,6 @@ export const currentSeasonResults: CurrentSeasonMatch[] = [
   { home: "internacional", away: "vitoria", homeGoals: 2, awayGoals: 5, kickoff: "2026-11-23T22:30", source: "football-data", sourceRef: "csv-line-5678" },
   { home: "botafogo", away: "sao-paulo", homeGoals: 1, awayGoals: 1, kickoff: "2026-11-23T23:00", source: "football-data", sourceRef: "csv-line-5679" },
   { home: "santos", away: "gremio", homeGoals: 0, awayGoals: 2, kickoff: "2026-11-24T00:00Z", source: "espn", sourceRef: "401841320" },
+  { home: "chapecoense", away: "palmeiras", homeGoals: 3, awayGoals: 0, kickoff: "2026-11-24T21:00Z", source: "espn", sourceRef: "401841335" },
+  { home: "atletico-mg", away: "corinthians", homeGoals: 1, awayGoals: 1, kickoff: "2026-11-25T23:00Z", source: "espn", sourceRef: "401841319" },
 ]

@@ -28,11 +28,11 @@ export interface AdvancedMatchRecord {
 export const ADVANCED_STATS_SOURCE = {
   name: '365scores',
   seasonNum: 76,
-  fetchedAt: '2026-11-24T12:38:54.806Z',
-  sha256: '7cde18b7c3a3618b8cd1aef48feb7ec5b58eb130382ce7bd6c7e8502a225d7da',
+  fetchedAt: '2026-11-26T09:48:09.317Z',
+  sha256: 'cf942444aeeb9f3c170781185d46ca24e86b06c5215ec743ade4930cbb613c33',
   coverage: {
-    matches: 359,
-    expected: 359,
+    matches: 361,
+    expected: 361,
     missing: [],
   },
 } as const
@@ -68,10 +68,12 @@ export const advancedMatches: readonly AdvancedMatchRecord[] = [
   { gameId: 4632539, round: 1, home: 'coritiba', away: 'bragantino', homeScore: 0, awayScore: 1, xgHome: 0.30, xgAway: 2.77, yellowHome: 1, yellowAway: 6, redHome: 1, redAway: 0 },
   { gameId: 4632540, round: 1, home: 'vitoria', away: 'remo', homeScore: 2, awayScore: 0, xgHome: 3.15, xgAway: 1.20, yellowHome: 2, yellowAway: 4, redHome: 0, redAway: 0 },
   { gameId: 4632541, round: 1, home: 'chapecoense', away: 'santos', homeScore: 4, awayScore: 2, xgHome: 1.83, xgAway: 1.32, yellowHome: 3, yellowAway: 3, redHome: 0, redAway: 0 },
+  { gameId: 4632577, round: 37, home: 'chapecoense', away: 'palmeiras', homeScore: 3, awayScore: 0, xgHome: 1.53, xgAway: 1.37, yellowHome: 3, yellowAway: 1, redHome: 0, redAway: 0 },
   { gameId: 4632587, round: 36, home: 'chapecoense', away: 'cruzeiro', homeScore: 1, awayScore: 2, xgHome: 0.63, xgAway: 1.50, yellowHome: 2, yellowAway: 1, redHome: 0, redAway: 0 },
   { gameId: 4632588, round: 36, home: 'bahia', away: 'coritiba', homeScore: 0, awayScore: 1, xgHome: 2.17, xgAway: 1.64, yellowHome: 2, yellowAway: 2, redHome: 1, redAway: 0 },
   { gameId: 4632589, round: 36, home: 'athletico-pr', away: 'remo', homeScore: 4, awayScore: 2, xgHome: 2.16, xgAway: 1.54, yellowHome: 3, yellowAway: 7, redHome: 0, redAway: 0 },
   { gameId: 4632590, round: 36, home: 'internacional', away: 'vitoria', homeScore: 2, awayScore: 5, xgHome: 2.33, xgAway: 2.31, yellowHome: 3, yellowAway: 6, redHome: 0, redAway: 0 },
+  { gameId: 4632591, round: 36, home: 'atletico-mg', away: 'corinthians', homeScore: 1, awayScore: 1, xgHome: 1.29, xgAway: 1.21, yellowHome: 3, yellowAway: 1, redHome: 1, redAway: 0 },
   { gameId: 4632592, round: 36, home: 'bragantino', away: 'vasco', homeScore: 1, awayScore: 0, xgHome: 1.66, xgAway: 1.23, yellowHome: 4, yellowAway: 2, redHome: 0, redAway: 1 },
   { gameId: 4632593, round: 36, home: 'palmeiras', away: 'flamengo', homeScore: 1, awayScore: 1, xgHome: 0.61, xgAway: 1.33, yellowHome: 4, yellowAway: 2, redHome: 0, redAway: 0 },
   { gameId: 4632594, round: 36, home: 'santos', away: 'gremio', homeScore: 0, awayScore: 2, xgHome: 1.10, xgAway: 1.61, yellowHome: 2, yellowAway: 2, redHome: 0, redAway: 0 },

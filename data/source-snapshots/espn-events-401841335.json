@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841335",
+ "fetchedAt": "2026-11-26T09:48:10.384Z",
+ "date": "2026-11-24T21:00Z",
+ "status": "post",
+ "home": "chapecoense",
+ "away": "palmeiras",
+ "homeGoals": 3,
+ "awayGoals": 0,
+ "goals": [
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "minute": "5'",
+   "penalty": false
+  },
+  {
+   "athlete": "Max",
+   "club": "chapecoense",
+   "minute": "32'",
+   "penalty": false
+  },
+  {
+   "athlete": "Miguel Carvalho",
+   "club": "chapecoense",
+   "minute": "90'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Camilo",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "15'"
+  },
+  {
+   "athlete": "Bruno Pacheco",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Miguel Bilong",
+   "club": "palmeiras",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Miguel Carvalho",
+   "club": "chapecoense",
+   "type": "yellow",
+   "minute": "90'+4'"
+  }
+ ],
+ "unresolved": []
+}

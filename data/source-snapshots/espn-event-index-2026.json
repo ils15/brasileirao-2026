@@ -1,7 +1,7 @@
 {
  "source": "ESPN",
  "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates=2026",
- "fetchedAt": "2026-11-24T12:38:55.040Z",
+ "fetchedAt": "2026-11-26T09:48:10.125Z",
  "events": [
   {
    "eventId": "401840808",
@@ -2463,9 +2463,9 @@
   {
    "eventId": "401841319",
    "date": "2026-11-25T23:00Z",
-   "homeScore": 0,
-   "awayScore": 0,
-   "completed": false
+   "homeScore": 1,
+   "awayScore": 1,
+   "completed": true
   },
   {
    "eventId": "401841320",
@@ -2575,9 +2575,9 @@
   {
    "eventId": "401841335",
    "date": "2026-11-24T21:00Z",
-   "homeScore": 0,
+   "homeScore": 3,
    "awayScore": 0,
-   "completed": false
+   "completed": true
   },
   {
    "eventId": "401841336",

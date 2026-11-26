@@ -1,8 +1,8 @@
 {
  "source": "365scores",
  "seasonNum": 76,
- "fetchedAt": "2026-11-24T12:38:54.806Z",
- "sha256": "7cde18b7c3a3618b8cd1aef48feb7ec5b58eb130382ce7bd6c7e8502a225d7da",
+ "fetchedAt": "2026-11-26T09:48:09.317Z",
+ "sha256": "cf942444aeeb9f3c170781185d46ca24e86b06c5215ec743ade4930cbb613c33",
  "records": [
   {
    "gameId": 4632512,
@@ -545,6 +545,24 @@
    "seasonNum": 76
   },
   {
+   "gameId": 4632577,
+   "seasonNum": 76,
+   "roundNum": 37,
+   "home": "chapecoense",
+   "away": "palmeiras",
+   "homeScore": 3,
+   "awayScore": 0,
+   "hasXg": true,
+   "xgHome": 1.53,
+   "xgAway": 1.37,
+   "shotsHome": 10,
+   "shotsAway": 26,
+   "yellowHome": 3,
+   "yellowAway": 1,
+   "redHome": 0,
+   "redAway": 0
+  },
+  {
    "gameId": 4632587,
    "seasonNum": 76,
    "roundNum": 36,
@@ -614,6 +632,24 @@
    "yellowHome": 3,
    "yellowAway": 6,
    "redHome": 0,
+   "redAway": 0
+  },
+  {
+   "gameId": 4632591,
+   "seasonNum": 76,
+   "roundNum": 36,
+   "home": "atletico-mg",
+   "away": "corinthians",
+   "homeScore": 1,
+   "awayScore": 1,
+   "hasXg": true,
+   "xgHome": 1.29,
+   "xgAway": 1.21,
+   "shotsHome": 23,
+   "shotsAway": 15,
+   "yellowHome": 3,
+   "yellowAway": 1,
+   "redHome": 1,
    "redAway": 0
   },
   {

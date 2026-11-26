@@ -1,0 +1,60 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841319",
+ "fetchedAt": "2026-11-26T09:48:10.403Z",
+ "date": "2026-11-25T23:00Z",
+ "status": "post",
+ "home": "atletico-mg",
+ "away": "corinthians",
+ "homeGoals": 1,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Kaio",
+   "club": "corinthians",
+   "minute": "70'",
+   "penalty": false
+  },
+  {
+   "athlete": "Tomás Cuello",
+   "club": "atletico-mg",
+   "minute": "90'+2'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Ruan",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "36'"
+  },
+  {
+   "athlete": "Thiago Borbas",
+   "club": "atletico-mg",
+   "type": "red",
+   "minute": "66'"
+  },
+  {
+   "athlete": "Alexsander",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "77'"
+  },
+  {
+   "athlete": "Tomas Perez",
+   "club": "atletico-mg",
+   "type": "yellow",
+   "minute": "82'"
+  },
+  {
+   "athlete": "Pedro Milans",
+   "club": "corinthians",
+   "type": "yellow",
+   "minute": "85'"
+  }
+ ],
+ "unresolved": []
+}

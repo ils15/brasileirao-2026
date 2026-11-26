@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-24T12:38:55.380Z` (`2026-11-24T09:38:55-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-26T09:48:10.493Z` (`2026-11-26T06:48:10-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -76,3 +76,11 @@ Resultados de 2026: 349 → 353; pendentes: 31 → 27 (353 disputados + 27 pende
 
 Corte do pacote: `2026-11-24T12:38:55Z` (`2026-11-24T09:38:55-03:00`); gerado em `2026-11-24T12:38:55.380Z`.
 Resultados de 2026: 353 → 359; pendentes: 27 → 21 (359 disputados + 21 pendentes = 380 do calendário CBF; 0 adiado(s)).
+
+## 2026-11-26 — 2 novo(s) resultado(s)
+
+- chapecoense 3–0 palmeiras (espn, 401841335)
+- atletico-mg 1–1 corinthians (espn, 401841319)
+
+Corte do pacote: `2026-11-26T09:48:10Z` (`2026-11-26T06:48:10-03:00`); gerado em `2026-11-26T09:48:10.493Z`.
+Resultados de 2026: 359 → 361; pendentes: 21 → 19 (361 disputados + 19 pendentes = 380 do calendário CBF; 0 adiado(s)).
