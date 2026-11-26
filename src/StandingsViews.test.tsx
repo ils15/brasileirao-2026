@@ -16,7 +16,7 @@ describe('aba classificações', () => {
     expect(within(table).getByRole('columnheader', { name: /^Pts/ })).toBeInTheDocument()
     expect(within(table).getByRole('columnheader', { name: /^GP/ })).toBeInTheDocument()
     // Líder da tabela derivada na primeira linha de dados
-    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
+    expect(within(table).getAllByRole('row')[1]).toHaveTextContent(currentClubs[0]!.club)
   })
 
   it('associa à legenda visível e acessível a explicação do asterisco G-6', () => {
@@ -66,7 +66,7 @@ describe('aba classificações', () => {
 
     // A zona de cada linha continua acessível via texto oculto.
     const rows = within(table).getAllByRole('row').slice(1)
-    expect(rows[0]).toHaveAccessibleName(/Flamengo.*Libertadores · 1º–6º\*/)
+    expect(rows[0]).toHaveAccessibleName(new RegExp(`${currentClubs[0]!.club}.*Libertadores · 1º–6º\\*`))
     expect(rows[16]).toHaveAccessibleName(/Rebaixamento · 17º–20º/)
 
     // Outra vista de tabela mantém uma única legenda e nenhuma repetição por linha.
@@ -156,8 +156,12 @@ describe('aba classificações', () => {
     render(<StandingsViews />)
     await user.click(screen.getByRole('button', { name: /^GP/ }))
     const table = screen.getByRole('region', { name: /Classificação geral/ })
-    // Numéricas começam descendente: maior GP primeiro (Flamengo, 71)
-    expect(within(table).getAllByRole('row')[1]).toHaveTextContent('Flamengo')
+    // Numéricas começam descendente: maior GP primeiro
+    const maxGoalsFor = Math.max(...currentClubs.map((club) => club.goalsFor))
+    const topAttackers = currentClubs.filter((club) => club.goalsFor === maxGoalsFor).map((club) => club.club)
+    const firstRowText = within(table).getAllByRole('row')[1]!.textContent ?? ''
+    expect(topAttackers.some((club) => firstRowText.includes(club))).toBe(true)
+    expect(firstRowText).toContain(String(maxGoalsFor))
     expect(within(table).getByRole('columnheader', { name: /^GP/ })).toHaveAttribute('aria-sort', 'descending')
   })
 

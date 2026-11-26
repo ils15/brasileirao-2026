@@ -219,7 +219,7 @@ describe('painel do Brasileirão 2026', () => {
     render(<App />)
 
     const kpis = screen.getByRole('region', { name: 'Indicadores da temporada' })
-    expect(within(kpis).getByText('Pontos do líder · Flamengo')).toBeInTheDocument()
+    expect(within(kpis).getByText(`Pontos do líder · ${currentClubs[0]!.club}`)).toBeInTheDocument()
     expect(within(kpis).getByText('Jogos disputados no corte')).toBeInTheDocument()
     expect(within(kpis).getByText('Vagas de Libertadores (1º–6º)')).toBeInTheDocument()
     expect(within(kpis).getByText('Jogos restantes · rodadas + adiados')).toBeInTheDocument()

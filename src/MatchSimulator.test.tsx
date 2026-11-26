@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { MatchSimulator } from './MatchSimulator'
@@ -30,14 +30,18 @@ describe('simulador de confrontos (MatchSimulator)', () => {
     )
     const { expected, mostProbable } = matchProbabilities(firstFixture.home, firstFixture.away, activeMultiplier)
 
-    // O card exibe o xG com base nas forças de ataque e defesa
-    expect(screen.getByText(expected.home.toFixed(2))).toBeInTheDocument()
-    expect(screen.getByText(expected.away.toFixed(2))).toBeInTheDocument()
+    // O card exibe o xG com base nas forças de ataque e defesa (escopado ao card
+    // porque dois jogos da rodada podem empatar no mesmo valor arredondado)
+    const firstCard = screen.getAllByRole('article')[0]!
+    const cardView = within(firstCard)
+    expect(firstCard.querySelector('.sim-match-xg')).toHaveTextContent(
+      `xG: ${expected.home.toFixed(2)} × ${expected.away.toFixed(2)}`,
+    )
 
     // Os botões semânticos ou chips mostram o placar mais provável de cada desfecho
-    expect(screen.getAllByText(new RegExp(`${mostProbable.homeWin.homeGoals}×${mostProbable.homeWin.awayGoals}`)).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(new RegExp(`${mostProbable.draw.homeGoals}×${mostProbable.draw.awayGoals}`)).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(new RegExp(`${mostProbable.awayWin.homeGoals}×${mostProbable.awayWin.awayGoals}`)).length).toBeGreaterThan(0)
+    expect(cardView.getAllByText(new RegExp(`${mostProbable.homeWin.homeGoals}×${mostProbable.homeWin.awayGoals}`)).length).toBeGreaterThan(0)
+    expect(cardView.getAllByText(new RegExp(`${mostProbable.draw.homeGoals}×${mostProbable.draw.awayGoals}`)).length).toBeGreaterThan(0)
+    expect(cardView.getAllByText(new RegExp(`${mostProbable.awayWin.homeGoals}×${mostProbable.awayWin.awayGoals}`)).length).toBeGreaterThan(0)
   })
 
   it('preenche cenários com placares coerentes baseados em xG e não em constantes 2x1', async () => {
