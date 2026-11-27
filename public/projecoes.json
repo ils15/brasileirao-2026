@@ -1,19 +1,19 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-26T09:48:10.493Z",
+  "generatedAt": "2026-11-27T02:18:43.988Z",
   "simulations": 500000,
   "seed": 20261104,
   "backtestSimulations": 5000,
-  "analyticalCutoffUtc": "2026-11-26T09:48:10Z",
-  "inputHash": "517f1ba60cbd8eb1",
+  "analyticalCutoffUtc": "2026-11-27T02:18:43Z",
+  "inputHash": "f53ff35331cb3cf1",
   "model": {
     "leagueAverageGoals": {
       "home": 1.4213197969543148,
       "away": 0.9655950366610265
     },
     "trainingGoalAverages": {
-      "home": 1.427992957746479,
-      "away": 0.9758802816901408
+      "home": 1.4282696708326,
+      "away": 0.9758845273719415
     }
   },
   "clubs": [
@@ -161,9 +161,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 84.374128,
+        "mean": 84.37243,
         "median": 84,
-        "stdDev": 1.6429693361647961,
+        "stdDev": 1.6450172932503135,
         "min": 80,
         "max": 86,
         "p10": 82,
@@ -316,9 +316,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 76.264832,
+        "mean": 76.263362,
         "median": 77,
-        "stdDev": 1.1394770782194832,
+        "stdDev": 1.1411040517631192,
         "min": 74,
         "max": 77,
         "p10": 74,
@@ -336,8 +336,8 @@
         0,
         0,
         0,
-        450857,
-        49143,
+        450868,
+        49132,
         0,
         0,
         0,
@@ -471,9 +471,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 68.857034,
+        "mean": 68.85593,
         "median": 69,
-        "stdDev": 1.7862560630716755,
+        "stdDev": 1.7877532925682278,
         "min": 66,
         "max": 72,
         "p10": 66,
@@ -491,9 +491,9 @@
         0,
         0,
         0,
-        49143,
-        444416,
-        6441,
+        49132,
+        444392,
+        6476,
         0,
         0,
         0,
@@ -516,28 +516,28 @@
           "libertadoresTo": 5,
           "directTo": 4,
           "libertadores": 500000,
-          "direct": 493559
+          "direct": 493524
         },
         {
           "scenarioKey": 1,
           "libertadoresTo": 6,
           "directTo": 4,
           "libertadores": 500000,
-          "direct": 493559
+          "direct": 493524
         },
         {
           "scenarioKey": 2,
           "libertadoresTo": 6,
           "directTo": 4,
           "libertadores": 500000,
-          "direct": 493559
+          "direct": 493524
         },
         {
           "scenarioKey": 3,
           "libertadoresTo": 7,
           "directTo": 4,
           "libertadores": 500000,
-          "direct": 493559
+          "direct": 493524
         },
         {
           "scenarioKey": 4,
@@ -626,9 +626,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 65.872184,
+        "mean": 65.87198,
         "median": 66,
-        "stdDev": 1.8274175959988381,
+        "stdDev": 1.8281222277495501,
         "min": 63,
         "max": 69,
         "p10": 63,
@@ -647,9 +647,9 @@
         0,
         0,
         0,
-        6441,
-        449611,
-        43948,
+        6476,
+        449640,
+        43884,
         0,
         0,
         0,
@@ -670,85 +670,85 @@
           "scenarioKey": 0,
           "libertadoresTo": 5,
           "directTo": 4,
-          "libertadores": 456052,
-          "direct": 6441
+          "libertadores": 456116,
+          "direct": 6476
         },
         {
           "scenarioKey": 1,
           "libertadoresTo": 6,
           "directTo": 4,
           "libertadores": 500000,
-          "direct": 6441
+          "direct": 6476
         },
         {
           "scenarioKey": 2,
           "libertadoresTo": 6,
           "directTo": 4,
           "libertadores": 500000,
-          "direct": 6441
+          "direct": 6476
         },
         {
           "scenarioKey": 3,
           "libertadoresTo": 7,
           "directTo": 4,
           "libertadores": 500000,
-          "direct": 6441
+          "direct": 6476
         },
         {
           "scenarioKey": 4,
           "libertadoresTo": 6,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 5,
           "libertadoresTo": 7,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 6,
           "libertadoresTo": 7,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 7,
           "libertadoresTo": 8,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 8,
           "libertadoresTo": 6,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 9,
           "libertadoresTo": 7,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 10,
           "libertadoresTo": 7,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 11,
           "libertadoresTo": 8,
           "directTo": 5,
           "libertadores": 500000,
-          "direct": 456052
+          "direct": 456116
         },
         {
           "scenarioKey": 12,
@@ -781,9 +781,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 59.961698,
+        "mean": 59.970738,
         "median": 60,
-        "stdDev": 1.8104880438166173,
+        "stdDev": 1.8108378545133157,
         "min": 57,
         "max": 63,
         "p10": 57,
@@ -803,11 +803,11 @@
         0,
         0,
         0,
-        32113,
-        283952,
-        127599,
-        48466,
-        7870,
+        32014,
+        283542,
+        128335,
+        48102,
+        8007,
         0,
         0,
         0,
@@ -825,120 +825,120 @@
           "scenarioKey": 0,
           "libertadoresTo": 5,
           "directTo": 4,
-          "libertadores": 32113,
+          "libertadores": 32014,
           "direct": 0
         },
         {
           "scenarioKey": 1,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 316065,
+          "libertadores": 315556,
           "direct": 0
         },
         {
           "scenarioKey": 2,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 316065,
+          "libertadores": 315556,
           "direct": 0
         },
         {
           "scenarioKey": 3,
           "libertadoresTo": 7,
           "directTo": 4,
-          "libertadores": 443664,
+          "libertadores": 443891,
           "direct": 0
         },
         {
           "scenarioKey": 4,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 316065,
-          "direct": 32113
+          "libertadores": 315556,
+          "direct": 32014
         },
         {
           "scenarioKey": 5,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 443664,
-          "direct": 32113
+          "libertadores": 443891,
+          "direct": 32014
         },
         {
           "scenarioKey": 6,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 443664,
-          "direct": 32113
+          "libertadores": 443891,
+          "direct": 32014
         },
         {
           "scenarioKey": 7,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 492130,
-          "direct": 32113
+          "libertadores": 491993,
+          "direct": 32014
         },
         {
           "scenarioKey": 8,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 316065,
-          "direct": 32113
+          "libertadores": 315556,
+          "direct": 32014
         },
         {
           "scenarioKey": 9,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 443664,
-          "direct": 32113
+          "libertadores": 443891,
+          "direct": 32014
         },
         {
           "scenarioKey": 10,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 443664,
-          "direct": 32113
+          "libertadores": 443891,
+          "direct": 32014
         },
         {
           "scenarioKey": 11,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 492130,
-          "direct": 32113
+          "libertadores": 491993,
+          "direct": 32014
         },
         {
           "scenarioKey": 12,
           "libertadoresTo": 7,
           "directTo": 6,
-          "libertadores": 443664,
-          "direct": 316065
+          "libertadores": 443891,
+          "direct": 315556
         },
         {
           "scenarioKey": 13,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 492130,
-          "direct": 316065
+          "libertadores": 491993,
+          "direct": 315556
         },
         {
           "scenarioKey": 14,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 492130,
-          "direct": 316065
+          "libertadores": 491993,
+          "direct": 315556
         },
         {
           "scenarioKey": 15,
           "libertadoresTo": 9,
           "directTo": 6,
           "libertadores": 500000,
-          "direct": 316065
+          "direct": 315556
         }
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 56.73598,
+        "mean": 56.735598,
         "median": 57,
-        "stdDev": 1.8343940251705775,
+        "stdDev": 1.8334758199702472,
         "min": 54,
         "max": 60,
         "p10": 54,
@@ -958,12 +958,12 @@
         0,
         0,
         0,
-        11835,
-        143737,
-        172132,
-        102039,
-        53964,
-        16293,
+        11870,
+        143717,
+        173167,
+        101329,
+        53242,
+        16675,
         0,
         0,
         0,
@@ -980,120 +980,120 @@
           "scenarioKey": 0,
           "libertadoresTo": 5,
           "directTo": 4,
-          "libertadores": 11835,
+          "libertadores": 11870,
           "direct": 0
         },
         {
           "scenarioKey": 1,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 155572,
+          "libertadores": 155587,
           "direct": 0
         },
         {
           "scenarioKey": 2,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 155572,
+          "libertadores": 155587,
           "direct": 0
         },
         {
           "scenarioKey": 3,
           "libertadoresTo": 7,
           "directTo": 4,
-          "libertadores": 327704,
+          "libertadores": 328754,
           "direct": 0
         },
         {
           "scenarioKey": 4,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 155572,
-          "direct": 11835
+          "libertadores": 155587,
+          "direct": 11870
         },
         {
           "scenarioKey": 5,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 327704,
-          "direct": 11835
+          "libertadores": 328754,
+          "direct": 11870
         },
         {
           "scenarioKey": 6,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 327704,
-          "direct": 11835
+          "libertadores": 328754,
+          "direct": 11870
         },
         {
           "scenarioKey": 7,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 429743,
-          "direct": 11835
+          "libertadores": 430083,
+          "direct": 11870
         },
         {
           "scenarioKey": 8,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 155572,
-          "direct": 11835
+          "libertadores": 155587,
+          "direct": 11870
         },
         {
           "scenarioKey": 9,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 327704,
-          "direct": 11835
+          "libertadores": 328754,
+          "direct": 11870
         },
         {
           "scenarioKey": 10,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 327704,
-          "direct": 11835
+          "libertadores": 328754,
+          "direct": 11870
         },
         {
           "scenarioKey": 11,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 429743,
-          "direct": 11835
+          "libertadores": 430083,
+          "direct": 11870
         },
         {
           "scenarioKey": 12,
           "libertadoresTo": 7,
           "directTo": 6,
-          "libertadores": 327704,
-          "direct": 155572
+          "libertadores": 328754,
+          "direct": 155587
         },
         {
           "scenarioKey": 13,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 429743,
-          "direct": 155572
+          "libertadores": 430083,
+          "direct": 155587
         },
         {
           "scenarioKey": 14,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 429743,
-          "direct": 155572
+          "libertadores": 430083,
+          "direct": 155587
         },
         {
           "scenarioKey": 15,
           "libertadoresTo": 9,
           "directTo": 6,
-          "libertadores": 483707,
-          "direct": 155572
+          "libertadores": 483325,
+          "direct": 155587
         }
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 54.898068,
+        "mean": 54.902102,
         "median": 55,
-        "stdDev": 1.8158617423602195,
+        "stdDev": 1.8143037181243395,
         "min": 52,
         "max": 58,
         "p10": 52,
@@ -1114,13 +1114,13 @@
         0,
         0,
         0,
-        17995,
-        108642,
-        174216,
-        159869,
-        35812,
-        3399,
-        67,
+        18135,
+        107204,
+        174570,
+        156555,
+        38063,
+        5371,
+        102,
         0,
         0,
         0,
@@ -1142,113 +1142,113 @@
           "scenarioKey": 1,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 17995,
+          "libertadores": 18135,
           "direct": 0
         },
         {
           "scenarioKey": 2,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 17995,
+          "libertadores": 18135,
           "direct": 0
         },
         {
           "scenarioKey": 3,
           "libertadoresTo": 7,
           "directTo": 4,
-          "libertadores": 126637,
+          "libertadores": 125339,
           "direct": 0
         },
         {
           "scenarioKey": 4,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 17995,
+          "libertadores": 18135,
           "direct": 0
         },
         {
           "scenarioKey": 5,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 126637,
+          "libertadores": 125339,
           "direct": 0
         },
         {
           "scenarioKey": 6,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 126637,
+          "libertadores": 125339,
           "direct": 0
         },
         {
           "scenarioKey": 7,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 300853,
+          "libertadores": 299909,
           "direct": 0
         },
         {
           "scenarioKey": 8,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 17995,
+          "libertadores": 18135,
           "direct": 0
         },
         {
           "scenarioKey": 9,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 126637,
+          "libertadores": 125339,
           "direct": 0
         },
         {
           "scenarioKey": 10,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 126637,
+          "libertadores": 125339,
           "direct": 0
         },
         {
           "scenarioKey": 11,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 300853,
+          "libertadores": 299909,
           "direct": 0
         },
         {
           "scenarioKey": 12,
           "libertadoresTo": 7,
           "directTo": 6,
-          "libertadores": 126637,
-          "direct": 17995
+          "libertadores": 125339,
+          "direct": 18135
         },
         {
           "scenarioKey": 13,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 300853,
-          "direct": 17995
+          "libertadores": 299909,
+          "direct": 18135
         },
         {
           "scenarioKey": 14,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 300853,
-          "direct": 17995
+          "libertadores": 299909,
+          "direct": 18135
         },
         {
           "scenarioKey": 15,
           "libertadoresTo": 9,
           "directTo": 6,
-          "libertadores": 460722,
-          "direct": 17995
+          "libertadores": 456464,
+          "direct": 18135
         }
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 52.690334,
+        "mean": 52.682806,
         "median": 53,
-        "stdDev": 1.815960618641253,
+        "stdDev": 1.8145307840751226,
         "min": 50,
         "max": 56,
         "p10": 50,
@@ -1269,14 +1269,14 @@
         0,
         0,
         0,
-        10368,
-        79081,
-        137162,
-        175323,
-        82493,
-        14767,
-        791,
-        15,
+        10722,
+        78811,
+        136454,
+        169886,
+        81608,
+        21128,
+        1370,
+        21,
         0,
         0,
         0,
@@ -1297,113 +1297,113 @@
           "scenarioKey": 1,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 10368,
+          "libertadores": 10722,
           "direct": 0
         },
         {
           "scenarioKey": 2,
           "libertadoresTo": 6,
           "directTo": 4,
-          "libertadores": 10368,
+          "libertadores": 10722,
           "direct": 0
         },
         {
           "scenarioKey": 3,
           "libertadoresTo": 7,
           "directTo": 4,
-          "libertadores": 89449,
+          "libertadores": 89533,
           "direct": 0
         },
         {
           "scenarioKey": 4,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 10368,
+          "libertadores": 10722,
           "direct": 0
         },
         {
           "scenarioKey": 5,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 89449,
+          "libertadores": 89533,
           "direct": 0
         },
         {
           "scenarioKey": 6,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 89449,
+          "libertadores": 89533,
           "direct": 0
         },
         {
           "scenarioKey": 7,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 226611,
+          "libertadores": 225987,
           "direct": 0
         },
         {
           "scenarioKey": 8,
           "libertadoresTo": 6,
           "directTo": 5,
-          "libertadores": 10368,
+          "libertadores": 10722,
           "direct": 0
         },
         {
           "scenarioKey": 9,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 89449,
+          "libertadores": 89533,
           "direct": 0
         },
         {
           "scenarioKey": 10,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 89449,
+          "libertadores": 89533,
           "direct": 0
         },
         {
           "scenarioKey": 11,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 226611,
+          "libertadores": 225987,
           "direct": 0
         },
         {
           "scenarioKey": 12,
           "libertadoresTo": 7,
           "directTo": 6,
-          "libertadores": 89449,
-          "direct": 10368
+          "libertadores": 89533,
+          "direct": 10722
         },
         {
           "scenarioKey": 13,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 226611,
-          "direct": 10368
+          "libertadores": 225987,
+          "direct": 10722
         },
         {
           "scenarioKey": 14,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 226611,
-          "direct": 10368
+          "libertadores": 225987,
+          "direct": 10722
         },
         {
           "scenarioKey": 15,
           "libertadoresTo": 9,
           "directTo": 6,
-          "libertadores": 401934,
-          "direct": 10368
+          "libertadores": 395873,
+          "direct": 10722
         }
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 52.820758,
+        "mean": 52.822522,
         "median": 53,
-        "stdDev": 1.8443021188068898,
+        "stdDev": 1.8442796858185644,
         "min": 50,
         "max": 56,
         "p10": 50,
@@ -1413,9 +1413,164 @@
       }
     },
     {
+      "id": "sao-paulo",
+      "club": "São Paulo",
+      "currentPosition": 10,
+      "currentPoints": 48,
+      "positionCounts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        5169,
+        37334,
+        141260,
+        261769,
+        50639,
+        3736,
+        93,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "scenarioCounts": [
+        {
+          "scenarioKey": 0,
+          "libertadoresTo": 5,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 1,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 2,
+          "libertadoresTo": 6,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 3,
+          "libertadoresTo": 7,
+          "directTo": 4,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 4,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 5,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 6,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 7,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 5169,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 8,
+          "libertadoresTo": 6,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 9,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 10,
+          "libertadoresTo": 7,
+          "directTo": 5,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 11,
+          "libertadoresTo": 8,
+          "directTo": 5,
+          "libertadores": 5169,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 12,
+          "libertadoresTo": 7,
+          "directTo": 6,
+          "libertadores": 0,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 13,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 5169,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 14,
+          "libertadoresTo": 8,
+          "directTo": 6,
+          "libertadores": 5169,
+          "direct": 0
+        },
+        {
+          "scenarioKey": 15,
+          "libertadoresTo": 9,
+          "directTo": 6,
+          "libertadores": 42503,
+          "direct": 0
+        }
+      ],
+      "pointsStats": {
+        "samples": 500000,
+        "mean": 48.933524,
+        "median": 48,
+        "stdDev": 1.19652201878228,
+        "min": 48,
+        "max": 51,
+        "p10": 48,
+        "p25": 48,
+        "p75": 49,
+        "p90": 51
+      }
+    },
+    {
       "id": "vasco",
       "club": "Vasco da Gama SAF",
-      "currentPosition": 10,
+      "currentPosition": 11,
       "currentPoints": 47,
       "positionCounts": [
         0,
@@ -1425,14 +1580,14 @@
         0,
         0,
         0,
-        12546,
-        34598,
-        68192,
-        219607,
-        105035,
-        45678,
-        13138,
-        1206,
+        12483,
+        34121,
+        63694,
+        180745,
+        130255,
+        58195,
+        18756,
+        1751,
         0,
         0,
         0,
@@ -1466,7 +1621,7 @@
           "scenarioKey": 3,
           "libertadoresTo": 7,
           "directTo": 4,
-          "libertadores": 12546,
+          "libertadores": 12483,
           "direct": 0
         },
         {
@@ -1480,21 +1635,21 @@
           "scenarioKey": 5,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 12546,
+          "libertadores": 12483,
           "direct": 0
         },
         {
           "scenarioKey": 6,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 12546,
+          "libertadores": 12483,
           "direct": 0
         },
         {
           "scenarioKey": 7,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 47144,
+          "libertadores": 46604,
           "direct": 0
         },
         {
@@ -1508,218 +1663,63 @@
           "scenarioKey": 9,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 12546,
+          "libertadores": 12483,
           "direct": 0
         },
         {
           "scenarioKey": 10,
           "libertadoresTo": 7,
           "directTo": 5,
-          "libertadores": 12546,
+          "libertadores": 12483,
           "direct": 0
         },
         {
           "scenarioKey": 11,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 47144,
+          "libertadores": 46604,
           "direct": 0
         },
         {
           "scenarioKey": 12,
           "libertadoresTo": 7,
           "directTo": 6,
-          "libertadores": 12546,
+          "libertadores": 12483,
           "direct": 0
         },
         {
           "scenarioKey": 13,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 47144,
+          "libertadores": 46604,
           "direct": 0
         },
         {
           "scenarioKey": 14,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 47144,
+          "libertadores": 46604,
           "direct": 0
         },
         {
           "scenarioKey": 15,
           "libertadoresTo": 9,
           "directTo": 6,
-          "libertadores": 115336,
+          "libertadores": 110298,
           "direct": 0
         }
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 49.838906,
+        "mean": 49.837218,
         "median": 50,
-        "stdDev": 1.7978516966606541,
+        "stdDev": 1.799079770459002,
         "min": 47,
         "max": 53,
         "p10": 47,
         "p25": 48,
         "p75": 51,
         "p90": 53
-      }
-    },
-    {
-      "id": "sao-paulo",
-      "club": "São Paulo",
-      "currentPosition": 11,
-      "currentPoints": 45,
-      "positionCounts": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        3249,
-        22486,
-        93679,
-        204820,
-        85586,
-        55853,
-        27562,
-        6457,
-        308,
-        0,
-        0,
-        0,
-        0
-      ],
-      "scenarioCounts": [
-        {
-          "scenarioKey": 0,
-          "libertadoresTo": 5,
-          "directTo": 4,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 1,
-          "libertadoresTo": 6,
-          "directTo": 4,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 2,
-          "libertadoresTo": 6,
-          "directTo": 4,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 3,
-          "libertadoresTo": 7,
-          "directTo": 4,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 4,
-          "libertadoresTo": 6,
-          "directTo": 5,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 5,
-          "libertadoresTo": 7,
-          "directTo": 5,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 6,
-          "libertadoresTo": 7,
-          "directTo": 5,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 7,
-          "libertadoresTo": 8,
-          "directTo": 5,
-          "libertadores": 3249,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 8,
-          "libertadoresTo": 6,
-          "directTo": 5,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 9,
-          "libertadoresTo": 7,
-          "directTo": 5,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 10,
-          "libertadoresTo": 7,
-          "directTo": 5,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 11,
-          "libertadoresTo": 8,
-          "directTo": 5,
-          "libertadores": 3249,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 12,
-          "libertadoresTo": 7,
-          "directTo": 6,
-          "libertadores": 0,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 13,
-          "libertadoresTo": 8,
-          "directTo": 6,
-          "libertadores": 3249,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 14,
-          "libertadoresTo": 8,
-          "directTo": 6,
-          "libertadores": 3249,
-          "direct": 0
-        },
-        {
-          "scenarioKey": 15,
-          "libertadoresTo": 9,
-          "directTo": 6,
-          "libertadores": 25735,
-          "direct": 0
-        }
-      ],
-      "pointsStats": {
-        "samples": 500000,
-        "mean": 47.939086,
-        "median": 48,
-        "stdDev": 1.7241634158669799,
-        "min": 45,
-        "max": 51,
-        "p10": 46,
-        "p25": 46,
-        "p75": 49,
-        "p90": 51
       }
     },
     {
@@ -1736,15 +1736,15 @@
         0,
         0,
         0,
-        270,
-        2570,
-        10686,
-        45711,
-        97518,
-        136193,
-        150160,
-        54120,
-        2772,
+        255,
+        2428,
+        8614,
+        20940,
+        110215,
+        143929,
+        154960,
+        55776,
+        2883,
         0,
         0,
         0,
@@ -1804,7 +1804,7 @@
           "scenarioKey": 7,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 270,
+          "libertadores": 255,
           "direct": 0
         },
         {
@@ -1832,7 +1832,7 @@
           "scenarioKey": 11,
           "libertadoresTo": 8,
           "directTo": 5,
-          "libertadores": 270,
+          "libertadores": 255,
           "direct": 0
         },
         {
@@ -1846,29 +1846,29 @@
           "scenarioKey": 13,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 270,
+          "libertadores": 255,
           "direct": 0
         },
         {
           "scenarioKey": 14,
           "libertadoresTo": 8,
           "directTo": 6,
-          "libertadores": 270,
+          "libertadores": 255,
           "direct": 0
         },
         {
           "scenarioKey": 15,
           "libertadoresTo": 9,
           "directTo": 6,
-          "libertadores": 2840,
+          "libertadores": 2683,
           "direct": 0
         }
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 46.333724,
+        "mean": 46.337406,
         "median": 46,
-        "stdDev": 1.5098689651172963,
+        "stdDev": 1.5152449277792637,
         "min": 45,
         "max": 51,
         "p10": 45,
@@ -1892,14 +1892,14 @@
         0,
         0,
         0,
-        9726,
-        31516,
-        66103,
-        133823,
-        100488,
-        86752,
-        59735,
-        11857,
+        8854,
+        25332,
+        26952,
+        158103,
+        118875,
+        89970,
+        60112,
+        11802,
         0,
         0,
         0,
@@ -2015,15 +2015,15 @@
           "scenarioKey": 15,
           "libertadoresTo": 9,
           "directTo": 6,
-          "libertadores": 9726,
+          "libertadores": 8854,
           "direct": 0
         }
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 46.447904,
+        "mean": 46.444796,
         "median": 47,
-        "stdDev": 1.8018018777906377,
+        "stdDev": 1.8008754866380812,
         "min": 44,
         "max": 50,
         "p10": 44,
@@ -2048,15 +2048,15 @@
         0,
         0,
         0,
-        9914,
-        46058,
-        74260,
-        100949,
-        75917,
-        70434,
-        88081,
-        31723,
-        2664,
+        7703,
+        33585,
+        71320,
+        107243,
+        84330,
+        73733,
+        87574,
+        31676,
+        2836,
         0,
         0
       ],
@@ -2176,9 +2176,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 45.759512,
+        "mean": 45.756558,
         "median": 46,
-        "stdDev": 1.843781310747173,
+        "stdDev": 1.8412197024337784,
         "min": 43,
         "max": 49,
         "p10": 43,
@@ -2204,14 +2204,14 @@
         0,
         0,
         0,
-        6711,
-        26282,
-        37471,
-        76799,
-        129560,
-        116886,
-        87891,
-        18400,
+        0,
+        20913,
+        44350,
+        81034,
+        130076,
+        117095,
+        87745,
+        18787,
         0,
         0
       ],
@@ -2331,9 +2331,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 43.957744,
+        "mean": 43.953228,
         "median": 44,
-        "stdDev": 1.8065686896651567,
+        "stdDev": 1.805921476703142,
         "min": 41,
         "max": 47,
         "p10": 42,
@@ -2359,14 +2359,14 @@
         0,
         0,
         0,
-        3818,
-        18149,
-        27727,
-        43103,
-        95393,
-        127547,
-        121272,
-        62991,
+        0,
+        14811,
+        31804,
+        45916,
+        95768,
+        127220,
+        121126,
+        63355,
         0,
         0
       ],
@@ -2486,9 +2486,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 43.62736,
+        "mean": 43.628082,
         "median": 44,
-        "stdDev": 1.768677310984695,
+        "stdDev": 1.7708944071555737,
         "min": 41,
         "max": 47,
         "p10": 41,
@@ -2514,14 +2514,14 @@
         0,
         0,
         0,
-        3578,
-        17846,
-        28166,
-        37366,
-        71201,
-        119066,
-        152318,
-        70459,
+        0,
+        14332,
+        31286,
+        40766,
+        71544,
+        119363,
+        151809,
+        70900,
         0,
         0
       ],
@@ -2641,9 +2641,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 43.684802,
+        "mean": 43.682898,
         "median": 44,
-        "stdDev": 1.8147518344906033,
+        "stdDev": 1.8178196614543711,
         "min": 41,
         "max": 47,
         "p10": 41,
@@ -2672,12 +2672,12 @@
         0,
         0,
         0,
-        1135,
-        13100,
-        33483,
-        106796,
-        345450,
-        36,
+        1180,
+        12991,
+        34063,
+        107644,
+        344122,
+        0,
         0
       ],
       "scenarioCounts": [
@@ -2796,9 +2796,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 40.571336,
+        "mean": 40.57867,
         "median": 41,
-        "stdDev": 1.7680495397754543,
+        "stdDev": 1.7719534506053087,
         "min": 38,
         "max": 44,
         "p10": 38,
@@ -2831,8 +2831,8 @@
         0,
         0,
         0,
-        36,
-        499964,
+        0,
+        500000,
         0
       ],
       "scenarioCounts": [
@@ -2951,15 +2951,15 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 34.29778,
-        "median": 35,
-        "stdDev": 1.7187713843303363,
+        "mean": 33.531362,
+        "median": 33,
+        "stdDev": 1.3071512632253648,
         "min": 32,
-        "max": 38,
+        "max": 35,
         "p10": 32,
-        "p25": 33,
+        "p25": 32,
         "p75": 35,
-        "p90": 36
+        "p90": 35
       }
     },
     {
@@ -3106,9 +3106,9 @@
       ],
       "pointsStats": {
         "samples": 500000,
-        "mean": 24.453126,
+        "mean": 24.45431,
         "median": 24,
-        "stdDev": 0.9002615331794367,
+        "stdDev": 0.9018139630198774,
         "min": 24,
         "max": 27,
         "p10": 24,
@@ -3142,7 +3142,7 @@
         0,
         0,
         0,
-        367215
+        367071
       ]
     },
     {
@@ -3168,7 +3168,7 @@
         0,
         0,
         0,
-        85896
+        85816
       ]
     },
     {
@@ -3194,7 +3194,7 @@
         0,
         0,
         0,
-        46889
+        47113
       ]
     },
     {
@@ -3219,7 +3219,7 @@
         0,
         0,
         0,
-        91306,
+        154711,
         0
       ]
     },
@@ -3245,33 +3245,7 @@
         0,
         0,
         0,
-        115383,
-        0
-      ]
-    },
-    {
-      "points": 34,
-      "positionCounts": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        31201,
+        135093,
         0
       ]
     },
@@ -3297,33 +3271,7 @@
         0,
         0,
         0,
-        152129,
-        0
-      ]
-    },
-    {
-      "points": 36,
-      "positionCounts": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        72584,
+        210196,
         0
       ]
     },
@@ -3348,8 +3296,8 @@
         0,
         0,
         0,
-        72678,
-        37397,
+        72473,
+        0,
         0
       ]
     },
@@ -3374,7 +3322,7 @@
         0,
         0,
         0,
-        103255,
+        103032,
         0,
         0
       ]
@@ -3400,7 +3348,7 @@
         0,
         0,
         0,
-        32837,
+        32978,
         0,
         0
       ]
@@ -3424,9 +3372,9 @@
         0,
         0,
         0,
-        4966,
-        131645,
-        202032,
+        4989,
+        131617,
+        201748,
         0,
         0
       ]
@@ -3450,9 +3398,9 @@
         0,
         0,
         0,
-        67202,
-        229093,
-        78137,
+        67424,
+        229228,
+        78493,
         0,
         0
       ]
@@ -3474,11 +3422,11 @@
         0,
         0,
         0,
-        1618,
-        28554,
-        96270,
-        42761,
-        3656,
+        1669,
+        28556,
+        96540,
+        42601,
+        3769,
         0,
         0
       ]
@@ -3499,12 +3447,12 @@
         0,
         0,
         0,
-        5873,
-        60998,
-        214622,
-        281047,
-        96501,
-        7405,
+        5764,
+        61251,
+        214550,
+        280552,
+        96554,
+        7507,
         0,
         0
       ]
@@ -3523,12 +3471,12 @@
         0,
         0,
         0,
-        1854,
-        28690,
-        131027,
-        257564,
-        216198,
-        48656,
+        0,
+        19461,
+        113980,
+        243776,
+        212023,
+        48439,
         0,
         0,
         0,
@@ -3549,12 +3497,12 @@
         0,
         0,
         0,
-        14458,
-        80616,
-        148350,
-        111423,
-        30536,
-        1440,
+        0,
+        44605,
+        121059,
+        106365,
+        31193,
+        1529,
         0,
         0,
         0,
@@ -3574,13 +3522,13 @@
         0,
         0,
         0,
-        3862,
-        74347,
-        211044,
-        180074,
-        66026,
-        10090,
-        419,
+        0,
+        12442,
+        196303,
+        210200,
+        83481,
+        13678,
+        527,
         0,
         0,
         0,
@@ -3600,11 +3548,11 @@
         0,
         0,
         0,
-        53497,
-        208189,
-        143431,
-        32197,
-        2324,
+        45188,
+        241412,
+        191621,
+        45485,
+        3381,
         0,
         0,
         0,
@@ -3626,11 +3574,11 @@
         0,
         0,
         0,
-        58130,
-        133327,
-        33183,
-        2438,
-        47,
+        58108,
+        146192,
+        42858,
+        3445,
+        77,
         0,
         0,
         0,
@@ -3650,12 +3598,12 @@
         0,
         0,
         0,
-        4941,
-        73298,
-        216313,
-        47804,
-        2679,
-        41,
+        4504,
+        66008,
+        201338,
+        68224,
+        4483,
+        67,
         0,
         0,
         0,
@@ -3676,11 +3624,11 @@
         0,
         0,
         0,
-        39478,
-        166372,
-        136600,
-        20021,
-        357,
+        40496,
+        174157,
+        163588,
+        31730,
+        669,
         0,
         0,
         0,
@@ -3701,10 +3649,10 @@
         0,
         0,
         0,
-        3943,
-        37117,
-        63950,
-        16682,
+        4022,
+        36973,
+        63439,
+        16949,
         0,
         0,
         0,
@@ -3727,10 +3675,10 @@
         0,
         0,
         0,
-        61006,
-        207874,
-        158536,
-        14916,
+        60943,
+        207414,
+        158296,
+        14829,
         0,
         0,
         0,
@@ -3753,9 +3701,9 @@
         0,
         0,
         0,
-        117831,
-        141914,
-        33407,
+        116842,
+        142294,
+        33555,
         0,
         0,
         0,
@@ -3778,10 +3726,10 @@
         0,
         0,
         0,
-        43356,
-        151275,
-        43979,
-        3148,
+        43194,
+        152359,
+        43732,
+        3232,
         0,
         0,
         0,
@@ -3804,10 +3752,10 @@
         0,
         0,
         0,
-        102289,
-        142638,
-        24697,
-        1289,
+        102980,
+        142605,
+        24587,
+        1313,
         0,
         0,
         0,
@@ -3829,9 +3777,9 @@
         0,
         0,
         0,
-        27555,
-        143820,
-        23307,
+        27071,
+        142998,
+        23229,
         0,
         0,
         0,
@@ -3855,8 +3803,8 @@
         0,
         0,
         0,
-        90417,
-        161891,
+        90346,
+        162214,
         0,
         0,
         0,
@@ -3881,8 +3829,8 @@
         0,
         0,
         0,
-        27233,
-        4203,
+        26975,
+        4132,
         0,
         0,
         0,
@@ -3907,8 +3855,8 @@
         0,
         0,
         0,
-        174418,
-        44441,
+        174162,
+        44482,
         0,
         0,
         0,
@@ -3933,7 +3881,7 @@
         0,
         0,
         0,
-        102332,
+        102746,
         0,
         0,
         0,
@@ -3958,8 +3906,8 @@
         0,
         0,
         0,
-        58888,
-        78045,
+        59216,
+        78700,
         0,
         0,
         0,
@@ -3984,7 +3932,7 @@
         0,
         0,
         0,
-        88337,
+        87945,
         0,
         0,
         0,
@@ -4010,7 +3958,7 @@
         0,
         0,
         0,
-        30827,
+        30821,
         0,
         0,
         0,
@@ -4035,8 +3983,8 @@
         0,
         0,
         0,
-        24907,
-        180219,
+        25082,
+        179874,
         0,
         0,
         0,
@@ -4061,8 +4009,8 @@
         0,
         0,
         0,
-        84283,
-        103084,
+        84882,
+        103493,
         0,
         0,
         0,
@@ -4087,7 +4035,7 @@
         0,
         0,
         0,
-        31109,
+        30609,
         0,
         0,
         0,
@@ -4113,8 +4061,8 @@
         0,
         0,
         0,
-        193694,
-        38645,
+        193254,
+        38651,
         0,
         0,
         0,
@@ -4139,7 +4087,7 @@
         0,
         0,
         0,
-        96935,
+        97016,
         0,
         0,
         0,
@@ -4165,7 +4113,7 @@
         0,
         0,
         0,
-        69072,
+        69157,
         0,
         0,
         0,
@@ -4190,7 +4138,7 @@
       "positionCounts": [
         0,
         0,
-        61424,
+        61913,
         0,
         0,
         0,
@@ -4216,7 +4164,7 @@
       "positionCounts": [
         0,
         0,
-        91656,
+        91290,
         0,
         0,
         0,
@@ -4242,7 +4190,7 @@
       "positionCounts": [
         0,
         0,
-        346920,
+        346797,
         0,
         0,
         0,
@@ -4267,7 +4215,7 @@
       "points": 80,
       "positionCounts": [
         0,
-        8719,
+        8825,
         0,
         0,
         0,
@@ -4293,7 +4241,7 @@
       "points": 81,
       "positionCounts": [
         0,
-        26287,
+        26494,
         0,
         0,
         0,
@@ -4319,7 +4267,7 @@
       "points": 82,
       "positionCounts": [
         0,
-        18886,
+        18664,
         0,
         0,
         0,
@@ -4345,7 +4293,7 @@
       "points": 83,
       "positionCounts": [
         0,
-        96961,
+        97147,
         0,
         0,
         0,
@@ -4371,7 +4319,7 @@
       "points": 84,
       "positionCounts": [
         0,
-        131380,
+        131134,
         0,
         0,
         0,
@@ -4397,7 +4345,7 @@
       "points": 86,
       "positionCounts": [
         0,
-        217767,
+        217736,
         0,
         0,
         0,
@@ -4428,9 +4376,7 @@
       27,
       32,
       33,
-      34,
       35,
-      36,
       38,
       39,
       40,
@@ -4494,15 +4440,7 @@
         262144
       ],
       [
-        262144
-      ],
-      [
-        262144
-      ],
-      [
-        131072,
-        262144,
-        393216
+        131072
       ],
       [
         131072
@@ -4512,235 +4450,217 @@
       ],
       [
         131072,
+        65536,
         196608,
-        65536,
-        229376,
-        98304
+        98304,
+        229376
       ],
       [
         131072,
-        98304,
         65536,
+        98304,
         196608,
         32768,
         229376
       ],
       [
-        49152,
-        196608,
-        32768,
         65536,
+        98304,
+        24576,
+        32768,
+        131072,
+        49152,
         16384,
         114688,
+        196608,
         229376,
-        98304,
-        57344,
         122880,
-        131072,
-        24576,
+        57344,
         245760
       ],
       [
-        65536,
-        114688,
-        49152,
-        98304,
         32768,
+        98304,
+        49152,
         16384,
-        8192,
-        24576,
-        57344,
-        245760,
+        65536,
         122880,
+        24576,
+        114688,
+        8192,
+        57344,
         229376,
-        28672,
         126976,
-        61440,
-        12288,
-        4096,
         196608,
+        61440,
+        245760,
+        28672,
+        12288,
         253952,
+        4096,
         258048
       ],
       [
-        32768,
         8192,
+        49152,
         24576,
+        28672,
+        16384,
+        32768,
+        4096,
+        30720,
+        57344,
         12288,
+        61440,
+        2048,
+        14336,
+        6144,
+        63488
+      ],
+      [
+        16384,
+        4096,
+        8192,
+        49152,
+        12288,
+        24576,
+        6144,
+        2048,
+        32768,
+        14336,
+        28672,
+        57344
+      ],
+      [
+        12288,
+        14336,
+        4096,
+        2048,
+        6144,
+        28672,
+        3072,
+        24576,
+        8192,
+        15360,
+        7168,
+        61440,
+        30720,
         16384,
         57344,
-        28672,
-        49152,
-        30720,
-        4096,
-        61440,
-        14336,
-        15360,
         63488,
-        6144,
-        7168,
-        3072,
-        2048,
         31744,
+        49152,
         64512
       ],
       [
-        4096,
-        8192,
-        7168,
-        14336,
-        6144,
-        2048,
-        12288,
-        16384,
         3072,
         1024,
-        24576,
-        28672,
-        32768,
-        49152,
-        15360,
-        57344,
-        30720,
-        61440
-      ],
-      [
-        30720,
-        4096,
         2048,
-        6144,
-        1024,
-        8192,
-        3072,
-        7168,
-        14336,
-        15360,
-        12288,
-        28672,
-        24576,
-        16384,
-        31744,
         3584,
         1536,
+        4096,
         7680,
-        15872,
-        61440,
-        63488,
-        49152,
-        57344,
-        32256,
-        65024,
-        64512
-      ],
-      [
-        1024,
-        7168,
-        2048,
-        1536,
-        3584,
-        3072,
+        6144,
         512,
-        4096,
-        6144,
-        12288,
-        7680,
+        7168,
         14336,
+        12288,
         8192,
         15360
       ],
       [
-        2048,
-        1024,
         512,
+        1024,
         1536,
         3072,
-        3584,
-        4096,
-        7168,
-        8192,
+        2048,
         6144,
+        7168,
+        4096,
+        3584,
         7680,
+        8192,
         14336,
         12288
       ],
       [
-        768,
-        1024,
-        512,
         256,
-        1792,
+        768,
+        512,
+        896,
+        1024,
         1536,
+        1792,
         3072,
-        384,
         3584,
+        384,
         2048,
         1920,
-        896,
-        7168,
         3840,
+        7168,
         6144,
         7680
       ],
       [
         128,
         512,
-        256,
         768,
+        256,
         384,
         1536,
-        896,
-        1024,
         1792,
-        3840,
-        3072,
+        1024,
+        896,
         3584,
+        3072,
+        1920,
         3968,
-        1920
+        3840
       ],
       [
-        256,
         128,
-        64,
-        384,
+        256,
         512,
-        768,
+        384,
+        64,
         192,
+        768,
         896,
         448
       ],
       [
-        256,
-        128,
         384,
-        64,
-        896,
-        960,
         192,
-        768,
+        128,
+        256,
+        896,
         448,
+        64,
+        768,
+        960,
         512
       ],
       [
-        128,
         64,
-        384,
+        128,
         192,
-        256,
-        448
+        448,
+        384,
+        256
       ],
       [
-        64,
         32,
+        64,
         128,
-        192,
-        96,
         256,
+        96,
+        192,
         384
       ],
       [
+        96,
         32,
         64,
-        96,
         224,
         192,
         128,
@@ -4749,20 +4669,11 @@
         384
       ],
       [
+        16,
         32,
-        48,
         64,
-        16,
-        96
-      ],
-      [
-        16,
         48,
-        32
-      ],
-      [
-        16,
-        32
+        96
       ],
       [
         32,
@@ -4770,11 +4681,20 @@
         48
       ],
       [
-        16
+        16,
+        32
       ],
       [
         16,
+        48,
+        32
+      ],
+      [
+        16
+      ],
+      [
         8,
+        16,
         24
       ],
       [
@@ -4835,361 +4755,335 @@
     ],
     "counts": [
       [
-        367215
+        367071
       ],
       [
-        85896
+        85816
       ],
       [
-        46889
+        47113
       ],
       [
-        91306
+        154711
       ],
       [
-        115383
+        135093
       ],
       [
-        31201
+        210196
       ],
       [
-        152129
+        72473
       ],
       [
-        72584
+        103032
       ],
       [
-        67284,
-        32003,
-        5394
+        32978
       ],
       [
-        103255
+        145368,
+        72348,
+        54280,
+        2889,
+        2100
       ],
       [
-        32837
+        35543,
+        144993,
+        41285,
+        33736,
+        16925,
+        9214
       ],
       [
-        145451,
-        54504,
-        72175,
-        2077,
-        2889
+        29739,
+        8657,
+        554,
+        72228,
+        2603,
+        11457,
+        12643,
+        2748,
+        831,
+        296,
+        291,
+        824,
+        39
       ],
       [
-        35365,
-        41376,
-        144945,
-        33683,
-        16737,
-        9089
+        103172,
+        36430,
+        70637,
+        57587,
+        10898,
+        9484,
+        17403,
+        31315,
+        8126,
+        19900,
+        3015,
+        920,
+        749,
+        1936,
+        2803,
+        1625,
+        917,
+        862,
+        288,
+        78
       ],
       [
-        11298,
-        788,
-        72078,
-        29855,
-        12722,
-        2882,
-        317,
-        8615,
-        776,
-        270,
-        2517,
-        572,
-        34
+        81111,
+        19402,
+        66563,
+        23463,
+        79649,
+        8660,
+        26548,
+        2569,
+        15795,
+        42657,
+        4304,
+        2453,
+        7036,
+        7125,
+        278
       ],
       [
-        10875,
-        31086,
-        71410,
-        36844,
-        102993,
-        57471,
-        8161,
-        17225,
-        19850,
-        2720,
-        9339,
-        2990,
-        1706,
-        952,
-        1937,
-        902,
-        280,
-        769,
-        830,
-        96
+        20459,
+        81837,
+        70839,
+        494,
+        23866,
+        9431,
+        13158,
+        30027,
+        1004,
+        1420,
+        778,
+        31
       ],
       [
-        7843,
-        78074,
-        68079,
-        46538,
-        75455,
-        16101,
-        27136,
-        18693,
-        4473,
-        26105,
-        5351,
-        10230,
-        672,
-        641,
-        8943,
-        669,
-        244,
-        2549,
-        242,
-        27
-      ],
-      [
-        82503,
-        62841,
-        2340,
-        5005,
-        25384,
-        41440,
-        30571,
-        17265,
-        6059,
-        5799,
-        10359,
-        2154,
-        810,
-        525,
-        260,
-        100,
-        128,
+        35515,
+        15140,
+        83894,
+        105352,
+        61778,
+        5500,
+        5859,
+        4807,
+        19083,
+        1317,
+        5146,
+        199,
+        1539,
+        1190,
+        209,
+        52,
+        115,
+        62,
         5
       ],
       [
-        1383,
-        63555,
-        97598,
-        55968,
-        30970,
-        13710,
-        26031,
-        11105,
-        14142,
-        2221,
-        26630,
-        3996,
-        3303,
-        824,
-        156,
-        1670,
-        1471,
-        605,
-        105,
-        148,
-        47,
-        48,
-        172,
-        9,
-        2,
-        2
+        64252,
+        127970,
+        80229,
+        15304,
+        20615,
+        12453,
+        2817,
+        17319,
+        6452,
+        10019,
+        1246,
+        1196,
+        504,
+        435
       ],
       [
-        116272,
-        7052,
-        61357,
-        22920,
-        11999,
-        47778,
-        16725,
-        9070,
-        12233,
-        830,
-        1853,
-        844,
+        43077,
+        111864,
+        13446,
+        18520,
+        20309,
+        1635,
+        777,
+        913,
+        1532,
+        53,
+        10,
+        32,
+        35
+      ],
+      [
+        20036,
+        36928,
+        137684,
+        2958,
+        42255,
+        17622,
+        4406,
+        2178,
+        1170,
+        1114,
+        934,
+        432,
+        134,
+        23,
+        40,
+        4
+      ],
+      [
+        15513,
+        86338,
+        46693,
+        95391,
+        17375,
+        15524,
+        6930,
+        7682,
+        6657,
         335,
-        315
+        148,
+        925,
+        26,
+        160
       ],
       [
-        14315,
-        103424,
-        44515,
-        12210,
-        15635,
-        1358,
-        552,
-        653,
-        9,
-        1148,
-        47,
-        27,
-        11
+        30511,
+        55663,
+        14317,
+        5035,
+        2732,
+        1181,
+        2495,
+        137,
+        109
       ],
       [
-        41255,
-        26567,
-        151919,
-        22361,
-        4672,
-        13981,
-        1349,
-        1227,
-        702,
-        518,
-        448,
-        3266,
-        15,
-        69,
-        25,
-        1
+        54957,
+        26742,
+        106637,
+        78413,
+        5355,
+        12244,
+        20478,
+        5848,
+        1479,
+        2147
       ],
       [
-        16430,
-        76872,
-        99670,
-        39212,
-        17048,
-        9896,
-        5465,
-        4875,
-        4372,
-        70,
-        95,
-        178,
-        14,
-        521
+        81854,
+        92505,
+        31164,
+        3824,
+        14801,
+        14930
       ],
       [
-        56074,
-        30599,
-        2715,
-        5138,
-        14063,
-        2467,
-        1109,
-        152,
-        119
+        36126,
+        143066,
+        41349,
+        3074,
+        7068,
+        2225,
+        158
       ],
       [
-        78407,
-        107001,
-        55246,
-        20629,
-        5250,
-        1549,
-        26642,
-        5898,
-        12186,
-        2219
-      ],
-      [
-        91923,
-        82535,
-        14695,
-        31653,
-        15069,
-        3643
-      ],
-      [
-        142046,
-        36238,
-        41726,
-        2111,
-        7118,
-        3006,
-        142
-      ],
-      [
-        67237,
-        94148,
-        29728,
-        5037,
-        12853,
-        5518,
-        585,
+        29909,
+        67742,
+        93890,
+        5042,
+        12845,
+        5387,
+        632,
         287,
-        417
+        394
       ],
       [
-        129093,
-        12431,
-        21011,
-        15124,
-        2296
+        14913,
+        128495,
+        20884,
+        12158,
+        2345
       ],
       [
-        62228,
-        28189,
-        133702
+        133817,
+        61949,
+        28397
       ],
       [
-        27233,
-        4203
+        26975,
+        4132
       ],
       [
-        23983,
-        153960,
-        20458
+        153808,
+        20354,
+        24128
       ],
       [
-        102332
+        102746
       ],
       [
-        68758,
-        49601,
-        9287
+        49951,
+        69435,
+        9265
       ],
       [
-        88337
+        87945
       ],
       [
-        30827
+        30821
       ],
       [
-        155312,
-        24907
+        154792,
+        25082
       ],
       [
-        60523,
-        79324,
-        23760
+        60763,
+        79374,
+        24119
       ],
       [
-        31109
+        30609
       ],
       [
-        155049,
-        38645
+        154603,
+        38651
       ],
       [
-        96935
+        97016
       ],
       [
-        69072
+        69157
       ],
       [
-        61424
+        61913
       ],
       [
-        91656
+        91290
       ],
       [
-        346920
+        346797
       ],
       [
-        8719
+        8825
       ],
       [
-        26287
+        26494
       ],
       [
-        18886
+        18664
       ],
       [
-        96961
+        97147
       ],
       [
-        131380
+        131134
       ],
       [
-        217767
+        217736
       ]
     ]
   },

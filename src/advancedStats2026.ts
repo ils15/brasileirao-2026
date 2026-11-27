@@ -28,11 +28,11 @@ export interface AdvancedMatchRecord {
 export const ADVANCED_STATS_SOURCE = {
   name: '365scores',
   seasonNum: 76,
-  fetchedAt: '2026-11-26T09:48:09.317Z',
-  sha256: 'cf942444aeeb9f3c170781185d46ca24e86b06c5215ec743ade4930cbb613c33',
+  fetchedAt: '2026-11-27T02:18:43.449Z',
+  sha256: 'c35aaa1436d37351e8617a3a337f020aebb7d4fe33b3589ff9f3397aaf2979e7',
   coverage: {
-    matches: 361,
-    expected: 361,
+    matches: 362,
+    expected: 362,
     missing: [],
   },
 } as const
@@ -69,6 +69,7 @@ export const advancedMatches: readonly AdvancedMatchRecord[] = [
   { gameId: 4632540, round: 1, home: 'vitoria', away: 'remo', homeScore: 2, awayScore: 0, xgHome: 3.15, xgAway: 1.20, yellowHome: 2, yellowAway: 4, redHome: 0, redAway: 0 },
   { gameId: 4632541, round: 1, home: 'chapecoense', away: 'santos', homeScore: 4, awayScore: 2, xgHome: 1.83, xgAway: 1.32, yellowHome: 3, yellowAway: 3, redHome: 0, redAway: 0 },
   { gameId: 4632577, round: 37, home: 'chapecoense', away: 'palmeiras', homeScore: 3, awayScore: 0, xgHome: 1.53, xgAway: 1.37, yellowHome: 3, yellowAway: 1, redHome: 0, redAway: 0 },
+  { gameId: 4632584, round: 37, home: 'sao-paulo', away: 'remo', homeScore: 3, awayScore: 1, xgHome: 1.35, xgAway: 0.94, yellowHome: 1, yellowAway: 4, redHome: 0, redAway: 0 },
   { gameId: 4632587, round: 36, home: 'chapecoense', away: 'cruzeiro', homeScore: 1, awayScore: 2, xgHome: 0.63, xgAway: 1.50, yellowHome: 2, yellowAway: 1, redHome: 0, redAway: 0 },
   { gameId: 4632588, round: 36, home: 'bahia', away: 'coritiba', homeScore: 0, awayScore: 1, xgHome: 2.17, xgAway: 1.64, yellowHome: 2, yellowAway: 2, redHome: 1, redAway: 0 },
   { gameId: 4632589, round: 36, home: 'athletico-pr', away: 'remo', homeScore: 4, awayScore: 2, xgHome: 2.16, xgAway: 1.54, yellowHome: 3, yellowAway: 7, redHome: 0, redAway: 0 },

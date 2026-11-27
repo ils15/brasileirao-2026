@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-26T09:48:10.493Z` (`2026-11-26T06:48:10-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-27T02:18:43.988Z` (`2026-11-26T23:18:43-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -84,3 +84,10 @@ Resultados de 2026: 353 → 359; pendentes: 27 → 21 (359 disputados + 21 pende
 
 Corte do pacote: `2026-11-26T09:48:10Z` (`2026-11-26T06:48:10-03:00`); gerado em `2026-11-26T09:48:10.493Z`.
 Resultados de 2026: 359 → 361; pendentes: 21 → 19 (361 disputados + 19 pendentes = 380 do calendário CBF; 0 adiado(s)).
+
+## 2026-11-27 — 1 novo(s) resultado(s)
+
+- sao-paulo 3–1 remo (espn, 401841329)
+
+Corte do pacote: `2026-11-27T02:18:43Z` (`2026-11-26T23:18:43-03:00`); gerado em `2026-11-27T02:18:43.988Z`.
+Resultados de 2026: 361 → 362; pendentes: 19 → 18 (362 disputados + 18 pendentes = 380 do calendário CBF; 0 adiado(s)).

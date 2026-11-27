@@ -30,8 +30,8 @@ export const currentClubs: ProjectionClub[] = [
   { id: 'atletico-mg', club: 'Atlético Mineiro', initials: 'CAM', position: 7, points: 52, played: 36, wins: 14, draws: 10, losses: 12, goalsFor: 45, goalsAgainst: 41 },
   { id: 'bragantino', club: 'Red Bull Bragantino', initials: 'RBB', position: 8, points: 50, played: 36, wins: 14, draws: 8, losses: 14, goalsFor: 46, goalsAgainst: 41 },
   { id: 'santos', club: 'Santos FC', initials: 'SAN', position: 9, points: 50, played: 36, wins: 13, draws: 11, losses: 12, goalsFor: 51, goalsAgainst: 51 },
-  { id: 'vasco', club: 'Vasco da Gama SAF', initials: 'VAS', position: 10, points: 47, played: 36, wins: 13, draws: 8, losses: 15, goalsFor: 47, goalsAgainst: 52 },
-  { id: 'sao-paulo', club: 'São Paulo', initials: 'SAO', position: 11, points: 45, played: 36, wins: 12, draws: 9, losses: 15, goalsFor: 40, goalsAgainst: 41 },
+  { id: 'sao-paulo', club: 'São Paulo', initials: 'SAO', position: 10, points: 48, played: 37, wins: 13, draws: 9, losses: 15, goalsFor: 43, goalsAgainst: 42 },
+  { id: 'vasco', club: 'Vasco da Gama SAF', initials: 'VAS', position: 11, points: 47, played: 36, wins: 13, draws: 8, losses: 15, goalsFor: 47, goalsAgainst: 52 },
   { id: 'coritiba', club: 'Coritiba SAF', initials: 'CFC', position: 12, points: 45, played: 36, wins: 12, draws: 9, losses: 15, goalsFor: 41, goalsAgainst: 52 },
   { id: 'vitoria', club: 'Vitória', initials: 'VIT', position: 13, points: 44, played: 36, wins: 12, draws: 8, losses: 16, goalsFor: 42, goalsAgainst: 54 },
   { id: 'botafogo', club: 'Botafogo', initials: 'BOT', position: 14, points: 43, played: 36, wins: 11, draws: 10, losses: 15, goalsFor: 47, goalsAgainst: 58 },
@@ -39,14 +39,13 @@ export const currentClubs: ProjectionClub[] = [
   { id: 'gremio', club: 'Grêmio', initials: 'GRE', position: 16, points: 41, played: 36, wins: 10, draws: 11, losses: 15, goalsFor: 40, goalsAgainst: 47 },
   { id: 'mirassol', club: 'Mirassol', initials: 'MIR', position: 17, points: 41, played: 36, wins: 10, draws: 11, losses: 15, goalsFor: 39, goalsAgainst: 49 },
   { id: 'internacional', club: 'Internacional', initials: 'INT', position: 18, points: 38, played: 36, wins: 9, draws: 11, losses: 16, goalsFor: 41, goalsAgainst: 49 },
-  { id: 'remo', club: 'Remo', initials: 'REM', position: 19, points: 32, played: 36, wins: 7, draws: 11, losses: 18, goalsFor: 41, goalsAgainst: 61 },
+  { id: 'remo', club: 'Remo', initials: 'REM', position: 19, points: 32, played: 37, wins: 7, draws: 11, losses: 19, goalsFor: 42, goalsAgainst: 64 },
   { id: 'chapecoense', club: 'Chapecoense', initials: 'CHA', position: 20, points: 24, played: 37, wins: 5, draws: 9, losses: 23, goalsFor: 37, goalsAgainst: 74 },
 ]
 
 export const remainingFixtures: RemainingFixture[] = [
   { round: '37', home: 'fluminense', away: 'cruzeiro', cbfRef: '361' },
   { round: '37', home: 'botafogo', away: 'bahia', cbfRef: '362' },
-  { round: '37', home: 'sao-paulo', away: 'remo', cbfRef: '363' },
   { round: '37', home: 'corinthians', away: 'gremio', cbfRef: '364' },
   { round: '37', home: 'mirassol', away: 'athletico-pr', cbfRef: '365' },
   { round: '37', home: 'atletico-mg', away: 'vasco', cbfRef: '366' },

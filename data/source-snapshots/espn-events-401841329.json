@@ -1,0 +1,66 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841329",
+ "fetchedAt": "2026-11-27T02:18:43.973Z",
+ "date": "2026-11-26T23:00Z",
+ "status": "post",
+ "home": "sao-paulo",
+ "away": "remo",
+ "homeGoals": 3,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "minute": "39'",
+   "penalty": false
+  },
+  {
+   "athlete": "Gabriel Poveda",
+   "club": "remo",
+   "minute": "55'",
+   "penalty": false
+  },
+  {
+   "athlete": "Ryan Francisco",
+   "club": "sao-paulo",
+   "minute": "87'",
+   "penalty": false
+  },
+  {
+   "athlete": "Jonathan Calleri",
+   "club": "sao-paulo",
+   "minute": "90'+5'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Antonio Galeano",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "21'"
+  },
+  {
+   "athlete": "Edson Fernando",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "53'"
+  },
+  {
+   "athlete": "Lucca Marques",
+   "club": "sao-paulo",
+   "type": "yellow",
+   "minute": "84'"
+  },
+  {
+   "athlete": "Duplexe Tchamba",
+   "club": "remo",
+   "type": "yellow",
+   "minute": "90'+6'"
+  }
+ ],
+ "unresolved": []
+}
