@@ -1,8 +1,8 @@
 {
  "source": "365scores",
  "seasonNum": 76,
- "fetchedAt": "2026-11-27T02:18:43.449Z",
- "sha256": "c35aaa1436d37351e8617a3a337f020aebb7d4fe33b3589ff9f3397aaf2979e7",
+ "fetchedAt": "2026-11-28T02:17:18.270Z",
+ "sha256": "6f0190676c18d322fd8a2c38d840201a3f6beb99fc5fbfa09457da134aee554b",
  "records": [
   {
    "gameId": 4632512,
@@ -579,6 +579,24 @@
    "yellowAway": 4,
    "redHome": 0,
    "redAway": 0
+  },
+  {
+   "gameId": 4632586,
+   "seasonNum": 76,
+   "roundNum": 37,
+   "home": "fluminense",
+   "away": "cruzeiro",
+   "homeScore": 0,
+   "awayScore": 1,
+   "hasXg": true,
+   "xgHome": 2,
+   "xgAway": 1.12,
+   "shotsHome": 23,
+   "shotsAway": 8,
+   "yellowHome": 4,
+   "yellowAway": 3,
+   "redHome": 1,
+   "redAway": 1
   },
   {
    "gameId": 4632587,

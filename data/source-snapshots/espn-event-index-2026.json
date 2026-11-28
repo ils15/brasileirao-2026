@@ -1,7 +1,7 @@
 {
  "source": "ESPN",
  "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/scoreboard?dates=2026",
- "fetchedAt": "2026-11-27T02:18:43.795Z",
+ "fetchedAt": "2026-11-28T02:17:18.549Z",
  "events": [
   {
    "eventId": "401840808",
@@ -2590,8 +2590,8 @@
    "eventId": "401841337",
    "date": "2026-11-27T23:00Z",
    "homeScore": 0,
-   "awayScore": 0,
-   "completed": false
+   "awayScore": 1,
+   "completed": true
   },
   {
    "eventId": "401841338",

@@ -1,6 +1,6 @@
 # Log de atualizações automáticas
 
-Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-27T02:18:43.988Z` (`2026-11-26T23:18:43-03:00`); captura individual das fontes e horário de publicação não são registrados.
+Cada entrada é uma execução pós-rodada do updater (`scripts/update-data.mjs`); resultados só entram se conciliarem com o calendário CBF de 380 jogos (par ordenado único, disputados + pendentes = 380) e a suíte completa passar. Execuções sem dados novos conciliáveis são no-op e não aparecem aqui. A data do título é o dia UTC de processamento (`today` no updater), não a data local do kickoff, da captura ou da publicação. O pacote atual foi gerado em `2026-11-28T02:17:18.620Z` (`2026-11-27T23:17:18-03:00`); captura individual das fontes e horário de publicação não são registrados.
 
 ## 2026-11-05 — 4 novo(s) resultado(s)
 
@@ -91,3 +91,10 @@ Resultados de 2026: 359 → 361; pendentes: 21 → 19 (361 disputados + 19 pende
 
 Corte do pacote: `2026-11-27T02:18:43Z` (`2026-11-26T23:18:43-03:00`); gerado em `2026-11-27T02:18:43.988Z`.
 Resultados de 2026: 361 → 362; pendentes: 19 → 18 (362 disputados + 18 pendentes = 380 do calendário CBF; 0 adiado(s)).
+
+## 2026-11-28 — 1 novo(s) resultado(s)
+
+- fluminense 0–1 cruzeiro (espn, 401841337)
+
+Corte do pacote: `2026-11-28T02:17:18Z` (`2026-11-27T23:17:18-03:00`); gerado em `2026-11-28T02:17:18.620Z`.
+Resultados de 2026: 362 → 363; pendentes: 18 → 17 (363 disputados + 17 pendentes = 380 do calendário CBF; 0 adiado(s)).

@@ -14,12 +14,12 @@
 
 export const SCORERS_SOURCE = {
   name: 'ESPN (eventos de partida)',
-  fetchedAt: '2026-11-27T02:18:43.984Z',
-  sha256: 'c4af281a9f7372e4dce785916638938132b0f5d89511ad3bdd852693bb158f80',
+  fetchedAt: '2026-11-28T02:17:18.614Z',
+  sha256: '7f1f6de13b8ffa8ae8548d7036e36bfb1b590c597712d81dc679830c14099c4d',
   assists: 'unavailable',
-  matchesCovered: 362,
-  goalsInPackage: 962,
-  goalsAttributed: 928,
+  matchesCovered: 363,
+  goalsInPackage: 963,
+  goalsAttributed: 929,
   ownGoals: 34,
   unresolvedEvents: 0,
 } as const
@@ -34,7 +34,7 @@ export const scorers2026: readonly Scorer2026[] = [
   { name: 'Kevin Viveros', club: 'athletico-pr', goals: 21 },
   { name: 'Pedro', club: 'flamengo', goals: 20 },
   { name: 'Gabriel Barbosa', club: 'santos', goals: 16 },
-  { name: 'Kaio Jorge', club: 'cruzeiro', goals: 14 },
+  { name: 'Kaio Jorge', club: 'cruzeiro', goals: 15 },
   { name: 'Samuel Lino', club: 'flamengo', goals: 13 },
   { name: 'Jonathan Calleri', club: 'sao-paulo', goals: 12 },
   { name: 'Renê', club: 'vitoria', goals: 12 },

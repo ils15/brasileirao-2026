@@ -1,0 +1,78 @@
+{
+ "source": "ESPN",
+ "endpoint": "site.api.espn.com/apis/site/v2/sports/soccer/bra.1/summary",
+ "eventId": "401841337",
+ "fetchedAt": "2026-11-28T02:17:18.606Z",
+ "date": "2026-11-27T23:00Z",
+ "status": "post",
+ "home": "fluminense",
+ "away": "cruzeiro",
+ "homeGoals": 0,
+ "awayGoals": 1,
+ "goals": [
+  {
+   "athlete": "Kaio Jorge",
+   "club": "cruzeiro",
+   "minute": "3'",
+   "penalty": false
+  }
+ ],
+ "ownGoals": [],
+ "cards": [
+  {
+   "athlete": "Kauã Moraes Silva",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "26'"
+  },
+  {
+   "athlete": "Luciano Acosta",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "51'"
+  },
+  {
+   "athlete": "Jonathan Jesus",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "58'"
+  },
+  {
+   "athlete": "Rodrigo Castillo",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "63'"
+  },
+  {
+   "athlete": "Jonathan Jesus",
+   "club": "cruzeiro",
+   "type": "red",
+   "minute": "72'"
+  },
+  {
+   "athlete": "Otávio Costa",
+   "club": "cruzeiro",
+   "type": "yellow",
+   "minute": "76'"
+  },
+  {
+   "athlete": "Riquelme",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Samuel Xavier",
+   "club": "fluminense",
+   "type": "yellow",
+   "minute": "90'"
+  },
+  {
+   "athlete": "Samuel Xavier",
+   "club": "fluminense",
+   "type": "red",
+   "minute": "90'"
+  }
+ ],
+ "unresolved": []
+}
